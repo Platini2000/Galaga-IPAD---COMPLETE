@@ -685,6 +685,37 @@ function showScoreScreen() {
 // --- Canvas Event Handlers ---
 
 /**
+ * Helper functie om een stap terug te gaan in het menu.
+ */
+function goBackInMenu() {
+    if (isFiringModeSelectMode) {
+        isFiringModeSelectMode = false;
+        if (selectedOnePlayerGameVariant === 'CLASSIC_1P') {
+            isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0;
+        } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+            isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0);
+        } else if (isTwoPlayerMode && !isPlayerTwoAI) { // Human 2P
+            isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0);
+        } else { // Fallback naar player select als de vorige staat onduidelijk is
+            isPlayerSelectMode = true; selectedButtonIndex = 0; // Ga naar P1/P2 selectie, P1 geselecteerd
+        }
+        selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; selectedGameMode = 'normal'; // Reset
+    } else if (isOnePlayerVsAIGameTypeSelectMode) {
+        isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1; // Terug naar 1P: Normal/GameVsAI (GameVsAI geselecteerd)
+    } else if (isOnePlayerGameTypeSelectMode) {
+        isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0; // Terug naar P1/P2 (P1 geselecteerd)
+    } else if (isGameModeSelectMode) {
+        isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1; // Terug naar P1/P2 (P2 geselecteerd)
+    } else if (isPlayerSelectMode) {
+        isPlayerSelectMode = false; selectedButtonIndex = 0; // Terug naar hoofdmenu
+    } else { // In hoofdmenu: klik/tap naast knoppen triggert fullscreen
+        triggerFullscreen();
+    }
+    startAutoDemoTimer(); // Reset inactiviteitstimer
+}
+
+
+/**
  * Handles touch events on the canvas, routing them to menu or game logic.
  * @param {Event} event - The touch or mouse event.
  * @param {'start'|'move'|'end'} type - The type of event.
@@ -779,25 +810,8 @@ function handleCanvasTouch(event, type, isTap = false) {
                     else if (selectedButtonIndex === 1) { if (typeof exitGame === 'function') exitGame(); }
                 }
             } else if (isTap && currentHoverButton === -1 && touchedMenuButtonIndex === -1) {
-                // <<< GEWIJZIGD: Logica voor "stap terug" bij tap naast knoppen >>>
-                if (isFiringModeSelectMode) {
-                    isFiringModeSelectMode = false;
-                    if (selectedOnePlayerGameVariant === 'CLASSIC_1P') { isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0; }
-                    else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0); }
-                    else if (isTwoPlayerMode && !isPlayerTwoAI) { isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0); }
-                    else { isPlayerSelectMode = false; selectedButtonIndex = 0; } // Fallback
-                    selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; selectedGameMode = 'normal';
-                } else if (isOnePlayerVsAIGameTypeSelectMode) {
-                    isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1;
-                } else if (isOnePlayerGameTypeSelectMode) {
-                    isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0;
-                } else if (isGameModeSelectMode) {
-                    isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1;
-                } else if (isPlayerSelectMode) {
-                    isPlayerSelectMode = false; selectedButtonIndex = 0;
-                } else { // Hoofdmenu: tap naast knoppen triggert fullscreen
-                    triggerFullscreen();
-                }
+                // <<< GEWIJZIGD: Roep goBackInMenu aan bij tap naast knoppen >>>
+                goBackInMenu();
                 // <<< EINDE GEWIJZIGD >>>
             }
             touchedMenuButtonIndex = -1; 
@@ -866,25 +880,8 @@ function handleCanvasClick(event) {
                 else if (selectedButtonIndex === 1) { if (typeof exitGame === 'function') exitGame(); }
             }
         } else { 
-            // <<< GEWIJZIGD: Logica voor "stap terug" bij klik naast knoppen >>>
-            if (isFiringModeSelectMode) {
-                isFiringModeSelectMode = false;
-                if (selectedOnePlayerGameVariant === 'CLASSIC_1P') { isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0; }
-                else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0); }
-                else if (isTwoPlayerMode && !isPlayerTwoAI) { isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0); }
-                else { isPlayerSelectMode = false; selectedButtonIndex = 0; } // Fallback
-                selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; selectedGameMode = 'normal';
-            } else if (isOnePlayerVsAIGameTypeSelectMode) {
-                isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1;
-            } else if (isOnePlayerGameTypeSelectMode) {
-                isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0;
-            } else if (isGameModeSelectMode) {
-                isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1;
-            } else if (isPlayerSelectMode) {
-                isPlayerSelectMode = false; selectedButtonIndex = 0;
-            } else { // Hoofdmenu: klik naast knoppen triggert fullscreen
-                triggerFullscreen();
-            }
+            // <<< GEWIJZIGD: Roep goBackInMenu aan bij klik naast knoppen >>>
+            goBackInMenu();
             // <<< EINDE GEWIJZIGD >>>
         }
         startAutoDemoTimer(); 
