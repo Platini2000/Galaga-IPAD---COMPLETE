@@ -697,14 +697,14 @@ function showScoreScreen() {
 // --- Canvas Event Handlers ---
 function handleCanvasClick(event) {
     if (!gameCanvas) return;
-    if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by canvas click.");});
+     if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by canvas click."); });
     }
     const rect = gameCanvas.getBoundingClientRect();
     const scaleX = gameCanvas.width / rect.width;
     const scaleY = gameCanvas.height / rect.height;
-    const clickX = (event.clientX - rect.left) * scaleX;
-    const clickY = (event.clientY - rect.top) * scaleY;
+    const clickX = (event.clientX - rect.left) * scaleX; // <<< mouseX GECORRIGEERD naar clickX
+    const clickY = (event.clientY - rect.top) * scaleY; // <<< mouseY GECORRIGEERD naar clickY
     const now = Date.now();
     let blockAllClickInput = false;
     if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0) {
@@ -729,8 +729,8 @@ function handleCanvasClick(event) {
     } else if (!isShowingScoreScreen) { // Menu
         const button0Rect = getMenuButtonRect(0);
         const button1Rect = getMenuButtonRect(1);
-        let clickedButton0 = button0Rect && checkCollision({ x: clickX, y: clickY, width: 1, height: 1 }, button0Rect);
-        let clickedButton1 = button1Rect && checkCollision({ x: mouseX, y: mouseY, width: 1, height: 1 }, button1Rect);
+        let clickedButton0 = button0Rect && checkCollision({ x: clickX, y: clickY, width: 1, height: 1 }, button0Rect); // <<< mouseX/Y GECORRIGEERD
+        let clickedButton1 = button1Rect && checkCollision({ x: clickX, y: clickY, width: 1, height: 1 }, button1Rect); // <<< mouseX/Y GECORRIGEERD
 
         stopAutoDemoTimer();
 
