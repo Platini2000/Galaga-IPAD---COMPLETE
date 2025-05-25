@@ -1139,28 +1139,21 @@ function renderGame() {
 
         const iconTypes = [ { val: 50, img: level50Image }, { val: 30, img: level30Image }, { val: 20, img: level20Image }, { val: 10, img: level10Image }, { val: 5, img: level5Image }, { val: 1, img: level1Image } ];
 
-        // <<< START GEWIJZIGDE CODE BLOK voor drawLevelIcons >>>
         const drawLevelIcons = (levelValueToDisplay, isPlayer1_Coop_Or_SinglePlayer) => {
             if (levelValueToDisplay <= 0 || typeof LEVEL_ICON_MARGIN_BOTTOM === 'undefined' || typeof LEVEL_ICON_SIZE === 'undefined' || typeof LEVEL_ICON_MARGIN_RIGHT === 'undefined' || typeof LEVEL_ICON_SPACING === 'undefined') return;
 
             let remainingLevelVal = levelValueToDisplay;
             let iconsToDrawList = [];
-            let usedIconTypes = new Set(); // Houdt bij welke *waardes* van iconen al gebruikt zijn in de hoofdselectie (excl. '1' voor afronding)
+            let usedIconTypes = new Set();
 
-            // Helper functie om te checken of een resterend level kan worden gemaakt met de resterende types,
-            // rekening houdend met de 3-unieke-type limiet (maar '1' mag altijd als 4e type).
             const canCompleteLevel = (startLevel, startIndex, currentUsedTypesSet) => {
                 let tempRemaining = startLevel;
-                let tempUsedTypes = new Set(currentUsedTypesSet); // Werk met een kopie
-
+                let tempUsedTypes = new Set(currentUsedTypesSet);
                 for (let i = startIndex; i < iconTypes.length; i++) {
                     const iconVal = iconTypes[i].val;
                     if (tempRemaining >= iconVal) {
-                        // Check of het toevoegen van dit type de 3-type limiet zou overschrijden,
-                        // TENZIJ het type al gebruikt is, OF het een '1'-icoon is.
                         const wouldExceedLimit = tempUsedTypes.size >= 3 && !tempUsedTypes.has(iconVal);
-
-                        if (!wouldExceedLimit || iconVal === 1) { // '1' mag altijd, zelfs als 4e type
+                        if (!wouldExceedLimit || iconVal === 1) {
                             const howMany = Math.floor(tempRemaining / iconVal);
                             tempRemaining -= howMany * iconVal;
                             tempUsedTypes.add(iconVal);
@@ -1171,53 +1164,39 @@ function renderGame() {
                 return tempRemaining === 0;
             };
 
-            // Eerste pass: selecteer grotere iconen (alles behalve de '1' icoon)
-            // Probeer het level te maken met maximaal 3 *verschillende* grotere iconen.
-            for (let i = 0; i < iconTypes.length - 1; i++) { // Loop niet over de '1' icoon (index 5)
+            for (let i = 0; i < iconTypes.length - 1; i++) {
                 const currentIcon = iconTypes[i];
                 const iconVal = currentIcon.val;
                 const iconImg = currentIcon.img;
-
                 if (remainingLevelVal >= iconVal) {
                     const howManyCanFit = Math.floor(remainingLevelVal / iconVal);
-                    // Probeer van het max aantal naar 1 te gaan voor dit icoon type
                     for (let numCurrentIcon = howManyCanFit; numCurrentIcon >= 1; numCurrentIcon--) {
                         const potentialRemaining = remainingLevelVal - (numCurrentIcon * iconVal);
                         let hypotheticalUsedTypes = new Set(usedIconTypes);
-                        hypotheticalUsedTypes.add(iconVal); // Voeg dit type tijdelijk toe
-
-                        if (hypotheticalUsedTypes.size <= 3 || (hypotheticalUsedTypes.size > 3 && hypotheticalUsedTypes.has(1) && iconVal === 1) ) { // '1' mag als 4e
+                        hypotheticalUsedTypes.add(iconVal);
+                        if (hypotheticalUsedTypes.size <= 3 || (hypotheticalUsedTypes.size > 3 && hypotheticalUsedTypes.has(1) && iconVal === 1) ) {
                              if (canCompleteLevel(potentialRemaining, i + 1, hypotheticalUsedTypes)) {
                                 for (let k = 0; k < numCurrentIcon; k++) {
                                     iconsToDrawList.push(iconImg);
                                 }
                                 remainingLevelVal = potentialRemaining;
-                                usedIconTypes.add(iconVal); // Definitief toevoegen
-                                break; // Ga naar het volgende *kleinere* icoontype
+                                usedIconTypes.add(iconVal);
+                                break;
                             }
                         }
                     }
                 }
                 if (remainingLevelVal === 0) break;
             }
-
-            // Tweede pass: als er nog een restwaarde is, vul deze *altijd* aan met '1'-iconen.
             if (remainingLevelVal > 0) {
                 for (let k = 0; k < remainingLevelVal; k++) {
                     iconsToDrawList.push(level1Image);
                 }
-                // usedIconTypes.add(1); // Optioneel: '1' toevoegen aan de set als het nog niet bestond
                 remainingLevelVal = 0;
             }
-            // <<< EINDE GEWIJZIGDE LOGICA voor selectie iconen >>>
-
-
             if (iconsToDrawList.length === 0 && levelValueToDisplay > 0) {
-                // Fallback als er om een of andere reden geen iconen zijn geselecteerd maar level > 0
-                // Dit zou niet moeten gebeuren met de gecorrigeerde logica
                 for(let fb = 0; fb < levelValueToDisplay; fb++) iconsToDrawList.push(level1Image);
             }
-
 
             if (iconsToDrawList.length === 0) return;
 
@@ -1227,81 +1206,47 @@ function renderGame() {
             let startX;
 
             if (isTwoPlayerMode && selectedGameMode === 'coop' ) {
-                const coopLevelIconOffset = 15; // Kleinere offset voor COOP
+                const coopLevelIconOffset = 15;
                 if (isPlayer1_Coop_Or_SinglePlayer) {
                     let p1LivesWidth = 0;
-                    if (player1Lives > 0 && isInGameState) {
+                    if (player1Lives > 0 && (isInGameState || !isInGameState)) {
                          const livesP1ToDisplay = (player1Lives >= 3) ? 2 : Math.max(0, player1Lives -1);
                          p1LivesWidth = Math.min(livesP1ToDisplay, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
-                    } else if (player1Lives > 0 && !isInGameState) { // Menu state
-                         const defaultReserveLives = 2;
-                         p1LivesWidth = Math.min(defaultReserveLives, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
                     }
                     startX = LIFE_ICON_MARGIN_LEFT + p1LivesWidth + coopLevelIconOffset;
-                } else { // P2 Level iconen
+                } else {
                     let p2LivesWidth = 0;
-                     if (player2Lives > 0 && isInGameState) {
+                     if (player2Lives > 0 && (isInGameState || !isInGameState)) {
                          const livesP2ToDisplay = (player2Lives >= 3) ? 2 : Math.max(0, player2Lives -1);
                          p2LivesWidth = Math.min(livesP2ToDisplay, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
-                    } else if (player2Lives > 0 && !isInGameState) { // Menu state
-                         const defaultReserveLives = 2;
-                         p2LivesWidth = Math.min(defaultReserveLives, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
                     }
                     const p2LivesStartX = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - p2LivesWidth;
                     startX = p2LivesStartX - totalWidth - coopLevelIconOffset;
                 }
-            } else if (isTwoPlayerMode && selectedGameMode === 'normal') { // 2P Normal (Human of vs AI)
+            } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
                 const normalLevelIconOffset = 15;
-                 if (currentPlayer === 1 && isPlayer1_Coop_Or_SinglePlayer) { // P1's level iconen
+                 if (isPlayer1_Coop_Or_SinglePlayer) { // P1's level iconen ALTIJD
                     let p1LivesWidth = 0;
-                     if (playerLives > 0 && isInGameState) {
-                         const livesP1ToDisplay = (playerLives >= 3) ? 2 : Math.max(0, playerLives -1);
+                    const livesForP1Calc = (currentPlayer === 1 && isInGameState) ? playerLives : player1Lives;
+                     if (livesForP1Calc > 0 && (isInGameState || !isInGameState)) {
+                         const livesP1ToDisplay = (livesForP1Calc >= 3) ? 2 : Math.max(0, livesForP1Calc -1);
                          p1LivesWidth = Math.min(livesP1ToDisplay, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
-                    } else if (playerLives > 0 && !isInGameState) {
-                         const defaultReserveLives = 2;
-                         p1LivesWidth = Math.min(defaultReserveLives, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
                     }
                     startX = LIFE_ICON_MARGIN_LEFT + p1LivesWidth + normalLevelIconOffset;
-                } else if (currentPlayer === 2 && !isPlayer1_Coop_Or_SinglePlayer) { // P2's level iconen (actieve speler is P2)
+                } else { // P2's level iconen ALTIJD (indien P2 bestaat/actief is)
                     let p2LivesWidth = 0;
-                    if (playerLives > 0 && isInGameState) {
-                        const livesP2ToDisplay = (playerLives >= 3) ? 2 : Math.max(0, playerLives -1);
+                    const livesForP2Calc = (currentPlayer === 2 && isInGameState) ? playerLives : player2Lives;
+
+                    if (livesForP2Calc > 0 && (isInGameState || !isInGameState)) {
+                        const livesP2ToDisplay = (livesForP2Calc >= 3) ? 2 : Math.max(0, livesForP2Calc -1);
                         p2LivesWidth = Math.min(livesP2ToDisplay, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
-                    } else if (playerLives > 0 && !isInGameState) {
-                        const defaultReserveLives = 2;
-                        p2LivesWidth = Math.min(defaultReserveLives, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
                     }
                     const p2LivesStartXBasedOnP2UI = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - p2LivesWidth;
                     startX = p2LivesStartXBasedOnP2UI - totalWidth - normalLevelIconOffset;
-
-                } else if (currentPlayer === 2 && isPlayer1_Coop_Or_SinglePlayer) { // P1's level iconen (wanneer P2 actief is)
-                    let p1LivesWidth = 0;
-                    if (player1Lives > 0 && isInGameState) {
-                        const livesP1ToDisplay = (player1Lives >= 3) ? 2 : Math.max(0, player1Lives -1);
-                        p1LivesWidth = Math.min(livesP1ToDisplay, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
-                    } else if (player1Lives > 0 && !isInGameState) {
-                         const defaultReserveLives = 2;
-                         p1LivesWidth = Math.min(defaultReserveLives, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
-                    }
-                    startX = LIFE_ICON_MARGIN_LEFT + p1LivesWidth + normalLevelIconOffset;
-                } else if (currentPlayer === 1 && !isPlayer1_Coop_Or_SinglePlayer) { // P2's level iconen (wanneer P1 actief is)
-                    let p2LivesWidth = 0;
-                    if (player2Lives > 0 && isInGameState) {
-                        const livesP2ToDisplay = (player2Lives >= 3) ? 2 : Math.max(0, player2Lives -1);
-                        p2LivesWidth = Math.min(livesP2ToDisplay, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
-                    } else if (player2Lives > 0 && !isInGameState) {
-                        const defaultReserveLives = 2;
-                        p2LivesWidth = Math.min(defaultReserveLives, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
-                    }
-                     const p2LivesStartXBasedOnP2UI = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - p2LivesWidth;
-                     startX = p2LivesStartXBasedOnP2UI - totalWidth - normalLevelIconOffset;
-                } else { // Fallback
-                    startX = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - totalWidth;
                 }
             } else { // 1P Classic
                  startX = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - totalWidth;
             }
-
 
             let currentX = startX;
             for (const iconImage of iconsToDrawList) {
@@ -1311,44 +1256,51 @@ function renderGame() {
                 currentX += LEVEL_ICON_SIZE + LEVEL_ICON_SPACING;
             }
         };
-        // <<< EINDE GEWIJZIGDE CODE BLOK voor drawLevelIcons >>>
 
 
         let levelP1ToDisplay = 1, levelP2ToDisplay = 0;
 
-        if (gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage) {
+        // <<< START GEWIJZIGDE CODE BLOK voor bepalen levelP1ToDisplay & levelP2ToDisplay >>>
+        if (gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || isShowingResultsScreen) {
+            // In game over of results, toon altijd het max bereikte level
             levelP1ToDisplay = Math.max(1, player1MaxLevelReached);
-            if (isEffectivelyTwoPlayerUI) levelP2ToDisplay = Math.max(1, player2MaxLevelReached);
-        } else if (!isInGameState || isShowingScoreScreen) {
-            levelP1ToDisplay = 1;
-            if (isEffectivelyTwoPlayerUI || (!isInGameState && (!isPlayerSelectMode || selectedButtonIndex === 1)) ) levelP2ToDisplay = 1;
-            else levelP2ToDisplay = 0;
-
-            if (!isInGameState && isPlayerSelectMode && selectedButtonIndex === 0) levelP2ToDisplay = 0; // Alleen P1
+            if (isEffectivelyTwoPlayerUI || isTwoPlayerMode) levelP2ToDisplay = Math.max(1, player2MaxLevelReached);
+        } else if (!isInGameState || isShowingScoreScreen) { // Menu of Score Screen
+            levelP1ToDisplay = 1; // Default voor menu
+            if (isEffectivelyTwoPlayerUI || (!isInGameState && (!isPlayerSelectMode || selectedButtonIndex === 1)) ) {
+                 levelP2ToDisplay = 1; // Toon P2 level als 2P UI actief is of 2P wordt geselecteerd
+            } else {
+                 levelP2ToDisplay = 0;
+            }
+            if (!isInGameState && isPlayerSelectMode && selectedButtonIndex === 0) levelP2ToDisplay = 0;
             if (!isInGameState && isOnePlayerGameTypeSelectMode && !isPlayerTwoAI && selectedOnePlayerGameVariant !== '1P_VS_AI_COOP') levelP2ToDisplay = 0;
             if (!isInGameState && isOnePlayerVsAIGameTypeSelectMode ) {
                  if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') levelP2ToDisplay = 1;
-                 else levelP2ToDisplay = 0; // 1P vs AI Normal toont geen P2 level in menu
+                 else levelP2ToDisplay = 0;
             }
-
-        } else if (isInGameState) {
-            if (isTwoPlayerMode && selectedGameMode === 'coop') { // Human COOP, 1P_VS_AI_COOP, COOP AI Demo
-                levelP1ToDisplay = player1Lives > 0 ? (player1MaxLevelReached > 0 ? player1MaxLevelReached : 1) : player1MaxLevelReached;
-                levelP2ToDisplay = player2Lives > 0 ? (player2MaxLevelReached > 0 ? player2MaxLevelReached : 1) : player2MaxLevelReached;
-
-                if (player1Lives <= 0 && player1MaxLevelReached <= 0) levelP1ToDisplay = 0;
-                if (player2Lives <= 0 && player2MaxLevelReached <= 0) levelP2ToDisplay = 0;
-
-
-            } else if (isTwoPlayerMode && selectedGameMode === 'normal') { // Human 2P Normal, 1P_VS_AI_NORMAL
-                 levelP1ToDisplay = (currentPlayer === 1) ? level : player1MaxLevelReached;
-                 levelP2ToDisplay = (currentPlayer === 2) ? level : player2MaxLevelReached;
-            }
-            else { // 1P Classic
+        } else if (isInGameState) { // In Game
+            if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                levelP1ToDisplay = player1Lives > 0 ? Math.max(1, player1MaxLevelReached) : Math.max(1, player1MaxLevelReached); // Toon altijd max, ook als net dood
+                levelP2ToDisplay = player2Lives > 0 ? Math.max(1, player2MaxLevelReached) : Math.max(1, player2MaxLevelReached);
+                if (player1Lives <= 0 && player1MaxLevelReached <=0) levelP1ToDisplay = 0; // Geen iconen als P1 nooit gespeeld heeft en dood is
+                if (player2Lives <= 0 && player2MaxLevelReached <=0) levelP2ToDisplay = 0; // Idem voor P2
+            } else if (isTwoPlayerMode && selectedGameMode === 'normal') { // 2P Normal (Human of vs AI)
+                // Actieve speler toont het HUIDIGE level van de game
+                // Niet-actieve speler toont zijn EIGEN max bereikte level
+                if (currentPlayer === 1) {
+                    levelP1ToDisplay = level;
+                    levelP2ToDisplay = Math.max(1, player2MaxLevelReached); // P2 toont altijd zijn max
+                } else { // currentPlayer === 2
+                    levelP1ToDisplay = Math.max(1, player1MaxLevelReached); // P1 toont altijd zijn max
+                    levelP2ToDisplay = level;
+                }
+            } else { // 1P Classic
                 levelP1ToDisplay = level;
                 levelP2ToDisplay = 0;
             }
         }
+        // <<< EINDE GEWIJZIGDE CODE BLOK voor bepalen levelP1ToDisplay & levelP2ToDisplay >>>
+
 
         drawLevelIcons(levelP1ToDisplay, true);
         if (levelP2ToDisplay > 0 ) {
