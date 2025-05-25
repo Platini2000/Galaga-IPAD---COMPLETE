@@ -847,11 +847,101 @@ function renderGame() {
 
         // --- STAP 1: Teken UI (Score, Levens, Level) ---
         gameCtx.save();
-        const UI_FONT="20px 'Press Start 2P'"; const LABEL_COLOR="red"; const SCORE_COLOR="white"; /* ... etc. ... */
-        // ... (de drawTopUiElement en gerelateerde logica blijft zoals het was)
+        const UI_FONT="20px 'Press Start 2P'";
+        const TOP_UI_LABEL_COLOR_DEFAULT = "red";
+        const SCORE_COLOR="white";
+        gameCtx.font=UI_FONT; gameCtx.textBaseline="top";
+
+        ui2upRect = null;
+
+        // <<< GEWIJZIGD: Functie declaratie i.p.v. const expressie >>>
+        function drawTopUiElement(label, scoreValue, labelAlign, labelX, shouldBlink = false){
+            let showLabel=true;
+            let blinkOnDuration = UI_1UP_BLINK_ON_MS * 1.5;
+            let blinkCycleDuration = UI_1UP_BLINK_CYCLE_MS * 1.5;
+            let currentLabelColor = TOP_UI_LABEL_COLOR_DEFAULT;
+
+            if (label === "DEMO") {
+                blinkOnDuration = DEMO_TEXT_BLINK_ON_MS * 0.7;
+                blinkCycleDuration = DEMO_TEXT_BLINK_CYCLE_MS;
+            } else if (label === "HIGH SCORE") {
+                blinkOnDuration = UI_1UP_BLINK_ON_MS * 1.5;
+                blinkCycleDuration = UI_1UP_BLINK_CYCLE_MS * 1.5;
+                if (isInGameState && !isManualControl) {
+                    blinkOnDuration = DEMO_TEXT_BLINK_ON_MS * 0.7;
+                    blinkCycleDuration = DEMO_TEXT_BLINK_CYCLE_MS;
+                } else if (isInGameState && isTwoPlayerMode && currentPlayer === 2) {
+                    blinkOnDuration = UI_1UP_BLINK_ON_MS * 1.5;
+                    blinkCycleDuration = UI_1UP_BLINK_CYCLE_MS * 1.5;
+                }
+            }
+
+            if(shouldBlink){
+                if(isPaused || gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage || !((now % blinkCycleDuration) < blinkOnDuration)){
+                    showLabel=false;
+                }
+            }
+
+            gameCtx.textAlign = labelAlign; // Eerst alignment zetten
+            const labelMetrics = gameCtx.measureText(label);
+            const labelWidth = labelMetrics.width;
+            const labelHeight = 20;
+            const labelY = MARGIN_TOP;
+
+            if(showLabel){
+                gameCtx.fillStyle=currentLabelColor;
+                gameCtx.fillText(label, labelX, labelY);
+            }
+
+            const scoreString = String(scoreValue); // Zekerstellen dat het een string is
+            let scoreCenterX;
+            if(labelAlign==='left') scoreCenterX = labelX + labelWidth / 2;
+            else if(labelAlign==='right') scoreCenterX = labelX - labelWidth / 2;
+            else scoreCenterX = labelX;
+
+            gameCtx.textAlign = 'center'; // Score altijd centreren onder het midden van het label
+            const scoreMetrics = gameCtx.measureText(scoreString);
+            const scoreWidth = scoreMetrics.width;
+            const scoreHeight = 20;
+            const scoreY = labelY + SCORE_OFFSET_Y + 5;
+
+            gameCtx.fillStyle=SCORE_COLOR;
+            gameCtx.fillText(scoreString, scoreCenterX, scoreY);
+
+            let elementLeft, elementRight, elementTop, elementBottom;
+            elementTop = labelY;
+            elementBottom = scoreY + scoreHeight;
+
+            if (labelAlign === 'left') {
+                elementLeft = labelX;
+                elementRight = Math.max(labelX + labelWidth, scoreCenterX + scoreWidth / 2);
+            } else if (labelAlign === 'right') {
+                elementRight = labelX; // labelX is het meest rechtse punt voor right-align
+                elementLeft = Math.min(labelX - labelWidth, scoreCenterX - scoreWidth / 2);
+            } else { // center
+                elementLeft = Math.min(labelX - labelWidth / 2, scoreCenterX - scoreWidth / 2);
+                elementRight = Math.max(labelX + labelWidth / 2, scoreCenterX + scoreWidth / 2);
+            }
+
+            const elementWidth = elementRight - elementLeft;
+            const elementHeight = elementBottom - elementTop;
+
+            if (label === "2UP") {
+                 const paddingX = 20;
+                 const paddingY = 10;
+                 ui2upRect = {
+                     x: elementLeft - paddingX,
+                     y: elementTop - paddingY,
+                     width: elementWidth + paddingX * 2,
+                     height: elementHeight + paddingY * 2
+                 };
+            }
+        };
+
+
         let score1PValue, score2PValue, sessionHighScore, label1P;
         let show1UPBlink = false, show2UPBlink = false, highScoreConditionMet = false;
-        // Logic to determine score1PValue, score2PValue, etc. (ongewijzigd voor nu, maar moet CO-OP scores reflecteren)
+
         if (isShowingResultsScreen) { /* ... */ }
         else if (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage) { /* ... */ }
         else if (isShowingPlayerGameOverMessage) { /* ... */ }
@@ -882,42 +972,18 @@ function renderGame() {
             }
         }
         let isHighScoreBlinkingNow = false; if (highScoreConditionMet) { /* ... */ }
+
         if(typeof MARGIN_SIDE!=='undefined' && typeof MARGIN_TOP!=='undefined' && typeof SCORE_OFFSET_Y!=='undefined'){
-            // Bereken de positie en grootte van 2UP element voor ui2upRect
-            const label2UPText = "2UP"; // of "AI P2", etc.
-            gameCtx.font = UI_FONT;
-            const label2UPMetrics = gameCtx.measureText(label2UPText);
-            const label2UPWidth = label2UPMetrics.width;
-            const score2UPText = String(score2PValue);
-            const score2UPMetrics = gameCtx.measureText(score2UPText);
-            const score2UPWidth = score2UPMetrics.width;
-
-            const ui2upLabelX = gameCanvas.width - MARGIN_SIDE;
-            const ui2upElementLeft = Math.min(ui2upLabelX - label2UPWidth, ui2upLabelX - label2UPWidth/2 - score2UPWidth/2); // Afhankelijk van alignment
-            const ui2upElementRight = ui2upLabelX; // Omdat het right-aligned is
-            const ui2upElementTop = MARGIN_TOP;
-            const ui2upElementBottom = MARGIN_TOP + SCORE_OFFSET_Y + 5 + 20; // 20 is approx font height
-            const paddingX = 20; const paddingY = 10;
-             ui2upRect = {
-                 x: ui2upElementLeft - paddingX,
-                 y: ui2upElementTop - paddingY,
-                 width: (ui2upElementRight - ui2upElementLeft) + paddingX * 2,
-                 height: (ui2upElementBottom - ui2upElementTop) + paddingY * 2
-             };
-            // debug: gameCtx.strokeStyle = 'lime'; gameCtx.strokeRect(ui2upRect.x, ui2upRect.y, ui2upRect.width, ui2upRect.height);
-
             drawTopUiElement(label1P, score1PValue, 'left', MARGIN_SIDE, show1UPBlink);
             drawTopUiElement("HIGH SCORE", sessionHighScore, 'center', gameCanvas.width / 2, isHighScoreBlinkingNow);
             drawTopUiElement("2UP", score2PValue, 'right', gameCanvas.width - MARGIN_SIDE, show2UPBlink);
         }
 
-
-        // Levens iconen (moet P1 en P2 apart tonen in CO-OP)
         if (typeof shipImage !== 'undefined' && typeof LIFE_ICON_MARGIN_BOTTOM !== 'undefined' && typeof LIFE_ICON_SIZE !== 'undefined' && typeof LIFE_ICON_MARGIN_LEFT !== 'undefined' && typeof LIFE_ICON_SPACING !== 'undefined') {
             if (shipImage.complete && shipImage.naturalHeight !== 0) {
                 const lifeIconY = gameCanvas.height - LIFE_ICON_MARGIN_BOTTOM - LIFE_ICON_SIZE;
                 let livesP1ToDisplay = 0;
-                let livesP2ToDisplay = 0; // Voor CO-OP
+                let livesP2ToDisplay = 0;
 
                 if (isTwoPlayerMode && selectedGameMode === 'coop') {
                     if (player1Lives > 0) livesP1ToDisplay = Math.max(0, player1Lives -1);
@@ -939,11 +1005,9 @@ function renderGame() {
                 }
             }
         }
-        // ... (level iconen ongewijzigd) ...
         gameCtx.restore();
 
 
-        // --- STAP 1.6: Teken Spelersschip (Hoofd + Dual) ---
         gameCtx.save();
         if (isTwoPlayerMode && selectedGameMode === 'coop') {
             if (ship1 && player1Lives > 0 && !isPlayer1WaitingForRespawn && !isPlayer1ShipCaptured) {
@@ -1005,7 +1069,6 @@ function renderGame() {
         gameCtx.restore();
 
 
-        // --- STAP 2: State-specifieke content (Menu / Game / Score) ---
         if (!isInGameState) {
              if (isShowingScoreScreen) { /* ... score screen ... */ }
              else {
@@ -1046,7 +1109,19 @@ function renderGame() {
                 else if (gameOverSequenceStartTime > 0) { /* ... */ }
             }
         }
-    } catch (e) { /* ... error handling (ongewijzigd) ... */ console.error("Error in renderGame:", e, e.stack); /* ... */ }
+    } catch (e) {
+        console.error("Error in renderGame:", e, e.stack);
+        if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null;
+        try {
+            if (gameCtx && gameCanvas) {
+                gameCtx.fillStyle = 'red';
+                gameCtx.font = '20px sans-serif';
+                gameCtx.textAlign = 'center';
+                gameCtx.fillText('FATAL RENDER ERROR.', gameCanvas.width / 2, gameCanvas.height/2);
+            }
+        } catch(err) {}
+        try { showMenuState(); } catch (menuErr) {}
+    }
 } // Einde renderGame
 
 
@@ -1095,46 +1170,41 @@ function getTouchPos(canvas, touchEvent) {
 
 function handleTouchStart(event) {
     if (!gameCanvas) return;
-    event.preventDefault(); // Voorkom scrollen/zoomen
+    event.preventDefault();
     const touchPos = getTouchPos(gameCanvas, event);
     if (!touchPos) return;
 
     isTouching = true;
-    touchStartX = touchPos.x; // Sla start X op voor drag detectie
+    touchStartX = touchPos.x;
     touchCurrentX = touchPos.x;
-    isDraggingShip = false; // Reset drag state
-    lastTapTime = Date.now(); // Voor tap vs drag detectie
-    touchJustFiredSingle = false; // Reset single fire flag
-    isTouchFiringActive = false;  // Reset active firing flag
+    isDraggingShip = false;
+    lastTapTime = Date.now();
+    touchJustFiredSingle = false;
+    isTouchFiringActive = false;
 
     const inGameReady = isInGameState && !isPaused && ship && isManualControl && playerLives > 0 && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage && !isShowingIntro && !isShipCaptured && !isShowingCaptureMessage;
 
     if (inGameReady) {
-        // Check if touch is on/near ship to start dragging
         const shipCenterX = ship.x + ship.width / 2;
-        // Vergroot touch area voor het schip iets voor gebruiksgemak
         const shipTouchRect = {
-            x: ship.x - ship.width * 0.25, // Iets breder
-            y: ship.y - ship.height * 0.5, // Iets hoger
-            width: ship.width * 1.5,    // Breder
-            height: ship.height * 2      // Hoger
+            x: ship.x - ship.width * 0.25,
+            y: ship.y - ship.height * 0.5,
+            width: ship.width * 1.5,
+            height: ship.height * 2
         };
         if (checkCollision({ x: touchPos.x, y: touchPos.y, width: 1, height: 1 }, shipTouchRect)) {
             shipTouchOffsetX = touchPos.x - shipCenterX;
         } else {
-            shipTouchOffsetX = 0; // Touch is niet op het schip, geen offset
+            shipTouchOffsetX = 0;
         }
-        // Voor 'rapid' firing, start direct met vuren als de vlag aan is
         if (selectedFiringMode === 'rapid') {
              isTouchFiringActive = true;
-             // Optioneel: direct vuren bij start, als dat de gewenste feel is.
-             // Anders wordt het afgehandeld door handlePlayerInput() via de vlag.
              if (typeof firePlayerBullet === 'function') {
-                 firePlayerBullet(false); // Of shooterId, afhankelijk van je firePlayerBullet implementatie
+                 firePlayerBullet(false);
              }
         }
     } else {
-        shipTouchOffsetX = 0; // Buiten game, geen drag offset
+        shipTouchOffsetX = 0;
     }
 }
 
@@ -1148,13 +1218,12 @@ function handleTouchMove(event) {
     const dx = Math.abs(touchCurrentX - touchStartX);
     const timeSinceTouchStart = Date.now() - lastTapTime;
 
-    if (!isDraggingShip) { // Alleen updaten als we nog niet aan het draggen zijn
+    if (!isDraggingShip) {
         if (dx > MIN_DRAG_DISTANCE_FOR_TAP_CANCEL || timeSinceTouchStart > MIN_DRAG_TIME_FOR_TAP_CANCEL) {
             isDraggingShip = true;
         }
     }
 
-    // Schip verplaatsen als we aan het draggen zijn EN in de juiste game state
     const canDragShip = isInGameState && !isPaused && ship && isManualControl && playerLives > 0 && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage && !isShipCaptured && !isShowingCaptureMessage && !isWaitingForRespawn && !isCsCompletionDelayActive;
 
     if (isDraggingShip && canDragShip) {
@@ -1163,7 +1232,7 @@ function handleTouchMove(event) {
 
         const effectiveShipWidth = isDualShipActive ? ship.width + DUAL_SHIP_OFFSET_X : ship.width;
         ship.x = Math.max(0, Math.min(gameCanvas.width - effectiveShipWidth, targetShipX));
-        ship.targetX = ship.x; // Update targetX voor consistentie met AI/andere logica
+        ship.targetX = ship.x;
     }
 }
 
@@ -1172,7 +1241,7 @@ function handleTouchEnd(event) {
     if (!isTouching || !gameCanvas) return;
     event.preventDefault();
 
-    const wasTap = !isDraggingShip; // Bepaal of het een tik was
+    const wasTap = !isDraggingShip;
 
     if (wasTap) {
         const touchPosEnd = getTouchPos(gameCanvas, event);
@@ -1180,7 +1249,6 @@ function handleTouchEnd(event) {
              isTouching = false; isDraggingShip = false; shipTouchOffsetX = 0; touchStartX = 0; isTouchFiringActive = false; return;
         }
 
-        // 1. Check voor tap op 2UP tijdens game/demo (NIET tijdens intro)
         if (isInGameState && !isShowingIntro && ui2upRect && checkCollision({ x: touchPosEnd.x, y: touchPosEnd.y, width: 1, height: 1 }, ui2upRect)) {
             if (typeof stopGameAndShowMenu === 'function') {
                 stopGameAndShowMenu();
@@ -1188,37 +1256,31 @@ function handleTouchEnd(event) {
                 return;
             }
         }
-        // 2. Check voor tap in menu/score screen (NIET tijdens intro)
         else if ((!isInGameState || isShowingScoreScreen) && !isShowingIntro) {
             if (typeof processMenuInteraction === 'function') {
                 processMenuInteraction(touchPosEnd.x, touchPosEnd.y);
             }
         }
-        // 3. Check voor fire tap tijdens actieve gameplay (NIET tijdens intro)
         else if (isInGameState && !isShowingIntro && isManualControl && playerLives > 0 &&
             !isPaused && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage && !isShipCaptured && !isShowingCaptureMessage && !isWaitingForRespawn && !isCsCompletionDelayActive && !showCsHitsMessage && !showPerfectMessage && !showCsBonusScoreMessage && !showCSClearMessage && !showExtraLifeMessage)
         {
              if (selectedFiringMode === 'single') {
                  if (typeof firePlayerBullet === 'function') {
-                     if (!touchJustFiredSingle) { // Voorkom dubbel vuren bij snelle tiks
-                         if (firePlayerBullet(false)) { // Of shooterId
+                     if (!touchJustFiredSingle) {
+                         if (firePlayerBullet(false)) {
                              touchJustFiredSingle = true;
                          }
                      }
                  }
              }
-             // Voor 'rapid' mode wordt het vuren afgehandeld door `isTouchFiringActive` in `handlePlayerInput`
-             // en de initiële fire in `handleTouchStart`.
         }
     }
 
-    // Reset touch state na elke touch end
     isTouching = false;
     isDraggingShip = false;
     shipTouchOffsetX = 0;
     touchStartX = 0;
-    isTouchFiringActive = false; // Stop continu vuur bij loslaten
-    // touchJustFiredSingle blijft behouden tot volgende touchstart voor single mode
+    isTouchFiringActive = false;
 }
 
 function handleTouchCancel(event) {
@@ -1229,7 +1291,7 @@ function handleTouchCancel(event) {
     shipTouchOffsetX = 0;
     touchStartX = 0;
     isTouchFiringActive = false;
-    touchJustFiredSingle = false; // Reset ook hier voor de zekerheid
+    touchJustFiredSingle = false;
 }
 // --- EINDE Touch Event Handlers ---
 
