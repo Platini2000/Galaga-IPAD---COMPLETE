@@ -591,13 +591,46 @@ function scaleValue(currentLevel, baseValue, maxValue) { const levelForCalc = Ma
 // --- START OF FILE setup_utils.js ---
 // --- DEEL 3      van 3 dit code blok    ---
 
+// <<< Redundante declaratie van SOUND_PATHS om scope issue te ondervangen >>>
+// Dit zou idealiter niet nodig zijn als het al in deel 1 correct is gedefinieerd en globaal beschikbaar is.
+const SOUND_PATHS_DEEL3_WORKAROUND = { // Hernoemd om conflicten te vermijden als het toch correct werkt
+    PLAYER_SHOOT: "Geluiden/firing.mp3",
+    ENEMY_SHOOT: "Geluiden/Fire-enemy.mp3",
+    EXPLOSION: "Geluiden/kill.mp3",
+    GAME_OVER: "Geluiden/gameover.mp3",
+    LOST_LIFE: "Geluiden/lost-live.mp3",
+    ENTRANCE: "Geluiden/Entree.mp3",
+    BOSS_DIVE: "Geluiden/Enemy2.mp3",
+    LEVEL_UP: "Geluiden/LevelUp.mp3",
+    BUTTERFLY_DIVE: "Geluiden/flying.mp3",
+    START_GAME: "Geluiden/Start.mp3",
+    COIN: "Geluiden/coin.mp3",
+    BEE_HIT: "Geluiden/Bees-hit.mp3",
+    BUTTERFLY_HIT: "Geluiden/Butterfly-hit.mp3",
+    BOSS_HIT_1: "Geluiden/Boss-hit1.mp3",
+    BOSS_HIT_2: "Geluiden/Boss-hit2.mp3",
+    GRID_BACKGROUND: "Geluiden/Achtergrond-grid.mp3", // Looping
+    EXTRA_LIFE: "Geluiden/Extra-Leven.mp3",
+    CS_PERFECT: "Geluiden/CS-Stage-Perfect-.mp3",
+    CS_CLEAR: "Geluiden/CS-Clear.mp3",
+    WAVE_UP: "Geluiden/Waveup.mp3",
+    MENU_MUSIC: "Geluiden/Menu-music.mp3", // Looping
+    READY: "Geluiden/ready.mp3",
+    TRIPLE_ATTACK: "Geluiden/Triple.mp3",
+    CAPTURE: "Geluiden/Capture.mp3",
+    SHIP_CAPTURED: "Geluiden/Capture-ship.mp3",
+    DUAL_SHIP: "Geluiden/coin.mp3", // Using coin sound for dual ship dock
+    RESULTS_MUSIC: "Geluiden/results-music.mp3", // Looping
+    HI_SCORE: "Geluiden/hi-score.mp3"
+};
+// <<< Einde redundante declaratie >>>
+
 
 function setupInitialEventListeners() { /* ... ongewijzigd ... */ try { window.addEventListener("gamepadconnected", handleGamepadConnected); window.addEventListener("gamepaddisconnected", handleGamepadDisconnected); window.addEventListener('resize', resizeCanvases); } catch(e) { console.error("Error setting up initial event listeners:", e); } }
 
 
 function getCurrentGridSlotPosition(gridRow, gridCol, enemyWidth) {
     if (!gameCanvas || gameCanvas.width === 0 || gridRow < 0 || gridCol < 0) {
-        // console.warn(`[DEBUG] getCurrentGridSlotPosition called with invalid params or zero canvas width. Row: ${gridRow}, Col: ${gridCol}, CanvasW: ${gameCanvas?.width}`);
         return { x: gameCanvas?.width / 2 || 200, y: ENEMY_TOP_MARGIN || 100 };
     }
     const baseEnemyWidthForCalc = ENEMY_WIDTH;
@@ -617,131 +650,130 @@ function getCurrentGridSlotPosition(gridRow, gridCol, enemyWidth) {
     const colStartX = currentStartX + gridCol * (baseEnemyWidthForCalc + currentHorizontalSpacing);
     const centeringOffset = (baseEnemyWidthForCalc - enemyWidth) / 2;
     const targetX = Math.round(colStartX + centeringOffset);
-    const targetY = Math.round(ENEMY_TOP_MARGIN + gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING));
+    const targetY = Math.round(ENEMY_TOP_MARGIN + gridRow * (ENEMY_HEIGHT + currentVerticalSpacing));
 
     return { x: targetX, y: targetY };
 }
 
-
-/** Safely attempts to play a sound from the beginning. Handles potential errors. */
-function playSound(soundId, loop = false, volume = 1) {
-    if (!audioContext || !audioContextInitialized || audioContext.state === 'suspended' || !soundBuffers[soundId]) {
-        // console.warn(`Cannot play sound: ${soundId}. Context suspended or buffer not ready.`);
+/**
+ * Helper function to load an audio file into an AudioBuffer.
+ */
+function loadAudioBuffer(url, callback) {
+    if (!audioCtx) {
+        console.error("AudioContext not initialized. Cannot load audio buffer.");
         return;
     }
-    if (isPaused && soundId !== 'menuMusicSound') return;
+    const request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
 
-    // Stop any existing instance of this sound before playing a new one, unless it's music
-    if (soundId !== 'menuMusicSound' && soundId !== 'gridBackgroundSound') {
-        stopSound(soundId);
-    } else if ((soundId === 'menuMusicSound' || soundId === 'gridBackgroundSound') && soundSources[soundId]) {
-        // If it's looping music and already playing, don't restart
-        return;
+    request.onload = function() {
+        audioCtx.decodeAudioData(request.response, function(buffer) {
+            if (callback) callback(buffer);
+        }, function(e){ console.error("Error decoding audio data from " + url, e); });
     }
-
-
-    const source = audioContext.createBufferSource();
-    source.buffer = soundBuffers[soundId];
-    source.loop = loop;
-
-    let gainNode = soundGainNodes[soundId];
-    if (!gainNode) {
-        gainNode = audioContext.createGain();
-        soundGainNodes[soundId] = gainNode;
+    request.onerror = function() {
+        console.error("XMLHttpRequest error loading audio file: " + url);
     }
-    // Ensure volume is within a reasonable range (0.0 to 1.0 typical, but can be higher for gain)
-    const safeVolume = Math.max(0, Math.min(2, volume)); // Cap at 2 as an example
-    gainNode.gain.setValueAtTime(safeVolume, audioContext.currentTime);
-    source.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    source.start(0);
-    soundSources[soundId] = source; // Store the source to allow stopping it
-
-    source.onended = () => {
-        if (soundSources[soundId] === source) { // Only delete if it's the current one
-            delete soundSources[soundId];
-        }
-    };
-}
-
-/** Safely attempts to stop a sound and reset its position. */
-function stopSound(soundId) {
-    if (soundSources[soundId]) {
-        try {
-            soundSources[soundId].stop(0);
-        } catch (e) {
-            // Can throw if already stopped or not playing.
-        }
-        // Don't delete immediately, onended will handle it.
-        // delete soundSources[soundId]; // This was causing issues with rapidly replayed sounds
-    }
-}
-
-/** Helper to set volume for a specific sound */
-function setVolume(soundId, volume) {
-    if (!audioContext) return;
-    if (!soundGainNodes[soundId]) {
-        soundGainNodes[soundId] = audioContext.createGain();
-        soundGainNodes[soundId].connect(audioContext.destination);
-    }
-    const safeVolume = Math.max(0, Math.min(2, volume));
-    soundGainNodes[soundId].gain.setValueAtTime(safeVolume, audioContext.currentTime);
+    request.send();
 }
 
 
-/** Attempts to enter fullscreen mode and plays menu music. */
-function triggerFullscreen() {
-    if (!document.fullscreenElement) {
-        const element = document.documentElement;
-        let requestFullscreenPromise = null;
-
-        if (element.requestFullscreen) {
-            requestFullscreenPromise = element.requestFullscreen();
-        } else if (element.mozRequestFullScreen) { /* Firefox */
-            requestFullscreenPromise = element.mozRequestFullScreen();
-        } else if (element.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-            requestFullscreenPromise = element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) { /* IE/Edge */
-            requestFullscreenPromise = element.msRequestFullscreen();
+/**
+ * Plays a sound using the Web Audio API.
+ * @param {string} soundIdentifier - The key from the SOUND_PATHS object (e.g., 'PLAYER_SHOOT').
+ * @param {boolean} [loop=false] - Whether the sound should loop.
+ */
+function playSound(soundIdentifier, loop = false) {
+    try {
+        if (!audioCtx || !masterGainNode) {
+            return;
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(e => console.error("Error resuming AudioContext:", e));
         }
 
-        const playMenuMusicAfterAction = () => {
-            if (audioContext && audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    audioContextInitialized = true;
-                    playSound('menuMusicSound', true, 0.2);
-                }).catch(e => console.error("Error resuming AudioContext for fullscreen music:", e));
-            } else if (audioContext) {
-                playSound('menuMusicSound', true, 0.2);
+        if (isPaused && soundIdentifier !== menuMusicSound && soundIdentifier !== resultsMusicSound) {
+             return;
+        }
+
+        if (soundIdentifier === menuMusicSound) {
+            stopSound(resultsMusicSound);
+        }
+
+
+        const buffer = audioBuffers[soundIdentifier];
+        if (!buffer) {
+            return;
+        }
+
+        if (loop && playingLoopSources[soundIdentifier]) {
+            try {
+                playingLoopSources[soundIdentifier].source.stop();
+                playingLoopSources[soundIdentifier].gainNode.disconnect();
+            } catch (e) { /* Ignore if already stopped */ }
+            delete playingLoopSources[soundIdentifier];
+        }
+
+        const source = audioCtx.createBufferSource();
+        source.buffer = buffer;
+
+        const individualGainNode = audioCtx.createGain();
+        const baseVolume = soundVolumes[soundIdentifier] !== undefined ? soundVolumes[soundIdentifier] : 1.0;
+        individualGainNode.gain.value = baseVolume;
+        source.connect(individualGainNode);
+        individualGainNode.connect(masterGainNode);
+
+        source.loop = loop;
+        source.start(0);
+
+        if (loop) {
+            playingLoopSources[soundIdentifier] = { source: source, gainNode: individualGainNode };
+            if (soundIdentifier === gridBackgroundSound) { isGridSoundPlaying = true; }
+        }
+
+    } catch (e) {
+        console.error(`Error in playSound for ${soundIdentifier}:`, e);
+    }
+}
+
+
+/**
+ * Stops a specific looping sound identified by its key.
+ * Non-looping sounds stop automatically.
+ * @param {string} soundIdentifier - The key from the SOUND_PATHS object.
+ */
+function stopSound(soundIdentifier) {
+    try {
+        if (playingLoopSources[soundIdentifier]) {
+            const loopData = playingLoopSources[soundIdentifier];
+            const sourceNode = loopData.source;
+            const gainNode = loopData.gainNode;
+
+            if (sourceNode) {
+                try {
+                    sourceNode.stop(0);
+                } catch (e) { }
             }
-        };
-
-        if (requestFullscreenPromise) {
-            requestFullscreenPromise
-                .then(() => {
-                    playMenuMusicAfterAction();
-                })
-                .catch(err => {
-                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-                    playMenuMusicAfterAction();
-                });
-        } else {
-            console.warn("Fullscreen API is not supported by this browser.");
-            playMenuMusicAfterAction();
+            if (gainNode) {
+                try {
+                    gainNode.disconnect();
+                } catch (e) { }
+            }
+            delete playingLoopSources[soundIdentifier];
+             if (soundIdentifier === gridBackgroundSound) { isGridSoundPlaying = false; }
         }
-    } else {
-         if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => {
-                audioContextInitialized = true;
-                playSound('menuMusicSound', true, 0.2);
-            });
-        } else if (audioContext) {
-            playSound('menuMusicSound', true, 0.2);
-        }
+    } catch (e) {
+        console.error(`Error in stopSound for ${soundIdentifier}:`, e);
     }
 }
 
+
+/** Basic rectangle collision check. */
+function checkCollision(rect1, rect2) { /* ... ongewijzigd ... */ if (!rect1 || !rect2) return false; return ( rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y ); }
+
+/** Attempts to enter fullscreen mode. */
+function triggerFullscreen() { /* ... ongewijzigd ... */ if (!document.fullscreenElement) { const element = document.documentElement; if (element.requestFullscreen) { element.requestFullscreen().catch(err => console.error(`Fullscreen error: ${err.message}`)); } else if (element.mozRequestFullScreen) { element.mozRequestFullScreen().catch(err => console.error(`Fullscreen error (FF): ${err.message}`)); } else if (element.webkitRequestFullscreen) { element.webkitRequestFullscreen().catch(err => console.error(`Fullscreen error (WebKit): ${err.message}`)); } else if (element.msRequestFullscreen) { element.msRequestFullscreen().catch(err => console.error(`Fullscreen error (MS): ${err.message}`)); } } }
 
 /** Creates a single star object with random properties. */
 function createStar() { /* ... ongewijzigd ... */ if (!starrySkyCanvas || starrySkyCanvas.width === 0) return null; return { x: Math.random() * starrySkyCanvas.width, y: Math.random() * starrySkyCanvas.height, radius: Math.random() * (MAX_STAR_RADIUS - MIN_STAR_RADIUS) + MIN_STAR_RADIUS, alpha: Math.random() * 0.8 + 0.2, alphaChange: (Math.random() > 0.5 ? 1 : -1) * TWINKLE_SPEED * (Math.random() * 0.5 + 0.5) }; }
@@ -776,30 +808,30 @@ function handleKeyUp(e) { /* ... ongewijzigd ... */ try { switch (e.code) { case
 
 
 // --- Gamepad Event Handlers ---
-function handleGamepadConnected(event) { /* ... ongewijzigd ... */ try { if (audioContext && audioContext.state === 'suspended') { audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by gamepad connection."); }); } if (connectedGamepadIndex === null) { connectedGamepadIndex = event.gamepad.index; const numButtons = event.gamepad.buttons.length; previousButtonStates = new Array(numButtons).fill(false); previousDemoButtonStates = new Array(numButtons).fill(false); previousGameButtonStates = new Array(numButtons).fill(false); if (!isInGameState) { stopAutoDemoTimer(); selectedButtonIndex = 0; } } else if (connectedGamepadIndexP2 === null) { connectedGamepadIndexP2 = event.gamepad.index; const numButtons = event.gamepad.buttons.length; previousGameButtonStatesP2 = new Array(numButtons).fill(false); } } catch(e) { console.error("Error in handleGamepadConnected:", e); } }
-function handleGamepadDisconnected(event) { /* ... ongewijzigd ... */ try { if (connectedGamepadIndex === event.gamepad.index) { connectedGamepadIndex = null; previousButtonStates = []; previousDemoButtonStates = []; previousGameButtonStates = []; if (!isInGameState) { selectedButtonIndex = -1; joystickMovedVerticallyLastFrame = false; startAutoDemoTimer(); } p1FireInputWasDown = false; } else if (connectedGamepadIndexP2 === event.gamepad.index) { connectedGamepadIndexP2 = null; previousGameButtonStatesP2 = []; p2FireInputWasDown = false; } } catch(e) { console.error("Error in handleGamepadDisconnected:", e); p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; } }
+function handleGamepadConnected(event) { /* ... inhoud ongewijzigd ... */ try { if (audioContext && audioContext.state === 'suspended') { audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by gamepad connection."); }); } if (connectedGamepadIndex === null) { connectedGamepadIndex = event.gamepad.index; const numButtons = event.gamepad.buttons.length; previousButtonStates = new Array(numButtons).fill(false); previousDemoButtonStates = new Array(numButtons).fill(false); previousGameButtonStates = new Array(numButtons).fill(false); if (!isInGameState) { stopAutoDemoTimer(); selectedButtonIndex = 0; } } else if (connectedGamepadIndexP2 === null) { connectedGamepadIndexP2 = event.gamepad.index; const numButtons = event.gamepad.buttons.length; previousGameButtonStatesP2 = new Array(numButtons).fill(false); } } catch(e) { console.error("Error in handleGamepadConnected:", e); } }
+function handleGamepadDisconnected(event) { /* ... inhoud ongewijzigd ... */ try { if (connectedGamepadIndex === event.gamepad.index) { connectedGamepadIndex = null; previousButtonStates = []; previousDemoButtonStates = []; previousGameButtonStates = []; if (!isInGameState) { selectedButtonIndex = -1; joystickMovedVerticallyLastFrame = false; startAutoDemoTimer(); } p1FireInputWasDown = false; } else if (connectedGamepadIndexP2 === event.gamepad.index) { connectedGamepadIndexP2 = null; previousGameButtonStatesP2 = []; p2FireInputWasDown = false; } } catch(e) { console.error("Error in handleGamepadDisconnected:", e); p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; } }
 
 // --- High Score ---
 function saveHighScore() { /* ... inhoud ongewijzigd ... */ try { let potentialNewHighScore = 0; if (isTwoPlayerMode && selectedGameMode === 'coop') { potentialNewHighScore = Math.max(player1Score, player2Score); } else if (isTwoPlayerMode && selectedGameMode === 'normal') { potentialNewHighScore = Math.max(player1Score, player2Score); } else { potentialNewHighScore = score; } if (isManualControl && potentialNewHighScore > highScore) { highScore = potentialNewHighScore; } } catch (e) { console.error("Error in saveHighScore:", e); } }
 function loadHighScore() { /* ... ongewijzigd ... */ try { highScore = 20000; } catch (e) { console.error("Error in loadHighScore:", e); highScore = 20000; } }
 
 // --- Pauze Functies ---
-const soundsToPauseOnSystemPause = Object.keys(SOUND_PATHS);
+const soundsToPauseOnSystemPause = Object.keys(SOUND_PATHS_DEEL3_WORKAROUND);
 let soundPausedStates = {};
 
 function pauseAllSounds() {
     if (audioContext && audioContext.state === 'running') {
-        audioContext.suspend().then(() => console.log("AudioContext suspended for pause.")).catch(e => console.error("Error suspending AudioContext:", e));
+        audioContext.suspend().then(() => {}).catch(e => console.error("Error suspending AudioContext:", e));
     }
-    stopSound(menuMusicSound);
+    stopSound('menuMusicSound');
 }
 
 function resumeAllSounds() {
     if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume().then(() => console.log("AudioContext resumed from pause.")).catch(e => console.error("Error resuming AudioContext:", e));
+        audioContext.resume().then(() => {}).catch(e => console.error("Error resuming AudioContext:", e));
     }
     if (!isInGameState && audioContext) {
-        playSound(menuMusicSound, true, 0.2);
+        playSound('menuMusicSound', true, 0.2);
     }
 }
 
@@ -834,7 +866,7 @@ function togglePause() {
         clearTimeout(mouseIdleTimerId);
         mouseIdleTimerId = setTimeout(hideCursor, 2000);
          if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed explicitly after unpause.");});
+            audioContext.resume().then(() => { audioContextInitialized = true; });
         }
     }
 }
@@ -851,7 +883,7 @@ function triggerFinalGameOverSequence() {
         isPaused = false; isShowingDemoText = false; isShowingIntro = false; isWaveTransitioning = false; showCsHitsMessage = false; showExtraLifeMessage = false; showPerfectMessage = false; showCSClearMessage = false; showCsHitsForClearMessage = false; showCsScoreForClearMessage = false; showReadyMessage = false; showCsBonusScoreMessage = false; isShowingPlayerGameOverMessage = false; isEntrancePhaseActive = false; isCsCompletionDelayActive = false; csCompletionDelayStartTime = 0; csCompletionResultIsPerfect = false; csIntroSoundPlayed = false;
         if (isManualControl) { saveHighScore(); }
 
-        const soundsToStopOnFinalGameOver = Object.keys(SOUND_PATHS).filter(id => id !== 'GAME_OVER' && id !== 'RESULTS_MUSIC');
+        const soundsToStopOnFinalGameOver = Object.keys(SOUND_PATHS_DEEL3_WORKAROUND).filter(id => id !== 'GAME_OVER' && id !== 'RESULTS_MUSIC');
         soundsToStopOnFinalGameOver.forEach(soundId => stopSound(soundId));
         isGridSoundPlaying = false;
 
