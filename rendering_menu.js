@@ -828,7 +828,7 @@ function drawCanvasText(text, x, y, font, color, align = 'center', baseline = 'm
 function drawCanvasButton(text, index, isSelected) { if (!gameCtx) return; const rect = getMenuButtonRect(index); if (!rect) return; gameCtx.save(); drawCanvasText( text, rect.x + rect.width / 2, rect.y + rect.height / 2, MENU_BUTTON_FONT, isSelected ? MENU_BUTTON_COLOR_HOVER : MENU_BUTTON_COLOR, 'center', 'middle' ); gameCtx.restore(); }
 
 /** Rendert de actieve floating score teksten op het game canvas. */
-function renderFloatingScores() { try { if (!gameCtx || !floatingScores || floatingScores.length === 0) return; const now = Date.now(); gameCtx.save(); gameCtx.globalAlpha = FLOATING_SCORE_OPACITY; floatingScores.forEach(fs => { if (now >= fs.displayStartTime) { drawCanvasText(fs.text, fs.x, fs.y, FLOATING_SCORE_FONT, fs.color, 'center', 'middle', false); } }); gameCtx.globalAlpha = 1.0; gameCtx.restore(); } catch (e) { console.error("Error rendering floatingScores:", e); } }
+function renderFloatingScores() { try { if (!gameCtx || !floatingScores || floatingScores.length === 0) return; const now = Date.now(); gameCtx.save(); gameCtx.globalAlpha = FLOATING_SCORE_OPACITY; floatingScores.forEach(fs => { if (now >= fs.displayStartTime) { drawCanvasText(fs.text, fs.x, fs.y, FLOATING_SCORE_FONT, fs.color, 'center', 'middle', false); } }); gameCtx.globalAlpha = 1.0; gameCtx.restore(); } catch (e) { console.error("Error rendering floating scores:", e); } }
 
 /**
  * Rendert de hit spark particles (met nieuwe look)
@@ -893,7 +893,7 @@ function renderGame() {
                 gameCtx.fillText(label, labelX, labelY);
             }
 
-            const scoreString = String(scoreValue || 0); // <<< TOEGEVOEGD: Default naar "0" als undefined >>>
+            const scoreString = String(scoreValue || 0);
             let scoreCenterX;
             if(labelAlign==='left') scoreCenterX = labelX + labelWidth / 2;
             else if(labelAlign==='right') scoreCenterX = labelX - labelWidth / 2;
@@ -942,11 +942,10 @@ function renderGame() {
         let score1PValue, score2PValue, sessionHighScore, label1P;
         let show1UPBlink = false, show2UPBlink = false, highScoreConditionMet = false;
 
-        // <<< TOEGEVOEGD: Default waardes voor scores om "undefined" te voorkomen >>>
         score1PValue = 0;
         score2PValue = 0;
-        sessionHighScore = highScore || 20000; // Behoud bestaande high score
-        label1P = "1UP"; // Default
+        sessionHighScore = highScore || 20000;
+        label1P = "1UP";
 
         if (isShowingResultsScreen) {
             score1PValue = player1Score || 0;
@@ -969,14 +968,14 @@ function renderGame() {
             label1P = "1UP";
             highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
         }
-        else if (!isInGameState) { // Menu
-            score1PValue = 0; // In menu tonen we geen actieve score voor P1
-            score2PValue = 0; // Idem voor P2
+        else if (!isInGameState) {
+            score1PValue = 0;
+            score2PValue = 0;
             sessionHighScore = highScore || 20000;
             label1P = "1UP";
             highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
         }
-        else { // In game
+        else {
             sessionHighScore = highScore || 0;
             if (!isManualControl) {
                 score1PValue = score;
@@ -1004,9 +1003,9 @@ function renderGame() {
                 show1UPBlink = !isShowingIntro && !isPaused && currentPlayer === 1 && playerLives > 0 && !isShipCaptured && !isWaitingForRespawn;
                 show2UPBlink = !isShowingIntro && !isPaused && currentPlayer === 2 && playerLives > 0 && !isShipCaptured && !isWaitingForRespawn;
                 highScoreConditionMet = !isPaused && !isShowingIntro && score > 0 && sessionHighScore > 0 && score >= sessionHighScore;
-            } else { // 1P
+            } else {
                 score1PValue = score;
-                score2PValue = 0; // Geen P2 score in 1P
+                score2PValue = 0;
                 sessionHighScore = Math.max(sessionHighScore, score);
                 label1P = "1UP";
                 show1UPBlink = !isShowingIntro && !isPaused && playerLives > 0 && !isShipCaptured && !isWaitingForRespawn;
@@ -1212,17 +1211,17 @@ function getTouchPos(canvas, touchEvent) {
 
 function handleTouchStart(event) {
     if (!gameCanvas) return;
-    event.preventDefault(); // Voorkom scrollen/zoomen
+    event.preventDefault();
     const touchPos = getTouchPos(gameCanvas, event);
     if (!touchPos) return;
 
     isTouching = true;
-    touchStartX = touchPos.x; // Sla start X op voor drag detectie
+    touchStartX = touchPos.x;
     touchCurrentX = touchPos.x;
-    isDraggingShip = false; // Reset drag state
-    lastTapTime = Date.now(); // Voor tap vs drag detectie
-    touchJustFiredSingle = false; // Reset single fire flag
-    isTouchFiringActive = false;  // Reset active firing flag
+    isDraggingShip = false;
+    lastTapTime = Date.now();
+    touchJustFiredSingle = false;
+    isTouchFiringActive = false;
 
     const inGameReady = isInGameState && !isPaused && ship && isManualControl && playerLives > 0 && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage && !isShowingIntro && !isShipCaptured && !isShowingCaptureMessage;
 

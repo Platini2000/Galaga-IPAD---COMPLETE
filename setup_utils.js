@@ -686,7 +686,9 @@ function loadAudioBuffer(url, callback) {
  */
 function playSound(soundIdentifier, loop = false) {
     try {
-        if (!audioCtx || !masterGainNode) {
+        // <<< GEWIJZIGD: Check of audioBuffers en playingLoopSources bestaan >>>
+        if (!audioCtx || !masterGainNode || typeof audioBuffers !== 'object' || typeof playingLoopSources !== 'object') {
+            // console.warn(`playSound: Audio system not fully initialized. Sound: ${soundIdentifier}`);
             return;
         }
         if (audioCtx.state === 'suspended') {
@@ -704,6 +706,7 @@ function playSound(soundIdentifier, loop = false) {
 
         const buffer = audioBuffers[soundIdentifier];
         if (!buffer) {
+            // console.warn(`playSound: Buffer not found for ${soundIdentifier}`);
             return;
         }
 
@@ -745,7 +748,8 @@ function playSound(soundIdentifier, loop = false) {
  */
 function stopSound(soundIdentifier) {
     try {
-        if (playingLoopSources[soundIdentifier]) {
+        // <<< GEWIJZIGD: Check of playingLoopSources bestaat >>>
+        if (typeof playingLoopSources === 'object' && playingLoopSources && playingLoopSources[soundIdentifier]) {
             const loopData = playingLoopSources[soundIdentifier];
             const sourceNode = loopData.source;
             const gainNode = loopData.gainNode;
