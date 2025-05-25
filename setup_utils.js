@@ -162,7 +162,7 @@ let ship = { x: 0, y: 0, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOV
 let ship1 = null;
 let ship2 = null;
 let leftPressed = false; let rightPressed = false; let shootPressed = false;
-let p2LeftPressed = false; p2RightPressed = false; p2ShootPressed = false;
+let p2LeftPressed = false; p2RightPressed = false; let p2ShootPressed = false;
 let keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false;
 let keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false;
 let bullets = [];
@@ -186,7 +186,7 @@ let isShowingResultsScreen = false;
 let gameOverSequenceStartTime = 0; let gameStartTime = 0;
 let visualOffsetX = -20; let floatingScores = [];
 let csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
-let normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastChainHitPosition = null;
+let normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null;
 let squadronCompletionStatus = {}; let squadronEntranceFiringStatus = {}; let isPaused = false;
 let mouseIdleTimerId = null;
 let initialGameStartSoundPlayedThisSession = false;
@@ -242,9 +242,12 @@ level1Image.src = 'Afbeeldingen/Level-1.png'; level5Image.src = 'Afbeeldingen/Le
 
 // Web Audio API
 let audioContext;
+let masterGainNode; // TOEGEVOEGD: Master gain node
 let soundBuffers = {};
-let soundSources = {}; // To keep track of active sound sources for stopping
-let soundGainNodes = {}; // To control volume per sound
+let soundSources = {}; // To keep track of active sound sources for stopping (lijkt overbodig met playingLoopSources)
+let soundGainNodes = {}; // To control volume per sound (kan ook overbodig zijn als we volume per source doen)
+let soundVolumes = {}; // TOEGEVOEGD: Om standaard volumes per sound op te slaan
+let playingLoopSources = {}; // TOEGEVOEGD: Voor het stoppen van specifieke loops
 let audioContextInitialized = false;
 
 const soundPaths = {
@@ -591,41 +594,6 @@ function scaleValue(currentLevel, baseValue, maxValue) { const levelForCalc = Ma
 // --- START OF FILE setup_utils.js ---
 // --- DEEL 3      van 3 dit code blok    ---
 
-// <<< Redundante declaratie van SOUND_PATHS om scope issue te ondervangen >>>
-// Dit zou idealiter niet nodig zijn als het al in deel 1 correct is gedefinieerd en globaal beschikbaar is.
-const SOUND_PATHS_DEEL3_WORKAROUND = { // Hernoemd om conflicten te vermijden als het toch correct werkt
-    PLAYER_SHOOT: "Geluiden/firing.mp3",
-    ENEMY_SHOOT: "Geluiden/Fire-enemy.mp3",
-    EXPLOSION: "Geluiden/kill.mp3",
-    GAME_OVER: "Geluiden/gameover.mp3",
-    LOST_LIFE: "Geluiden/lost-live.mp3",
-    ENTRANCE: "Geluiden/Entree.mp3",
-    BOSS_DIVE: "Geluiden/Enemy2.mp3",
-    LEVEL_UP: "Geluiden/LevelUp.mp3",
-    BUTTERFLY_DIVE: "Geluiden/flying.mp3",
-    START_GAME: "Geluiden/Start.mp3",
-    COIN: "Geluiden/coin.mp3",
-    BEE_HIT: "Geluiden/Bees-hit.mp3",
-    BUTTERFLY_HIT: "Geluiden/Butterfly-hit.mp3",
-    BOSS_HIT_1: "Geluiden/Boss-hit1.mp3",
-    BOSS_HIT_2: "Geluiden/Boss-hit2.mp3",
-    GRID_BACKGROUND: "Geluiden/Achtergrond-grid.mp3", // Looping
-    EXTRA_LIFE: "Geluiden/Extra-Leven.mp3",
-    CS_PERFECT: "Geluiden/CS-Stage-Perfect-.mp3",
-    CS_CLEAR: "Geluiden/CS-Clear.mp3",
-    WAVE_UP: "Geluiden/Waveup.mp3",
-    MENU_MUSIC: "Geluiden/Menu-music.mp3", // Looping
-    READY: "Geluiden/ready.mp3",
-    TRIPLE_ATTACK: "Geluiden/Triple.mp3",
-    CAPTURE: "Geluiden/Capture.mp3",
-    SHIP_CAPTURED: "Geluiden/Capture-ship.mp3",
-    DUAL_SHIP: "Geluiden/coin.mp3", // Using coin sound for dual ship dock
-    RESULTS_MUSIC: "Geluiden/results-music.mp3", // Looping
-    HI_SCORE: "Geluiden/hi-score.mp3"
-};
-// <<< Einde redundante declaratie >>>
-
-
 function setupInitialEventListeners() { /* ... ongewijzigd ... */ try { window.addEventListener("gamepadconnected", handleGamepadConnected); window.addEventListener("gamepaddisconnected", handleGamepadDisconnected); window.addEventListener('resize', resizeCanvases); } catch(e) { console.error("Error setting up initial event listeners:", e); } }
 
 
@@ -659,7 +627,7 @@ function getCurrentGridSlotPosition(gridRow, gridCol, enemyWidth) {
  * Helper function to load an audio file into an AudioBuffer.
  */
 function loadAudioBuffer(url, callback) {
-    if (!audioCtx) {
+    if (!audioContext) { // GEWIJZIGD: audioCtx -> audioContext
         console.error("AudioContext not initialized. Cannot load audio buffer.");
         return;
     }
@@ -668,7 +636,7 @@ function loadAudioBuffer(url, callback) {
     request.responseType = 'arraybuffer';
 
     request.onload = function() {
-        audioCtx.decodeAudioData(request.response, function(buffer) {
+        audioContext.decodeAudioData(request.response, function(buffer) { // GEWIJZIGD: audioCtx -> audioContext
             if (callback) callback(buffer);
         }, function(e){ console.error("Error decoding audio data from " + url, e); });
     }
@@ -681,32 +649,30 @@ function loadAudioBuffer(url, callback) {
 
 /**
  * Plays a sound using the Web Audio API.
- * @param {string} soundIdentifier - The key from the SOUND_PATHS object (e.g., 'PLAYER_SHOOT').
+ * @param {string} soundIdentifier - The key from the soundPaths object (e.g., 'playerShootSound').
  * @param {boolean} [loop=false] - Whether the sound should loop.
+ * @param {number} [volumeOverride] - Optional volume override (0.0 to 1.0). If not provided, uses stored volume or default.
  */
-function playSound(soundIdentifier, loop = false) {
+function playSound(soundIdentifier, loop = false, volumeOverride = undefined) { // TOEGEVOEGD: volumeOverride parameter
     try {
-        // <<< GEWIJZIGD: Check of audioBuffers en playingLoopSources bestaan >>>
-        if (!audioCtx || !masterGainNode || typeof audioBuffers !== 'object' || typeof playingLoopSources !== 'object') {
-            // console.warn(`playSound: Audio system not fully initialized. Sound: ${soundIdentifier}`);
+        if (!audioContext || !masterGainNode || typeof soundBuffers !== 'object' || typeof playingLoopSources !== 'object' || typeof soundVolumes !== 'object') {
             return;
         }
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume().catch(e => console.error("Error resuming AudioContext:", e));
+        if (audioContext.state === 'suspended') {
+            audioContext.resume().catch(e => console.error("Error resuming AudioContext:", e));
         }
 
-        if (isPaused && soundIdentifier !== menuMusicSound && soundIdentifier !== resultsMusicSound) {
+        if (isPaused && soundIdentifier !== 'menuMusicSound' && soundIdentifier !== 'resultsMusicSound') { // GEWIJZIGD: Gebruik soundIdentifier string
              return;
         }
 
-        if (soundIdentifier === menuMusicSound) {
-            stopSound(resultsMusicSound);
+        if (soundIdentifier === 'menuMusicSound') { // GEWIJZIGD: Gebruik soundIdentifier string
+            stopSound('resultsMusicSound'); // GEWIJZIGD: Gebruik soundIdentifier string
         }
 
 
-        const buffer = audioBuffers[soundIdentifier];
+        const buffer = soundBuffers[soundIdentifier];
         if (!buffer) {
-            // console.warn(`playSound: Buffer not found for ${soundIdentifier}`);
             return;
         }
 
@@ -718,12 +684,24 @@ function playSound(soundIdentifier, loop = false) {
             delete playingLoopSources[soundIdentifier];
         }
 
-        const source = audioCtx.createBufferSource();
+        const source = audioContext.createBufferSource(); // GEWIJZIGD: audioCtx -> audioContext
         source.buffer = buffer;
 
-        const individualGainNode = audioCtx.createGain();
-        const baseVolume = soundVolumes[soundIdentifier] !== undefined ? soundVolumes[soundIdentifier] : 1.0;
-        individualGainNode.gain.value = baseVolume;
+        const individualGainNode = audioContext.createGain(); // GEWIJZIGD: audioCtx -> audioContext
+        
+        let effectiveVolume;
+        if (volumeOverride !== undefined) {
+            effectiveVolume = Math.max(0, Math.min(1, volumeOverride));
+            // Store this override as the new default for this sound if you want,
+            // or just use it for this playback instance.
+            // For now, let's just use it for this instance but also update soundVolumes
+            // so subsequent plays without override use this new volume.
+            soundVolumes[soundIdentifier] = effectiveVolume;
+        } else {
+            effectiveVolume = soundVolumes[soundIdentifier] !== undefined ? soundVolumes[soundIdentifier] : 1.0;
+        }
+        
+        individualGainNode.gain.value = effectiveVolume;
         source.connect(individualGainNode);
         individualGainNode.connect(masterGainNode);
 
@@ -732,7 +710,7 @@ function playSound(soundIdentifier, loop = false) {
 
         if (loop) {
             playingLoopSources[soundIdentifier] = { source: source, gainNode: individualGainNode };
-            if (soundIdentifier === gridBackgroundSound) { isGridSoundPlaying = true; }
+            if (soundIdentifier === 'gridBackgroundSound') { isGridSoundPlaying = true; } // GEWIJZIGD: Gebruik soundIdentifier string
         }
 
     } catch (e) {
@@ -744,11 +722,10 @@ function playSound(soundIdentifier, loop = false) {
 /**
  * Stops a specific looping sound identified by its key.
  * Non-looping sounds stop automatically.
- * @param {string} soundIdentifier - The key from the SOUND_PATHS object.
+ * @param {string} soundIdentifier - The key from the soundPaths object.
  */
 function stopSound(soundIdentifier) {
     try {
-        // <<< GEWIJZIGD: Check of playingLoopSources bestaat >>>
         if (typeof playingLoopSources === 'object' && playingLoopSources && playingLoopSources[soundIdentifier]) {
             const loopData = playingLoopSources[soundIdentifier];
             const sourceNode = loopData.source;
@@ -765,11 +742,34 @@ function stopSound(soundIdentifier) {
                 } catch (e) { }
             }
             delete playingLoopSources[soundIdentifier];
-             if (soundIdentifier === gridBackgroundSound) { isGridSoundPlaying = false; }
+             if (soundIdentifier === 'gridBackgroundSound') { isGridSoundPlaying = false; } // GEWIJZIGD: Gebruik soundIdentifier string
         }
     } catch (e) {
         console.error(`Error in stopSound for ${soundIdentifier}:`, e);
     }
+}
+
+/**
+ * Sets the volume for a specific sound. This volume will be used for subsequent plays.
+ * @param {string} soundIdentifier - The key from the soundPaths object.
+ * @param {number} volume - The volume level (0.0 to 1.0).
+ */
+function setVolume(soundIdentifier, volume) { // TOEGEVOEGD: Functie definitie
+    if (!audioContext || typeof soundGainNodes !== 'object' || typeof soundVolumes !== 'object') {
+        // console.warn(`setVolume: Audio system not fully initialized or soundGainNodes/soundVolumes missing. Cannot set volume for ${soundIdentifier}`);
+        // Store it anyway for when the system is ready
+        if(typeof soundVolumes === 'object' && soundVolumes !== null) soundVolumes[soundIdentifier] = Math.max(0, Math.min(1, volume));
+        return;
+    }
+    const normalizedVolume = Math.max(0, Math.min(1, volume));
+    soundVolumes[soundIdentifier] = normalizedVolume;
+
+    // If a GainNode for this sound already exists (e.g., from a previous playSound call for a loop), update it.
+    // This is more relevant if you want to change volume of an *actively playing* looping sound.
+    // For one-shot sounds, the volume is set when playSound is called.
+    // However, storing it in soundVolumes ensures next playSound call uses this new volume.
+    // For simplicity, we're primarily relying on playSound to use the stored soundVolumes value.
+    // If direct manipulation of existing gain nodes is needed, that logic would be more complex here.
 }
 
 
@@ -820,22 +820,23 @@ function saveHighScore() { /* ... inhoud ongewijzigd ... */ try { let potentialN
 function loadHighScore() { /* ... ongewijzigd ... */ try { highScore = 20000; } catch (e) { console.error("Error in loadHighScore:", e); highScore = 20000; } }
 
 // --- Pauze Functies ---
-const soundsToPauseOnSystemPause = Object.keys(SOUND_PATHS_DEEL3_WORKAROUND);
+// GEWIJZIGD: Gebruik soundPaths (globaal) ipv SOUND_PATHS_DEEL3_WORKAROUND
+const soundsToPauseOnSystemPause = Object.keys(soundPaths);
 let soundPausedStates = {};
 
 function pauseAllSounds() {
-    if (audioContext && audioContext.state === 'running') {
-        audioContext.suspend().then(() => {}).catch(e => console.error("Error suspending AudioContext:", e));
+    if (audioContext && audioContext.state === 'running') { // GEWIJZIGD: audioCtx -> audioContext
+        audioContext.suspend().then(() => {}).catch(e => console.error("Error suspending AudioContext:", e)); // GEWIJZIGD: audioCtx -> audioContext
     }
-    stopSound('menuMusicSound');
+    stopSound('menuMusicSound'); // GEWIJZIGD: Gebruik soundIdentifier string
 }
 
 function resumeAllSounds() {
-    if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume().then(() => {}).catch(e => console.error("Error resuming AudioContext:", e));
+    if (audioContext && audioContext.state === 'suspended') { // GEWIJZIGD: audioCtx -> audioContext
+        audioContext.resume().then(() => {}).catch(e => console.error("Error resuming AudioContext:", e)); // GEWIJZIGD: audioCtx -> audioContext
     }
-    if (!isInGameState && audioContext) {
-        playSound('menuMusicSound', true, 0.2);
+    if (!isInGameState && audioContext) { // GEWIJZIGD: audioCtx -> audioContext
+        playSound('menuMusicSound', true, 0.2); // GEWIJZIGD: Gebruik soundIdentifier string
     }
 }
 
@@ -869,8 +870,8 @@ function togglePause() {
         resumeAllSounds();
         clearTimeout(mouseIdleTimerId);
         mouseIdleTimerId = setTimeout(hideCursor, 2000);
-         if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => { audioContextInitialized = true; });
+         if (audioContext && audioContext.state === 'suspended') { // GEWIJZIGD: audioCtx -> audioContext
+            audioContext.resume().then(() => { audioContextInitialized = true; }); // GEWIJZIGD: audioCtx -> audioContext
         }
     }
 }
@@ -887,12 +888,13 @@ function triggerFinalGameOverSequence() {
         isPaused = false; isShowingDemoText = false; isShowingIntro = false; isWaveTransitioning = false; showCsHitsMessage = false; showExtraLifeMessage = false; showPerfectMessage = false; showCSClearMessage = false; showCsHitsForClearMessage = false; showCsScoreForClearMessage = false; showReadyMessage = false; showCsBonusScoreMessage = false; isShowingPlayerGameOverMessage = false; isEntrancePhaseActive = false; isCsCompletionDelayActive = false; csCompletionDelayStartTime = 0; csCompletionResultIsPerfect = false; csIntroSoundPlayed = false;
         if (isManualControl) { saveHighScore(); }
 
-        const soundsToStopOnFinalGameOver = Object.keys(SOUND_PATHS_DEEL3_WORKAROUND).filter(id => id !== 'GAME_OVER' && id !== 'RESULTS_MUSIC');
+        // GEWIJZIGD: Gebruik soundPaths
+        const soundsToStopOnFinalGameOver = Object.keys(soundPaths).filter(id => id !== 'gameOverSound' && id !== 'resultsMusicSound');
         soundsToStopOnFinalGameOver.forEach(soundId => stopSound(soundId));
         isGridSoundPlaying = false;
 
         const now = Date.now();
-        playSound(gameOverSound, false, 0.4);
+        playSound('gameOverSound', false, 0.4); // GEWIJZIGD: Gebruik soundIdentifier string
 
         if ((isTwoPlayerMode && selectedGameMode === 'normal' && player1Lives <= 0 && player2Lives <= 0) ||
             (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && player1Lives <= 0 && player2Lives <= 0) ) {
