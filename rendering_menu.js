@@ -882,7 +882,7 @@ function renderGame() {
                 }
             }
 
-            gameCtx.textAlign = labelAlign; // Eerst alignment zetten
+            gameCtx.textAlign = labelAlign;
             const labelMetrics = gameCtx.measureText(label);
             const labelWidth = labelMetrics.width;
             const labelHeight = 20;
@@ -893,13 +893,13 @@ function renderGame() {
                 gameCtx.fillText(label, labelX, labelY);
             }
 
-            const scoreString = String(scoreValue); // Zekerstellen dat het een string is
+            const scoreString = String(scoreValue || 0); // <<< TOEGEVOEGD: Default naar "0" als undefined >>>
             let scoreCenterX;
             if(labelAlign==='left') scoreCenterX = labelX + labelWidth / 2;
             else if(labelAlign==='right') scoreCenterX = labelX - labelWidth / 2;
             else scoreCenterX = labelX;
 
-            gameCtx.textAlign = 'center'; // Score altijd centreren onder het midden van het label
+            gameCtx.textAlign = 'center';
             const scoreMetrics = gameCtx.measureText(scoreString);
             const scoreWidth = scoreMetrics.width;
             const scoreHeight = 20;
@@ -916,9 +916,9 @@ function renderGame() {
                 elementLeft = labelX;
                 elementRight = Math.max(labelX + labelWidth, scoreCenterX + scoreWidth / 2);
             } else if (labelAlign === 'right') {
-                elementRight = labelX; // labelX is het meest rechtse punt voor right-align
+                elementRight = labelX;
                 elementLeft = Math.min(labelX - labelWidth, scoreCenterX - scoreWidth / 2);
-            } else { // center
+            } else {
                 elementLeft = Math.min(labelX - labelWidth / 2, scoreCenterX - scoreWidth / 2);
                 elementRight = Math.max(labelX + labelWidth / 2, scoreCenterX + scoreWidth / 2);
             }
@@ -942,14 +942,51 @@ function renderGame() {
         let score1PValue, score2PValue, sessionHighScore, label1P;
         let show1UPBlink = false, show2UPBlink = false, highScoreConditionMet = false;
 
-        if (isShowingResultsScreen) { /* ... */ }
-        else if (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage) { /* ... */ }
-        else if (isShowingPlayerGameOverMessage) { /* ... */ }
-        else if (!isInGameState) { /* ... */ }
-        else { /* ... */
+        // <<< TOEGEVOEGD: Default waardes voor scores om "undefined" te voorkomen >>>
+        score1PValue = 0;
+        score2PValue = 0;
+        sessionHighScore = highScore || 20000; // Behoud bestaande high score
+        label1P = "1UP"; // Default
+
+        if (isShowingResultsScreen) {
+            score1PValue = player1Score || 0;
+            score2PValue = player2Score || 0;
+            sessionHighScore = Math.max(highScore || 20000, score1PValue, score2PValue);
+            label1P = wasLastGameAIDemo ? "DEMO" : "1UP";
+            highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
+        }
+        else if (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage) {
+            score1PValue = player1Score || 0;
+            score2PValue = player2Score || 0;
+            sessionHighScore = Math.max(highScore || 20000, score1PValue, score2PValue);
+            label1P = wasLastGameAIDemo ? "DEMO" : "1UP";
+            highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
+        }
+        else if (isShowingPlayerGameOverMessage) {
+            score1PValue = player1Score || 0;
+            score2PValue = player2Score || 0;
+            sessionHighScore = Math.max(highScore || 20000, score1PValue, score2PValue);
+            label1P = "1UP";
+            highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
+        }
+        else if (!isInGameState) { // Menu
+            score1PValue = 0; // In menu tonen we geen actieve score voor P1
+            score2PValue = 0; // Idem voor P2
+            sessionHighScore = highScore || 20000;
+            label1P = "1UP";
+            highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
+        }
+        else { // In game
             sessionHighScore = highScore || 0;
-            if (!isManualControl) { /* AI ... */ }
-            else if (isTwoPlayerMode && selectedGameMode === 'coop') { // CO-OP SCORES
+            if (!isManualControl) {
+                score1PValue = score;
+                score2PValue = 0;
+                sessionHighScore = Math.max(sessionHighScore, score);
+                label1P = "DEMO";
+                show1UPBlink = !isShowingIntro && !isPaused && !isShipCaptured;
+                highScoreConditionMet = !isPaused && !isShowingIntro && score > 0 && sessionHighScore > 0 && score >= sessionHighScore;
+            }
+            else if (isTwoPlayerMode && selectedGameMode === 'coop') {
                 score1PValue = player1Score;
                 score2PValue = player2Score;
                 sessionHighScore = Math.max(highScore, player1Score, player2Score);
@@ -959,7 +996,7 @@ function renderGame() {
                 if (player1Score >= sessionHighScore && player1Score > 0) highScoreConditionMet = show1UPBlink;
                 if (player2Score >= sessionHighScore && player2Score > 0 && player2Score > player1Score) highScoreConditionMet = show2UPBlink;
 
-            } else if (isTwoPlayerMode && selectedGameMode === 'normal') { // Alternating
+            } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
                 score1PValue = (currentPlayer === 1) ? score : player1Score;
                 score2PValue = (currentPlayer === 2) ? score : player2Score;
                 sessionHighScore = Math.max(highScore, player1Score, player2Score, score);
@@ -968,7 +1005,12 @@ function renderGame() {
                 show2UPBlink = !isShowingIntro && !isPaused && currentPlayer === 2 && playerLives > 0 && !isShipCaptured && !isWaitingForRespawn;
                 highScoreConditionMet = !isPaused && !isShowingIntro && score > 0 && sessionHighScore > 0 && score >= sessionHighScore;
             } else { // 1P
-                score1PValue = score; score2PValue = 0; /* ... */ label1P = "1UP"; /* ... */
+                score1PValue = score;
+                score2PValue = 0; // Geen P2 score in 1P
+                sessionHighScore = Math.max(sessionHighScore, score);
+                label1P = "1UP";
+                show1UPBlink = !isShowingIntro && !isPaused && playerLives > 0 && !isShipCaptured && !isWaitingForRespawn;
+                highScoreConditionMet = !isPaused && !isShowingIntro && score > 0 && sessionHighScore > 0 && score >= sessionHighScore;
             }
         }
         let isHighScoreBlinkingNow = false; if (highScoreConditionMet) { /* ... */ }
@@ -1170,17 +1212,17 @@ function getTouchPos(canvas, touchEvent) {
 
 function handleTouchStart(event) {
     if (!gameCanvas) return;
-    event.preventDefault();
+    event.preventDefault(); // Voorkom scrollen/zoomen
     const touchPos = getTouchPos(gameCanvas, event);
     if (!touchPos) return;
 
     isTouching = true;
-    touchStartX = touchPos.x;
+    touchStartX = touchPos.x; // Sla start X op voor drag detectie
     touchCurrentX = touchPos.x;
-    isDraggingShip = false;
-    lastTapTime = Date.now();
-    touchJustFiredSingle = false;
-    isTouchFiringActive = false;
+    isDraggingShip = false; // Reset drag state
+    lastTapTime = Date.now(); // Voor tap vs drag detectie
+    touchJustFiredSingle = false; // Reset single fire flag
+    isTouchFiringActive = false;  // Reset active firing flag
 
     const inGameReady = isInGameState && !isPaused && ship && isManualControl && playerLives > 0 && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage && !isShowingIntro && !isShipCaptured && !isShowingCaptureMessage;
 
