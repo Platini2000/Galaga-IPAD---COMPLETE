@@ -410,7 +410,7 @@ function showMenuState() {
        clearTimeout(mouseIdleTimerId);
        mouseIdleTimerId = setTimeout(hideCursor, 2000);
 
-       playSound('menuMusicSound', true, 0.2);
+       playSound('menuMusicSound', true, 0.2); // GEWIJZIGD
        startAutoDemoTimer();
    } catch(e) {
        console.error("Error in showMenuState:", e);

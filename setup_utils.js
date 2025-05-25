@@ -242,12 +242,10 @@ level1Image.src = 'Afbeeldingen/Level-1.png'; level5Image.src = 'Afbeeldingen/Le
 
 // Web Audio API
 let audioContext;
-let masterGainNode; // TOEGEVOEGD: Master gain node
+let masterGainNode;
 let soundBuffers = {};
-let soundSources = {}; // To keep track of active sound sources for stopping (lijkt overbodig met playingLoopSources)
-let soundGainNodes = {}; // To control volume per sound (kan ook overbodig zijn als we volume per source doen)
-let soundVolumes = {}; // TOEGEVOEGD: Om standaard volumes per sound op te slaan
-let playingLoopSources = {}; // TOEGEVOEGD: Voor het stoppen van specifieke loops
+let soundVolumes = {};
+let playingLoopSources = {};
 let audioContextInitialized = false;
 
 const soundPaths = {
@@ -453,30 +451,50 @@ function initializeAudioContext() {
     if (audioContextInitialized) return;
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        // Unlock Web Audio API on iOS - needs a user gesture.
-        // We'll attempt to resume it during the first click/touch if it's suspended.
+        if (!audioContext) { // GEWIJZIGD: Extra check
+            console.error("Failed to create AudioContext. Audio will not be available.");
+            audioContextInitialized = false;
+            return;
+        }
+        // GEWIJZIGD: Maak masterGainNode direct na succesvolle audioContext creatie
+        masterGainNode = audioContext.createGain();
+        masterGainNode.connect(audioContext.destination);
+        console.log("AudioContext and MasterGainNode created successfully.");
+
+        // GEWIJZIGD: unlockAudio alleen toevoegen als context suspended is en bestaat
         if (audioContext.state === 'suspended') {
+            console.log("AudioContext is suspended. Attempting to set up unlock listeners.");
             const unlockAudio = () => {
-                audioContext.resume().then(() => {
-                    console.log("AudioContext resumed successfully after user gesture.");
+                if (audioContext && audioContext.state === 'suspended') { // Dubbele check
+                    audioContext.resume().then(() => {
+                        console.log("AudioContext resumed successfully after user gesture.");
+                        audioContextInitialized = true; // Zet pas true na succesvolle resume
+                        window.removeEventListener('click', unlockAudio);
+                        window.removeEventListener('touchstart', unlockAudio);
+                    }).catch(e => console.error("Error resuming AudioContext:", e));
+                } else if (audioContext && audioContext.state === 'running') {
+                    // Al running, verwijder listeners en zet vlag
                     audioContextInitialized = true;
                     window.removeEventListener('click', unlockAudio);
                     window.removeEventListener('touchstart', unlockAudio);
-                }).catch(e => console.error("Error resuming AudioContext:", e));
+                }
             };
             window.addEventListener('click', unlockAudio, { once: true });
             window.addEventListener('touchstart', unlockAudio, { once: true });
-        } else {
-            audioContextInitialized = true;
+        } else if (audioContext.state === 'running') {
+            audioContextInitialized = true; // Al running
+            console.log("AudioContext is already running.");
         }
     } catch (e) {
-        console.error("Web Audio API is not supported in this browser.", e);
+        console.error("Web Audio API is not supported in this browser or an error occurred during initialization.", e);
+        audioContextInitialized = false;
     }
 }
 
+
 async function loadSound(soundId, path) {
-    if (!audioContext) {
-        console.warn(`AudioContext not initialized, cannot load sound: ${soundId}`);
+    if (!audioContextInitialized || !audioContext) { // GEWIJZIGD: Check ook audioContextInitialized
+        // console.warn(`AudioContext not initialized, cannot load sound: ${soundId}`); // Kan veel logs geven
         return;
     }
     if (soundBuffers[soundId]) {
@@ -488,18 +506,23 @@ async function loadSound(soundId, path) {
             throw new Error(`HTTP error! status: ${response.status} for ${path}`);
         }
         const arrayBuffer = await response.arrayBuffer();
-        audioContext.decodeAudioData(arrayBuffer, (buffer) => {
-            soundBuffers[soundId] = buffer;
-        }, (error) => {
-            console.error(`Error decoding audio data for ${soundId} (${path}):`, error);
-        });
+        // GEWIJZIGD: Check audioContext opnieuw voor decodeAudioData
+        if (audioContext && typeof audioContext.decodeAudioData === 'function') {
+            audioContext.decodeAudioData(arrayBuffer, (buffer) => {
+                soundBuffers[soundId] = buffer;
+            }, (error) => {
+                console.error(`Error decoding audio data for ${soundId} (${path}):`, error);
+            });
+        } else {
+             console.warn(`AudioContext disappeared or decodeAudioData not available before decoding ${soundId}`);
+        }
     } catch (e) {
         console.error(`Error fetching sound ${soundId} (${path}):`, e);
     }
 }
 
 function loadAllSounds() {
-    if (!audioContext) return;
+    if (!audioContextInitialized || !audioContext) return; // GEWIJZIGD: Check ook audioContextInitialized
     for (const soundId in soundPaths) {
         loadSound(soundId, soundPaths[soundId]);
     }
@@ -528,47 +551,47 @@ function initializeDOMElements() {
     csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
     normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null;
 
-    initializeAudioContext(); // Initialize AudioContext
-    if (audioContext) {
-        loadAllSounds(); // Load all sounds
-
-        // Set initial volumes after sounds are expected to be loaded (or at least paths are known)
-        // Actual buffer might not be ready yet, but GainNodes can be created.
-        // A more robust solution would set volume after each sound buffer is decoded.
+    initializeAudioContext();
+    if (audioContextInitialized) {
+        loadAllSounds();
         setTimeout(() => {
-            if (!audioContextInitialized && audioContext.state === 'suspended') {
-                console.warn("AudioContext still suspended. User interaction needed to play sounds.");
+            // De audioContext.state check hier is minder kritisch als audioContextInitialized al true is,
+            // maar kan geen kwaad als extra veiligheid.
+            if (audioContextInitialized && (!audioContext || audioContext.state === 'running')) {
+                setVolume('playerShootSound', 0.4);
+                setVolume('explosionSound', 0.4);
+                setVolume('gameOverSound', 0.4);
+                setVolume('lostLifeSound', 0.6);
+                setVolume('entranceSound', 0.4);
+                setVolume('bossGalagaDiveSound', 0.2);
+                setVolume('levelUpSound', 0.2);
+                setVolume('enemyShootSound', 0.4);
+                setVolume('butterflyDiveSound', 0.2);
+                setVolume('startSound', 0.4);
+                setVolume('coinSound', 0.4);
+                setVolume('beeHitSound', 0.3);
+                setVolume('butterflyHitSound', 0.3);
+                setVolume('bossHit1Sound', 0.6);
+                setVolume('bossHit2Sound', 0.4);
+                setVolume('gridBackgroundSound', 0.1);
+                setVolume('extraLifeSound', 0.5);
+                setVolume('csPerfectSound', 0.6);
+                setVolume('csClearSound', 0.6);
+                setVolume('waveUpSound', 0.8);
+                setVolume('menuMusicSound', 0.2);
+                setVolume('readySound', 0.1);
+                setVolume('tripleAttackSound', 0.3);
+                setVolume('captureSound', 0.6);
+                setVolume('shipCapturedSound', 0.3);
+                setVolume('dualShipSound', 0.4);
+                setVolume('resultsMusicSound', 0.2);
+                setVolume('hiScoreSound', 0.2);
+            } else if (audioContext && audioContext.state === 'suspended') {
+                 console.warn("AudioContext still suspended after timeout in initializeDOMElements. User interaction needed to play sounds properly with set volumes.");
             }
-            setVolume('playerShootSound', 0.4);
-            setVolume('explosionSound', 0.4);
-            setVolume('gameOverSound', 0.4);
-            setVolume('lostLifeSound', 0.6);
-            setVolume('entranceSound', 0.4);
-            setVolume('bossGalagaDiveSound', 0.2);
-            setVolume('levelUpSound', 0.2);
-            setVolume('enemyShootSound', 0.4);
-            setVolume('butterflyDiveSound', 0.2);
-            setVolume('startSound', 0.4);
-            setVolume('coinSound', 0.4); // or dualShipSound
-            setVolume('beeHitSound', 0.3);
-            setVolume('butterflyHitSound', 0.3);
-            setVolume('bossHit1Sound', 0.6);
-            setVolume('bossHit2Sound', 0.4);
-            setVolume('gridBackgroundSound', 0.1);
-            setVolume('extraLifeSound', 0.5);
-            setVolume('csPerfectSound', 0.6);
-            setVolume('csClearSound', 0.6);
-            setVolume('waveUpSound', 0.8);
-            setVolume('menuMusicSound', 0.2);
-            setVolume('readySound', 0.1);
-            setVolume('tripleAttackSound', 0.3);
-            setVolume('captureSound', 0.6);
-            setVolume('shipCapturedSound', 0.3);
-            setVolume('dualShipSound', 0.4);
-            setVolume('resultsMusicSound', 0.2);
-            setVolume('hiScoreSound', 0.2);
-        }, 100); // Short delay to allow GainNode creation
+        }, 100);
     }
+
 
     const imagesToLoad = [ shipImage, beeImage, bulletImage, bossGalagaImage, butterflyImage, logoImage, level1Image, level5Image, level10Image, level20Image, level30Image, level50Image, beeImage2, butterflyImage2, bossGalagaImage2 ];
     imagesToLoad.forEach(img => { if (img) img.onerror = () => console.error(`Error loading image: ${img.src}`); });
@@ -627,7 +650,7 @@ function getCurrentGridSlotPosition(gridRow, gridCol, enemyWidth) {
  * Helper function to load an audio file into an AudioBuffer.
  */
 function loadAudioBuffer(url, callback) {
-    if (!audioContext) { // GEWIJZIGD: audioCtx -> audioContext
+    if (!audioContext) {
         console.error("AudioContext not initialized. Cannot load audio buffer.");
         return;
     }
@@ -636,7 +659,7 @@ function loadAudioBuffer(url, callback) {
     request.responseType = 'arraybuffer';
 
     request.onload = function() {
-        audioContext.decodeAudioData(request.response, function(buffer) { // GEWIJZIGD: audioCtx -> audioContext
+        audioContext.decodeAudioData(request.response, function(buffer) {
             if (callback) callback(buffer);
         }, function(e){ console.error("Error decoding audio data from " + url, e); });
     }
@@ -653,7 +676,7 @@ function loadAudioBuffer(url, callback) {
  * @param {boolean} [loop=false] - Whether the sound should loop.
  * @param {number} [volumeOverride] - Optional volume override (0.0 to 1.0). If not provided, uses stored volume or default.
  */
-function playSound(soundIdentifier, loop = false, volumeOverride = undefined) { // TOEGEVOEGD: volumeOverride parameter
+function playSound(soundIdentifier, loop = false, volumeOverride = undefined) {
     try {
         if (!audioContext || !masterGainNode || typeof soundBuffers !== 'object' || typeof playingLoopSources !== 'object' || typeof soundVolumes !== 'object') {
             return;
@@ -662,12 +685,12 @@ function playSound(soundIdentifier, loop = false, volumeOverride = undefined) { 
             audioContext.resume().catch(e => console.error("Error resuming AudioContext:", e));
         }
 
-        if (isPaused && soundIdentifier !== 'menuMusicSound' && soundIdentifier !== 'resultsMusicSound') { // GEWIJZIGD: Gebruik soundIdentifier string
+        if (isPaused && soundIdentifier !== 'menuMusicSound' && soundIdentifier !== 'resultsMusicSound') {
              return;
         }
 
-        if (soundIdentifier === 'menuMusicSound') { // GEWIJZIGD: Gebruik soundIdentifier string
-            stopSound('resultsMusicSound'); // GEWIJZIGD: Gebruik soundIdentifier string
+        if (soundIdentifier === 'menuMusicSound') {
+            stopSound('resultsMusicSound');
         }
 
 
@@ -684,23 +707,19 @@ function playSound(soundIdentifier, loop = false, volumeOverride = undefined) { 
             delete playingLoopSources[soundIdentifier];
         }
 
-        const source = audioContext.createBufferSource(); // GEWIJZIGD: audioCtx -> audioContext
+        const source = audioContext.createBufferSource();
         source.buffer = buffer;
 
-        const individualGainNode = audioContext.createGain(); // GEWIJZIGD: audioCtx -> audioContext
-        
+        const individualGainNode = audioContext.createGain();
+
         let effectiveVolume;
         if (volumeOverride !== undefined) {
             effectiveVolume = Math.max(0, Math.min(1, volumeOverride));
-            // Store this override as the new default for this sound if you want,
-            // or just use it for this playback instance.
-            // For now, let's just use it for this instance but also update soundVolumes
-            // so subsequent plays without override use this new volume.
             soundVolumes[soundIdentifier] = effectiveVolume;
         } else {
             effectiveVolume = soundVolumes[soundIdentifier] !== undefined ? soundVolumes[soundIdentifier] : 1.0;
         }
-        
+
         individualGainNode.gain.value = effectiveVolume;
         source.connect(individualGainNode);
         individualGainNode.connect(masterGainNode);
@@ -710,7 +729,7 @@ function playSound(soundIdentifier, loop = false, volumeOverride = undefined) { 
 
         if (loop) {
             playingLoopSources[soundIdentifier] = { source: source, gainNode: individualGainNode };
-            if (soundIdentifier === 'gridBackgroundSound') { isGridSoundPlaying = true; } // GEWIJZIGD: Gebruik soundIdentifier string
+            if (soundIdentifier === 'gridBackgroundSound') { isGridSoundPlaying = true; }
         }
 
     } catch (e) {
@@ -742,7 +761,7 @@ function stopSound(soundIdentifier) {
                 } catch (e) { }
             }
             delete playingLoopSources[soundIdentifier];
-             if (soundIdentifier === 'gridBackgroundSound') { isGridSoundPlaying = false; } // GEWIJZIGD: Gebruik soundIdentifier string
+             if (soundIdentifier === 'gridBackgroundSound') { isGridSoundPlaying = false; }
         }
     } catch (e) {
         console.error(`Error in stopSound for ${soundIdentifier}:`, e);
@@ -754,22 +773,16 @@ function stopSound(soundIdentifier) {
  * @param {string} soundIdentifier - The key from the soundPaths object.
  * @param {number} volume - The volume level (0.0 to 1.0).
  */
-function setVolume(soundIdentifier, volume) { // TOEGEVOEGD: Functie definitie
-    if (!audioContext || typeof soundGainNodes !== 'object' || typeof soundVolumes !== 'object') {
-        // console.warn(`setVolume: Audio system not fully initialized or soundGainNodes/soundVolumes missing. Cannot set volume for ${soundIdentifier}`);
-        // Store it anyway for when the system is ready
+function setVolume(soundIdentifier, volume) {
+    if (!audioContextInitialized && (!audioContext || audioContext.state !== 'running')) { // GEWIJZIGD: Check ook audioContext.state
         if(typeof soundVolumes === 'object' && soundVolumes !== null) soundVolumes[soundIdentifier] = Math.max(0, Math.min(1, volume));
+        return;
+    }
+    if (!audioContext || typeof soundVolumes !== 'object') { // Voorkom errors als soundVolumes nog niet klaar is
         return;
     }
     const normalizedVolume = Math.max(0, Math.min(1, volume));
     soundVolumes[soundIdentifier] = normalizedVolume;
-
-    // If a GainNode for this sound already exists (e.g., from a previous playSound call for a loop), update it.
-    // This is more relevant if you want to change volume of an *actively playing* looping sound.
-    // For one-shot sounds, the volume is set when playSound is called.
-    // However, storing it in soundVolumes ensures next playSound call uses this new volume.
-    // For simplicity, we're primarily relying on playSound to use the stored soundVolumes value.
-    // If direct manipulation of existing gain nodes is needed, that logic would be more complex here.
 }
 
 
@@ -820,23 +833,22 @@ function saveHighScore() { /* ... inhoud ongewijzigd ... */ try { let potentialN
 function loadHighScore() { /* ... ongewijzigd ... */ try { highScore = 20000; } catch (e) { console.error("Error in loadHighScore:", e); highScore = 20000; } }
 
 // --- Pauze Functies ---
-// GEWIJZIGD: Gebruik soundPaths (globaal) ipv SOUND_PATHS_DEEL3_WORKAROUND
-const soundsToPauseOnSystemPause = Object.keys(soundPaths);
+const soundsToPauseOnSystemPause = Object.keys(soundPaths); // GEWIJZIGD: Gebruik globale soundPaths
 let soundPausedStates = {};
 
 function pauseAllSounds() {
-    if (audioContext && audioContext.state === 'running') { // GEWIJZIGD: audioCtx -> audioContext
-        audioContext.suspend().then(() => {}).catch(e => console.error("Error suspending AudioContext:", e)); // GEWIJZIGD: audioCtx -> audioContext
+    if (audioContext && audioContext.state === 'running') {
+        audioContext.suspend().then(() => {}).catch(e => console.error("Error suspending AudioContext:", e));
     }
-    stopSound('menuMusicSound'); // GEWIJZIGD: Gebruik soundIdentifier string
+    stopSound('menuMusicSound'); // GEWIJZIGD: Gebruik string
 }
 
 function resumeAllSounds() {
-    if (audioContext && audioContext.state === 'suspended') { // GEWIJZIGD: audioCtx -> audioContext
-        audioContext.resume().then(() => {}).catch(e => console.error("Error resuming AudioContext:", e)); // GEWIJZIGD: audioCtx -> audioContext
+    if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume().then(() => {}).catch(e => console.error("Error resuming AudioContext:", e));
     }
-    if (!isInGameState && audioContext) { // GEWIJZIGD: audioCtx -> audioContext
-        playSound('menuMusicSound', true, 0.2); // GEWIJZIGD: Gebruik soundIdentifier string
+    if (!isInGameState && audioContext) {
+        playSound('menuMusicSound', true, 0.2); // GEWIJZIGD: Gebruik string
     }
 }
 
@@ -870,8 +882,8 @@ function togglePause() {
         resumeAllSounds();
         clearTimeout(mouseIdleTimerId);
         mouseIdleTimerId = setTimeout(hideCursor, 2000);
-         if (audioContext && audioContext.state === 'suspended') { // GEWIJZIGD: audioCtx -> audioContext
-            audioContext.resume().then(() => { audioContextInitialized = true; }); // GEWIJZIGD: audioCtx -> audioContext
+         if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => { audioContextInitialized = true; });
         }
     }
 }
@@ -888,13 +900,12 @@ function triggerFinalGameOverSequence() {
         isPaused = false; isShowingDemoText = false; isShowingIntro = false; isWaveTransitioning = false; showCsHitsMessage = false; showExtraLifeMessage = false; showPerfectMessage = false; showCSClearMessage = false; showCsHitsForClearMessage = false; showCsScoreForClearMessage = false; showReadyMessage = false; showCsBonusScoreMessage = false; isShowingPlayerGameOverMessage = false; isEntrancePhaseActive = false; isCsCompletionDelayActive = false; csCompletionDelayStartTime = 0; csCompletionResultIsPerfect = false; csIntroSoundPlayed = false;
         if (isManualControl) { saveHighScore(); }
 
-        // GEWIJZIGD: Gebruik soundPaths
-        const soundsToStopOnFinalGameOver = Object.keys(soundPaths).filter(id => id !== 'gameOverSound' && id !== 'resultsMusicSound');
+        const soundsToStopOnFinalGameOver = Object.keys(soundPaths).filter(id => id !== 'gameOverSound' && id !== 'resultsMusicSound'); // GEWIJZIGD
         soundsToStopOnFinalGameOver.forEach(soundId => stopSound(soundId));
         isGridSoundPlaying = false;
 
         const now = Date.now();
-        playSound('gameOverSound', false, 0.4); // GEWIJZIGD: Gebruik soundIdentifier string
+        playSound('gameOverSound', false, 0.4); // GEWIJZIGD
 
         if ((isTwoPlayerMode && selectedGameMode === 'normal' && player1Lives <= 0 && player2Lives <= 0) ||
             (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && player1Lives <= 0 && player2Lives <= 0) ) {
