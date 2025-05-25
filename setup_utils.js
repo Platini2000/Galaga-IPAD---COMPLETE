@@ -967,9 +967,11 @@ function getTouchCanvasCoordinates(touch) {
 }
 
 function handleTouchStart(event) {
+    console.log("[TOUCH_DEBUG] TouchStart fired. Touches:", event.touches.length, "Changed:", event.changedTouches.length); // DIAGNOSTIC LOG
     try {
-        event.preventDefault();
+        event.preventDefault(); // Belangrijk om default browser acties te stoppen
         if (!isInGameState || isPaused || !isManualControl || !gameCanvas || gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage || (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage))) {
+            console.log("[TOUCH_DEBUG] TouchStart ignored due to game state."); // DIAGNOSTIC LOG
             return;
         }
         if (audioContext && audioContext.state === 'suspended') {
@@ -978,12 +980,15 @@ function handleTouchStart(event) {
 
         const touches = event.changedTouches;
         const now = Date.now();
+        console.log("[TOUCH_DEBUG] Processing", touches.length, "changed touches in TouchStart."); // DIAGNOSTIC LOG
 
         for (let i = 0; i < touches.length; i++) {
             const touch = touches[i];
             const { x: touchX, y: touchY } = getTouchCanvasCoordinates(touch);
+            console.log(`[TOUCH_DEBUG] TouchStart - Touch ID: ${touch.identifier}, Coords: (${touchX.toFixed(1)}, ${touchY.toFixed(1)})`); // DIAGNOSTIC LOG
 
             if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                console.log("[TOUCH_DEBUG] TouchStart - COOP Mode"); // DIAGNOSTIC LOG
                 // Player 1 (Human COOP or 1P in 1P vs AI COOP)
                 if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !player1NeedsRespawnAfterCapture && touchIdentifier1 === null) {
                     const ship1Rect = {
@@ -992,24 +997,26 @@ function handleTouchStart(event) {
                         width: ship1.width + (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0) + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_X,
                         height: ship1.height + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_Y
                     };
+                    console.log("[TOUCH_DEBUG] P1 Ship Rect for touch:", ship1Rect); // DIAGNOSTIC LOG
                     if (checkCollision({ x: touchX, y: touchY, width: 1, height: 1 }, ship1Rect)) {
+                        console.log("[TOUCH_DEBUG] TouchStart - P1 ship hit!"); // DIAGNOSTIC LOG
                         touchIdentifier1 = touch.identifier;
                         isDraggingShip1 = true;
                         touchOnShip1 = true;
                         touchStartX = touchX;
                         draggedShipInitialX1 = ship1.x;
                         if (selectedFiringMode === 'single') {
-                            if (!p1JustFiredSingle) { // Voorkom direct opnieuw vuren als vlag al staat
+                            if (!p1JustFiredSingle) {
                                 if (typeof firePlayerBullet === 'function') firePlayerBullet('player1');
                             }
                         } else if (selectedFiringMode === 'rapid') {
-                             if (typeof firePlayerBullet === 'function') firePlayerBullet('player1'); // Eerste schot bij aanraken
+                             if (typeof firePlayerBullet === 'function') firePlayerBullet('player1');
                              touchLastFireTimeP1 = now;
                         }
-                        continue; // Volgende touch
-                    }
+                        continue;
+                    } else { console.log("[TOUCH_DEBUG] TouchStart - P1 ship miss.");}
                 }
-                // Player 2 (Human COOP only, AI P2 in 1P vs AI COOP wordt niet door touch bestuurd)
+                // Player 2 (Human COOP only)
                 if (!isPlayerTwoAI && ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture && touchIdentifier2 === null) {
                     const ship2Rect = {
                         x: ship2.x - TOUCH_SHIP_SENSITIVITY_MARGIN_X,
@@ -1017,11 +1024,16 @@ function handleTouchStart(event) {
                         width: ship2.width + (player2IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0) + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_X,
                         height: ship2.height + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_Y
                     };
+                     console.log("[TOUCH_DEBUG] P2 Ship Rect for touch:", ship2Rect); // DIAGNOSTIC LOG
                     if (checkCollision({ x: touchX, y: touchY, width: 1, height: 1 }, ship2Rect)) {
+                        console.log("[TOUCH_DEBUG] TouchStart - P2 ship hit!"); // DIAGNOSTIC LOG
                         touchIdentifier2 = touch.identifier;
                         isDraggingShip2 = true;
                         touchOnShip2 = true;
-                        touchStartX = touchX; // Hergebruik touchStartX, maar per schip bijgehouden met identifier
+                        // touchStartX specifiek voor deze touch, maar we gebruiken een globale voor eenvoud
+                        // Idealiter zou touchStartX een array/map zijn per touch.identifier als meerdere schepen tegelijk gesleept kunnen worden.
+                        // Voor nu: de laatste touch op een schip zet touchStartX. Dit kan problemen geven bij multitouch op 2 schepen.
+                        touchStartX = touchX;
                         draggedShipInitialX2 = ship2.x;
                         if (selectedFiringMode === 'single') {
                             if (!p2JustFiredSingle) {
@@ -1032,9 +1044,10 @@ function handleTouchStart(event) {
                              touchLastFireTimeP2 = now;
                         }
                         continue;
-                    }
+                    } else { console.log("[TOUCH_DEBUG] TouchStart - P2 ship miss.");}
                 }
             } else { // 1P Classic, 1P vs AI Normal, 2P Normal
+                console.log("[TOUCH_DEBUG] TouchStart - Single Ship/Alternating Mode"); // DIAGNOSTIC LOG
                 if (ship && playerLives > 0 && !isShipCaptured && (!isPlayerTwoAI || (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 1)) && touchIdentifier1 === null) {
                     const shipRect = {
                         x: ship.x - TOUCH_SHIP_SENSITIVITY_MARGIN_X,
@@ -1042,7 +1055,9 @@ function handleTouchStart(event) {
                         width: ship.width + (isDualShipActive ? DUAL_SHIP_OFFSET_X : 0) + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_X,
                         height: ship.height + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_Y
                     };
+                    console.log("[TOUCH_DEBUG] Main Ship Rect for touch:", shipRect); // DIAGNOSTIC LOG
                     if (checkCollision({ x: touchX, y: touchY, width: 1, height: 1 }, shipRect)) {
+                        console.log("[TOUCH_DEBUG] TouchStart - Main ship hit!"); // DIAGNOSTIC LOG
                         touchIdentifier1 = touch.identifier;
                         isDraggingShip1 = true;
                         touchOnShip1 = true;
@@ -1056,19 +1071,26 @@ function handleTouchStart(event) {
                             }
                         } else if (selectedFiringMode === 'rapid') {
                             if (typeof firePlayerBullet === 'function') firePlayerBullet(shooterId);
-                            touchLastFireTimeP1 = now; // Gebruik P1's timer voor het hoofd schip
+                            touchLastFireTimeP1 = now;
                         }
-                    }
+                    } else { console.log("[TOUCH_DEBUG] TouchStart - Main ship miss.");}
                 }
             }
         }
-    } catch (err) { console.error("Error in handleTouchStart:", err); }
+    } catch (err) {
+        console.error("[TOUCH_ERROR] Error in handleTouchStart:", err);
+        // Reset states bij error voor de zekerheid
+        isDraggingShip1 = false; touchOnShip1 = false; touchIdentifier1 = null;
+        isDraggingShip2 = false; touchOnShip2 = false; touchIdentifier2 = null;
+    }
 }
 
 function handleTouchMove(event) {
+    console.log("[TOUCH_DEBUG] TouchMove fired. Touches:", event.touches.length, "Changed:", event.changedTouches.length); // DIAGNOSTIC LOG
     try {
         event.preventDefault();
         if (!isInGameState || isPaused || !isManualControl || !gameCanvas || gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage || (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage))) {
+            // console.log("[TOUCH_DEBUG] TouchMove ignored due to game state."); // Kan te veel loggen
             return;
         }
 
@@ -1078,8 +1100,10 @@ function handleTouchMove(event) {
         for (let i = 0; i < touches.length; i++) {
             const touch = touches[i];
             const { x: touchX, y: touchY } = getTouchCanvasCoordinates(touch);
+            // console.log(`[TOUCH_DEBUG] TouchMove - Touch ID: ${touch.identifier}, Coords: (${touchX.toFixed(1)}, ${touchY.toFixed(1)})`); // Kan te veel loggen
 
             if (touch.identifier === touchIdentifier1 && isDraggingShip1) {
+                // console.log("[TOUCH_DEBUG] TouchMove - Dragging Ship 1"); // DIAGNOSTIC LOG
                 let currentShipObject = null;
                 let isDual = false;
                 let playerShooterId = 'player1';
@@ -1087,8 +1111,7 @@ function handleTouchMove(event) {
                 if (isTwoPlayerMode && selectedGameMode === 'coop') {
                     currentShipObject = ship1;
                     isDual = player1IsDualShipActive;
-                    // playerShooterId blijft 'player1'
-                } else { // 1P Classic, 1P vs AI Normal, 2P Normal
+                } else {
                     currentShipObject = ship;
                     isDual = isDualShipActive;
                     playerShooterId = (isTwoPlayerMode && selectedGameMode === 'normal') ? `player${currentPlayer}` : 'player1';
@@ -1099,7 +1122,7 @@ function handleTouchMove(event) {
                     currentShipObject.x = draggedShipInitialX1 + deltaX;
                     const effectiveWidth = currentShipObject.width + (isDual ? DUAL_SHIP_OFFSET_X : 0);
                     currentShipObject.x = Math.max(0, Math.min(gameCanvas.width - effectiveWidth, currentShipObject.x));
-                    currentShipObject.targetX = currentShipObject.x; // Voor AI sync
+                    currentShipObject.targetX = currentShipObject.x;
 
                     if (selectedFiringMode === 'rapid' && touchOnShip1 && now - touchLastFireTimeP1 > SHOOT_COOLDOWN) {
                          if (typeof firePlayerBullet === 'function') firePlayerBullet(playerShooterId);
@@ -1107,8 +1130,14 @@ function handleTouchMove(event) {
                     }
                 }
             } else if (touch.identifier === touchIdentifier2 && isDraggingShip2 && isTwoPlayerMode && selectedGameMode === 'coop' && !isPlayerTwoAI) {
+                // console.log("[TOUCH_DEBUG] TouchMove - Dragging Ship 2"); // DIAGNOSTIC LOG
                 if (ship2) {
-                    const deltaX = touchX - touchStartX; // touchStartX werd gezet bij ship2's touchstart
+                    // touchStartX moet hier idealiter specifiek zijn voor touchIdentifier2
+                    // Als we 1 globale touchStartX gebruiken, kan dit problemen geven.
+                    // Echter, draggedShipInitialX2 is correct voor ship2.
+                    // Aanname: touchStartX is de start X van de *actieve* drag.
+                    // Dit werkt prima als maar 1 vinger sleept.
+                    const deltaX = touchX - touchStartX;
                     ship2.x = draggedShipInitialX2 + deltaX;
                     const effectiveWidth = ship2.width + (player2IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
                     ship2.x = Math.max(0, Math.min(gameCanvas.width - effectiveWidth, ship2.x));
@@ -1121,14 +1150,16 @@ function handleTouchMove(event) {
                 }
             }
         }
-    } catch (err) { console.error("Error in handleTouchMove:", err); }
+    } catch (err) {
+        console.error("[TOUCH_ERROR] Error in handleTouchMove:", err);
+    }
 }
 
 function handleTouchEndOrCancel(event) {
+    console.log("[TOUCH_DEBUG] TouchEndOrCancel fired. Touches:", event.touches.length, "Changed:", event.changedTouches.length, "Type:", event.type); // DIAGNOSTIC LOG
     try {
         event.preventDefault();
-        if (!isInGameState || !isManualControl || !gameCanvas) { // Minder restrictief dan start/move voor het geval een touch eindigt tijdens pauze etc.
-             // Reset sleep staten ongeacht pauze, om vastzittende drags te voorkomen
+        if (!isInGameState || !isManualControl || !gameCanvas) {
             if (touchIdentifier1 !== null) { isDraggingShip1 = false; touchOnShip1 = false; touchIdentifier1 = null; if (selectedFiringMode === 'single') p1JustFiredSingle = false;}
             if (touchIdentifier2 !== null) { isDraggingShip2 = false; touchOnShip2 = false; touchIdentifier2 = null; if (selectedFiringMode === 'single') p2JustFiredSingle = false;}
             return;
@@ -1137,7 +1168,10 @@ function handleTouchEndOrCancel(event) {
         const touches = event.changedTouches;
         for (let i = 0; i < touches.length; i++) {
             const touch = touches[i];
+            console.log(`[TOUCH_DEBUG] TouchEnd - Touch ID: ${touch.identifier}`); // DIAGNOSTIC LOG
+
             if (touch.identifier === touchIdentifier1) {
+                console.log("[TOUCH_DEBUG] TouchEnd - Releasing Ship 1 drag/touch."); // DIAGNOSTIC LOG
                 isDraggingShip1 = false;
                 touchOnShip1 = false;
                 touchIdentifier1 = null;
@@ -1146,6 +1180,7 @@ function handleTouchEndOrCancel(event) {
                     else if (!isTwoPlayerMode || (isTwoPlayerMode && selectedGameMode === 'coop')) p1JustFiredSingle = false;
                 }
             } else if (touch.identifier === touchIdentifier2) {
+                console.log("[TOUCH_DEBUG] TouchEnd - Releasing Ship 2 drag/touch."); // DIAGNOSTIC LOG
                 isDraggingShip2 = false;
                 touchOnShip2 = false;
                 touchIdentifier2 = null;
@@ -1155,7 +1190,12 @@ function handleTouchEndOrCancel(event) {
                 }
             }
         }
-    } catch (err) { console.error("Error in handleTouchEndOrCancel:", err); isDraggingShip1 = false; touchOnShip1 = false; touchIdentifier1 = null; isDraggingShip2 = false; touchOnShip2 = false; touchIdentifier2 = null; p1JustFiredSingle = false; p2JustFiredSingle = false; }
+    } catch (err) {
+        console.error("[TOUCH_ERROR] Error in handleTouchEndOrCancel:", err);
+        isDraggingShip1 = false; touchOnShip1 = false; touchIdentifier1 = null;
+        isDraggingShip2 = false; touchOnShip2 = false; touchIdentifier2 = null;
+        p1JustFiredSingle = false; p2JustFiredSingle = false;
+    }
 }
 // --- EINDE Touch Event Handlers ---
 
