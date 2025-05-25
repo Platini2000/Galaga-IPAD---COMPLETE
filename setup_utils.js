@@ -776,6 +776,12 @@ function resizeCanvases() { /* ... ongewijzigd ... */ try { const width = window
 function handleResizeGameElements(oldWidth, newWidth, newHeight) { /* ... ongewijzigd ... */ try { currentGridOffsetX = 0; if (ship) { if (oldWidth > 0 && newWidth > 0 && typeof ship.x !== 'undefined') { ship.x = (ship.x / oldWidth) * newWidth; } else { ship.x = newWidth / 2 - ship.width / 2; } ship.x = Math.max(0, Math.min(newWidth - ship.width, ship.x)); ship.y = newHeight - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN; ship.targetX = ship.x; } enemies.forEach((e) => { if (e && (e.state === 'in_grid' || e.state === 'returning' || e.state === 'moving_to_grid')) { try { const enemyWidthForGrid = (e.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((e.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH); const { x: newTargetX, y: newTargetY } = getCurrentGridSlotPosition(e.gridRow, e.gridCol, enemyWidthForGrid); e.targetGridX = newTargetX; e.targetGridY = newTargetY; if (e.state === 'in_grid') { e.x = newTargetX; e.y = newTargetY; } } catch (gridPosError) { console.error(`Error recalculating grid pos for enemy ${e.id} on resize:`, gridPosError); if(e.state === 'in_grid' || e.state === 'moving_to_grid' || e.state === 'returning'){ e.x = newWidth / 2; e.y = ENEMY_TOP_MARGIN + e.gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING); e.targetGridX = e.x; e.targetGridY = e.y; } } } }); } catch (e) { console.error("Error handling game resize specifics:", e); } }
 
 // --- Touch Event Handlers ---
+// <<< NIEUWE GLOBALE VARIABELEN VOOR DUBBEL-TAP >>>
+let lastTapArea = null; // '1up', '2up', 'center', null
+let lastTapTimestamp = 0;
+const DOUBLE_TAP_MAX_INTERVAL = 300; // ms tussen taps voor een dubbel-tap
+const SCORE_AREA_TAP_MARGIN = 30; // Extra marge rond de score tekst voor tap detectie
+
 function handleTouchStartGlobal(event) {
     event.preventDefault(); // Voorkom standaard browsergedrag zoals scrollen
     if (audioContext && audioContext.state === 'suspended') {
@@ -792,11 +798,9 @@ function handleTouchStartGlobal(event) {
         if (isInGameState) {
             isTouchActiveGame = true;
             isTouchActiveMenu = false; // Zorg ervoor dat menu-touch niet tegelijk actief is
-            // Verdere game-specifieke logica in game_logic.js -> handlePlayerInput
         } else { // In Menu
             isTouchActiveMenu = true;
             isTouchActiveGame = false; // Zorg ervoor dat game-touch niet tegelijk actief is
-            // Verdere menu-specifieke logica in rendering_menu.js -> handleCanvasTouch
             if (typeof handleCanvasTouch === 'function') {
                 handleCanvasTouch(event, 'start');
             }
@@ -814,8 +818,7 @@ function handleTouchMoveGlobal(event) {
         if (isTouchActiveGame && isInGameState) {
             // Game-specifieke drag logica in game_logic.js -> handlePlayerInput
         } else if (isTouchActiveMenu && !isInGameState) {
-            // Menu-specifieke drag logica in rendering_menu.js -> handleCanvasTouch
-             if (typeof handleCanvasTouch === 'function') {
+            if (typeof handleCanvasTouch === 'function') {
                 handleCanvasTouch(event, 'move');
             }
         }
@@ -827,63 +830,121 @@ function handleTouchEndGlobal(event) {
     const touchEndTime = Date.now();
     const touchDuration = touchEndTime - touchStartTime;
     let dx = 0, dy = 0;
-    // Zorg ervoor dat touchCurrentX en touchStartX gedefinieerd zijn
-    if (typeof touchCurrentX === 'number' && typeof touchStartX === 'number') {
-        dx = touchCurrentX - touchStartX;
+    let interactionClientX, interactionClientY;
+
+    if (event.changedTouches && event.changedTouches.length > 0) {
+        interactionClientX = event.changedTouches[0].clientX;
+        interactionClientY = event.changedTouches[0].clientY;
+    } else {
+        // Fallback or error if no changedTouches
+        interactionClientX = touchCurrentX; // Gebruik laatst bekende
+        interactionClientY = touchCurrentY;
     }
-    if (typeof touchCurrentY === 'number' && typeof touchStartY === 'number') {
-        dy = touchCurrentY - touchStartY;
+
+    if (typeof interactionClientX === 'number' && typeof touchStartX === 'number') {
+        dx = interactionClientX - touchStartX;
     }
+    if (typeof interactionClientY === 'number' && typeof touchStartY === 'number') {
+        dy = interactionClientY - touchStartY;
+    }
+
     const distance = Math.sqrt(dx * dx + dy * dy);
     const isTap = touchDuration < TOUCH_TAP_MAX_DURATION && distance < TOUCH_TAP_MAX_MOVEMENT;
 
+    // Coördinaten omzetten naar canvas coördinaten voor gebiedscheck
+    const rect = gameCanvas.getBoundingClientRect();
+    const scaleX = gameCanvas.width / rect.width;
+    const scaleY = gameCanvas.height / rect.height;
+    const canvasTapX = (interactionClientX - rect.left) * scaleX;
+    const canvasTapY = (interactionClientY - rect.top) * scaleY;
+
+
     if (isTouchActiveGame && isInGameState) {
-        // De vlag isTouchActiveGame blijft true tot na de eventuele firePlayerBullet,
-        // zodat handlePlayerInput niet per ongeluk keyboard/gamepad input direct overneemt.
-        // De vlag wordt false gezet aan het einde van de logica hieronder, of als het geen tap was.
-
-        if (isTap && selectedFiringMode === 'single') {
+        if (isTap) {
+            // <<< START GEWIJZIGD: DUBBEL-TAP LOGICA >>>
             const now = Date.now();
-            if (now - lastTapTime > SHOOT_COOLDOWN / 2) { // Kortere debounce voor tap
-                // Stel tijdelijk p1FireInputWasDown in, zodat firePlayerBullet het als een knopdruk ziet.
-                // Dit wordt direct na de firePlayerBullet call gereset.
-                // We moeten bepalen welke speler schiet in CO-OP. Voor nu, P1 default bij touch.
-                let shooterPlayerIdForTap = 'player1';
-                if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                    // Hier zou je logica kunnen toevoegen om te bepalen welke speler geschoten heeft
-                    // op basis van de tap locatie, of een andere methode.
-                    // Voor nu, P1 als default.
-                } else if (isTwoPlayerMode && selectedGameMode === 'normal'){
-                     shooterPlayerIdForTap = (currentPlayer === 1) ? 'player1' : 'player2';
+            let tapped2UpArea = false;
+
+            if (typeof MARGIN_SIDE !== 'undefined' && typeof MARGIN_TOP !== 'undefined' && gameCanvas && gameCtx) {
+                gameCtx.font = "20px 'Press Start 2P'"; // Zelfde font als UI
+                const label2PText = (isCoopAIDemoActive) ? "DEMO-2" : ((isPlayerTwoAI && selectedGameMode === 'coop') ? "AI P2" : "2UP");
+                const label2PWidth = gameCtx.measureText(label2PText).width;
+                const score2PText = String(player2Score); // Of de relevante score variabele
+                const score2PWidth = gameCtx.measureText(score2PText).width;
+
+                const area2UpX = gameCanvas.width - MARGIN_SIDE - Math.max(label2PWidth, score2PWidth) - SCORE_AREA_TAP_MARGIN;
+                const area2UpY = MARGIN_TOP - SCORE_AREA_TAP_MARGIN;
+                const area2UpWidth = Math.max(label2PWidth, score2PWidth) + 2 * SCORE_AREA_TAP_MARGIN;
+                const area2UpHeight = (SCORE_OFFSET_Y + 5 + parseFloat(gameCtx.font)) + 2 * SCORE_AREA_TAP_MARGIN; // Geschatte hoogte
+
+                if (canvasTapX >= area2UpX && canvasTapX <= area2UpX + area2UpWidth &&
+                    canvasTapY >= area2UpY && canvasTapY <= area2UpY + area2UpHeight) {
+                    tapped2UpArea = true;
                 }
+            }
 
-
-                if (shooterPlayerIdForTap === 'player1') p1FireInputWasDown = true;
-                else if (shooterPlayerIdForTap === 'player2') p2FireInputWasDown = true;
-
-                if (typeof firePlayerBullet === 'function') {
-                     firePlayerBullet(shooterPlayerIdForTap);
+            if (tapped2UpArea) {
+                if (lastTapArea === '2up' && (now - lastTapTimestamp < DOUBLE_TAP_MAX_INTERVAL)) {
+                    // Dubbel-tap op 2UP gebied gedetecteerd!
+                    if (typeof stopGameAndShowMenu === 'function') {
+                        stopGameAndShowMenu();
+                        lastTapArea = null; // Reset voor volgende interactie
+                        lastTapTimestamp = 0;
+                        isTouchActiveGame = false;
+                        return; // Verlaat functie na menu switch
+                    }
                 }
-                if (shooterPlayerIdForTap === 'player1') p1FireInputWasDown = false;
-                else if (shooterPlayerIdForTap === 'player2') p2FireInputWasDown = false;
+                lastTapArea = '2up';
+                lastTapTimestamp = now;
+            } else {
+                // Als er ergens anders getapt wordt, reset de dubbel-tap state voor 2UP
+                if (lastTapArea === '2up') { // Alleen resetten als de *vorige* tap op 2up was
+                    lastTapArea = null;
+                    lastTapTimestamp = 0;
+                }
+            }
+            // <<< EINDE GEWIJZIGD: DUBBEL-TAP LOGICA >>>
 
-                lastTapTime = now;
+
+            // Single fire logica (blijft behouden)
+            if (selectedFiringMode === 'single' && !tapped2UpArea) { // Alleen als niet op 2UP getapt is voor menu exit
+                if (now - lastTapTime > SHOOT_COOLDOWN / 2) {
+                    let shooterPlayerIdForTap = 'player1';
+                    if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                        // Basis: tap op linkerhelft voor P1, rechterhelft voor P2
+                        if (canvasTapX > gameCanvas.width / 2 && ship2 && player2Lives > 0) {
+                            shooterPlayerIdForTap = isPlayerTwoAI ? 'ai_p2' : 'player2';
+                        }
+                    } else if (isTwoPlayerMode && selectedGameMode === 'normal'){
+                         shooterPlayerIdForTap = (currentPlayer === 1) ? 'player1' : 'player2';
+                    }
+
+                    if (shooterPlayerIdForTap === 'player1') p1FireInputWasDown = true;
+                    else if (shooterPlayerIdForTap === 'player2' || shooterPlayerIdForTap === 'ai_p2') p2FireInputWasDown = true;
+
+                    if (typeof firePlayerBullet === 'function') {
+                         firePlayerBullet(shooterPlayerIdForTap);
+                    }
+                    if (shooterPlayerIdForTap === 'player1') p1FireInputWasDown = false;
+                    else if (shooterPlayerIdForTap === 'player2' || shooterPlayerIdForTap === 'ai_p2') p2FireInputWasDown = false;
+
+                    lastTapTime = now;
+                }
             }
         }
-        // Reset shootPressed voor keyboard/gamepad, omdat touch de primary input was.
         shootPressed = false;
-        p2ShootPressed = false; // Ook voor P2 als relevant
-        isTouchActiveGame = false; // Zet nu pas false
+        p2ShootPressed = false; 
+        isTouchActiveGame = false; 
     } else if (isTouchActiveMenu && !isInGameState) {
         isTouchActiveMenu = false;
         if (typeof handleCanvasTouch === 'function') {
             handleCanvasTouch(event, 'end', isTap);
         }
-    } else { // Geen van beide was actief, of een andere onverwachte state
+    } else { 
         isTouchActiveGame = false;
         isTouchActiveMenu = false;
     }
-    touchedMenuButtonIndex = -1; // Reset altijd
+    touchedMenuButtonIndex = -1; 
 }
 
 
@@ -1005,27 +1066,7 @@ function handleKeyDown(e) {
                         }
                         startAutoDemoTimer(); break;
                     case "Escape":
-                        if (isFiringModeSelectMode) {
-                            isFiringModeSelectMode = false;
-                            if (selectedOnePlayerGameVariant === 'CLASSIC_1P') {
-                                isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0;
-                            } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
-                                isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0);
-                            } else if (isTwoPlayerMode && !isPlayerTwoAI) { // Human 2P
-                                isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0);
-                            } else { // Fallback
-                                isPlayerSelectMode = false; selectedButtonIndex = 0;
-                            }
-                            selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; selectedGameMode = 'normal'; // Reset game mode bij teruggaan
-                        } else if (isOnePlayerVsAIGameTypeSelectMode) {
-                            isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1;
-                        } else if (isOnePlayerGameTypeSelectMode) {
-                            isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0;
-                        } else if (isGameModeSelectMode) {
-                            isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1;
-                        } else if (isPlayerSelectMode) {
-                            isPlayerSelectMode = false; selectedButtonIndex = 0;
-                        } else { triggerFullscreen(); }
+                        goBackInMenu(); // Gebruik de helper functie
                         startAutoDemoTimer(); break;
                     default: startAutoDemoTimer(); break;
                 }
