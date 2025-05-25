@@ -181,7 +181,7 @@ let isShowingResultsScreen = false;
 let gameOverSequenceStartTime = 0; let gameStartTime = 0;
 let visualOffsetX = -20; let floatingScores = [];
 let csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
-let normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastChainHitPosition = null;
+let normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null;
 let squadronCompletionStatus = {}; let squadronEntranceFiringStatus = {}; let isPaused = false;
 let mouseIdleTimerId = null;
 let initialGameStartSoundPlayedThisSession = false;
@@ -214,6 +214,18 @@ let capturedShipRespawnX_NormalMode = 0;
 let coopPartner1CapturedTime = 0;
 let coopPartner2CapturedTime = 0;
 
+// --- Touch Input Variabelen ---
+let touchStartX = 0, touchStartY = 0;
+let touchCurrentX = 0, touchCurrentY = 0;
+let touchStartTime = 0;
+let isTouchActiveGame = false; // Voor in-game besturing
+let isTouchActiveMenu = false; // Voor menu interactie
+let touchedMenuButtonIndex = -1; // Welke menuknop initieel is aangeraakt
+let lastTapTime = 0; // Voor single fire debounce
+
+const TOUCH_TAP_MAX_DURATION = 250; // ms voor een tap
+const TOUCH_TAP_MAX_MOVEMENT = 20; // pixels toegestaan voor een tap
+const TOUCH_SHIP_CONTROL_AREA_Y_FACTOR = 0.5; // Onderste helft scherm voor schipbesturing
 
 // --- Afbeeldingen & Geluiden ---
 const shipImage = new Image(), beeImage = new Image(), butterflyImage = new Image(), bossGalagaImage = new Image(), bulletImage = new Image(), enemyBulletImage = new Image(), logoImage = new Image();
@@ -551,6 +563,15 @@ function initializeDOMElements() {
         }, 100); // Short delay to allow GainNode creation
     }
 
+    // Voeg touch event listeners toe aan gameCanvas
+    if (gameCanvas) {
+        gameCanvas.addEventListener('touchstart', handleTouchStartGlobal, { passive: false });
+        gameCanvas.addEventListener('touchmove', handleTouchMoveGlobal, { passive: false });
+        gameCanvas.addEventListener('touchend', handleTouchEndGlobal, { passive: false });
+        gameCanvas.addEventListener('touchcancel', handleTouchEndGlobal, { passive: false }); // Behandel cancel als een end
+    }
+
+
     const imagesToLoad = [ shipImage, beeImage, bulletImage, bossGalagaImage, butterflyImage, logoImage, level1Image, level5Image, level10Image, level20Image, level30Image, level50Image, beeImage2, butterflyImage2, bossGalagaImage2 ];
     imagesToLoad.forEach(img => { if (img) img.onerror = () => console.error(`Error loading image: ${img.src}`); });
     return true;
@@ -754,6 +775,96 @@ function resizeCanvases() { /* ... ongewijzigd ... */ try { const width = window
 /** Repositions ship and enemy targets after a resize while the game is running. */
 function handleResizeGameElements(oldWidth, newWidth, newHeight) { /* ... ongewijzigd ... */ try { currentGridOffsetX = 0; if (ship) { if (oldWidth > 0 && newWidth > 0 && typeof ship.x !== 'undefined') { ship.x = (ship.x / oldWidth) * newWidth; } else { ship.x = newWidth / 2 - ship.width / 2; } ship.x = Math.max(0, Math.min(newWidth - ship.width, ship.x)); ship.y = newHeight - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN; ship.targetX = ship.x; } enemies.forEach((e) => { if (e && (e.state === 'in_grid' || e.state === 'returning' || e.state === 'moving_to_grid')) { try { const enemyWidthForGrid = (e.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((e.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH); const { x: newTargetX, y: newTargetY } = getCurrentGridSlotPosition(e.gridRow, e.gridCol, enemyWidthForGrid); e.targetGridX = newTargetX; e.targetGridY = newTargetY; if (e.state === 'in_grid') { e.x = newTargetX; e.y = newTargetY; } } catch (gridPosError) { console.error(`Error recalculating grid pos for enemy ${e.id} on resize:`, gridPosError); if(e.state === 'in_grid' || e.state === 'moving_to_grid' || e.state === 'returning'){ e.x = newWidth / 2; e.y = ENEMY_TOP_MARGIN + e.gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING); e.targetGridX = e.x; e.targetGridY = e.y; } } } }); } catch (e) { console.error("Error handling game resize specifics:", e); } }
 
+// --- Touch Event Handlers ---
+function handleTouchStartGlobal(event) {
+    event.preventDefault(); // Voorkom standaard browsergedrag zoals scrollen
+    if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by touchstart."); });
+    }
+    if (event.touches.length > 0) {
+        const touch = event.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        touchCurrentX = touch.clientX;
+        touchCurrentY = touch.clientY;
+        touchStartTime = Date.now();
+
+        if (isInGameState) {
+            isTouchActiveGame = true;
+            isTouchActiveMenu = false;
+            // Verdere game-specifieke logica in game_logic.js -> handlePlayerInput
+        } else {
+            isTouchActiveMenu = true;
+            isTouchActiveGame = false;
+            // Verdere menu-specifieke logica in rendering_menu.js -> handleCanvasTouch
+            if (typeof handleCanvasTouch === 'function') {
+                handleCanvasTouch(event, 'start');
+            }
+        }
+    }
+}
+
+function handleTouchMoveGlobal(event) {
+    event.preventDefault();
+    if (event.touches.length > 0) {
+        const touch = event.touches[0];
+        touchCurrentX = touch.clientX;
+        touchCurrentY = touch.clientY;
+
+        if (isTouchActiveGame && isInGameState) {
+            // Game-specifieke drag logica in game_logic.js -> handlePlayerInput
+        } else if (isTouchActiveMenu && !isInGameState) {
+            // Menu-specifieke drag logica in rendering_menu.js -> handleCanvasTouch
+             if (typeof handleCanvasTouch === 'function') {
+                handleCanvasTouch(event, 'move');
+            }
+        }
+    }
+}
+
+function handleTouchEndGlobal(event) {
+    event.preventDefault();
+    const touchEndTime = Date.now();
+    const touchDuration = touchEndTime - touchStartTime;
+    const dx = touchCurrentX - touchStartX;
+    const dy = touchCurrentY - touchStartY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const isTap = touchDuration < TOUCH_TAP_MAX_DURATION && distance < TOUCH_TAP_MAX_MOVEMENT;
+
+    if (isTouchActiveGame && isInGameState) {
+        isTouchActiveGame = false;
+        // Reset schip bewegingsvlaggen hier
+        leftPressed = false;
+        rightPressed = false;
+        // Schieten stopt automatisch als touch losgelaten wordt (afhankelijk van implementatie in handlePlayerInput)
+        // Indien 'single fire' op tap:
+        if (isTap && selectedFiringMode === 'single') {
+            const now = Date.now();
+            if (now - lastTapTime > SHOOT_COOLDOWN) { // Eenvoudige debounce
+                shootPressed = true; // Trigger eenmalig schot
+                p1FireInputWasDown = true; // Emuleer button down voor firePlayerBullet
+                if (typeof handlePlayerInput === 'function') {
+                     handlePlayerInput(); // Laat handlePlayerInput het schot verwerken
+                }
+                shootPressed = false; // Reset direct
+                p1FireInputWasDown = false;
+                lastTapTime = now;
+            }
+        } else {
+           shootPressed = false; // Stop rapid fire
+           p1FireInputWasDown = false;
+        }
+    } else if (isTouchActiveMenu && !isInGameState) {
+        isTouchActiveMenu = false;
+        // Menu-specifieke tap/release logica in rendering_menu.js -> handleCanvasTouch
+        if (typeof handleCanvasTouch === 'function') {
+            handleCanvasTouch(event, 'end', isTap);
+        }
+    }
+    touchedMenuButtonIndex = -1; // Reset altijd
+}
+
+
 // --- Keyboard Event Handlers ---
 function handleKeyDown(e) {
     try {
@@ -791,7 +902,9 @@ function handleKeyDown(e) {
                     switch (e.code) {
                         case "ArrowLeft": case "KeyA": keyboardP1LeftDown = true; break;
                         case "ArrowRight": case "KeyD": keyboardP1RightDown = true; break;
-                        case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = true; break;
+                        case "Space": case "ArrowUp": case "KeyW":
+                            if (!isTouchActiveGame) keyboardP1ShootDown = true; // Alleen als geen touch actief is
+                            break;
                         case "KeyJ": case "Numpad4": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2LeftDown = true; break;
                         case "KeyL": case "Numpad6": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2RightDown = true; break;
                         case "KeyI": case "Numpad0": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2ShootDown = true; break;
@@ -890,7 +1003,10 @@ function handleKeyUp(e) {
         switch (e.code) {
             case "ArrowLeft": case "KeyA": keyboardP1LeftDown = false; break;
             case "ArrowRight": case "KeyD": keyboardP1RightDown = false; break;
-            case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = false; p1JustFiredSingle = false; break;
+            case "Space": case "ArrowUp": case "KeyW":
+                keyboardP1ShootDown = false;
+                if (!isTouchActiveGame) p1JustFiredSingle = false; // Reset alleen als touch niet schiet
+                break;
             case "KeyJ": case "Numpad4": keyboardP2LeftDown = false; break;
             case "KeyL": case "Numpad6": keyboardP2RightDown = false; break;
             case "KeyI": case "Numpad0": keyboardP2ShootDown = false; p2JustFiredSingle = false; break;

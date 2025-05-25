@@ -343,7 +343,6 @@ function stopAutoDemoTimer() {
 
 
 
-
 // --- START OF FILE rendering_menu.js ---
 // --- DEEL 2      van 3 dit code blok    ---
 
@@ -695,23 +694,140 @@ function showScoreScreen() {
 
 
 // --- Canvas Event Handlers ---
+
+/**
+ * Handles touch events on the canvas, routing them to menu or game logic.
+ * @param {Event} event - The touch or mouse event.
+ * @param {'start'|'move'|'end'} type - The type of event.
+ * @param {boolean} [isTap=false] - True if the 'end' event is considered a tap.
+ */
+function handleCanvasTouch(event, type, isTap = false) {
+    if (!gameCanvas) return;
+
+    let clientX, clientY;
+    if (event.touches && event.touches.length > 0) {
+        clientX = event.touches[0].clientX;
+        clientY = event.touches[0].clientY;
+    } else if (event.changedTouches && event.changedTouches.length > 0) { // Voor touchend
+        clientX = event.changedTouches[0].clientX;
+        clientY = event.changedTouches[0].clientY;
+    } else { // Voor muis als touch (mousemove, click)
+        clientX = event.clientX;
+        clientY = event.clientY;
+    }
+
+    const rect = gameCanvas.getBoundingClientRect();
+    const scaleX = gameCanvas.width / rect.width;
+    const scaleY = gameCanvas.height / rect.height;
+    const touchX = (clientX - rect.left) * scaleX;
+    const touchY = (clientY - rect.top) * scaleY;
+
+    const now = Date.now();
+    let blockAllInput = false;
+    if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0) {
+        blockAllInput = true;
+    }
+    if (blockAllInput) {
+        touchedMenuButtonIndex = -1; // Reset als input geblokkeerd is
+        return;
+    }
+
+    if (isInGameState) {
+        // Game-specifieke touch handling wordt in game_logic.js gedaan via globale touch variabelen.
+        // Hier niets te doen, omdat de globale touch vars direct door handlePlayerInput worden gebruikt.
+    } else if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
+        if (type === 'end' && isTap) { // Alleen reageren op een tap/klik
+            if (typeof showMenuState === 'function') showMenuState();
+        }
+    } else if (!isShowingScoreScreen) { // Menu
+        stopAutoDemoTimer();
+        const button0Rect = getMenuButtonRect(0);
+        const button1Rect = getMenuButtonRect(1);
+        let currentHoverButton = -1;
+
+        if (button0Rect && checkCollision({ x: touchX, y: touchY, width: 1, height: 1 }, button0Rect)) {
+            currentHoverButton = 0;
+        } else if (button1Rect && checkCollision({ x: touchX, y: touchY, width: 1, height: 1 }, button1Rect)) {
+            currentHoverButton = 1;
+        }
+
+        if (type === 'start') {
+            touchedMenuButtonIndex = currentHoverButton; // Onthoud welke knop is aangeraakt
+            selectedButtonIndex = currentHoverButton; // Update selectie direct voor visuele feedback
+        } else if (type === 'move') {
+            // Als de vinger sleept, update de selectie als de vinger over een andere knop beweegt.
+            // Als de vinger van de initieel aangeraakte knop af sleept, deselecteer.
+            if (touchedMenuButtonIndex !== -1 && currentHoverButton !== touchedMenuButtonIndex) {
+                selectedButtonIndex = -1; // Deselecteer als van initiele knop afgesleept
+            } else {
+                selectedButtonIndex = currentHoverButton;
+            }
+        } else if (type === 'end' && isTap) {
+            // Alleen actie uitvoeren als de tap eindigt op dezelfde knop als waar hij begon.
+            if (currentHoverButton !== -1 && currentHoverButton === touchedMenuButtonIndex) {
+                selectedButtonIndex = currentHoverButton; // Zorg dat de selectie juist is
+                // Voer actie uit gebaseerd op selectedButtonIndex en huidige menu state
+                if (isPlayerSelectMode) {
+                    if (selectedButtonIndex === 0) { startGame1P(); }
+                    else { startGame2P(); }
+                } else if (isOnePlayerGameTypeSelectMode) {
+                    if (selectedButtonIndex === 0) {
+                        isOnePlayerGameTypeSelectMode = false; isFiringModeSelectMode = true;
+                        selectedOnePlayerGameVariant = 'CLASSIC_1P'; selectedGameMode = 'normal';
+                        isTwoPlayerMode = false; isPlayerTwoAI = false; selectedButtonIndex = 0;
+                    } else {
+                        isOnePlayerGameTypeSelectMode = false; isOnePlayerVsAIGameTypeSelectMode = true;
+                        selectedButtonIndex = 0;
+                    }
+                } else if (isOnePlayerVsAIGameTypeSelectMode) {
+                    if (selectedButtonIndex === 0) {
+                        selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL'; selectedGameMode = 'normal';
+                    } else {
+                        selectedOnePlayerGameVariant = '1P_VS_AI_COOP'; selectedGameMode = 'coop';
+                    }
+                    isOnePlayerVsAIGameTypeSelectMode = false; isFiringModeSelectMode = true;
+                    isTwoPlayerMode = true; isPlayerTwoAI = true; selectedButtonIndex = 0;
+                } else if (isGameModeSelectMode) {
+                    if (selectedButtonIndex === 0) { selectedGameMode = 'normal'; }
+                    else { selectedGameMode = 'coop'; }
+                    isGameModeSelectMode = false; isFiringModeSelectMode = true;
+                    isTwoPlayerMode = true; isPlayerTwoAI = false; selectedButtonIndex = 0;
+                } else if (isFiringModeSelectMode) {
+                    if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; }
+                    else { selectedFiringMode = 'single'; }
+                    baseStartGame(true);
+                } else { // Hoofdmenu
+                    if (selectedButtonIndex === 0) {
+                        isPlayerSelectMode = true; selectedButtonIndex = 0;
+                    } else if (selectedButtonIndex === 1) {
+                        if (typeof exitGame === 'function') exitGame();
+                    }
+                }
+            } else if (currentHoverButton === -1 && touchedMenuButtonIndex === -1 && !isInGameState && !isShowingScoreScreen) {
+                 // Tap buiten knoppen in hoofdmenu (niet een sub-menu)
+                if (!isPlayerSelectMode && !isOnePlayerGameTypeSelectMode && !isOnePlayerVsAIGameTypeSelectMode && !isGameModeSelectMode && !isFiringModeSelectMode) {
+                    triggerFullscreen();
+                }
+            }
+            touchedMenuButtonIndex = -1; // Reset
+        }
+        // Voor muis-als-touch (type 'move'), start de demo timer als niet gehoverd wordt
+        if (type === 'move' && currentHoverButton === -1) {
+            startAutoDemoTimer();
+        } else if (type !== 'end' && currentHoverButton !== -1) { // Bij start of move over een knop
+             stopAutoDemoTimer();
+        } else if (type === 'end') { // Na een tap/klik altijd timer starten
+             startAutoDemoTimer();
+        }
+    }
+}
+
+
 function handleCanvasClick(event) {
     if (!gameCanvas) return;
      if (audioContext && audioContext.state === 'suspended') {
         audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by canvas click."); });
     }
-    const rect = gameCanvas.getBoundingClientRect();
-    const scaleX = gameCanvas.width / rect.width;
-    const scaleY = gameCanvas.height / rect.height;
-    // Definieer clickX en clickY hier voor de scope van handleCanvasClick
-    const clickX = (event.clientX - rect.left) * scaleX;
-    const clickY = (event.clientY - rect.top) * scaleY;
-    const now = Date.now();
-    let blockAllClickInput = false;
-    if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0) {
-        blockAllClickInput = true;
-    }
-    if (blockAllClickInput) { return; }
 
     if (isInGameState) {
         if (isPaused) { if(typeof togglePause === 'function') togglePause(); return; }
@@ -721,82 +837,13 @@ function handleCanvasClick(event) {
             } else {
                 isCoopAIDemoActive = false;
                 aiPlayerActivelySeekingCaptureById = null;
-                isPlayerTwoAI = false; // Als uit AI demo wordt gegaan, is P2 niet meer AI.
+                isPlayerTwoAI = false;
                 if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu();
             }
         }
-    } else if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
-        if (typeof showMenuState === 'function') showMenuState();
-    } else if (!isShowingScoreScreen) { // Menu
-        const button0Rect = getMenuButtonRect(0);
-        const button1Rect = getMenuButtonRect(1);
-        // Gebruik de hierboven gedefinieerde clickX en clickY
-        let clickedButton0 = button0Rect && checkCollision({ x: clickX, y: clickY, width: 1, height: 1 }, button0Rect);
-        let clickedButton1 = button1Rect && checkCollision({ x: clickX, y: clickY, width: 1, height: 1 }, button1Rect);
-
-        stopAutoDemoTimer();
-
-        if (isPlayerSelectMode) {
-            if (clickedButton0) { startGame1P(); }
-            else if (clickedButton1) { startGame2P(); }
-            else { isPlayerSelectMode = false; selectedButtonIndex = 0; startAutoDemoTimer(); }
-        } else if (isOnePlayerGameTypeSelectMode) {
-            if (clickedButton0) {
-                isOnePlayerGameTypeSelectMode = false;
-                isFiringModeSelectMode = true;
-                selectedOnePlayerGameVariant = 'CLASSIC_1P';
-                selectedGameMode = 'normal'; // Voor 1P classic
-                isTwoPlayerMode = false;
-                isPlayerTwoAI = false;
-                selectedButtonIndex = 0;
-            } else if (clickedButton1) {
-                isOnePlayerGameTypeSelectMode = false;
-                isOnePlayerVsAIGameTypeSelectMode = true; // Ga naar 1P vs AI type selectie
-                selectedButtonIndex = 0;
-            } else { isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0; startAutoDemoTimer(); }
-        } else if (isOnePlayerVsAIGameTypeSelectMode) { // 1P vs AI: Normal of Coop
-            if (clickedButton0) {
-                selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL';
-                selectedGameMode = 'normal';
-            } else if (clickedButton1) {
-                selectedOnePlayerGameVariant = '1P_VS_AI_COOP';
-                selectedGameMode = 'coop';
-            } else {
-                isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1; startAutoDemoTimer(); return;
-            }
-            isOnePlayerVsAIGameTypeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = true; selectedButtonIndex = 0;
-        } else if (isGameModeSelectMode) { // 2P Human: Normal of Coop
-            if (clickedButton0) { selectedGameMode = 'normal'; }
-            else if (clickedButton1) { selectedGameMode = 'coop'; }
-            else { isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1; startAutoDemoTimer(); return; }
-            isGameModeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = false; selectedButtonIndex = 0;
-        } else if (isFiringModeSelectMode) {
-            if (clickedButton0) { selectedFiringMode = 'rapid'; }
-            else if (clickedButton1) { selectedFiringMode = 'single'; }
-            else {
-                isFiringModeSelectMode = false;
-                if (selectedOnePlayerGameVariant === 'CLASSIC_1P') {
-                    isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0;
-                } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
-                    isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0);
-                } else if (isTwoPlayerMode && !isPlayerTwoAI) { // Human 2P
-                    isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0);
-                } else { // Fallback
-                    isPlayerSelectMode = false; selectedButtonIndex = 0;
-                }
-                startAutoDemoTimer(); return;
-            }
-            baseStartGame(true);
-        } else { // Hoofdmenu
-            if (clickedButton0) {
-                isPlayerSelectMode = true; selectedButtonIndex = 0;
-            } else if (clickedButton1) {
-                if (typeof exitGame === 'function') exitGame();
-            } else {
-                triggerFullscreen();
-            }
-        }
-        startAutoDemoTimer();
+        // Game-specifieke klik (tap) logica wordt nu via handleTouchEndGlobal afgehandeld als isTap
+    } else { // Menu of score screen
+        handleCanvasTouch(event, 'end', true); // Behandel klik als een 'tap end'
     }
 }
 
@@ -1520,27 +1567,44 @@ function renderGame() {
 function hideCursor() { if (gameCanvas) { gameCanvas.style.cursor = 'none'; } mouseIdleTimerId = null; }
 
 function handleCanvasMouseMove(event) {
-    if (!gameCanvas) return; clearTimeout(mouseIdleTimerId); mouseIdleTimerId = null;
+    if (!gameCanvas || isTouchActiveMenu || isTouchActiveGame) { // <<< GEWIJZIGD: Doe niets als er een actieve touch is
+        if (!isTouchActiveMenu && !isTouchActiveGame) { // Alleen cursor resetten als GEEN touch actief is
+             clearTimeout(mouseIdleTimerId);
+             mouseIdleTimerId = setTimeout(hideCursor, 2000);
+        }
+        return;
+    }
+    clearTimeout(mouseIdleTimerId); mouseIdleTimerId = null;
     let currentCursorStyle = 'default';
+
     const isInAnyMenuState = !isInGameState && !isShowingScoreScreen;
-    let hoveringButton = false; let newSelectedButtonIndex = selectedButtonIndex;
 
     if (isInAnyMenuState) {
+        handleCanvasTouch(event, 'move'); // Gebruik de centrale touch handler voor hover
+        // De cursorstijl wordt gezet door de 'move' in handleCanvasTouch als dat relevant is
         const rect = gameCanvas.getBoundingClientRect(); const scaleX = gameCanvas.width / rect.width; const scaleY = gameCanvas.height / rect.height; const mouseX = (event.clientX - rect.left) * scaleX; const mouseY = (event.clientY - rect.top) * scaleY;
         const button0Rect = getMenuButtonRect(0);
         const button1Rect = getMenuButtonRect(1);
-        if (button0Rect && checkCollision({ x: mouseX, y: mouseY, width: 1, height: 1 }, button0Rect)) { newSelectedButtonIndex = 0; hoveringButton = true; }
-        else if (button1Rect && checkCollision({ x: mouseX, y: mouseY, width: 1, height: 1 }, button1Rect)) { newSelectedButtonIndex = 1; hoveringButton = true; }
-        else { newSelectedButtonIndex = -1; hoveringButton = false; }
-
-        if (newSelectedButtonIndex !== selectedButtonIndex) {
-            selectedButtonIndex = newSelectedButtonIndex;
-            if (hoveringButton) { stopAutoDemoTimer(); }
+        if ((button0Rect && checkCollision({ x: mouseX, y: mouseY, width: 1, height: 1 }, button0Rect)) ||
+            (button1Rect && checkCollision({ x: mouseX, y: mouseY, width: 1, height: 1 }, button1Rect))) {
+            currentCursorStyle = 'pointer';
         }
-        currentCursorStyle = hoveringButton ? 'pointer' : 'default';
-    } else { currentCursorStyle = 'default'; selectedButtonIndex = -1; }
-    gameCanvas.style.cursor = currentCursorStyle; mouseIdleTimerId = setTimeout(hideCursor, 2000);
-    if (!isInGameState) { const now = Date.now(); if (now - lastMouseMoveResetTime > 500) { if (typeof startAutoDemoTimer === 'function' && !hoveringButton) startAutoDemoTimer(); lastMouseMoveResetTime = now; } }
+    } else {
+        currentCursorStyle = 'default';
+        selectedButtonIndex = -1;
+    }
+    gameCanvas.style.cursor = currentCursorStyle;
+    mouseIdleTimerId = setTimeout(hideCursor, 2000);
+
+    if (!isInGameState) {
+        const now = Date.now();
+        if (now - lastMouseMoveResetTime > 500) {
+            if (typeof startAutoDemoTimer === 'function' && selectedButtonIndex === -1) { // Alleen als niet over knop hovert
+                 startAutoDemoTimer();
+            }
+            lastMouseMoveResetTime = now;
+        }
+    }
 }
 
 
