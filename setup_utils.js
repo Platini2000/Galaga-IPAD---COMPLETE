@@ -594,7 +594,7 @@ function scaleValue(currentLevel, baseValue, maxValue) { const levelForCalc = Ma
 
 
 // --- START OF FILE setup_utils.js ---
-// --- DEEL 3      van 3 dit code blok    ---
+// --- DEEL 3      van 3 dit code blok    --- (Focus op Keyboard en Touch interactie)
 
 
 function setupInitialEventListeners() { /* ... ongewijzigd ... */ try { window.addEventListener("gamepadconnected", handleGamepadConnected); window.addEventListener("gamepaddisconnected", handleGamepadDisconnected); window.addEventListener('resize', resizeCanvases); } catch(e) { console.error("Error setting up initial event listeners:", e); } }
@@ -832,28 +832,21 @@ function handleTouchEndGlobal(event) {
     const isTap = touchDuration < TOUCH_TAP_MAX_DURATION && distance < TOUCH_TAP_MAX_MOVEMENT;
 
     if (isTouchActiveGame && isInGameState) {
-        isTouchActiveGame = false;
-        // Reset schip bewegingsvlaggen hier
-        leftPressed = false;
-        rightPressed = false;
-        // Schieten stopt automatisch als touch losgelaten wordt (afhankelijk van implementatie in handlePlayerInput)
-        // Indien 'single fire' op tap:
+        // isTouchActiveGame wordt false gezet in handlePlayerInput na de laatste inputverwerking
+        // of aan het begin van de volgende handlePlayerInput als geen touch meer actief is.
+        // Schieten voor single-tap wordt hier afgehandeld.
         if (isTap && selectedFiringMode === 'single') {
             const now = Date.now();
-            if (now - lastTapTime > SHOOT_COOLDOWN) { // Eenvoudige debounce
-                shootPressed = true; // Trigger eenmalig schot
-                p1FireInputWasDown = true; // Emuleer button down voor firePlayerBullet
-                if (typeof handlePlayerInput === 'function') {
-                     handlePlayerInput(); // Laat handlePlayerInput het schot verwerken
-                }
-                shootPressed = false; // Reset direct
-                p1FireInputWasDown = false;
+            if (now - lastTapTime > SHOOT_COOLDOWN / 2) { // Kortere debounce voor taps
+                p1FireInputWasDown = true; // Signaleer een vuurintentie
+                // firePlayerBullet zal worden aangeroepen in de volgende handlePlayerInput cyclus
+                // als p1FireInputWasDown nog steeds true is.
                 lastTapTime = now;
+                // p1JustFiredSingle wordt gereset in firePlayerBullet of keyup
             }
-        } else {
-           shootPressed = false; // Stop rapid fire
-           p1FireInputWasDown = false;
         }
+        // Voor rapid fire, het stoppen van schieten gebeurt impliciet doordat
+        // isTouchActiveGame false wordt en p1FireInputWasDown niet meer continu true wordt gezet.
     } else if (isTouchActiveMenu && !isInGameState) {
         isTouchActiveMenu = false;
         // Menu-specifieke tap/release logica in rendering_menu.js -> handleCanvasTouch
@@ -862,6 +855,8 @@ function handleTouchEndGlobal(event) {
         }
     }
     touchedMenuButtonIndex = -1; // Reset altijd
+    // isTouchActiveGame wordt niet hier gereset, maar aan het begin van handlePlayerInput
+    // om te zorgen dat de laatste touch-positie nog gebruikt kan worden voor schieten.
 }
 
 
@@ -903,7 +898,7 @@ function handleKeyDown(e) {
                         case "ArrowLeft": case "KeyA": keyboardP1LeftDown = true; break;
                         case "ArrowRight": case "KeyD": keyboardP1RightDown = true; break;
                         case "Space": case "ArrowUp": case "KeyW":
-                            if (!isTouchActiveGame) keyboardP1ShootDown = true; // Alleen als geen touch actief is
+                            keyboardP1ShootDown = true; // <<< GEWIJZIGD: Verwijder !isTouchActiveGame check
                             break;
                         case "KeyJ": case "Numpad4": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2LeftDown = true; break;
                         case "KeyL": case "Numpad6": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2RightDown = true; break;
@@ -1005,7 +1000,7 @@ function handleKeyUp(e) {
             case "ArrowRight": case "KeyD": keyboardP1RightDown = false; break;
             case "Space": case "ArrowUp": case "KeyW":
                 keyboardP1ShootDown = false;
-                if (!isTouchActiveGame) p1JustFiredSingle = false; // Reset alleen als touch niet schiet
+                p1JustFiredSingle = false; // <<< GEWIJZIGD: Verwijder !isTouchActiveGame check
                 break;
             case "KeyJ": case "Numpad4": keyboardP2LeftDown = false; break;
             case "KeyL": case "Numpad6": keyboardP2RightDown = false; break;

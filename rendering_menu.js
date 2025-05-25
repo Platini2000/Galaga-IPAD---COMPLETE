@@ -344,7 +344,7 @@ function stopAutoDemoTimer() {
 
 
 // --- START OF FILE rendering_menu.js ---
-// --- DEEL 2      van 3 dit code blok    ---
+// --- DEEL 2      van 3 dit code blok    --- (Focus op handleCanvasTouch en handleCanvasClick)
 
 function showMenuState() {
     try {
@@ -733,6 +733,41 @@ function handleCanvasTouch(event, type, isTap = false) {
     }
 
     if (isInGameState) {
+        // NIEUW: Check voor tap op UI elementen tijdens het spel
+        if (type === 'end' && isTap && !isPaused && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage &&
+            !(isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage))) {
+            // Definieer gebieden voor UI-elementen
+            // We gebruiken MARGIN_TOP, MARGIN_SIDE, SCORE_OFFSET_Y en geschatte tekstbreedtes.
+            // Dit is een benadering; voor precieze hitboxes zou je de tekst moeten meten.
+            const topUIHeight = MARGIN_TOP + SCORE_OFFSET_Y + 25; // Geschatte hoogte van de bovenste UI-balk
+
+            // Gebied 1: 1UP (linksboven)
+            const p1UIArea = { x: 0, y: 0, width: MARGIN_SIDE + 100, height: topUIHeight }; // Ruime schatting
+
+            // Gebied 2: HIGH SCORE (midden boven)
+            const highScoreApproxWidth = 200; // Geschatte breedte
+            const highScoreArea = { x: gameCanvas.width / 2 - highScoreApproxWidth / 2, y: 0, width: highScoreApproxWidth, height: topUIHeight };
+
+            // Gebied 3: 2UP (rechtsboven)
+            const p2UIArea = { x: gameCanvas.width - (MARGIN_SIDE + 100), y: 0, width: MARGIN_SIDE + 100, height: topUIHeight };
+
+            let tappedUIElement = false;
+            if (checkCollision({ x: touchX, y: touchY, width: 1, height: 1 }, p1UIArea)) {
+                tappedUIElement = true;
+            } else if (checkCollision({ x: touchX, y: touchY, width: 1, height: 1 }, highScoreArea)) {
+                tappedUIElement = true;
+            } else if (checkCollision({ x: touchX, y: touchY, width: 1, height: 1 }, p2UIArea) &&
+                       (isTwoPlayerMode || (isPlayerTwoAI && selectedGameMode === 'coop'))) { // Alleen voor 2UP als het relevant is
+                tappedUIElement = true;
+            }
+
+            if (tappedUIElement) {
+                if (typeof stopGameAndShowMenu === 'function') {
+                    stopGameAndShowMenu();
+                    return; // Voorkom verdere game-specifieke touch handling
+                }
+            }
+        }
         // Game-specifieke touch handling wordt in game_logic.js gedaan via globale touch variabelen.
         // Hier niets te doen, omdat de globale touch vars direct door handlePlayerInput worden gebruikt.
     } else if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
@@ -841,7 +876,8 @@ function handleCanvasClick(event) {
                 if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu();
             }
         }
-        // Game-specifieke klik (tap) logica wordt nu via handleTouchEndGlobal afgehandeld als isTap
+        // Roep handleCanvasTouch aan om de tap-op-UI check te doen
+        handleCanvasTouch(event, 'end', true);
     } else { // Menu of score screen
         handleCanvasTouch(event, 'end', true); // Behandel klik als een 'tap end'
     }
