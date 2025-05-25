@@ -38,12 +38,7 @@ const
     PLAYER_GAME_OVER_MESSAGE_DURATION_COOP = 3000,
     AI_CAPTURE_BEAM_APPROACH_DELAY_MS = 2000,
     COOP_AI_CAPTURE_DIVE_ANTICIPATION_DURATION_MS = 3000,
-    COOP_AI_SAVE_PARTNER_DELAY_MS = 10000,
-
-    // <<< Touch Input Constanten (toegevoegd) >>>
-    TAP_DURATION_THRESHOLD = 250, // Max ms voor een tik vs sleep
-    MIN_DRAG_DISTANCE_FOR_TAP_CANCEL = 10, // pixels, alleen X-as voor schip
-    MIN_DRAG_TIME_FOR_TAP_CANCEL = 80 // ms
+    COOP_AI_SAVE_PARTNER_DELAY_MS = 10000
 ;
 
 
@@ -72,14 +67,14 @@ let player2MaxLevelReached = 1;
 // Menu State Variabelen
 let isPlayerSelectMode = false;
 let isOnePlayerGameTypeSelectMode = false;
-let isOnePlayerNormalGameSubTypeSelectMode = false;
-let isOnePlayerVsAIGameTypeSelectMode = false;
+let isOnePlayerNormalGameSubTypeSelectMode = false; // Wordt niet meer gebruikt, maar laten staan om geen onverwachte fouten te introduceren
+let isOnePlayerVsAIGameTypeSelectMode = false; // Toegevoegd voor "1P vs AI" sub-menu (Normal/Coop)
 let isGameModeSelectMode = false;
 let isFiringModeSelectMode = false;
 
 let selectedFiringMode = 'rapid';
-let selectedOnePlayerGameVariant = '';
-let isPlayerTwoAI = false;
+let selectedOnePlayerGameVariant = ''; // bv. 'CLASSIC_1P', '1P_VS_AI_NORMAL', '1P_VS_AI_COOP'
+let isPlayerTwoAI = false; // Vlag om aan te duiden dat P2 door AI bestuurd wordt
 
 let p1JustFiredSingle = false;
 let p2JustFiredSingle = false;
@@ -162,7 +157,7 @@ let ship = { x: 0, y: 0, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOV
 let ship1 = null;
 let ship2 = null;
 let leftPressed = false; let rightPressed = false; let shootPressed = false;
-let p2LeftPressed = false; p2RightPressed = false; let p2ShootPressed = false;
+let p2LeftPressed = false; p2RightPressed = false; p2ShootPressed = false;
 let keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false;
 let keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false;
 let bullets = [];
@@ -186,7 +181,7 @@ let isShowingResultsScreen = false;
 let gameOverSequenceStartTime = 0; let gameStartTime = 0;
 let visualOffsetX = -20; let floatingScores = [];
 let csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
-let normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null;
+let normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastChainHitPosition = null;
 let squadronCompletionStatus = {}; let squadronEntranceFiringStatus = {}; let isPaused = false;
 let mouseIdleTimerId = null;
 let initialGameStartSoundPlayedThisSession = false;
@@ -219,17 +214,6 @@ let capturedShipRespawnX_NormalMode = 0;
 let coopPartner1CapturedTime = 0;
 let coopPartner2CapturedTime = 0;
 
-// <<< Touch Input State Variabelen (toegevoegd) >>>
-let isTouching = false;
-let touchCurrentX = 0;
-let touchStartX = 0; // Positie waar touch begon
-let isDraggingShip = false;
-let shipTouchOffsetX = 0; // Offset van touch t.o.v. midden van schip
-let lastTapTime = 0;    // Tijdstip van laatste tap start
-let touchJustFiredSingle = false; // Vlag voor single shot met touch
-let isTouchFiringActive = false; // Vlag voor continu touch vuur
-// <<< EINDE Touch Input State Variabelen >>>
-
 
 // --- Afbeeldingen & Geluiden ---
 const shipImage = new Image(), beeImage = new Image(), butterflyImage = new Image(), bossGalagaImage = new Image(), bulletImage = new Image(), enemyBulletImage = new Image(), logoImage = new Image();
@@ -242,10 +226,9 @@ level1Image.src = 'Afbeeldingen/Level-1.png'; level5Image.src = 'Afbeeldingen/Le
 
 // Web Audio API
 let audioContext;
-let masterGainNode;
 let soundBuffers = {};
-let soundVolumes = {};
-let playingLoopSources = {};
+let soundSources = {}; // To keep track of active sound sources for stopping
+let soundGainNodes = {}; // To control volume per sound
 let audioContextInitialized = false;
 
 const soundPaths = {
@@ -451,50 +434,30 @@ function initializeAudioContext() {
     if (audioContextInitialized) return;
     try {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        if (!audioContext) { // GEWIJZIGD: Extra check
-            console.error("Failed to create AudioContext. Audio will not be available.");
-            audioContextInitialized = false;
-            return;
-        }
-        // GEWIJZIGD: Maak masterGainNode direct na succesvolle audioContext creatie
-        masterGainNode = audioContext.createGain();
-        masterGainNode.connect(audioContext.destination);
-        console.log("AudioContext and MasterGainNode created successfully.");
-
-        // GEWIJZIGD: unlockAudio alleen toevoegen als context suspended is en bestaat
+        // Unlock Web Audio API on iOS - needs a user gesture.
+        // We'll attempt to resume it during the first click/touch if it's suspended.
         if (audioContext.state === 'suspended') {
-            console.log("AudioContext is suspended. Attempting to set up unlock listeners.");
             const unlockAudio = () => {
-                if (audioContext && audioContext.state === 'suspended') { // Dubbele check
-                    audioContext.resume().then(() => {
-                        console.log("AudioContext resumed successfully after user gesture.");
-                        audioContextInitialized = true; // Zet pas true na succesvolle resume
-                        window.removeEventListener('click', unlockAudio);
-                        window.removeEventListener('touchstart', unlockAudio);
-                    }).catch(e => console.error("Error resuming AudioContext:", e));
-                } else if (audioContext && audioContext.state === 'running') {
-                    // Al running, verwijder listeners en zet vlag
+                audioContext.resume().then(() => {
+                    console.log("AudioContext resumed successfully after user gesture.");
                     audioContextInitialized = true;
                     window.removeEventListener('click', unlockAudio);
                     window.removeEventListener('touchstart', unlockAudio);
-                }
+                }).catch(e => console.error("Error resuming AudioContext:", e));
             };
             window.addEventListener('click', unlockAudio, { once: true });
             window.addEventListener('touchstart', unlockAudio, { once: true });
-        } else if (audioContext.state === 'running') {
-            audioContextInitialized = true; // Al running
-            console.log("AudioContext is already running.");
+        } else {
+            audioContextInitialized = true;
         }
     } catch (e) {
-        console.error("Web Audio API is not supported in this browser or an error occurred during initialization.", e);
-        audioContextInitialized = false;
+        console.error("Web Audio API is not supported in this browser.", e);
     }
 }
 
-
 async function loadSound(soundId, path) {
-    if (!audioContextInitialized || !audioContext) { // GEWIJZIGD: Check ook audioContextInitialized
-        // console.warn(`AudioContext not initialized, cannot load sound: ${soundId}`); // Kan veel logs geven
+    if (!audioContext) {
+        console.warn(`AudioContext not initialized, cannot load sound: ${soundId}`);
         return;
     }
     if (soundBuffers[soundId]) {
@@ -506,23 +469,18 @@ async function loadSound(soundId, path) {
             throw new Error(`HTTP error! status: ${response.status} for ${path}`);
         }
         const arrayBuffer = await response.arrayBuffer();
-        // GEWIJZIGD: Check audioContext opnieuw voor decodeAudioData
-        if (audioContext && typeof audioContext.decodeAudioData === 'function') {
-            audioContext.decodeAudioData(arrayBuffer, (buffer) => {
-                soundBuffers[soundId] = buffer;
-            }, (error) => {
-                console.error(`Error decoding audio data for ${soundId} (${path}):`, error);
-            });
-        } else {
-             console.warn(`AudioContext disappeared or decodeAudioData not available before decoding ${soundId}`);
-        }
+        audioContext.decodeAudioData(arrayBuffer, (buffer) => {
+            soundBuffers[soundId] = buffer;
+        }, (error) => {
+            console.error(`Error decoding audio data for ${soundId} (${path}):`, error);
+        });
     } catch (e) {
         console.error(`Error fetching sound ${soundId} (${path}):`, e);
     }
 }
 
 function loadAllSounds() {
-    if (!audioContextInitialized || !audioContext) return; // GEWIJZIGD: Check ook audioContextInitialized
+    if (!audioContext) return;
     for (const soundId in soundPaths) {
         loadSound(soundId, soundPaths[soundId]);
     }
@@ -551,47 +509,47 @@ function initializeDOMElements() {
     csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
     normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null;
 
-    initializeAudioContext();
-    if (audioContextInitialized) {
-        loadAllSounds();
-        setTimeout(() => {
-            // De audioContext.state check hier is minder kritisch als audioContextInitialized al true is,
-            // maar kan geen kwaad als extra veiligheid.
-            if (audioContextInitialized && (!audioContext || audioContext.state === 'running')) {
-                setVolume('playerShootSound', 0.4);
-                setVolume('explosionSound', 0.4);
-                setVolume('gameOverSound', 0.4);
-                setVolume('lostLifeSound', 0.6);
-                setVolume('entranceSound', 0.4);
-                setVolume('bossGalagaDiveSound', 0.2);
-                setVolume('levelUpSound', 0.2);
-                setVolume('enemyShootSound', 0.4);
-                setVolume('butterflyDiveSound', 0.2);
-                setVolume('startSound', 0.4);
-                setVolume('coinSound', 0.4);
-                setVolume('beeHitSound', 0.3);
-                setVolume('butterflyHitSound', 0.3);
-                setVolume('bossHit1Sound', 0.6);
-                setVolume('bossHit2Sound', 0.4);
-                setVolume('gridBackgroundSound', 0.1);
-                setVolume('extraLifeSound', 0.5);
-                setVolume('csPerfectSound', 0.6);
-                setVolume('csClearSound', 0.6);
-                setVolume('waveUpSound', 0.8);
-                setVolume('menuMusicSound', 0.2);
-                setVolume('readySound', 0.1);
-                setVolume('tripleAttackSound', 0.3);
-                setVolume('captureSound', 0.6);
-                setVolume('shipCapturedSound', 0.3);
-                setVolume('dualShipSound', 0.4);
-                setVolume('resultsMusicSound', 0.2);
-                setVolume('hiScoreSound', 0.2);
-            } else if (audioContext && audioContext.state === 'suspended') {
-                 console.warn("AudioContext still suspended after timeout in initializeDOMElements. User interaction needed to play sounds properly with set volumes.");
-            }
-        }, 100);
-    }
+    initializeAudioContext(); // Initialize AudioContext
+    if (audioContext) {
+        loadAllSounds(); // Load all sounds
 
+        // Set initial volumes after sounds are expected to be loaded (or at least paths are known)
+        // Actual buffer might not be ready yet, but GainNodes can be created.
+        // A more robust solution would set volume after each sound buffer is decoded.
+        setTimeout(() => {
+            if (!audioContextInitialized && audioContext.state === 'suspended') {
+                console.warn("AudioContext still suspended. User interaction needed to play sounds.");
+            }
+            setVolume('playerShootSound', 0.4);
+            setVolume('explosionSound', 0.4);
+            setVolume('gameOverSound', 0.4);
+            setVolume('lostLifeSound', 0.6);
+            setVolume('entranceSound', 0.4);
+            setVolume('bossGalagaDiveSound', 0.2);
+            setVolume('levelUpSound', 0.2);
+            setVolume('enemyShootSound', 0.4);
+            setVolume('butterflyDiveSound', 0.2);
+            setVolume('startSound', 0.4);
+            setVolume('coinSound', 0.4); // or dualShipSound
+            setVolume('beeHitSound', 0.3);
+            setVolume('butterflyHitSound', 0.3);
+            setVolume('bossHit1Sound', 0.6);
+            setVolume('bossHit2Sound', 0.4);
+            setVolume('gridBackgroundSound', 0.1);
+            setVolume('extraLifeSound', 0.5);
+            setVolume('csPerfectSound', 0.6);
+            setVolume('csClearSound', 0.6);
+            setVolume('waveUpSound', 0.8);
+            setVolume('menuMusicSound', 0.2);
+            setVolume('readySound', 0.1);
+            setVolume('tripleAttackSound', 0.3);
+            setVolume('captureSound', 0.6);
+            setVolume('shipCapturedSound', 0.3);
+            setVolume('dualShipSound', 0.4);
+            setVolume('resultsMusicSound', 0.2);
+            setVolume('hiScoreSound', 0.2);
+        }, 100); // Short delay to allow GainNode creation
+    }
 
     const imagesToLoad = [ shipImage, beeImage, bulletImage, bossGalagaImage, butterflyImage, logoImage, level1Image, level5Image, level10Image, level20Image, level30Image, level50Image, beeImage2, butterflyImage2, bossGalagaImage2 ];
     imagesToLoad.forEach(img => { if (img) img.onerror = () => console.error(`Error loading image: ${img.src}`); });
@@ -617,11 +575,13 @@ function scaleValue(currentLevel, baseValue, maxValue) { const levelForCalc = Ma
 // --- START OF FILE setup_utils.js ---
 // --- DEEL 3      van 3 dit code blok    ---
 
+
 function setupInitialEventListeners() { /* ... ongewijzigd ... */ try { window.addEventListener("gamepadconnected", handleGamepadConnected); window.addEventListener("gamepaddisconnected", handleGamepadDisconnected); window.addEventListener('resize', resizeCanvases); } catch(e) { console.error("Error setting up initial event listeners:", e); } }
 
 
 function getCurrentGridSlotPosition(gridRow, gridCol, enemyWidth) {
     if (!gameCanvas || gameCanvas.width === 0 || gridRow < 0 || gridCol < 0) {
+        // console.warn(`[DEBUG] getCurrentGridSlotPosition called with invalid params or zero canvas width. Row: ${gridRow}, Col: ${gridCol}, CanvasW: ${gameCanvas?.width}`);
         return { x: gameCanvas?.width / 2 || 200, y: ENEMY_TOP_MARGIN || 100 };
     }
     const baseEnemyWidthForCalc = ENEMY_WIDTH;
@@ -641,156 +601,131 @@ function getCurrentGridSlotPosition(gridRow, gridCol, enemyWidth) {
     const colStartX = currentStartX + gridCol * (baseEnemyWidthForCalc + currentHorizontalSpacing);
     const centeringOffset = (baseEnemyWidthForCalc - enemyWidth) / 2;
     const targetX = Math.round(colStartX + centeringOffset);
-    const targetY = Math.round(ENEMY_TOP_MARGIN + gridRow * (ENEMY_HEIGHT + currentVerticalSpacing));
+    const targetY = Math.round(ENEMY_TOP_MARGIN + gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING));
 
     return { x: targetX, y: targetY };
 }
 
-/**
- * Helper function to load an audio file into an AudioBuffer.
- */
-function loadAudioBuffer(url, callback) {
-    if (!audioContext) {
-        console.error("AudioContext not initialized. Cannot load audio buffer.");
+
+/** Safely attempts to play a sound from the beginning. Handles potential errors. */
+function playSound(soundId, loop = false, volume = 1) {
+    if (!audioContext || !audioContextInitialized || audioContext.state === 'suspended' || !soundBuffers[soundId]) {
+        // console.warn(`Cannot play sound: ${soundId}. Context suspended or buffer not ready.`);
         return;
     }
-    const request = new XMLHttpRequest();
-    request.open('GET', url, true);
-    request.responseType = 'arraybuffer';
+    if (isPaused && soundId !== 'menuMusicSound') return;
 
-    request.onload = function() {
-        audioContext.decodeAudioData(request.response, function(buffer) {
-            if (callback) callback(buffer);
-        }, function(e){ console.error("Error decoding audio data from " + url, e); });
+    // Stop any existing instance of this sound before playing a new one, unless it's music
+    if (soundId !== 'menuMusicSound' && soundId !== 'gridBackgroundSound') {
+        stopSound(soundId);
+    } else if ((soundId === 'menuMusicSound' || soundId === 'gridBackgroundSound') && soundSources[soundId]) {
+        // If it's looping music and already playing, don't restart
+        return;
     }
-    request.onerror = function() {
-        console.error("XMLHttpRequest error loading audio file: " + url);
+
+
+    const source = audioContext.createBufferSource();
+    source.buffer = soundBuffers[soundId];
+    source.loop = loop;
+
+    let gainNode = soundGainNodes[soundId];
+    if (!gainNode) {
+        gainNode = audioContext.createGain();
+        soundGainNodes[soundId] = gainNode;
     }
-    request.send();
+    // Ensure volume is within a reasonable range (0.0 to 1.0 typical, but can be higher for gain)
+    const safeVolume = Math.max(0, Math.min(2, volume)); // Cap at 2 as an example
+    gainNode.gain.setValueAtTime(safeVolume, audioContext.currentTime);
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    source.start(0);
+    soundSources[soundId] = source; // Store the source to allow stopping it
+
+    source.onended = () => {
+        if (soundSources[soundId] === source) { // Only delete if it's the current one
+            delete soundSources[soundId];
+        }
+    };
+}
+
+/** Safely attempts to stop a sound and reset its position. */
+function stopSound(soundId) {
+    if (soundSources[soundId]) {
+        try {
+            soundSources[soundId].stop(0);
+        } catch (e) {
+            // Can throw if already stopped or not playing.
+        }
+        // Don't delete immediately, onended will handle it.
+        // delete soundSources[soundId]; // This was causing issues with rapidly replayed sounds
+    }
+}
+
+/** Helper to set volume for a specific sound */
+function setVolume(soundId, volume) {
+    if (!audioContext) return;
+    if (!soundGainNodes[soundId]) {
+        soundGainNodes[soundId] = audioContext.createGain();
+        soundGainNodes[soundId].connect(audioContext.destination);
+    }
+    const safeVolume = Math.max(0, Math.min(2, volume));
+    soundGainNodes[soundId].gain.setValueAtTime(safeVolume, audioContext.currentTime);
 }
 
 
-/**
- * Plays a sound using the Web Audio API.
- * @param {string} soundIdentifier - The key from the soundPaths object (e.g., 'playerShootSound').
- * @param {boolean} [loop=false] - Whether the sound should loop.
- * @param {number} [volumeOverride] - Optional volume override (0.0 to 1.0). If not provided, uses stored volume or default.
- */
-function playSound(soundIdentifier, loop = false, volumeOverride = undefined) {
-    try {
-        if (!audioContext || !masterGainNode || typeof soundBuffers !== 'object' || typeof playingLoopSources !== 'object' || typeof soundVolumes !== 'object') {
-            return;
-        }
-        if (audioContext.state === 'suspended') {
-            audioContext.resume().catch(e => console.error("Error resuming AudioContext:", e));
-        }
+/** Attempts to enter fullscreen mode and plays menu music. */
+function triggerFullscreen() {
+    if (!document.fullscreenElement) {
+        const element = document.documentElement;
+        let requestFullscreenPromise = null;
 
-        if (isPaused && soundIdentifier !== 'menuMusicSound' && soundIdentifier !== 'resultsMusicSound') {
-             return;
+        if (element.requestFullscreen) {
+            requestFullscreenPromise = element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) { /* Firefox */
+            requestFullscreenPromise = element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+            requestFullscreenPromise = element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) { /* IE/Edge */
+            requestFullscreenPromise = element.msRequestFullscreen();
         }
 
-        if (soundIdentifier === 'menuMusicSound') {
-            stopSound('resultsMusicSound');
-        }
+        const playMenuMusicAfterAction = () => {
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    audioContextInitialized = true;
+                    playSound('menuMusicSound', true, 0.2);
+                }).catch(e => console.error("Error resuming AudioContext for fullscreen music:", e));
+            } else if (audioContext) {
+                playSound('menuMusicSound', true, 0.2);
+            }
+        };
 
-
-        const buffer = soundBuffers[soundIdentifier];
-        if (!buffer) {
-            return;
-        }
-
-        if (loop && playingLoopSources[soundIdentifier]) {
-            try {
-                playingLoopSources[soundIdentifier].source.stop();
-                playingLoopSources[soundIdentifier].gainNode.disconnect();
-            } catch (e) { /* Ignore if already stopped */ }
-            delete playingLoopSources[soundIdentifier];
-        }
-
-        const source = audioContext.createBufferSource();
-        source.buffer = buffer;
-
-        const individualGainNode = audioContext.createGain();
-
-        let effectiveVolume;
-        if (volumeOverride !== undefined) {
-            effectiveVolume = Math.max(0, Math.min(1, volumeOverride));
-            soundVolumes[soundIdentifier] = effectiveVolume;
+        if (requestFullscreenPromise) {
+            requestFullscreenPromise
+                .then(() => {
+                    playMenuMusicAfterAction();
+                })
+                .catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    playMenuMusicAfterAction();
+                });
         } else {
-            effectiveVolume = soundVolumes[soundIdentifier] !== undefined ? soundVolumes[soundIdentifier] : 1.0;
+            console.warn("Fullscreen API is not supported by this browser.");
+            playMenuMusicAfterAction();
         }
-
-        individualGainNode.gain.value = effectiveVolume;
-        source.connect(individualGainNode);
-        individualGainNode.connect(masterGainNode);
-
-        source.loop = loop;
-        source.start(0);
-
-        if (loop) {
-            playingLoopSources[soundIdentifier] = { source: source, gainNode: individualGainNode };
-            if (soundIdentifier === 'gridBackgroundSound') { isGridSoundPlaying = true; }
+    } else {
+         if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => {
+                audioContextInitialized = true;
+                playSound('menuMusicSound', true, 0.2);
+            });
+        } else if (audioContext) {
+            playSound('menuMusicSound', true, 0.2);
         }
-
-    } catch (e) {
-        console.error(`Error in playSound for ${soundIdentifier}:`, e);
     }
 }
 
-
-/**
- * Stops a specific looping sound identified by its key.
- * Non-looping sounds stop automatically.
- * @param {string} soundIdentifier - The key from the soundPaths object.
- */
-function stopSound(soundIdentifier) {
-    try {
-        if (typeof playingLoopSources === 'object' && playingLoopSources && playingLoopSources[soundIdentifier]) {
-            const loopData = playingLoopSources[soundIdentifier];
-            const sourceNode = loopData.source;
-            const gainNode = loopData.gainNode;
-
-            if (sourceNode) {
-                try {
-                    sourceNode.stop(0);
-                } catch (e) { }
-            }
-            if (gainNode) {
-                try {
-                    gainNode.disconnect();
-                } catch (e) { }
-            }
-            delete playingLoopSources[soundIdentifier];
-             if (soundIdentifier === 'gridBackgroundSound') { isGridSoundPlaying = false; }
-        }
-    } catch (e) {
-        console.error(`Error in stopSound for ${soundIdentifier}:`, e);
-    }
-}
-
-/**
- * Sets the volume for a specific sound. This volume will be used for subsequent plays.
- * @param {string} soundIdentifier - The key from the soundPaths object.
- * @param {number} volume - The volume level (0.0 to 1.0).
- */
-function setVolume(soundIdentifier, volume) {
-    if (!audioContextInitialized && (!audioContext || audioContext.state !== 'running')) { // GEWIJZIGD: Check ook audioContext.state
-        if(typeof soundVolumes === 'object' && soundVolumes !== null) soundVolumes[soundIdentifier] = Math.max(0, Math.min(1, volume));
-        return;
-    }
-    if (!audioContext || typeof soundVolumes !== 'object') { // Voorkom errors als soundVolumes nog niet klaar is
-        return;
-    }
-    const normalizedVolume = Math.max(0, Math.min(1, volume));
-    soundVolumes[soundIdentifier] = normalizedVolume;
-}
-
-
-/** Basic rectangle collision check. */
-function checkCollision(rect1, rect2) { /* ... ongewijzigd ... */ if (!rect1 || !rect2) return false; return ( rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y ); }
-
-/** Attempts to enter fullscreen mode. */
-function triggerFullscreen() { /* ... ongewijzigd ... */ if (!document.fullscreenElement) { const element = document.documentElement; if (element.requestFullscreen) { element.requestFullscreen().catch(err => console.error(`Fullscreen error: ${err.message}`)); } else if (element.mozRequestFullScreen) { element.mozRequestFullScreen().catch(err => console.error(`Fullscreen error (FF): ${err.message}`)); } else if (element.webkitRequestFullscreen) { element.webkitRequestFullscreen().catch(err => console.error(`Fullscreen error (WebKit): ${err.message}`)); } else if (element.msRequestFullscreen) { element.msRequestFullscreen().catch(err => console.error(`Fullscreen error (MS): ${err.message}`)); } } }
 
 /** Creates a single star object with random properties. */
 function createStar() { /* ... ongewijzigd ... */ if (!starrySkyCanvas || starrySkyCanvas.width === 0) return null; return { x: Math.random() * starrySkyCanvas.width, y: Math.random() * starrySkyCanvas.height, radius: Math.random() * (MAX_STAR_RADIUS - MIN_STAR_RADIUS) + MIN_STAR_RADIUS, alpha: Math.random() * 0.8 + 0.2, alphaChange: (Math.random() > 0.5 ? 1 : -1) * TWINKLE_SPEED * (Math.random() * 0.5 + 0.5) }; }
@@ -820,36 +755,223 @@ function resizeCanvases() { /* ... ongewijzigd ... */ try { const width = window
 function handleResizeGameElements(oldWidth, newWidth, newHeight) { /* ... ongewijzigd ... */ try { currentGridOffsetX = 0; if (ship) { if (oldWidth > 0 && newWidth > 0 && typeof ship.x !== 'undefined') { ship.x = (ship.x / oldWidth) * newWidth; } else { ship.x = newWidth / 2 - ship.width / 2; } ship.x = Math.max(0, Math.min(newWidth - ship.width, ship.x)); ship.y = newHeight - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN; ship.targetX = ship.x; } enemies.forEach((e) => { if (e && (e.state === 'in_grid' || e.state === 'returning' || e.state === 'moving_to_grid')) { try { const enemyWidthForGrid = (e.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((e.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH); const { x: newTargetX, y: newTargetY } = getCurrentGridSlotPosition(e.gridRow, e.gridCol, enemyWidthForGrid); e.targetGridX = newTargetX; e.targetGridY = newTargetY; if (e.state === 'in_grid') { e.x = newTargetX; e.y = newTargetY; } } catch (gridPosError) { console.error(`Error recalculating grid pos for enemy ${e.id} on resize:`, gridPosError); if(e.state === 'in_grid' || e.state === 'moving_to_grid' || e.state === 'returning'){ e.x = newWidth / 2; e.y = ENEMY_TOP_MARGIN + e.gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING); e.targetGridX = e.x; e.targetGridY = e.y; } } } }); } catch (e) { console.error("Error handling game resize specifics:", e); } }
 
 // --- Keyboard Event Handlers ---
-function handleKeyDown(e) { /* ... ongewijzigd ... */ try { if (audioContext && audioContext.state === 'suspended') { audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by keydown."); }); } const relevantKeys = [" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Escape", "w", "a", "s", "d", "p", "P", "j", "J", "l", "L", "i", "I", "Numpad4", "Numpad6", "Numpad0"]; if (relevantKeys.includes(e.key) || relevantKeys.includes(e.code)) { e.preventDefault(); } let blockAllKeyboardInput = false; if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0) { blockAllKeyboardInput = true; } if (blockAllKeyboardInput) { return; } if (isInGameState) { if ((e.key === 'p' || e.key === 'P') && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage) { if(typeof togglePause === 'function') togglePause(); return; } if (!isPaused) { if (!isManualControl) { if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) { } else { if (e.key === "Escape" || e.key === "Enter") { if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu(); } else if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') { if(typeof showMenuState === 'function') showMenuState(); } } } else { switch (e.code) { case "ArrowLeft": case "KeyA": keyboardP1LeftDown = true; break; case "ArrowRight": case "KeyD": keyboardP1RightDown = true; break; case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = true; break; case "KeyJ": case "Numpad4": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2LeftDown = true; break; case "KeyL": case "Numpad6": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2RightDown = true; break; case "KeyI": case "Numpad0": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2ShootDown = true; break; case "Escape": case "Enter": if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu(); break; } if (!keyboardP2LeftDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "j") keyboardP2LeftDown = true; if (!keyboardP2RightDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "l") keyboardP2RightDown = true; if (!keyboardP2ShootDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "i") keyboardP2ShootDown = true; } } } else { if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) { if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') { if(typeof showMenuState === 'function') showMenuState(); return; } } else if (!isShowingScoreScreen) { stopAutoDemoTimer(); switch (e.key) { case "ArrowUp": case "w": selectedButtonIndex = (selectedButtonIndex <= 0) ? 1 : 0; startAutoDemoTimer(); break; case "ArrowDown": case "s": selectedButtonIndex = (selectedButtonIndex >= 1) ? 0 : 1; startAutoDemoTimer(); break; case "Enter": case " ": if (isPlayerSelectMode) { if (selectedButtonIndex === 0) { startGame1P(); } else { startGame2P(); } } else if (isOnePlayerGameTypeSelectMode) { if (selectedButtonIndex === 0) { isOnePlayerGameTypeSelectMode = false; isFiringModeSelectMode = true; selectedOnePlayerGameVariant = 'CLASSIC_1P'; selectedGameMode = 'normal'; isTwoPlayerMode = false; isPlayerTwoAI = false; selectedButtonIndex = 0; } else { isOnePlayerGameTypeSelectMode = false; isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = 0; } } else if (isOnePlayerVsAIGameTypeSelectMode) { if (selectedButtonIndex === 0) { selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL'; selectedGameMode = 'normal'; } else { selectedOnePlayerGameVariant = '1P_VS_AI_COOP'; selectedGameMode = 'coop'; } isOnePlayerVsAIGameTypeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = true; selectedButtonIndex = 0; } else if (isGameModeSelectMode) { if (selectedButtonIndex === 0) { selectedGameMode = 'normal'; } else { selectedGameMode = 'coop'; } isGameModeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = false; selectedButtonIndex = 0; } else if (isFiringModeSelectMode) { if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; } baseStartGame(true); } else { if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0;} else if (selectedButtonIndex === 1) { exitGame(); } } startAutoDemoTimer(); break; case "Escape": if (isFiringModeSelectMode) { isFiringModeSelectMode = false; if (selectedOnePlayerGameVariant === 'CLASSIC_1P') { isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0; } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0); } else if (isTwoPlayerMode && !isPlayerTwoAI) { isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0); } else { isPlayerSelectMode = false; selectedButtonIndex = 0; } selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; selectedGameMode = 'normal'; } else if (isOnePlayerVsAIGameTypeSelectMode) { isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1; } else if (isOnePlayerGameTypeSelectMode) { isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0; } else if (isGameModeSelectMode) { isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1; } else if (isPlayerSelectMode) { isPlayerSelectMode = false; selectedButtonIndex = 0; } else { triggerFullscreen(); } startAutoDemoTimer(); break; default: startAutoDemoTimer(); break; } } } } catch(err) { console.error("Error in handleKeyDown:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; } }
-function handleKeyUp(e) { /* ... ongewijzigd ... */ try { switch (e.code) { case "ArrowLeft": case "KeyA": keyboardP1LeftDown = false; break; case "ArrowRight": case "KeyD": keyboardP1RightDown = false; break; case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = false; p1JustFiredSingle = false; break; case "KeyJ": case "Numpad4": keyboardP2LeftDown = false; break; case "KeyL": case "Numpad6": keyboardP2RightDown = false; break; case "KeyI": case "Numpad0": keyboardP2ShootDown = false; p2JustFiredSingle = false; break; } if (e.key.toLowerCase() === "j") keyboardP2LeftDown = false; if (e.key.toLowerCase() === "l") keyboardP2RightDown = false; if (e.key.toLowerCase() === "i") { keyboardP2ShootDown = false; p2JustFiredSingle = false; } } catch(err) { console.error("Error in handleKeyUp:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false;} }
+function handleKeyDown(e) {
+    try {
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by keydown."); });
+        }
+        const relevantKeys = [" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Escape", "w", "a", "s", "d", "p", "P", "j", "J", "l", "L", "i", "I", "Numpad4", "Numpad6", "Numpad0"];
+        if (relevantKeys.includes(e.key) || relevantKeys.includes(e.code)) {
+            e.preventDefault();
+        }
+        let blockAllKeyboardInput = false;
+        if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0) {
+            blockAllKeyboardInput = true;
+        }
+        if (blockAllKeyboardInput) { return; }
+
+        if (isInGameState) {
+            if ((e.key === 'p' || e.key === 'P') && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage) {
+                if(typeof togglePause === 'function') togglePause();
+                return;
+            }
+
+            if (!isPaused) {
+                if (!isManualControl) {
+                    if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
+                        // AI P2 is active, P1 (mens) kan niet stoppen.
+                    } else {
+                        if (e.key === "Escape" || e.key === "Enter") {
+                            if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu();
+                        } else if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') {
+                            if(typeof showMenuState === 'function') showMenuState();
+                        }
+                    }
+                } else {
+                    switch (e.code) {
+                        case "ArrowLeft": case "KeyA": keyboardP1LeftDown = true; break;
+                        case "ArrowRight": case "KeyD": keyboardP1RightDown = true; break;
+                        case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = true; break;
+                        case "KeyJ": case "Numpad4": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2LeftDown = true; break;
+                        case "KeyL": case "Numpad6": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2RightDown = true; break;
+                        case "KeyI": case "Numpad0": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2ShootDown = true; break;
+                        case "Escape": case "Enter": if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu(); break;
+                    }
+                    if (!keyboardP2LeftDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "j") keyboardP2LeftDown = true;
+                    if (!keyboardP2RightDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "l") keyboardP2RightDown = true;
+                    if (!keyboardP2ShootDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "i") keyboardP2ShootDown = true;
+                }
+            }
+        } else {
+            if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
+                if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') {
+                    if(typeof showMenuState === 'function') showMenuState(); return;
+                }
+            } else if (!isShowingScoreScreen) {
+                stopAutoDemoTimer();
+                switch (e.key) {
+                    case "ArrowUp": case "w": selectedButtonIndex = (selectedButtonIndex <= 0) ? 1 : 0; startAutoDemoTimer(); break;
+                    case "ArrowDown": case "s": selectedButtonIndex = (selectedButtonIndex >= 1) ? 0 : 1; startAutoDemoTimer(); break;
+                    case "Enter": case " ":
+                        if (isPlayerSelectMode) {
+                            if (selectedButtonIndex === 0) { startGame1P(); }
+                            else { startGame2P(); }
+                        } else if (isOnePlayerGameTypeSelectMode) {
+                            if (selectedButtonIndex === 0) { // 1P -> NORMAL GAME (Classic)
+                                isOnePlayerGameTypeSelectMode = false;
+                                isFiringModeSelectMode = true;
+                                selectedOnePlayerGameVariant = 'CLASSIC_1P';
+                                selectedGameMode = 'normal';
+                                isTwoPlayerMode = false; isPlayerTwoAI = false;
+                                selectedButtonIndex = 0;
+                            } else { // 1P -> GAME VS AI
+                                isOnePlayerGameTypeSelectMode = false;
+                                isOnePlayerVsAIGameTypeSelectMode = true;
+                                selectedButtonIndex = 0;
+                            }
+                        } else if (isOnePlayerVsAIGameTypeSelectMode) { // 1P -> GAME VS AI -> Normal / Coop
+                            if (selectedButtonIndex === 0) { // 1P vs AI NORMAL
+                                selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL';
+                                selectedGameMode = 'normal'; // << GEWIJZIGD: Correcte mode instellen
+                            } else { // 1P vs AI COOP
+                                selectedOnePlayerGameVariant = '1P_VS_AI_COOP';
+                                selectedGameMode = 'coop'; // << GEWIJZIGD: Correcte mode instellen
+                            }
+                            isOnePlayerVsAIGameTypeSelectMode = false;
+                            isFiringModeSelectMode = true;
+                            isTwoPlayerMode = true; isPlayerTwoAI = true;
+                            selectedButtonIndex = 0;
+                        } else if (isGameModeSelectMode) { // 2P HUMAN -> Normal / Coop
+                            if (selectedButtonIndex === 0) { selectedGameMode = 'normal'; }
+                            else { selectedGameMode = 'coop'; }
+                            isGameModeSelectMode = false; isFiringModeSelectMode = true;
+                            isTwoPlayerMode = true; isPlayerTwoAI = false;
+                            selectedButtonIndex = 0;
+                        } else if (isFiringModeSelectMode) {
+                            if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; }
+                            else { selectedFiringMode = 'single'; }
+                            baseStartGame(true);
+                        } else { // Hoofdmenu
+                            if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0;}
+                            else if (selectedButtonIndex === 1) { exitGame(); }
+                        }
+                        startAutoDemoTimer(); break;
+                    case "Escape":
+                        if (isFiringModeSelectMode) {
+                            isFiringModeSelectMode = false;
+                            if (selectedOnePlayerGameVariant === 'CLASSIC_1P') {
+                                isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0;
+                            } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+                                isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0);
+                            } else if (isTwoPlayerMode && !isPlayerTwoAI) { // Human 2P
+                                isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0);
+                            } else { // Fallback
+                                isPlayerSelectMode = false; selectedButtonIndex = 0;
+                            }
+                            selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; selectedGameMode = 'normal'; // Reset game mode bij teruggaan
+                        } else if (isOnePlayerVsAIGameTypeSelectMode) {
+                            isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1;
+                        } else if (isOnePlayerGameTypeSelectMode) {
+                            isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0;
+                        } else if (isGameModeSelectMode) {
+                            isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1;
+                        } else if (isPlayerSelectMode) {
+                            isPlayerSelectMode = false; selectedButtonIndex = 0;
+                        } else { triggerFullscreen(); }
+                        startAutoDemoTimer(); break;
+                    default: startAutoDemoTimer(); break;
+                }
+            }
+        }
+    } catch(err) { console.error("Error in handleKeyDown:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; }
+}
+function handleKeyUp(e) {
+    try {
+        switch (e.code) {
+            case "ArrowLeft": case "KeyA": keyboardP1LeftDown = false; break;
+            case "ArrowRight": case "KeyD": keyboardP1RightDown = false; break;
+            case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = false; p1JustFiredSingle = false; break;
+            case "KeyJ": case "Numpad4": keyboardP2LeftDown = false; break;
+            case "KeyL": case "Numpad6": keyboardP2RightDown = false; break;
+            case "KeyI": case "Numpad0": keyboardP2ShootDown = false; p2JustFiredSingle = false; break;
+        }
+        if (e.key.toLowerCase() === "j") keyboardP2LeftDown = false;
+        if (e.key.toLowerCase() === "l") keyboardP2RightDown = false;
+        if (e.key.toLowerCase() === "i") { keyboardP2ShootDown = false; p2JustFiredSingle = false; }
+
+    } catch(err) { console.error("Error in handleKeyUp:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false;}
+}
 
 
 // --- Gamepad Event Handlers ---
-function handleGamepadConnected(event) { /* ... inhoud ongewijzigd ... */ try { if (audioContext && audioContext.state === 'suspended') { audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by gamepad connection."); }); } if (connectedGamepadIndex === null) { connectedGamepadIndex = event.gamepad.index; const numButtons = event.gamepad.buttons.length; previousButtonStates = new Array(numButtons).fill(false); previousDemoButtonStates = new Array(numButtons).fill(false); previousGameButtonStates = new Array(numButtons).fill(false); if (!isInGameState) { stopAutoDemoTimer(); selectedButtonIndex = 0; } } else if (connectedGamepadIndexP2 === null) { connectedGamepadIndexP2 = event.gamepad.index; const numButtons = event.gamepad.buttons.length; previousGameButtonStatesP2 = new Array(numButtons).fill(false); } } catch(e) { console.error("Error in handleGamepadConnected:", e); } }
-function handleGamepadDisconnected(event) { /* ... inhoud ongewijzigd ... */ try { if (connectedGamepadIndex === event.gamepad.index) { connectedGamepadIndex = null; previousButtonStates = []; previousDemoButtonStates = []; previousGameButtonStates = []; if (!isInGameState) { selectedButtonIndex = -1; joystickMovedVerticallyLastFrame = false; startAutoDemoTimer(); } p1FireInputWasDown = false; } else if (connectedGamepadIndexP2 === event.gamepad.index) { connectedGamepadIndexP2 = null; previousGameButtonStatesP2 = []; p2FireInputWasDown = false; } } catch(e) { console.error("Error in handleGamepadDisconnected:", e); p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; } }
+function handleGamepadConnected(event) {
+    try {
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by gamepad connection."); });
+        }
+        if (connectedGamepadIndex === null) {
+            connectedGamepadIndex = event.gamepad.index;
+            const numButtons = event.gamepad.buttons.length;
+            previousButtonStates = new Array(numButtons).fill(false);
+            previousDemoButtonStates = new Array(numButtons).fill(false);
+            previousGameButtonStates = new Array(numButtons).fill(false);
+            if (!isInGameState) { stopAutoDemoTimer(); selectedButtonIndex = 0; }
+        } else if (connectedGamepadIndexP2 === null) {
+            connectedGamepadIndexP2 = event.gamepad.index;
+            const numButtons = event.gamepad.buttons.length;
+            previousGameButtonStatesP2 = new Array(numButtons).fill(false);
+        }
+    } catch(e) { console.error("Error in handleGamepadConnected:", e); }
+}
+function handleGamepadDisconnected(event) {
+    try {
+        if (connectedGamepadIndex === event.gamepad.index) {
+            connectedGamepadIndex = null;
+            previousButtonStates = []; previousDemoButtonStates = []; previousGameButtonStates = [];
+            if (!isInGameState) { selectedButtonIndex = -1; joystickMovedVerticallyLastFrame = false; startAutoDemoTimer(); }
+            p1FireInputWasDown = false;
+        } else if (connectedGamepadIndexP2 === event.gamepad.index) {
+            connectedGamepadIndexP2 = null;
+            previousGameButtonStatesP2 = [];
+            p2FireInputWasDown = false;
+        }
+    } catch(e) { console.error("Error in handleGamepadDisconnected:", e); p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; }
+}
 
 // --- High Score ---
-function saveHighScore() { /* ... inhoud ongewijzigd ... */ try { let potentialNewHighScore = 0; if (isTwoPlayerMode && selectedGameMode === 'coop') { potentialNewHighScore = Math.max(player1Score, player2Score); } else if (isTwoPlayerMode && selectedGameMode === 'normal') { potentialNewHighScore = Math.max(player1Score, player2Score); } else { potentialNewHighScore = score; } if (isManualControl && potentialNewHighScore > highScore) { highScore = potentialNewHighScore; } } catch (e) { console.error("Error in saveHighScore:", e); } }
+function saveHighScore() {
+    try {
+        let potentialNewHighScore = 0;
+        if (isTwoPlayerMode && selectedGameMode === 'coop') { potentialNewHighScore = Math.max(player1Score, player2Score); }
+        else if (isTwoPlayerMode && selectedGameMode === 'normal') { potentialNewHighScore = Math.max(player1Score, player2Score); }
+        else { potentialNewHighScore = score; }
+
+        if (isManualControl && potentialNewHighScore > highScore) {
+            highScore = potentialNewHighScore;
+        }
+    } catch (e) { console.error("Error in saveHighScore:", e); }
+}
 function loadHighScore() { /* ... ongewijzigd ... */ try { highScore = 20000; } catch (e) { console.error("Error in loadHighScore:", e); highScore = 20000; } }
 
 // --- Pauze Functies ---
-const soundsToPauseOnSystemPause = Object.keys(soundPaths); // GEWIJZIGD: Gebruik globale soundPaths
-let soundPausedStates = {};
+const soundsToPauseOnSystemPause = Object.keys(soundPaths); // Alle geluiden in soundPaths
+let soundPausedStates = {}; // Wordt niet meer gebruikt op dezelfde manier met Web Audio
 
 function pauseAllSounds() {
     if (audioContext && audioContext.state === 'running') {
-        audioContext.suspend().then(() => {}).catch(e => console.error("Error suspending AudioContext:", e));
+        audioContext.suspend().then(() => console.log("AudioContext suspended for pause.")).catch(e => console.error("Error suspending AudioContext:", e));
     }
-    stopSound('menuMusicSound'); // GEWIJZIGD: Gebruik string
+    stopSound('menuMusicSound'); // Specifiek menu muziek stoppen, niet alleen pauseren
 }
 
 function resumeAllSounds() {
     if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume().then(() => {}).catch(e => console.error("Error resuming AudioContext:", e));
+        audioContext.resume().then(() => console.log("AudioContext resumed from pause.")).catch(e => console.error("Error resuming AudioContext:", e));
     }
-    if (!isInGameState && audioContext) {
-        playSound('menuMusicSound', true, 0.2); // GEWIJZIGD: Gebruik string
+    if (!isInGameState && audioContext) { // Als we terug in het menu zijn, speel menu muziek
+        playSound('menuMusicSound', true, 0.2);
     }
+    // Andere geluiden worden hervat wanneer ze opnieuw worden getriggerd door playSound
 }
 
 
@@ -882,8 +1004,8 @@ function togglePause() {
         resumeAllSounds();
         clearTimeout(mouseIdleTimerId);
         mouseIdleTimerId = setTimeout(hideCursor, 2000);
-         if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => { audioContextInitialized = true; });
+         if (audioContext && audioContext.state === 'suspended') { // Zorg ervoor dat context hervat wordt na pauze, als die nog suspended was
+            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed explicitly after unpause.");});
         }
     }
 }
@@ -900,12 +1022,12 @@ function triggerFinalGameOverSequence() {
         isPaused = false; isShowingDemoText = false; isShowingIntro = false; isWaveTransitioning = false; showCsHitsMessage = false; showExtraLifeMessage = false; showPerfectMessage = false; showCSClearMessage = false; showCsHitsForClearMessage = false; showCsScoreForClearMessage = false; showReadyMessage = false; showCsBonusScoreMessage = false; isShowingPlayerGameOverMessage = false; isEntrancePhaseActive = false; isCsCompletionDelayActive = false; csCompletionDelayStartTime = 0; csCompletionResultIsPerfect = false; csIntroSoundPlayed = false;
         if (isManualControl) { saveHighScore(); }
 
-        const soundsToStopOnFinalGameOver = Object.keys(soundPaths).filter(id => id !== 'gameOverSound' && id !== 'resultsMusicSound'); // GEWIJZIGD
+        const soundsToStopOnFinalGameOver = Object.keys(soundPaths).filter(id => id !== 'gameOverSound' && id !== 'resultsMusicSound');
         soundsToStopOnFinalGameOver.forEach(soundId => stopSound(soundId));
         isGridSoundPlaying = false;
 
         const now = Date.now();
-        playSound('gameOverSound', false, 0.4); // GEWIJZIGD
+        playSound('gameOverSound', false, 0.4);
 
         if ((isTwoPlayerMode && selectedGameMode === 'normal' && player1Lives <= 0 && player2Lives <= 0) ||
             (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && player1Lives <= 0 && player2Lives <= 0) ) {
