@@ -689,8 +689,6 @@ function showScoreScreen() {
  * @param {Event} event - The touch or mouse event.
  * @param {'start'|'move'|'end'} type - The type of event.
  * @param {boolean} [isTap=false] - True if the 'end' event is considered a tap (relevant for touchend).
- * <<< GEWIJZIGD: Muis-specifieke actielogica verplaatst naar handleCanvasClick.
- *     Deze functie handelt nu primair touch en muis-hover. >>>
  */
 function handleCanvasTouch(event, type, isTap = false) {
     if (!gameCanvas) return;
@@ -728,7 +726,7 @@ function handleCanvasTouch(event, type, isTap = false) {
     if (isInGameState) {
         // Game-specifieke touch/muis logica in game_logic.js
     } else if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
-        if (type === 'end' && isTap) { // Alleen reageren op een tap/klik
+        if (type === 'end' && isTap) { 
             if (typeof showMenuState === 'function') showMenuState();
         }
     } else if (!isShowingScoreScreen) { // Menu
@@ -743,25 +741,24 @@ function handleCanvasTouch(event, type, isTap = false) {
             currentHoverButton = 1;
         }
 
-        if (type === 'start') { // Alleen voor touchstart
-            isTouchActiveMenu = true; // Markeer dat een touch interactie bezig is
+        if (type === 'start') { 
+            isTouchActiveMenu = true; 
             touchedMenuButtonIndex = currentHoverButton;
             selectedButtonIndex = currentHoverButton;
-        } else if (type === 'move') { // Voor touchmove OF mousemove
-            if (event.type === 'mousemove') { // Muis hover
-                selectedButtonIndex = currentHoverButton; // Update voor visuele feedback
-            } else { // Touch drag
+        } else if (type === 'move') { 
+            if (event.type === 'mousemove') { 
+                selectedButtonIndex = currentHoverButton; 
+            } else { 
                 if (touchedMenuButtonIndex !== -1 && currentHoverButton !== touchedMenuButtonIndex) {
                     selectedButtonIndex = -1;
-                } else if (touchedMenuButtonIndex !== -1) { // Alleen als een touch gestart was op een knop
+                } else if (touchedMenuButtonIndex !== -1) { 
                     selectedButtonIndex = currentHoverButton;
                 }
             }
-        } else if (type === 'end' && event.type.startsWith('touch')) { // Alleen voor touchend
-            isTouchActiveMenu = false; // Touch interactie is voorbij
+        } else if (type === 'end' && event.type.startsWith('touch')) { 
+            isTouchActiveMenu = false; 
             if (isTap && currentHoverButton !== -1 && currentHoverButton === touchedMenuButtonIndex) {
-                selectedButtonIndex = currentHoverButton; // Bevestig selectie
-                // Voer menu actie uit
+                selectedButtonIndex = currentHoverButton; 
                 if (isPlayerSelectMode) {
                     if (selectedButtonIndex === 0) { startGame1P(); } else { startGame2P(); }
                 } else if (isOnePlayerGameTypeSelectMode) {
@@ -777,19 +774,35 @@ function handleCanvasTouch(event, type, isTap = false) {
                 } else if (isFiringModeSelectMode) {
                     if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; }
                     baseStartGame(true);
-                } else { // Hoofdmenu
+                } else { 
                     if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0; }
                     else if (selectedButtonIndex === 1) { if (typeof exitGame === 'function') exitGame(); }
                 }
-            } else if (isTap && currentHoverButton === -1 && touchedMenuButtonIndex === -1) { // Tap buiten knoppen
-                 if (!isPlayerSelectMode && !isOnePlayerGameTypeSelectMode && !isOnePlayerVsAIGameTypeSelectMode && !isGameModeSelectMode && !isFiringModeSelectMode) {
+            } else if (isTap && currentHoverButton === -1 && touchedMenuButtonIndex === -1) {
+                // <<< GEWIJZIGD: Logica voor "stap terug" bij tap naast knoppen >>>
+                if (isFiringModeSelectMode) {
+                    isFiringModeSelectMode = false;
+                    if (selectedOnePlayerGameVariant === 'CLASSIC_1P') { isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0; }
+                    else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0); }
+                    else if (isTwoPlayerMode && !isPlayerTwoAI) { isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0); }
+                    else { isPlayerSelectMode = false; selectedButtonIndex = 0; } // Fallback
+                    selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; selectedGameMode = 'normal';
+                } else if (isOnePlayerVsAIGameTypeSelectMode) {
+                    isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1;
+                } else if (isOnePlayerGameTypeSelectMode) {
+                    isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0;
+                } else if (isGameModeSelectMode) {
+                    isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1;
+                } else if (isPlayerSelectMode) {
+                    isPlayerSelectMode = false; selectedButtonIndex = 0;
+                } else { // Hoofdmenu: tap naast knoppen triggert fullscreen
                     triggerFullscreen();
                 }
+                // <<< EINDE GEWIJZIGD >>>
             }
-            touchedMenuButtonIndex = -1; // Reset altijd na touchend
+            touchedMenuButtonIndex = -1; 
         }
         
-        // Start/stop demo timer logica
         if (type !== 'end' && currentHoverButton !== -1) { 
              stopAutoDemoTimer();
         } else if (type === 'end' || (type === 'move' && currentHoverButton === -1)) { 
@@ -800,7 +813,6 @@ function handleCanvasTouch(event, type, isTap = false) {
 
 /**
  * Handles click events on the canvas.
- * <<< GEWIJZIGD: Directe afhandeling van menu-acties voor muisklikken. >>>
  */
 function handleCanvasClick(event) {
     if (!gameCanvas) return;
@@ -810,8 +822,6 @@ function handleCanvasClick(event) {
 
     if (isInGameState) {
         if (isPaused) { if(typeof togglePause === 'function') togglePause(); return; }
-        // In-game klik wordt afgehandeld door game-specifieke logica indien nodig (bijv. voor touch-als-muis)
-        // Voor nu, geen specifieke actie hier voor in-game muisklik.
     } else if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
         if (typeof showMenuState === 'function') showMenuState();
     } else if (!isShowingScoreScreen) { // Menu
@@ -834,7 +844,7 @@ function handleCanvasClick(event) {
         }
 
         if (clickedButton !== -1) {
-            selectedButtonIndex = clickedButton; // Update voor visuele feedback en actie
+            selectedButtonIndex = clickedButton; 
 
             if (isPlayerSelectMode) {
                 if (selectedButtonIndex === 0) { startGame1P(); } else { startGame2P(); }
@@ -851,16 +861,33 @@ function handleCanvasClick(event) {
             } else if (isFiringModeSelectMode) {
                 if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; }
                 baseStartGame(true);
-            } else { // Hoofdmenu
+            } else { 
                 if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0; }
                 else if (selectedButtonIndex === 1) { if (typeof exitGame === 'function') exitGame(); }
             }
-        } else { // Klik buiten knoppen
-             if (!isPlayerSelectMode && !isOnePlayerGameTypeSelectMode && !isOnePlayerVsAIGameTypeSelectMode && !isGameModeSelectMode && !isFiringModeSelectMode) {
+        } else { 
+            // <<< GEWIJZIGD: Logica voor "stap terug" bij klik naast knoppen >>>
+            if (isFiringModeSelectMode) {
+                isFiringModeSelectMode = false;
+                if (selectedOnePlayerGameVariant === 'CLASSIC_1P') { isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0; }
+                else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0); }
+                else if (isTwoPlayerMode && !isPlayerTwoAI) { isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0); }
+                else { isPlayerSelectMode = false; selectedButtonIndex = 0; } // Fallback
+                selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; selectedGameMode = 'normal';
+            } else if (isOnePlayerVsAIGameTypeSelectMode) {
+                isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1;
+            } else if (isOnePlayerGameTypeSelectMode) {
+                isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0;
+            } else if (isGameModeSelectMode) {
+                isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1;
+            } else if (isPlayerSelectMode) {
+                isPlayerSelectMode = false; selectedButtonIndex = 0;
+            } else { // Hoofdmenu: klik naast knoppen triggert fullscreen
                 triggerFullscreen();
             }
+            // <<< EINDE GEWIJZIGD >>>
         }
-        startAutoDemoTimer(); // Start timer opnieuw na elke menu-interactie
+        startAutoDemoTimer(); 
     }
 }
 
