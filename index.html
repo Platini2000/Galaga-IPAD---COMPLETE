@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"> <!-- user-scalable=no toegevoegd -->
+    <title>Galaga</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Theme Color voor browser UI (optioneel, maar goed voor PWA's) -->
+    <meta name="theme-color" content="#000000">
+
+    <link rel="apple-touch-icon" href="icon-192.png"> <!-- Gebruikt je 192x192 icoon als primaire voor iOS -->
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+
+    <!-- Apple PWA meta tags voor een meer app-achtige ervaring vanaf het beginscherm -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Galaga"> <!-- Naam onder het icoon op iOS beginscherm -->
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="stijl.css">
+</head>
+<body>
+    <canvas id="starrySkyCanvas"></canvas>
+    <canvas id="retroGridCanvas"></canvas>
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- CORRECTE VOLGORDE: -->
+    <script src="setup_utils.js"></script>
+    <script src="game_logic.js"></script>
+    <script src="rendering_menu.js"></script>
+    <!-- EINDE CORRECTE VOLGORDE -->
+
+</body>
+</html>

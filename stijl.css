@@ -1,0 +1,59 @@
+/* --- START OF FILE stijl.css --- */
+
+html {
+    height: 100%;
+    overflow: hidden; /* Voorkom scrollbars op het html element */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Voorkom scrollbars op de body */
+    background-color: #000015; /* Donkerblauwe/zwarte achtergrond */
+    height: 100%;
+    display: block; /* Zorg dat body de viewport vult */
+}
+
+/* --- Canvas Stijlen --- */
+
+#starrySkyCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2; /* Achterste laag */
+    display: block;
+}
+
+#retroGridCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Tussen sterren en game */
+    display: block; /* Altijd zichtbaar */
+}
+
+#gameCanvas {
+    position: absolute; /* Bovenop andere lagen */
+    top: 0;
+    left: 0;
+    width: 100% !important; /* << !important TOEGEVOEGD >> */
+    height: 100% !important; /* << !important TOEGEVOEGD >> */
+    background-color: transparent; /* Zodat achtergronden zichtbaar zijn */
+    display: block;
+    z-index: 0; /* Voornaamste interactielaag */
+    cursor: default; /* Standaard cursor */
+    /* font-family uit body wordt geërfd, of specifiek font ingesteld in JS */
+}
+
+/* Optioneel: Specifieke cursor voor AI demo (als die class zou worden gebruikt) */
+/*
+canvas#gameCanvas.ai-demo-active {
+    cursor: crosshair; // Voorbeeld
+}
+*/
+
+/* --- END OF FILE stijl.css --- */
