@@ -836,8 +836,7 @@ function handleTouchEndGlobal(event) {
         interactionClientX = event.changedTouches[0].clientX;
         interactionClientY = event.changedTouches[0].clientY;
     } else {
-        // Fallback or error if no changedTouches
-        interactionClientX = touchCurrentX; // Gebruik laatst bekende
+        interactionClientX = touchCurrentX;
         interactionClientY = touchCurrentY;
     }
 
@@ -851,31 +850,48 @@ function handleTouchEndGlobal(event) {
     const distance = Math.sqrt(dx * dx + dy * dy);
     const isTap = touchDuration < TOUCH_TAP_MAX_DURATION && distance < TOUCH_TAP_MAX_MOVEMENT;
 
-    // Coördinaten omzetten naar canvas coördinaten voor gebiedscheck
     const rect = gameCanvas.getBoundingClientRect();
     const scaleX = gameCanvas.width / rect.width;
     const scaleY = gameCanvas.height / rect.height;
     const canvasTapX = (interactionClientX - rect.left) * scaleX;
     const canvasTapY = (interactionClientY - rect.top) * scaleY;
 
-
     if (isTouchActiveGame && isInGameState) {
         if (isTap) {
-            // <<< START GEWIJZIGD: DUBBEL-TAP LOGICA >>>
             const now = Date.now();
             let tapped2UpArea = false;
 
             if (typeof MARGIN_SIDE !== 'undefined' && typeof MARGIN_TOP !== 'undefined' && gameCanvas && gameCtx) {
-                gameCtx.font = "20px 'Press Start 2P'"; // Zelfde font als UI
-                const label2PText = (isCoopAIDemoActive) ? "DEMO-2" : ((isPlayerTwoAI && selectedGameMode === 'coop') ? "AI P2" : "2UP");
-                const label2PWidth = gameCtx.measureText(label2PText).width;
-                const score2PText = String(player2Score); // Of de relevante score variabele
+                gameCtx.font = "20px 'Press Start 2P'";
+                let currentLabel2P = "2UP"; // Default
+                let currentScore2PValue = 0;
+
+                if (isCoopAIDemoActive) {
+                    currentLabel2P = "DEMO-2";
+                    currentScore2PValue = player2Score;
+                } else if (isPlayerTwoAI && selectedGameMode === 'coop') {
+                    currentLabel2P = "AI P2";
+                    currentScore2PValue = player2Score;
+                } else if (isPlayerTwoAI && selectedGameMode === 'normal') {
+                    currentLabel2P = "AI P2";
+                    currentScore2PValue = (currentPlayer === 2) ? score : player2Score;
+                } else if (isTwoPlayerMode) {
+                    currentLabel2P = "2UP";
+                    currentScore2PValue = (currentPlayer === 2 && selectedGameMode === 'normal') ? score : player2Score;
+                }
+                // Als het geen 2P mode is, blijft currentLabel2P "2UP" en currentScore2PValue 0 (of wat het ook was)
+                // maar de double tap is specifiek voor de 2UP *area*, dus we checken altijd die positie.
+
+
+                const label2PWidth = gameCtx.measureText(currentLabel2P).width;
+                const score2PText = String(currentScore2PValue);
                 const score2PWidth = gameCtx.measureText(score2PText).width;
+                const approxFontHeight = 20; // Geschatte hoogte van de font
 
                 const area2UpX = gameCanvas.width - MARGIN_SIDE - Math.max(label2PWidth, score2PWidth) - SCORE_AREA_TAP_MARGIN;
                 const area2UpY = MARGIN_TOP - SCORE_AREA_TAP_MARGIN;
                 const area2UpWidth = Math.max(label2PWidth, score2PWidth) + 2 * SCORE_AREA_TAP_MARGIN;
-                const area2UpHeight = (SCORE_OFFSET_Y + 5 + parseFloat(gameCtx.font)) + 2 * SCORE_AREA_TAP_MARGIN; // Geschatte hoogte
+                const area2UpHeight = (SCORE_OFFSET_Y + 5 + approxFontHeight) + 2 * SCORE_AREA_TAP_MARGIN;
 
                 if (canvasTapX >= area2UpX && canvasTapX <= area2UpX + area2UpWidth &&
                     canvasTapY >= area2UpY && canvasTapY <= area2UpY + area2UpHeight) {
@@ -885,33 +901,27 @@ function handleTouchEndGlobal(event) {
 
             if (tapped2UpArea) {
                 if (lastTapArea === '2up' && (now - lastTapTimestamp < DOUBLE_TAP_MAX_INTERVAL)) {
-                    // Dubbel-tap op 2UP gebied gedetecteerd!
                     if (typeof stopGameAndShowMenu === 'function') {
                         stopGameAndShowMenu();
-                        lastTapArea = null; // Reset voor volgende interactie
+                        lastTapArea = null;
                         lastTapTimestamp = 0;
-                        isTouchActiveGame = false;
-                        return; // Verlaat functie na menu switch
+                        isTouchActiveGame = false; // Belangrijk om verdere game-touch te stoppen
+                        return; 
                     }
                 }
                 lastTapArea = '2up';
                 lastTapTimestamp = now;
             } else {
-                // Als er ergens anders getapt wordt, reset de dubbel-tap state voor 2UP
-                if (lastTapArea === '2up') { // Alleen resetten als de *vorige* tap op 2up was
+                 if (lastTapArea === '2up') {
                     lastTapArea = null;
                     lastTapTimestamp = 0;
                 }
             }
-            // <<< EINDE GEWIJZIGD: DUBBEL-TAP LOGICA >>>
 
-
-            // Single fire logica (blijft behouden)
-            if (selectedFiringMode === 'single' && !tapped2UpArea) { // Alleen als niet op 2UP getapt is voor menu exit
+            if (selectedFiringMode === 'single' && !tapped2UpArea) { // Alleen vuren als NIET op 2UP getapt is (of de dubbeltap niet succesvol was voor menu)
                 if (now - lastTapTime > SHOOT_COOLDOWN / 2) {
                     let shooterPlayerIdForTap = 'player1';
                     if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                        // Basis: tap op linkerhelft voor P1, rechterhelft voor P2
                         if (canvasTapX > gameCanvas.width / 2 && ship2 && player2Lives > 0) {
                             shooterPlayerIdForTap = isPlayerTwoAI ? 'ai_p2' : 'player2';
                         }
