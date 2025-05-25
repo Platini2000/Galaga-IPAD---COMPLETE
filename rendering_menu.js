@@ -703,8 +703,9 @@ function handleCanvasClick(event) {
     const rect = gameCanvas.getBoundingClientRect();
     const scaleX = gameCanvas.width / rect.width;
     const scaleY = gameCanvas.height / rect.height;
-    const clickX = (event.clientX - rect.left) * scaleX; // <<< mouseX GECORRIGEERD naar clickX
-    const clickY = (event.clientY - rect.top) * scaleY; // <<< mouseY GECORRIGEERD naar clickY
+    // Definieer clickX en clickY hier voor de scope van handleCanvasClick
+    const clickX = (event.clientX - rect.left) * scaleX;
+    const clickY = (event.clientY - rect.top) * scaleY;
     const now = Date.now();
     let blockAllClickInput = false;
     if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0) {
@@ -729,8 +730,9 @@ function handleCanvasClick(event) {
     } else if (!isShowingScoreScreen) { // Menu
         const button0Rect = getMenuButtonRect(0);
         const button1Rect = getMenuButtonRect(1);
-        let clickedButton0 = button0Rect && checkCollision({ x: clickX, y: clickY, width: 1, height: 1 }, button0Rect); // <<< mouseX/Y GECORRIGEERD
-        let clickedButton1 = button1Rect && checkCollision({ x: clickX, y: clickY, width: 1, height: 1 }, button1Rect); // <<< mouseX/Y GECORRIGEERD
+        // Gebruik de hierboven gedefinieerde clickX en clickY
+        let clickedButton0 = button0Rect && checkCollision({ x: clickX, y: clickY, width: 1, height: 1 }, button0Rect);
+        let clickedButton1 = button1Rect && checkCollision({ x: clickX, y: clickY, width: 1, height: 1 }, button1Rect);
 
         stopAutoDemoTimer();
 
@@ -755,10 +757,10 @@ function handleCanvasClick(event) {
         } else if (isOnePlayerVsAIGameTypeSelectMode) { // 1P vs AI: Normal of Coop
             if (clickedButton0) {
                 selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL';
-                selectedGameMode = 'normal'; // <<<< TOEGEVOEGD
+                selectedGameMode = 'normal';
             } else if (clickedButton1) {
                 selectedOnePlayerGameVariant = '1P_VS_AI_COOP';
-                selectedGameMode = 'coop'; // <<<< TOEGEVOEGD
+                selectedGameMode = 'coop';
             } else {
                 isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1; startAutoDemoTimer(); return;
             }
