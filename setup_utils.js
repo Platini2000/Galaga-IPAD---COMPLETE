@@ -620,6 +620,7 @@ function scaleValue(currentLevel, baseValue, maxValue) { /* ... ongewijzigd ... 
 // <<< GEWIJZIGD: Verbeterde cursor handling (alleen tonen bij beweging na timeout). >>>
 // <<< GEWIJZIGD: Touch event listeners toegevoegd aan setupInitialEventListeners. >>>
 // <<< GEWIJZIGD: handleTouchStart, handleTouchMove, en handleTouchEnd functies toegevoegd. >>>
+// <<< CORRECTIE: playSound gebruikt nu consistent de parameter 'soundIdentifier'. >>>
 
 
 /** Sets up initial global event listeners (gamepad, resize, touch). Canvas listeners worden in initializeGame toegevoegd. */
@@ -629,16 +630,14 @@ function setupInitialEventListeners() {
         window.addEventListener("gamepaddisconnected", handleGamepadDisconnected);
         window.addEventListener('resize', resizeCanvases);
 
-        // <<< NIEUW: Touch Event Listeners >>>
         if (gameCanvas) {
             gameCanvas.addEventListener('touchstart', handleTouchStart, { passive: false });
             gameCanvas.addEventListener('touchmove', handleTouchMove, { passive: false });
             gameCanvas.addEventListener('touchend', handleTouchEnd, { passive: false });
-            gameCanvas.addEventListener('touchcancel', handleTouchEnd, { passive: false }); // Behandel cancel als end
+            gameCanvas.addEventListener('touchcancel', handleTouchEnd, { passive: false });
         } else {
             console.warn("Game canvas not available at setupInitialEventListeners for touch.")
         }
-        // <<< EINDE NIEUW: Touch Event Listeners >>>
 
     } catch(e) {
         console.error("Error setting up initial event listeners:", e);
@@ -650,7 +649,6 @@ function setupInitialEventListeners() {
  * Calculates the screen coordinates for a specific grid slot, considering the current horizontal offset AND breathing effect (H & V).
  */
 function getCurrentGridSlotPosition(gridRow, gridCol, enemyWidth) {
-    // <<< Functie ongewijzigd tov vorige iteratie >>>
     if (!gameCanvas || gameCanvas.width === 0 || gridRow < 0 || gridCol < 0) {
         return { x: gameCanvas?.width / 2 || 200, y: ENEMY_TOP_MARGIN || 100 };
     }
@@ -680,8 +678,7 @@ function getCurrentGridSlotPosition(gridRow, gridCol, enemyWidth) {
  * Helper function to load an audio file into an AudioBuffer.
  */
 function loadAudioBuffer(url, callback) {
-    // <<< Functie ongewijzigd tov vorige iteratie >>>
-    if (!audioContext) { // Gebruik audioContext
+    if (!audioContext) {
         console.error("AudioContext not initialized. Cannot load audio buffer.");
         return;
     }
@@ -690,7 +687,7 @@ function loadAudioBuffer(url, callback) {
     request.responseType = 'arraybuffer';
 
     request.onload = function() {
-        audioContext.decodeAudioData(request.response, function(buffer) { // Gebruik audioContext
+        audioContext.decodeAudioData(request.response, function(buffer) {
             if (callback) callback(buffer);
         }, function(e){ console.error("Error decoding audio data from " + url, e); });
     }
@@ -707,32 +704,31 @@ function loadAudioBuffer(url, callback) {
  * @param {boolean} [loop=false] - Whether the sound should loop.
  */
 function playSound(soundIdentifier, loop = false) {
-    // <<< GEWIJZIGD: Extra check en stop voor resultsMusicSound als menuMusicSound wordt gestart >>>
+    // <<< CORRECTIE: Gebruik 'soundIdentifier' consistent voor buffer en volume lookup. >>>
     try {
-        if (!audioContext || !masterGainNode) { // Gebruik audioContext
+        if (!audioContext || !masterGainNode) {
             return;
         }
-        if (audioContext.state === 'suspended') { // Gebruik audioContext
-            audioContext.resume().catch(e => console.error("Error resuming AudioContext:", e)); // Gebruik audioContext
+        if (audioContext.state === 'suspended') {
+            audioContext.resume().catch(e => console.error("Error resuming AudioContext:", e));
         }
 
-        if (isPaused && soundIdentifier !== menuMusicSound && soundIdentifier !== resultsMusicSound) {
+        // Gebruik de soundIdentifier parameter, niet de globale constante.
+        if (isPaused && soundIdentifier !== "MENU_MUSIC" && soundIdentifier !== "RESULTS_MUSIC") { // Vergelijk met string literals
              return;
         }
 
-        // <<< AGRESSIEVE CHECK: Stop resultaten muziek expliciet voordat menu muziek start >>>
-        if (soundIdentifier === menuMusicSound) {
-            stopSound(resultsMusicSound);
+        if (soundIdentifier === "MENU_MUSIC") { // Vergelijk met string literal
+            stopSound("RESULTS_MUSIC"); // Gebruik string literal
         }
-        // <<< EINDE AGRESSIEVE CHECK >>>
 
-
+        // Gebruik 'soundIdentifier' om de buffer op te halen.
         const buffer = audioBuffers[soundIdentifier];
         if (!buffer) {
+            // console.warn(`Audio buffer for ${soundIdentifier} not found or not loaded yet.`);
             return;
         }
 
-        // Stop eventuele bestaande loop voor *deze* identifier (bijv. als menu muziek al liep)
         if (loop && playingLoopSources[soundIdentifier]) {
             try {
                 playingLoopSources[soundIdentifier].source.stop();
@@ -741,10 +737,11 @@ function playSound(soundIdentifier, loop = false) {
             delete playingLoopSources[soundIdentifier];
         }
 
-        const source = audioContext.createBufferSource(); // Gebruik audioContext
+        const source = audioContext.createBufferSource();
         source.buffer = buffer;
 
-        const individualGainNode = audioContext.createGain(); // Gebruik audioContext
+        const individualGainNode = audioContext.createGain();
+        // Gebruik 'soundIdentifier' om het volume op te halen.
         const baseVolume = soundVolumes[soundIdentifier] !== undefined ? soundVolumes[soundIdentifier] : 1.0;
         individualGainNode.gain.value = baseVolume;
         source.connect(individualGainNode);
@@ -755,7 +752,9 @@ function playSound(soundIdentifier, loop = false) {
 
         if (loop) {
             playingLoopSources[soundIdentifier] = { source: source, gainNode: individualGainNode };
-            if (soundIdentifier === gridBackgroundSound) { isGridSoundPlaying = true; }
+            if (soundIdentifier === "GRID_BACKGROUND") { // Vergelijk met string literal
+                isGridSoundPlaying = true;
+            }
         }
 
     } catch (e) {
@@ -770,7 +769,6 @@ function playSound(soundIdentifier, loop = false) {
  * @param {string} soundIdentifier - The key from the SOUND_PATHS object.
  */
 function stopSound(soundIdentifier) {
-    // <<< Vereenvoudigde versie zonder extra logs >>>
     try {
         if (playingLoopSources[soundIdentifier]) {
             const loopData = playingLoopSources[soundIdentifier];
@@ -784,11 +782,13 @@ function stopSound(soundIdentifier) {
             }
             if (gainNode) {
                 try {
-                    gainNode.disconnect(); // Disconnect de individuele gain node
+                    gainNode.disconnect();
                 } catch (e) { /* Kan error geven als al gedisconnect, negeer */ }
             }
-            delete playingLoopSources[soundIdentifier]; // Verwijder de referentie
-             if (soundIdentifier === gridBackgroundSound) { isGridSoundPlaying = false; }
+            delete playingLoopSources[soundIdentifier];
+             if (soundIdentifier === "GRID_BACKGROUND") { // Vergelijk met string literal
+                isGridSoundPlaying = false;
+             }
         }
     } catch (e) {
         console.error(`Error in stopSound for ${soundIdentifier}:`, e);
@@ -797,82 +797,76 @@ function stopSound(soundIdentifier) {
 
 
 /** Basic rectangle collision check. */
-function checkCollision(rect1, rect2) { /* ... ongewijzigd ... */ if (!rect1 || !rect2) return false; return ( rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y ); }
+function checkCollision(rect1, rect2) { if (!rect1 || !rect2) return false; return ( rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y ); }
 
 /** Attempts to enter fullscreen mode. */
-function triggerFullscreen() { /* ... ongewijzigd ... */ if (!document.fullscreenElement) { const element = document.documentElement; if (element.requestFullscreen) { element.requestFullscreen().catch(err => console.error(`Fullscreen error: ${err.message}`)); } else if (element.mozRequestFullScreen) { element.mozRequestFullScreen().catch(err => console.error(`Fullscreen error (FF): ${err.message}`)); } else if (element.webkitRequestFullscreen) { element.webkitRequestFullscreen().catch(err => console.error(`Fullscreen error (WebKit): ${err.message}`)); } else if (element.msRequestFullscreen) { element.msRequestFullscreen().catch(err => console.error(`Fullscreen error (MS): ${err.message}`)); } } }
+function triggerFullscreen() { if (!document.fullscreenElement) { const element = document.documentElement; if (element.requestFullscreen) { element.requestFullscreen().catch(err => console.error(`Fullscreen error: ${err.message}`)); } else if (element.mozRequestFullScreen) { element.mozRequestFullScreen().catch(err => console.error(`Fullscreen error (FF): ${err.message}`)); } else if (element.webkitRequestFullscreen) { element.webkitRequestFullscreen().catch(err => console.error(`Fullscreen error (WebKit): ${err.message}`)); } else if (element.msRequestFullscreen) { element.msRequestFullscreen().catch(err => console.error(`Fullscreen error (MS): ${err.message}`)); } } }
 
 /** Creates a single star object with random properties. */
-function createStar() { /* ... ongewijzigd ... */ if (!starrySkyCanvas || starrySkyCanvas.width === 0) return null; return { x: Math.random() * starrySkyCanvas.width, y: Math.random() * starrySkyCanvas.height, radius: Math.random() * (MAX_STAR_RADIUS - MIN_STAR_RADIUS) + MIN_STAR_RADIUS, alpha: Math.random() * 0.8 + 0.2, alphaChange: (Math.random() > 0.5 ? 1 : -1) * TWINKLE_SPEED * (Math.random() * 0.5 + 0.5) }; }
+function createStar() { if (!starrySkyCanvas || starrySkyCanvas.width === 0) return null; return { x: Math.random() * starrySkyCanvas.width, y: Math.random() * starrySkyCanvas.height, radius: Math.random() * (MAX_STAR_RADIUS - MIN_STAR_RADIUS) + MIN_STAR_RADIUS, alpha: Math.random() * 0.8 + 0.2, alphaChange: (Math.random() > 0.5 ? 1 : -1) * TWINKLE_SPEED * (Math.random() * 0.5 + 0.5) }; }
 
 /** Populates the stars array. */
-function createStars() { /* ... ongewijzigd ... */ stars = []; if (starrySkyCanvas?.width > 0 && starrySkyCanvas?.height > 0) { for (let i = 0; i < NUM_STARS; i++) { const star = createStar(); if (star) stars.push(star); } } }
+function createStars() { stars = []; if (starrySkyCanvas?.width > 0 && starrySkyCanvas?.height > 0) { for (let i = 0; i < NUM_STARS; i++) { const star = createStar(); if (star) stars.push(star); } } }
 
 /** Draws the starry background, handling movement, twinkle, and fade near horizon. */
-function drawStars() { /* ... ongewijzigd ... */ try { if (!starryCtx || !starrySkyCanvas || starrySkyCanvas.width === 0 || starrySkyCanvas.height === 0) return; const currentCanvasWidth = starrySkyCanvas.width; const currentCanvasHeight = starrySkyCanvas.height; starryCtx.clearRect(0, 0, currentCanvasWidth, currentCanvasHeight); const horizonY = Math.round(currentCanvasHeight * GRID_HORIZON_Y_FACTOR); const perspectiveHeight = currentCanvasHeight - horizonY; const fadeStartY = Math.max(0, horizonY - perspectiveHeight * STAR_FADE_START_FACTOR_ABOVE_HORIZON); const fadeEndY = horizonY; const fadeRange = Math.max(1, fadeEndY - fadeStartY); stars.forEach(star => { const normalizedRadius = (star.radius - MIN_STAR_RADIUS) / (MAX_STAR_RADIUS - MIN_STAR_RADIUS); const speed = BASE_PARALLAX_SPEED + (normalizedRadius * PARALLAX_SPEED_FACTOR); if (!isPaused) { star.y += speed; } if (star.y > currentCanvasHeight + star.radius) { star.y = -star.radius * 2; star.x = Math.random() * currentCanvasWidth; } if (!isPaused) { star.alpha += star.alphaChange; if (star.alpha <= 0.1 || star.alpha >= 1.0) { star.alphaChange *= -1; star.alpha = Math.max(0.1, Math.min(1.0, star.alpha)); } } let finalAlpha = star.alpha; if (fadeStartY >= 0 && star.y > fadeStartY) { if (star.y >= horizonY) { finalAlpha = 0; } else { finalAlpha *= (1.0 - Math.min(1.0, Math.max(0, (star.y - fadeStartY) / fadeRange))); } } finalAlpha = Math.max(0, Math.min(1.0, finalAlpha)); if (finalAlpha > 0.01) { starryCtx.beginPath(); starryCtx.arc(Math.round(star.x), Math.round(star.y), star.radius, 0, Math.PI * 2); starryCtx.fillStyle = `rgba(255, 255, 255, ${finalAlpha.toFixed(3)})`; starryCtx.fill(); } }); } catch (e) { console.error("Error in drawStars:", e); if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; } }
+function drawStars() { try { if (!starryCtx || !starrySkyCanvas || starrySkyCanvas.width === 0 || starrySkyCanvas.height === 0) return; const currentCanvasWidth = starrySkyCanvas.width; const currentCanvasHeight = starrySkyCanvas.height; starryCtx.clearRect(0, 0, currentCanvasWidth, currentCanvasHeight); const horizonY = Math.round(currentCanvasHeight * GRID_HORIZON_Y_FACTOR); const perspectiveHeight = currentCanvasHeight - horizonY; const fadeStartY = Math.max(0, horizonY - perspectiveHeight * STAR_FADE_START_FACTOR_ABOVE_HORIZON); const fadeEndY = horizonY; const fadeRange = Math.max(1, fadeEndY - fadeStartY); stars.forEach(star => { const normalizedRadius = (star.radius - MIN_STAR_RADIUS) / (MAX_STAR_RADIUS - MIN_STAR_RADIUS); const speed = BASE_PARALLAX_SPEED + (normalizedRadius * PARALLAX_SPEED_FACTOR); if (!isPaused) { star.y += speed; } if (star.y > currentCanvasHeight + star.radius) { star.y = -star.radius * 2; star.x = Math.random() * currentCanvasWidth; } if (!isPaused) { star.alpha += star.alphaChange; if (star.alpha <= 0.1 || star.alpha >= 1.0) { star.alphaChange *= -1; star.alpha = Math.max(0.1, Math.min(1.0, star.alpha)); } } let finalAlpha = star.alpha; if (fadeStartY >= 0 && star.y > fadeStartY) { if (star.y >= horizonY) { finalAlpha = 0; } else { finalAlpha *= (1.0 - Math.min(1.0, Math.max(0, (star.y - fadeStartY) / fadeRange))); } } finalAlpha = Math.max(0, Math.min(1.0, finalAlpha)); if (finalAlpha > 0.01) { starryCtx.beginPath(); starryCtx.arc(Math.round(star.x), Math.round(star.y), star.radius, 0, Math.PI * 2); starryCtx.fillStyle = `rgba(255, 255, 255, ${finalAlpha.toFixed(3)})`; starryCtx.fill(); } }); } catch (e) { console.error("Error in drawStars:", e); if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; } }
 
 /** Draws the retro perspective grid. */
-function drawRetroGrid() { /* ... ongewijzigd ... */ try { if (!retroGridCtx || !retroGridCanvas || retroGridCanvas.width === 0 || retroGridCanvas.height === 0) return; if (!isPaused) { gridOffsetY -= GRID_SPEED; } const width = retroGridCanvas.width; const height = retroGridCanvas.height; retroGridCtx.clearRect(0, 0, width, height); const horizonY = Math.round(height * GRID_HORIZON_Y_FACTOR); const vanishingPointX = width / 2; const perspectiveHeight = height - horizonY; retroGridCtx.lineWidth = GRID_LINE_WIDTH; const fixedLineWidth = width * GRID_HORIZONTAL_LINE_WIDTH_FACTOR; const fixedLineStartX = vanishingPointX - fixedLineWidth / 2; const fixedLineEndX = vanishingPointX + fixedLineWidth / 2; const fadeStartY = horizonY + perspectiveHeight * 0.1; const fadeEndY = height; const fadeRange = Math.max(1, fadeEndY - fadeStartY); retroGridCtx.strokeStyle = GRID_LINE_COLOR_FIXED; retroGridCtx.beginPath(); retroGridCtx.moveTo(fixedLineStartX, horizonY); retroGridCtx.lineTo(fixedLineEndX, horizonY); retroGridCtx.stroke(); let normalizedOffset = gridOffsetY % GRID_BASE_SPACING; if (normalizedOffset > 0) { normalizedOffset -= GRID_BASE_SPACING; } let currentDrawY = horizonY - normalizedOffset; if (currentDrawY <= horizonY) currentDrawY += GRID_BASE_SPACING; while (currentDrawY < height + GRID_BASE_SPACING) { let progress = Math.max(0, Math.min(1, (currentDrawY - horizonY) / perspectiveHeight)); if (currentDrawY > horizonY && currentDrawY <= height + GRID_LINE_WIDTH*2) { let currentAlpha; if (currentDrawY <= fadeStartY) { currentAlpha = GRID_MIN_ALPHA; } else if (currentDrawY >= fadeEndY) { currentAlpha = GRID_BASE_ALPHA; } else { const fadeProgress = (currentDrawY - fadeStartY) / fadeRange; currentAlpha = GRID_MIN_ALPHA + (GRID_BASE_ALPHA - GRID_MIN_ALPHA) * fadeProgress; } currentAlpha = Math.max(0, Math.min(GRID_BASE_ALPHA, currentAlpha)); if (currentAlpha > 0.01) { retroGridCtx.strokeStyle = `rgba(${GRID_RGB_PART}, ${currentAlpha.toFixed(3)})`; retroGridCtx.beginPath(); retroGridCtx.moveTo(fixedLineStartX, Math.round(currentDrawY)); retroGridCtx.lineTo(fixedLineEndX, Math.round(currentDrawY)); retroGridCtx.stroke(); } } let nextSpacing = GRID_BASE_SPACING * Math.pow(1 + progress * 1.5, GRID_SPACING_POWER); currentDrawY += Math.max(1, nextSpacing); } retroGridCtx.strokeStyle = GRID_LINE_COLOR_FIXED; retroGridCtx.beginPath(); const numLinesHalf = Math.floor(GRID_NUM_PERSPECTIVE_LINES / 2); const horizonSpreadWidth = width * GRID_HORIZON_SPREAD_FACTOR; const maxSpreadAtBottom = width * GRID_BOTTOM_SPREAD_FACTOR; for (let i = 0; i <= numLinesHalf; i++) { let spreadProgress = Math.pow(i / numLinesHalf, GRID_PERSPECTIVE_POWER); let startX_R = vanishingPointX + spreadProgress * (horizonSpreadWidth / 2); let startX_L = vanishingPointX - spreadProgress * (horizonSpreadWidth / 2); let bottomX_R = vanishingPointX + spreadProgress * (maxSpreadAtBottom / 2); let bottomX_L = vanishingPointX - spreadProgress * (maxSpreadAtBottom / 2); retroGridCtx.moveTo(startX_R, horizonY); retroGridCtx.lineTo(bottomX_R, height); if (i > 0) { retroGridCtx.moveTo(startX_L, horizonY); retroGridCtx.lineTo(bottomX_L, height); } } retroGridCtx.stroke(); } catch (e) { console.error("Error in drawRetroGrid:", e); } }
+function drawRetroGrid() { try { if (!retroGridCtx || !retroGridCanvas || retroGridCanvas.width === 0 || retroGridCanvas.height === 0) return; if (!isPaused) { gridOffsetY -= GRID_SPEED; } const width = retroGridCanvas.width; const height = retroGridCanvas.height; retroGridCtx.clearRect(0, 0, width, height); const horizonY = Math.round(height * GRID_HORIZON_Y_FACTOR); const vanishingPointX = width / 2; const perspectiveHeight = height - horizonY; retroGridCtx.lineWidth = GRID_LINE_WIDTH; const fixedLineWidth = width * GRID_HORIZONTAL_LINE_WIDTH_FACTOR; const fixedLineStartX = vanishingPointX - fixedLineWidth / 2; const fixedLineEndX = vanishingPointX + fixedLineWidth / 2; const fadeStartY = horizonY + perspectiveHeight * 0.1; const fadeEndY = height; const fadeRange = Math.max(1, fadeEndY - fadeStartY); retroGridCtx.strokeStyle = GRID_LINE_COLOR_FIXED; retroGridCtx.beginPath(); retroGridCtx.moveTo(fixedLineStartX, horizonY); retroGridCtx.lineTo(fixedLineEndX, horizonY); retroGridCtx.stroke(); let normalizedOffset = gridOffsetY % GRID_BASE_SPACING; if (normalizedOffset > 0) { normalizedOffset -= GRID_BASE_SPACING; } let currentDrawY = horizonY - normalizedOffset; if (currentDrawY <= horizonY) currentDrawY += GRID_BASE_SPACING; while (currentDrawY < height + GRID_BASE_SPACING) { let progress = Math.max(0, Math.min(1, (currentDrawY - horizonY) / perspectiveHeight)); if (currentDrawY > horizonY && currentDrawY <= height + GRID_LINE_WIDTH*2) { let currentAlpha; if (currentDrawY <= fadeStartY) { currentAlpha = GRID_MIN_ALPHA; } else if (currentDrawY >= fadeEndY) { currentAlpha = GRID_BASE_ALPHA; } else { const fadeProgress = (currentDrawY - fadeStartY) / fadeRange; currentAlpha = GRID_MIN_ALPHA + (GRID_BASE_ALPHA - GRID_MIN_ALPHA) * fadeProgress; } currentAlpha = Math.max(0, Math.min(GRID_BASE_ALPHA, currentAlpha)); if (currentAlpha > 0.01) { retroGridCtx.strokeStyle = `rgba(${GRID_RGB_PART}, ${currentAlpha.toFixed(3)})`; retroGridCtx.beginPath(); retroGridCtx.moveTo(fixedLineStartX, Math.round(currentDrawY)); retroGridCtx.lineTo(fixedLineEndX, Math.round(currentDrawY)); retroGridCtx.stroke(); } } let nextSpacing = GRID_BASE_SPACING * Math.pow(1 + progress * 1.5, GRID_SPACING_POWER); currentDrawY += Math.max(1, nextSpacing); } retroGridCtx.strokeStyle = GRID_LINE_COLOR_FIXED; retroGridCtx.beginPath(); const numLinesHalf = Math.floor(GRID_NUM_PERSPECTIVE_LINES / 2); const horizonSpreadWidth = width * GRID_HORIZON_SPREAD_FACTOR; const maxSpreadAtBottom = width * GRID_BOTTOM_SPREAD_FACTOR; for (let i = 0; i <= numLinesHalf; i++) { let spreadProgress = Math.pow(i / numLinesHalf, GRID_PERSPECTIVE_POWER); let startX_R = vanishingPointX + spreadProgress * (horizonSpreadWidth / 2); let startX_L = vanishingPointX - spreadProgress * (horizonSpreadWidth / 2); let bottomX_R = vanishingPointX + spreadProgress * (maxSpreadAtBottom / 2); let bottomX_L = vanishingPointX - spreadProgress * (maxSpreadAtBottom / 2); retroGridCtx.moveTo(startX_R, horizonY); retroGridCtx.lineTo(bottomX_R, height); if (i > 0) { retroGridCtx.moveTo(startX_L, horizonY); retroGridCtx.lineTo(bottomX_L, height); } } retroGridCtx.stroke(); } catch (e) { console.error("Error in drawRetroGrid:", e); } }
 
 /** Berekent een punt op een kubische Bézier curve. */
-function calculateBezierPoint(t, p0, p1, p2, p3) { /* ... ongewijzigd ... */ const u = 1 - t; const tt = t * t; const uu = u * u; const uuu = uu * u; const ttt = tt * t; let p = uuu * p0; p += 3 * uu * t * p1; p += 3 * u * tt * p2; p += ttt * p3; return p; }
+function calculateBezierPoint(t, p0, p1, p2, p3) { const u = 1 - t; const tt = t * t; const uu = u * u; const uuu = uu * u; const ttt = tt * t; let p = uuu * p0; p += 3 * uu * t * p1; p += 3 * u * tt * p2; p += ttt * p3; return p; }
 
 /** Defines the Bezier curve paths for normal wave enemy entrances. */
- function defineNormalWaveEntrancePaths() { /* ... ongewijzigd ... */ normalWaveEntrancePaths = {}; const w = gameCanvas?.width; const h = gameCanvas?.height; if (!w || !h || w === 0) { console.error("Cannot define Normal Wave entrance paths: Canvas size unknown or zero width."); return; } const sX = w / 800; const sY = h / 600; const offTop = -Math.max(ENEMY1_HEIGHT, ENEMY_HEIGHT) * 1.5; const midScreenX = w / 2; const horizontalShift = -25; const baseEnemyWidthForCalc = ENEMY_WIDTH; const fixedSpacing = ENEMY_H_SPACING_FIXED; const actualGridWidth = GRID_COLS * baseEnemyWidthForCalc + (GRID_COLS - 1) * fixedSpacing; const initialGridStartX = Math.round((w - actualGridWidth) / 2); const col4CenterX = initialGridStartX + 4 * (baseEnemyWidthForCalc + fixedSpacing) + baseEnemyWidthForCalc / 2; const col5CenterX = initialGridStartX + 5 * (baseEnemyWidthForCalc + fixedSpacing) + baseEnemyWidthForCalc / 2; const targetCenterX_shifted = (col4CenterX + col5CenterX) / 2 + horizontalShift; const targetY_row1 = Math.round(ENEMY_TOP_MARGIN + 1 * (ENEMY_HEIGHT + ENEMY_V_SPACING)); const finalPathEndY_shifted = targetY_row1 + 60 * sY; const leftPath = [{ p0: { x: (80/400*800) * sX + horizontalShift, y: offTop }, p1: { x: (440/400*800) * sX + horizontalShift, y: (140/300*600) * sY }, p2: { x: (260/400*800) * sX + horizontalShift, y: (340/300*600) * sY }, p3: { x: targetCenterX_shifted, y: finalPathEndY_shifted } }]; normalWaveEntrancePaths['new_path_left'] = leftPath; const rightPath_shifted = leftPath.map(seg => ({ p0: { x: w - (seg.p0.x - horizontalShift) + horizontalShift, y: seg.p0.y }, p1: { x: w - (seg.p1.x - horizontalShift) + horizontalShift, y: seg.p1.y }, p2: { x: w - (seg.p2.x - horizontalShift) + horizontalShift, y: seg.p2.y }, p3: { x: targetCenterX_shifted, y: seg.p3.y } })); normalWaveEntrancePaths['new_path_right'] = rightPath_shifted; const createBossLoopPath = (isRightSide) => { const pathId = isRightSide ? 'boss_loop_right' : 'boss_loop_left'; const mirror = (x) => isRightSide ? w - x : x; const offsetY_new = 130 * sY; const radius_new = 80 * sX; const circleCenterX_new = 300 * sX; const circleCenterY_new = 300 * sY; const circleStartPointX = circleCenterX_new + radius_new; const circleStartPointY = circleCenterY_new; const startX_new = mirror(-100 * sX); const startY_new = (350 + offsetY_new) * sY; const finalY_new = ENEMY_TOP_MARGIN - 20; const P_Start = { x: startX_new, y: startY_new }; const P_Entry = { x: mirror(circleStartPointX), y: circleStartPointY }; const P_Top = { x: mirror(circleCenterX_new), y: circleCenterY_new - radius_new }; const P_Left = { x: mirror(circleCenterX_new - radius_new), y: circleCenterY_new }; const P_Bottom = { x: mirror(circleCenterX_new), y: circleCenterY_new + radius_new }; const P_Final = { x: P_Entry.x, y: finalY_new }; const preEntryDistanceFactor = 0.25; const angleToEntry = Math.atan2(P_Entry.y - startY_new, P_Entry.x - startX_new); const P_Before_Entry = { x: P_Entry.x - Math.cos(angleToEntry) * radius_new * preEntryDistanceFactor, y: P_Entry.y - Math.sin(angleToEntry) * radius_new * preEntryDistanceFactor }; const P_Mid_Start_BeforeEntry = { x: (P_Start.x + P_Before_Entry.x) / 2, y: (P_Start.y + P_Before_Entry.y) / 2 }; const P_Mid_Entry_Final = { x: P_Entry.x, y: (P_Entry.y + P_Final.y) / 2 }; const kappa = 0.552284749831; const kRadX = radius_new * kappa; const kRadY = radius_new * kappa; let bossLoopPath = []; bossLoopPath.push({ p0: P_Start, p1: { x: P_Start.x + (P_Mid_Start_BeforeEntry.x - P_Start.x) * 0.33, y: P_Start.y + (P_Mid_Start_BeforeEntry.y - P_Start.y) * 0.33 }, p2: { x: P_Start.x + (P_Mid_Start_BeforeEntry.x - P_Start.x) * 0.66, y: P_Start.y + (P_Mid_Start_BeforeEntry.y - P_Start.y) * 0.66 }, p3: P_Mid_Start_BeforeEntry }); bossLoopPath.push({ p0: P_Mid_Start_BeforeEntry, p1: { x: P_Mid_Start_BeforeEntry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.33, y: P_Mid_Start_BeforeEntry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.33 }, p2: { x: P_Mid_Start_BeforeEntry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.66, y: P_Mid_Start_BeforeEntry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.66 }, p3: P_Before_Entry }); const cp1_smooth = { x: P_Before_Entry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.3, y: P_Before_Entry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.3 }; const cp2_smooth = { x: mirror(circleCenterX_new + kRadX), y: P_Top.y }; bossLoopPath.push({ p0: P_Before_Entry, p1: cp1_smooth, p2: cp2_smooth, p3: P_Top }); bossLoopPath.push({ p0: P_Top, p1: { x: mirror(circleCenterX_new - kRadX), y: P_Top.y }, p2: { x: P_Left.x, y: P_Left.y - kRadY }, p3: P_Left }); bossLoopPath.push({ p0: P_Left, p1: { x: P_Left.x, y: P_Left.y + kRadY }, p2: { x: mirror(circleCenterX_new - kRadX), y: P_Bottom.y }, p3: P_Bottom }); bossLoopPath.push({ p0: P_Bottom, p1: { x: mirror(circleCenterX_new + kRadX), y: P_Bottom.y }, p2: { x: P_Entry.x, y: P_Entry.y + kRadY }, p3: P_Entry }); bossLoopPath.push({ p0: P_Entry, p1: { x: P_Entry.x + (P_Mid_Entry_Final.x - P_Entry.x) * 0.33, y: P_Entry.y + (P_Mid_Entry_Final.y - P_Entry.y) * 0.33 }, p2: { x: P_Entry.x + (P_Mid_Entry_Final.x - P_Entry.x) * 0.66, y: P_Entry.y + (P_Mid_Entry_Final.y - P_Entry.y) * 0.66 }, p3: P_Mid_Entry_Final }); bossLoopPath.push({ p0: P_Mid_Entry_Final, p1: { x: P_Mid_Entry_Final.x + (P_Final.x - P_Mid_Entry_Final.x) * 0.33, y: P_Mid_Entry_Final.y + (P_Final.y - P_Mid_Entry_Final.y) * 0.33 }, p2: { x: P_Mid_Entry_Final.x + (P_Final.x - P_Mid_Entry_Final.x) * 0.66, y: P_Mid_Entry_Final.y + (P_Final.y - P_Mid_Entry_Final.y) * 0.66 }, p3: P_Final }); return bossLoopPath; }; normalWaveEntrancePaths['boss_loop_left'] = createBossLoopPath(false); normalWaveEntrancePaths['boss_loop_right'] = createBossLoopPath(true); const effectiveCurveY = 750; const finalEndY = 350 * sY; const midCurveRight_p0 = { x: midScreenX, y: offTop }; const midCurveRight_p1 = { x: (midScreenX + (750 - 400) * (2/3)) * sX, y: (-50 + (effectiveCurveY - (-50)) * (2/3)) * sY }; const midCurveRight_p2 = { x: (400 + (750 - 400) * (1/3)) * sX, y: (finalEndY + (effectiveCurveY - finalEndY) * (1/3)) * sY }; const midCurveRight_p3 = { x: midScreenX, y: finalEndY }; normalWaveEntrancePaths['mid_curve_right'] = [ { p0: midCurveRight_p0, p1: midCurveRight_p1, p2: midCurveRight_p2, p3: midCurveRight_p3 } ]; const midCurveLeft_p0 = { x: midScreenX, y: offTop }; const midCurveLeft_p1 = { x: w - midCurveRight_p1.x, y: midCurveRight_p1.y }; const midCurveLeft_p2 = { x: w - midCurveRight_p2.x, y: midCurveRight_p2.y }; const midCurveLeft_p3 = { x: midScreenX, y: finalEndY }; normalWaveEntrancePaths['mid_curve_left'] = [ { p0: midCurveLeft_p0, p1: midCurveLeft_p1, p2: midCurveLeft_p2, p3: midCurveLeft_p3 } ]; for (const pathId in normalWaveEntrancePaths) { if (!Array.isArray(normalWaveEntrancePaths[pathId])) { console.error(`Normal Wave Path ${pathId} is not an array! Using basic fallback.`); normalWaveEntrancePaths[pathId] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:ENEMY_TOP_MARGIN} }]; continue; } normalWaveEntrancePaths[pathId] = normalWaveEntrancePaths[pathId].filter(seg => seg?.p0 && seg?.p1 && seg?.p2 && seg?.p3 && typeof seg.p0.x === 'number' && typeof seg.p0.y === 'number' && typeof seg.p1.x === 'number' && typeof seg.p1.y === 'number' && typeof seg.p2.x === 'number' && typeof seg.p2.y === 'number' && typeof seg.p3.x === 'number' && typeof seg.p3.y === 'number' && !isNaN(seg.p0.x + seg.p0.y + seg.p1.x + seg.p1.y + seg.p2.x + seg.p2.y + seg.p3.x + seg.p3.y) ); if (normalWaveEntrancePaths[pathId].length === 0) { console.error(`Normal Wave Path ${pathId} empty after validation! Using basic fallback.`); normalWaveEntrancePaths[pathId] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:ENEMY_TOP_MARGIN} }]; } } }
+ function defineNormalWaveEntrancePaths() { normalWaveEntrancePaths = {}; const w = gameCanvas?.width; const h = gameCanvas?.height; if (!w || !h || w === 0) { console.error("Cannot define Normal Wave entrance paths: Canvas size unknown or zero width."); return; } const sX = w / 800; const sY = h / 600; const offTop = -Math.max(ENEMY1_HEIGHT, ENEMY_HEIGHT) * 1.5; const midScreenX = w / 2; const horizontalShift = -25; const baseEnemyWidthForCalc = ENEMY_WIDTH; const fixedSpacing = ENEMY_H_SPACING_FIXED; const actualGridWidth = GRID_COLS * baseEnemyWidthForCalc + (GRID_COLS - 1) * fixedSpacing; const initialGridStartX = Math.round((w - actualGridWidth) / 2); const col4CenterX = initialGridStartX + 4 * (baseEnemyWidthForCalc + fixedSpacing) + baseEnemyWidthForCalc / 2; const col5CenterX = initialGridStartX + 5 * (baseEnemyWidthForCalc + fixedSpacing) + baseEnemyWidthForCalc / 2; const targetCenterX_shifted = (col4CenterX + col5CenterX) / 2 + horizontalShift; const targetY_row1 = Math.round(ENEMY_TOP_MARGIN + 1 * (ENEMY_HEIGHT + ENEMY_V_SPACING)); const finalPathEndY_shifted = targetY_row1 + 60 * sY; const leftPath = [{ p0: { x: (80/400*800) * sX + horizontalShift, y: offTop }, p1: { x: (440/400*800) * sX + horizontalShift, y: (140/300*600) * sY }, p2: { x: (260/400*800) * sX + horizontalShift, y: (340/300*600) * sY }, p3: { x: targetCenterX_shifted, y: finalPathEndY_shifted } }]; normalWaveEntrancePaths['new_path_left'] = leftPath; const rightPath_shifted = leftPath.map(seg => ({ p0: { x: w - (seg.p0.x - horizontalShift) + horizontalShift, y: seg.p0.y }, p1: { x: w - (seg.p1.x - horizontalShift) + horizontalShift, y: seg.p1.y }, p2: { x: w - (seg.p2.x - horizontalShift) + horizontalShift, y: seg.p2.y }, p3: { x: targetCenterX_shifted, y: seg.p3.y } })); normalWaveEntrancePaths['new_path_right'] = rightPath_shifted; const createBossLoopPath = (isRightSide) => { const pathId = isRightSide ? 'boss_loop_right' : 'boss_loop_left'; const mirror = (x) => isRightSide ? w - x : x; const offsetY_new = 130 * sY; const radius_new = 80 * sX; const circleCenterX_new = 300 * sX; const circleCenterY_new = 300 * sY; const circleStartPointX = circleCenterX_new + radius_new; const circleStartPointY = circleCenterY_new; const startX_new = mirror(-100 * sX); const startY_new = (350 + offsetY_new) * sY; const finalY_new = ENEMY_TOP_MARGIN - 20; const P_Start = { x: startX_new, y: startY_new }; const P_Entry = { x: mirror(circleStartPointX), y: circleStartPointY }; const P_Top = { x: mirror(circleCenterX_new), y: circleCenterY_new - radius_new }; const P_Left = { x: mirror(circleCenterX_new - radius_new), y: circleCenterY_new }; const P_Bottom = { x: mirror(circleCenterX_new), y: circleCenterY_new + radius_new }; const P_Final = { x: P_Entry.x, y: finalY_new }; const preEntryDistanceFactor = 0.25; const angleToEntry = Math.atan2(P_Entry.y - startY_new, P_Entry.x - startX_new); const P_Before_Entry = { x: P_Entry.x - Math.cos(angleToEntry) * radius_new * preEntryDistanceFactor, y: P_Entry.y - Math.sin(angleToEntry) * radius_new * preEntryDistanceFactor }; const P_Mid_Start_BeforeEntry = { x: (P_Start.x + P_Before_Entry.x) / 2, y: (P_Start.y + P_Before_Entry.y) / 2 }; const P_Mid_Entry_Final = { x: P_Entry.x, y: (P_Entry.y + P_Final.y) / 2 }; const kappa = 0.552284749831; const kRadX = radius_new * kappa; const kRadY = radius_new * kappa; let bossLoopPath = []; bossLoopPath.push({ p0: P_Start, p1: { x: P_Start.x + (P_Mid_Start_BeforeEntry.x - P_Start.x) * 0.33, y: P_Start.y + (P_Mid_Start_BeforeEntry.y - P_Start.y) * 0.33 }, p2: { x: P_Start.x + (P_Mid_Start_BeforeEntry.x - P_Start.x) * 0.66, y: P_Start.y + (P_Mid_Start_BeforeEntry.y - P_Start.y) * 0.66 }, p3: P_Mid_Start_BeforeEntry }); bossLoopPath.push({ p0: P_Mid_Start_BeforeEntry, p1: { x: P_Mid_Start_BeforeEntry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.33, y: P_Mid_Start_BeforeEntry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.33 }, p2: { x: P_Mid_Start_BeforeEntry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.66, y: P_Mid_Start_BeforeEntry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.66 }, p3: P_Before_Entry }); const cp1_smooth = { x: P_Before_Entry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.3, y: P_Before_Entry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.3 }; const cp2_smooth = { x: mirror(circleCenterX_new + kRadX), y: P_Top.y }; bossLoopPath.push({ p0: P_Before_Entry, p1: cp1_smooth, p2: cp2_smooth, p3: P_Top }); bossLoopPath.push({ p0: P_Top, p1: { x: mirror(circleCenterX_new - kRadX), y: P_Top.y }, p2: { x: P_Left.x, y: P_Left.y - kRadY }, p3: P_Left }); bossLoopPath.push({ p0: P_Left, p1: { x: P_Left.x, y: P_Left.y + kRadY }, p2: { x: mirror(circleCenterX_new - kRadX), y: P_Bottom.y }, p3: P_Bottom }); bossLoopPath.push({ p0: P_Bottom, p1: { x: mirror(circleCenterX_new + kRadX), y: P_Bottom.y }, p2: { x: P_Entry.x, y: P_Entry.y + kRadY }, p3: P_Entry }); bossLoopPath.push({ p0: P_Entry, p1: { x: P_Entry.x + (P_Mid_Entry_Final.x - P_Entry.x) * 0.33, y: P_Entry.y + (P_Mid_Entry_Final.y - P_Entry.y) * 0.33 }, p2: { x: P_Entry.x + (P_Mid_Entry_Final.x - P_Entry.x) * 0.66, y: P_Entry.y + (P_Mid_Entry_Final.y - P_Entry.y) * 0.66 }, p3: P_Mid_Entry_Final }); bossLoopPath.push({ p0: P_Mid_Entry_Final, p1: { x: P_Mid_Entry_Final.x + (P_Final.x - P_Mid_Entry_Final.x) * 0.33, y: P_Mid_Entry_Final.y + (P_Final.y - P_Mid_Entry_Final.y) * 0.33 }, p2: { x: P_Mid_Entry_Final.x + (P_Final.x - P_Mid_Entry_Final.x) * 0.66, y: P_Mid_Entry_Final.y + (P_Final.y - P_Mid_Entry_Final.y) * 0.66 }, p3: P_Final }); return bossLoopPath; }; normalWaveEntrancePaths['boss_loop_left'] = createBossLoopPath(false); normalWaveEntrancePaths['boss_loop_right'] = createBossLoopPath(true); const effectiveCurveY = 750; const finalEndY = 350 * sY; const midCurveRight_p0 = { x: midScreenX, y: offTop }; const midCurveRight_p1 = { x: (midScreenX + (750 - 400) * (2/3)) * sX, y: (-50 + (effectiveCurveY - (-50)) * (2/3)) * sY }; const midCurveRight_p2 = { x: (400 + (750 - 400) * (1/3)) * sX, y: (finalEndY + (effectiveCurveY - finalEndY) * (1/3)) * sY }; const midCurveRight_p3 = { x: midScreenX, y: finalEndY }; normalWaveEntrancePaths['mid_curve_right'] = [ { p0: midCurveRight_p0, p1: midCurveRight_p1, p2: midCurveRight_p2, p3: midCurveRight_p3 } ]; const midCurveLeft_p0 = { x: midScreenX, y: offTop }; const midCurveLeft_p1 = { x: w - midCurveRight_p1.x, y: midCurveRight_p1.y }; const midCurveLeft_p2 = { x: w - midCurveRight_p2.x, y: midCurveRight_p2.y }; const midCurveLeft_p3 = { x: midScreenX, y: finalEndY }; normalWaveEntrancePaths['mid_curve_left'] = [ { p0: midCurveLeft_p0, p1: midCurveLeft_p1, p2: midCurveLeft_p2, p3: midCurveLeft_p3 } ]; for (const pathId in normalWaveEntrancePaths) { if (!Array.isArray(normalWaveEntrancePaths[pathId])) { console.error(`Normal Wave Path ${pathId} is not an array! Using basic fallback.`); normalWaveEntrancePaths[pathId] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:ENEMY_TOP_MARGIN} }]; continue; } normalWaveEntrancePaths[pathId] = normalWaveEntrancePaths[pathId].filter(seg => seg?.p0 && seg?.p1 && seg?.p2 && seg?.p3 && typeof seg.p0.x === 'number' && typeof seg.p0.y === 'number' && typeof seg.p1.x === 'number' && typeof seg.p1.y === 'number' && typeof seg.p2.x === 'number' && typeof seg.p2.y === 'number' && typeof seg.p3.x === 'number' && typeof seg.p3.y === 'number' && !isNaN(seg.p0.x + seg.p0.y + seg.p1.x + seg.p1.y + seg.p2.x + seg.p2.y + seg.p3.x + seg.p3.y) ); if (normalWaveEntrancePaths[pathId].length === 0) { console.error(`Normal Wave Path ${pathId} empty after validation! Using basic fallback.`); normalWaveEntrancePaths[pathId] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:ENEMY_TOP_MARGIN} }]; } } }
 
 /** Defines the Bezier curve paths specifically for Challenging Stages. */
-function defineChallengingStagePaths() { /* ... ongewijzigd ... */ challengingStagePaths = {}; const w = gameCanvas?.width; const h = gameCanvas?.height; if (!w || !h || w === 0) { console.error("Cannot define CS paths: Canvas size unknown or zero width."); return; } const enemyW = ENEMY_WIDTH; const enemyH = ENEMY_HEIGHT; const offTop = -enemyH * 1.5; const offBottom = h + enemyH * 2; const offLeft = -enemyW * 1.5; const offRight = w + enemyW * 1.5; const midX = w / 2; const midY = h / 2; const CS3_START_SHIFT_X = -28; const shiftPathX = (originalPath, shiftX) => { return originalPath.map(seg => { const newSeg = JSON.parse(JSON.stringify(seg)); if (newSeg.p0 && typeof newSeg.p0.x === 'number') newSeg.p0.x += shiftX; if (newSeg.p1 && typeof newSeg.p1.x === 'number') newSeg.p1.x += shiftX; if (newSeg.p2 && typeof newSeg.p2.x === 'number') newSeg.p2.x += shiftX; if (newSeg.p3 && typeof newSeg.p3.x === 'number' && newSeg.p3.x !== offLeft && newSeg.p3.x !== offRight) { newSeg.p3.x += shiftX; } return newSeg; }); }; const cmScale = (37.8 / 800) * 0.3; const exampleStartX_L_frac_orig = 0.5 - cmScale; const exampleMidY_frac = 450 / 600; const exampleCp1X_L_frac_orig = 0.49; const exampleCp1Y_frac = 600 / 600; const exampleCp2X_L_frac_orig = 0.48; const exampleCp2Y_frac = 300 / 600; const path5_startX_orig = w * exampleStartX_L_frac_orig; const path5_midY = h * exampleMidY_frac; const path5_cp1X_orig = w * exampleCp1X_L_frac_orig; const path5_cp1Y = h * Math.min(1.0, exampleCp1Y_frac); const path5_cp2X_orig = w * exampleCp2X_L_frac_orig; const path5_cp2Y = h * exampleCp2Y_frac; const path5_endX_orig = offLeft; const path5_endY = offTop; const path5_seg1_p0_orig = { x: path5_startX_orig, y: offTop }; const path5_seg1_p3_orig = { x: path5_startX_orig, y: path5_midY }; const path5_seg1_p1_orig = { x: path5_startX_orig, y: offTop + (path5_midY - offTop) * 0.33 }; const path5_seg1_p2_orig = { x: path5_startX_orig, y: offTop + (path5_midY - offTop) * 0.66 }; const path5_seg2_p0_orig = path5_seg1_p3_orig; const path5_seg2_p1_orig = { x: path5_cp1X_orig, y: path5_cp1Y }; const path5_seg2_p2_orig = { x: path5_cp2X_orig, y: path5_cp2Y }; const path5_seg2_p3_orig = { x: path5_endX_orig, y: path5_endY }; const original_CS3_DiveLoopL_Sharp = [ { p0: path5_seg1_p0_orig, p1: path5_seg1_p1_orig, p2: path5_seg1_p2_orig, p3: path5_seg1_p3_orig }, { p0: path5_seg2_p0_orig, p1: path5_seg2_p1_orig, p2: path5_seg2_p2_orig, p3: path5_seg2_p3_orig } ]; const original_CS3_DiveLoopR_Sharp = original_CS3_DiveLoopL_Sharp.map(seg => ({ p0: { x: w - seg.p0.x, y: seg.p0.y }, p1: { x: w - seg.p1.x, y: seg.p1.y }, p2: { x: w - seg.p2.x, y: seg.p2.y }, p3: { x: (seg.p3.x === offLeft) ? offRight : w - seg.p3.x, y: seg.p3.y } })); challengingStagePaths['CS3_DiveLoopL_Sharp'] = shiftPathX(original_CS3_DiveLoopL_Sharp, CS3_START_SHIFT_X); challengingStagePaths['CS3_DiveLoopR_Sharp'] = shiftPathX(original_CS3_DiveLoopR_Sharp, CS3_START_SHIFT_X); const flyByY = h * 0.70; const controlOffsetYFlyBy = h * 0.03; const controlOffsetXFlyBy = w * 0.15; challengingStagePaths['CS_HorizontalFlyByL'] = [{ p0: { x: offLeft, y: flyByY }, p1: { x: offLeft + controlOffsetXFlyBy, y: flyByY - controlOffsetYFlyBy }, p2: { x: offRight - controlOffsetXFlyBy, y: flyByY + controlOffsetYFlyBy }, p3: { x: offRight, y: flyByY } }]; challengingStagePaths['CS_HorizontalFlyByR'] = [{ p0: { x: offRight, y: flyByY }, p1: { x: offRight - controlOffsetXFlyBy, y: flyByY - controlOffsetYFlyBy }, p2: { x: offLeft + controlOffsetXFlyBy, y: flyByY + controlOffsetYFlyBy }, p3: { x: offLeft, y: flyByY } }]; const loopDipY = h * 0.80; const loopRiseY = h * 0.55; const loopExitY = h * 0.15; challengingStagePaths['CS_LoopAttack_TL'] = [ { p0: { x: w * 0.1, y: offTop }, p1: { x: w * 0.2, y: h * 0.2 }, p2: { x: w * 0.6, y: loopDipY }, p3: { x: w * 0.7, y: loopDipY } }, { p0: { x: w * 0.7, y: loopDipY }, p1: { x: w * 0.8, y: loopDipY }, p2: { x: w * 0.8, y: loopRiseY }, p3: { x: w * 0.7, y: loopRiseY } }, { p0: { x: w * 0.7, y: loopRiseY }, p1: { x: w * 0.6, y: loopRiseY }, p2: { x: offRight, y: loopExitY }, p3: { x: offRight, y: loopExitY + h*0.1 } } ]; challengingStagePaths['CS_LoopAttack_TR'] = [ { p0: { x: w * 0.9, y: offTop }, p1: { x: w * 0.8, y: h * 0.2 }, p2: { x: w * 0.4, y: loopDipY }, p3: { x: w * 0.3, y: loopDipY } }, { p0: { x: w * 0.3, y: loopDipY }, p1: { x: w * 0.2, y: loopDipY }, p2: { x: w * 0.2, y: loopRiseY }, p3: { x: w * 0.3, y: loopRiseY } }, { p0: { x: w * 0.3, y: loopRiseY }, p1: { x: w * 0.4, y: loopRiseY }, p2: { x: offLeft, y: loopExitY }, p3: { x: offLeft, y: loopExitY + h*0.1 } } ]; challengingStagePaths['CS_LoopAttack_BL'] = [ { p0: { x: offLeft, y: h * 0.6 }, p1: { x: w * 0.1, y: h * 0.4 }, p2: { x: w * 0.6, y: h * 0.2 }, p3: { x: midX, y: h * 0.3 } }, { p0: { x: midX, y: h * 0.3 }, p1: { x: w * 0.4, y: h * 0.4 }, p2: { x: w * 0.3, y: loopDipY * 0.9 }, p3: { x: w*0.4, y: loopDipY } }, { p0: { x: w*0.4, y: loopDipY }, p1: { x: w * 0.5, y: loopDipY * 1.05 }, p2: { x: midX, y: offTop }, p3: { x: midX + w*0.1, y: offTop } } ]; challengingStagePaths['CS_LoopAttack_BR'] = [ { p0: { x: offRight, y: h * 0.6 }, p1: { x: w * 0.9, y: h * 0.4 }, p2: { x: w * 0.4, y: h * 0.2 }, p3: { x: midX, y: h * 0.3 } }, { p0: { x: midX, y: h * 0.3 }, p1: { x: w * 0.6, y: h * 0.4 }, p2: { x: w * 0.7, y: loopDipY * 0.9 }, p3: { x: w*0.6, y: loopDipY } }, { p0: { x: w*0.6, y: loopDipY }, p1: { x: w * 0.5, y: loopDipY * 1.05 }, p2: { x: midX, y: offTop }, p3: { x: midX - w*0.1, y: offTop } } ]; for (const key in challengingStagePaths) { challengingStagePaths[key] = challengingStagePaths[key].filter(seg => seg?.p0 && seg?.p1 && seg?.p2 && seg?.p3 && !isNaN(seg.p0.x + seg.p0.y + seg.p1.x + seg.p1.y + seg.p2.x + seg.p2.y + seg.p3.x + seg.p3.y) ); if (challengingStagePaths[key].length === 0) { console.error(`CS Path ${key} empty after validation! Adding fallback.`); challengingStagePaths[key] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:offBottom} }]; } } }
+function defineChallengingStagePaths() { challengingStagePaths = {}; const w = gameCanvas?.width; const h = gameCanvas?.height; if (!w || !h || w === 0) { console.error("Cannot define CS paths: Canvas size unknown or zero width."); return; } const enemyW = ENEMY_WIDTH; const enemyH = ENEMY_HEIGHT; const offTop = -enemyH * 1.5; const offBottom = h + enemyH * 2; const offLeft = -enemyW * 1.5; const offRight = w + enemyW * 1.5; const midX = w / 2; const midY = h / 2; const CS3_START_SHIFT_X = -28; const shiftPathX = (originalPath, shiftX) => { return originalPath.map(seg => { const newSeg = JSON.parse(JSON.stringify(seg)); if (newSeg.p0 && typeof newSeg.p0.x === 'number') newSeg.p0.x += shiftX; if (newSeg.p1 && typeof newSeg.p1.x === 'number') newSeg.p1.x += shiftX; if (newSeg.p2 && typeof newSeg.p2.x === 'number') newSeg.p2.x += shiftX; if (newSeg.p3 && typeof newSeg.p3.x === 'number' && newSeg.p3.x !== offLeft && newSeg.p3.x !== offRight) { newSeg.p3.x += shiftX; } return newSeg; }); }; const cmScale = (37.8 / 800) * 0.3; const exampleStartX_L_frac_orig = 0.5 - cmScale; const exampleMidY_frac = 450 / 600; const exampleCp1X_L_frac_orig = 0.49; const exampleCp1Y_frac = 600 / 600; const exampleCp2X_L_frac_orig = 0.48; const exampleCp2Y_frac = 300 / 600; const path5_startX_orig = w * exampleStartX_L_frac_orig; const path5_midY = h * exampleMidY_frac; const path5_cp1X_orig = w * exampleCp1X_L_frac_orig; const path5_cp1Y = h * Math.min(1.0, exampleCp1Y_frac); const path5_cp2X_orig = w * exampleCp2X_L_frac_orig; const path5_cp2Y = h * exampleCp2Y_frac; const path5_endX_orig = offLeft; const path5_endY = offTop; const path5_seg1_p0_orig = { x: path5_startX_orig, y: offTop }; const path5_seg1_p3_orig = { x: path5_startX_orig, y: path5_midY }; const path5_seg1_p1_orig = { x: path5_startX_orig, y: offTop + (path5_midY - offTop) * 0.33 }; const path5_seg1_p2_orig = { x: path5_startX_orig, y: offTop + (path5_midY - offTop) * 0.66 }; const path5_seg2_p0_orig = path5_seg1_p3_orig; const path5_seg2_p1_orig = { x: path5_cp1X_orig, y: path5_cp1Y }; const path5_seg2_p2_orig = { x: path5_cp2X_orig, y: path5_cp2Y }; const path5_seg2_p3_orig = { x: path5_endX_orig, y: path5_endY }; const original_CS3_DiveLoopL_Sharp = [ { p0: path5_seg1_p0_orig, p1: path5_seg1_p1_orig, p2: path5_seg1_p2_orig, p3: path5_seg1_p3_orig }, { p0: path5_seg2_p0_orig, p1: path5_seg2_p1_orig, p2: path5_seg2_p2_orig, p3: path5_seg2_p3_orig } ]; const original_CS3_DiveLoopR_Sharp = original_CS3_DiveLoopL_Sharp.map(seg => ({ p0: { x: w - seg.p0.x, y: seg.p0.y }, p1: { x: w - seg.p1.x, y: seg.p1.y }, p2: { x: w - seg.p2.x, y: seg.p2.y }, p3: { x: (seg.p3.x === offLeft) ? offRight : w - seg.p3.x, y: seg.p3.y } })); challengingStagePaths['CS3_DiveLoopL_Sharp'] = shiftPathX(original_CS3_DiveLoopL_Sharp, CS3_START_SHIFT_X); challengingStagePaths['CS3_DiveLoopR_Sharp'] = shiftPathX(original_CS3_DiveLoopR_Sharp, CS3_START_SHIFT_X); const flyByY = h * 0.70; const controlOffsetYFlyBy = h * 0.03; const controlOffsetXFlyBy = w * 0.15; challengingStagePaths['CS_HorizontalFlyByL'] = [{ p0: { x: offLeft, y: flyByY }, p1: { x: offLeft + controlOffsetXFlyBy, y: flyByY - controlOffsetYFlyBy }, p2: { x: offRight - controlOffsetXFlyBy, y: flyByY + controlOffsetYFlyBy }, p3: { x: offRight, y: flyByY } }]; challengingStagePaths['CS_HorizontalFlyByR'] = [{ p0: { x: offRight, y: flyByY }, p1: { x: offRight - controlOffsetXFlyBy, y: flyByY - controlOffsetYFlyBy }, p2: { x: offLeft + controlOffsetXFlyBy, y: flyByY + controlOffsetYFlyBy }, p3: { x: offLeft, y: flyByY } }]; const loopDipY = h * 0.80; const loopRiseY = h * 0.55; const loopExitY = h * 0.15; challengingStagePaths['CS_LoopAttack_TL'] = [ { p0: { x: w * 0.1, y: offTop }, p1: { x: w * 0.2, y: h * 0.2 }, p2: { x: w * 0.6, y: loopDipY }, p3: { x: w * 0.7, y: loopDipY } }, { p0: { x: w * 0.7, y: loopDipY }, p1: { x: w * 0.8, y: loopDipY }, p2: { x: w * 0.8, y: loopRiseY }, p3: { x: w * 0.7, y: loopRiseY } }, { p0: { x: w * 0.7, y: loopRiseY }, p1: { x: w * 0.6, y: loopRiseY }, p2: { x: offRight, y: loopExitY }, p3: { x: offRight, y: loopExitY + h*0.1 } } ]; challengingStagePaths['CS_LoopAttack_TR'] = [ { p0: { x: w * 0.9, y: offTop }, p1: { x: w * 0.8, y: h * 0.2 }, p2: { x: w * 0.4, y: loopDipY }, p3: { x: w * 0.3, y: loopDipY } }, { p0: { x: w * 0.3, y: loopDipY }, p1: { x: w * 0.2, y: loopDipY }, p2: { x: w * 0.2, y: loopRiseY }, p3: { x: w * 0.3, y: loopRiseY } }, { p0: { x: w * 0.3, y: loopRiseY }, p1: { x: w * 0.4, y: loopRiseY }, p2: { x: offLeft, y: loopExitY }, p3: { x: offLeft, y: loopExitY + h*0.1 } } ]; challengingStagePaths['CS_LoopAttack_BL'] = [ { p0: { x: offLeft, y: h * 0.6 }, p1: { x: w * 0.1, y: h * 0.4 }, p2: { x: w * 0.6, y: h * 0.2 }, p3: { x: midX, y: h * 0.3 } }, { p0: { x: midX, y: h * 0.3 }, p1: { x: w * 0.4, y: h * 0.4 }, p2: { x: w * 0.3, y: loopDipY * 0.9 }, p3: { x: w*0.4, y: loopDipY } }, { p0: { x: w*0.4, y: loopDipY }, p1: { x: w * 0.5, y: loopDipY * 1.05 }, p2: { x: midX, y: offTop }, p3: { x: midX + w*0.1, y: offTop } } ]; challengingStagePaths['CS_LoopAttack_BR'] = [ { p0: { x: offRight, y: h * 0.6 }, p1: { x: w * 0.9, y: h * 0.4 }, p2: { x: w * 0.4, y: h * 0.2 }, p3: { x: midX, y: h * 0.3 } }, { p0: { x: midX, y: h * 0.3 }, p1: { x: w * 0.6, y: h * 0.4 }, p2: { x: w * 0.7, y: loopDipY * 0.9 }, p3: { x: w*0.6, y: loopDipY } }, { p0: { x: w*0.6, y: loopDipY }, p1: { x: w * 0.5, y: loopDipY * 1.05 }, p2: { x: midX, y: offTop }, p3: { x: midX - w*0.1, y: offTop } } ]; for (const key in challengingStagePaths) { challengingStagePaths[key] = challengingStagePaths[key].filter(seg => seg?.p0 && seg?.p1 && seg?.p2 && seg?.p3 && !isNaN(seg.p0.x + seg.p0.y + seg.p1.x + seg.p1.y + seg.p2.x + seg.p2.y + seg.p3.x + seg.p3.y) ); if (challengingStagePaths[key].length === 0) { console.error(`CS Path ${key} empty after validation! Adding fallback.`); challengingStagePaths[key] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:offBottom} }]; } } }
 
 /** Resizes all canvases to fit the window and redraws/recalculates related elements. */
-function resizeCanvases() { /* ... ongewijzigd ... */ try { const width = window.innerWidth; const height = window.innerHeight; if (width <= 0 || height <= 0) return; if (starrySkyCanvas && (starrySkyCanvas.width !== width || starrySkyCanvas.height !== height)) { starrySkyCanvas.width = width; starrySkyCanvas.height = height; createStars(); } if (retroGridCanvas && (retroGridCanvas.width !== width || retroGridCanvas.height !== height)) { retroGridCanvas.width = width; retroGridCanvas.height = height; } if (gameCanvas && (gameCanvas.width !== width || gameCanvas.height !== height)) { const oldWidth = gameCanvas.width; gameCanvas.width = width; gameCanvas.height = height; defineNormalWaveEntrancePaths(); defineChallengingStagePaths(); if (isInGameState) { handleResizeGameElements(oldWidth, width, height); } } else if (!gameCanvas?.width || !gameCanvas?.height) { defineNormalWaveEntrancePaths(); defineChallengingStagePaths(); } } catch (e) { console.error("Error in resizeCanvases:", e); } }
+function resizeCanvases() { try { const width = window.innerWidth; const height = window.innerHeight; if (width <= 0 || height <= 0) return; if (starrySkyCanvas && (starrySkyCanvas.width !== width || starrySkyCanvas.height !== height)) { starrySkyCanvas.width = width; starrySkyCanvas.height = height; createStars(); } if (retroGridCanvas && (retroGridCanvas.width !== width || retroGridCanvas.height !== height)) { retroGridCanvas.width = width; retroGridCanvas.height = height; } if (gameCanvas && (gameCanvas.width !== width || gameCanvas.height !== height)) { const oldWidth = gameCanvas.width; gameCanvas.width = width; gameCanvas.height = height; defineNormalWaveEntrancePaths(); defineChallengingStagePaths(); if (isInGameState) { handleResizeGameElements(oldWidth, width, height); } } else if (!gameCanvas?.width || !gameCanvas?.height) { defineNormalWaveEntrancePaths(); defineChallengingStagePaths(); } } catch (e) { console.error("Error in resizeCanvases:", e); } }
 
 /** Repositions ship and enemy targets after a resize while the game is running. */
-function handleResizeGameElements(oldWidth, newWidth, newHeight) { /* ... ongewijzigd ... */ try { currentGridOffsetX = 0; if (ship) { if (oldWidth > 0 && newWidth > 0 && typeof ship.x !== 'undefined') { ship.x = (ship.x / oldWidth) * newWidth; } else { ship.x = newWidth / 2 - ship.width / 2; } ship.x = Math.max(0, Math.min(newWidth - ship.width, ship.x)); ship.y = newHeight - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN; ship.targetX = ship.x; } enemies.forEach((e) => { if (e && (e.state === 'in_grid' || e.state === 'returning' || e.state === 'moving_to_grid')) { try { const enemyWidthForGrid = (e.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((e.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH); const { x: newTargetX, y: newTargetY } = getCurrentGridSlotPosition(e.gridRow, e.gridCol, enemyWidthForGrid); e.targetGridX = newTargetX; e.targetGridY = newTargetY; if (e.state === 'in_grid') { e.x = newTargetX; e.y = newTargetY; } } catch (gridPosError) { console.error(`Error recalculating grid pos for enemy ${e.id} on resize:`, gridPosError); if(e.state === 'in_grid' || e.state === 'moving_to_grid' || e.state === 'returning'){ e.x = newWidth / 2; e.y = ENEMY_TOP_MARGIN + e.gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING); e.targetGridX = e.x; e.targetGridY = e.y; } } } }); } catch (e) { console.error("Error handling game resize specifics:", e); } }
+function handleResizeGameElements(oldWidth, newWidth, newHeight) { try { currentGridOffsetX = 0; if (ship) { if (oldWidth > 0 && newWidth > 0 && typeof ship.x !== 'undefined') { ship.x = (ship.x / oldWidth) * newWidth; } else { ship.x = newWidth / 2 - ship.width / 2; } ship.x = Math.max(0, Math.min(newWidth - ship.width, ship.x)); ship.y = newHeight - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN; ship.targetX = ship.x; } if(ship1){ if(oldWidth > 0 && newWidth >0 && typeof ship1.x !== 'undefined') { ship1.x = (ship1.x / oldWidth) * newWidth; } else { ship1.x = newWidth/2 - gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2); } ship1.x = Math.max(0, Math.min(newWidth - ship1.width - (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0), ship1.x)); ship1.y = newHeight - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN; ship1.targetX = ship1.x; if(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) smoothedShip1X = ship1.x;} if(ship2){ if(oldWidth > 0 && newWidth >0 && typeof ship2.x !== 'undefined') { ship2.x = (ship2.x / oldWidth) * newWidth; } else { ship2.x = newWidth/2 + gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2); } ship2.x = Math.max(0, Math.min(newWidth - ship2.width - (player2IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0), ship2.x)); ship2.y = newHeight - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN; ship2.targetX = ship2.x; if(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) smoothedShip2X = ship2.x;} enemies.forEach((e) => { if (e && (e.state === 'in_grid' || e.state === 'returning' || e.state === 'moving_to_grid')) { try { const enemyWidthForGrid = (e.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((e.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH); const { x: newTargetX, y: newTargetY } = getCurrentGridSlotPosition(e.gridRow, e.gridCol, enemyWidthForGrid); e.targetGridX = newTargetX; e.targetGridY = newTargetY; if (e.state === 'in_grid') { e.x = newTargetX; e.y = newTargetY; } } catch (gridPosError) { console.error(`Error recalculating grid pos for enemy ${e.id} on resize:`, gridPosError); if(e.state === 'in_grid' || e.state === 'moving_to_grid' || e.state === 'returning'){ e.x = newWidth / 2; e.y = ENEMY_TOP_MARGIN + e.gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING); e.targetGridX = e.x; e.targetGridY = e.y; } } } }); } catch (e) { console.error("Error handling game resize specifics:", e); } }
 
 // --- Keyboard Event Handlers ---
-function handleKeyDown(e) { /* ... ongewijzigd ... */ try { if (audioContext && audioContext.state === 'suspended') { audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by keydown."); }); } const relevantKeys = [" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Escape", "w", "a", "s", "d", "p", "P", "j", "J", "l", "L", "i", "I", "Numpad4", "Numpad6", "Numpad0"]; if (relevantKeys.includes(e.key) || relevantKeys.includes(e.code)) { e.preventDefault(); } let blockAllKeyboardInput = false; if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0) { blockAllKeyboardInput = true; } if (blockAllKeyboardInput) { return; } if (isInGameState) { if ((e.key === 'p' || e.key === 'P') && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage) { if(typeof togglePause === 'function') togglePause(); return; } if (!isPaused) { if (!isManualControl) { if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) { /* AI P2 is active, P1 (mens) kan niet stoppen. */ } else { if (e.key === "Escape" || e.key === "Enter") { if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu(); } else if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') { if(typeof showMenuState === 'function') showMenuState(); } } } else { switch (e.code) { case "ArrowLeft": case "KeyA": keyboardP1LeftDown = true; break; case "ArrowRight": case "KeyD": keyboardP1RightDown = true; break; case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = true; break; case "KeyJ": case "Numpad4": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2LeftDown = true; break; case "KeyL": case "Numpad6": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2RightDown = true; break; case "KeyI": case "Numpad0": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2ShootDown = true; break; case "Escape": case "Enter": if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu(); break; } if (!keyboardP2LeftDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "j") keyboardP2LeftDown = true; if (!keyboardP2RightDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "l") keyboardP2RightDown = true; if (!keyboardP2ShootDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "i") keyboardP2ShootDown = true; } } } else { if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) { if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') { if(typeof showMenuState === 'function') showMenuState(); return; } } else if (!isShowingScoreScreen) { stopAutoDemoTimer(); switch (e.key) { case "ArrowUp": case "w": selectedButtonIndex = (selectedButtonIndex <= 0) ? 1 : 0; startAutoDemoTimer(); break; case "ArrowDown": case "s": selectedButtonIndex = (selectedButtonIndex >= 1) ? 0 : 1; startAutoDemoTimer(); break; case "Enter": case " ": if (isPlayerSelectMode) { if (selectedButtonIndex === 0) { startGame1P(); } else { startGame2P(); } } else if (isOnePlayerGameTypeSelectMode) { if (selectedButtonIndex === 0) { isOnePlayerGameTypeSelectMode = false; isFiringModeSelectMode = true; selectedOnePlayerGameVariant = 'CLASSIC_1P'; selectedGameMode = 'normal'; isTwoPlayerMode = false; isPlayerTwoAI = false; selectedButtonIndex = 0; } else { isOnePlayerGameTypeSelectMode = false; isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = 0; } } else if (isOnePlayerVsAIGameTypeSelectMode) { if (selectedButtonIndex === 0) { selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL'; selectedGameMode = 'normal'; } else { selectedOnePlayerGameVariant = '1P_VS_AI_COOP'; selectedGameMode = 'coop'; } isOnePlayerVsAIGameTypeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = true; selectedButtonIndex = 0; } else if (isGameModeSelectMode) { if (selectedButtonIndex === 0) { selectedGameMode = 'normal'; } else { selectedGameMode = 'coop'; } isGameModeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = false; selectedButtonIndex = 0; } else if (isFiringModeSelectMode) { if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; } baseStartGame(true); } else { if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0;} else if (selectedButtonIndex === 1) { exitGame(); } } startAutoDemoTimer(); break; case "Escape": if (isFiringModeSelectMode) { isFiringModeSelectMode = false; if (selectedOnePlayerGameVariant === 'CLASSIC_1P') { isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0; } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0); } else if (isTwoPlayerMode && !isPlayerTwoAI) { isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0); } else { isPlayerSelectMode = false; selectedButtonIndex = 0; } selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; selectedGameMode = 'normal'; } else if (isOnePlayerVsAIGameTypeSelectMode) { isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1; } else if (isOnePlayerGameTypeSelectMode) { isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0; } else if (isGameModeSelectMode) { isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1; } else if (isPlayerSelectMode) { isPlayerSelectMode = false; selectedButtonIndex = 0; } else { triggerFullscreen(); } startAutoDemoTimer(); break; default: startAutoDemoTimer(); break; } } } } catch(err) { console.error("Error in handleKeyDown:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; } }
-function handleKeyUp(e) { /* ... ongewijzigd ... */ try { switch (e.code) { case "ArrowLeft": case "KeyA": keyboardP1LeftDown = false; break; case "ArrowRight": case "KeyD": keyboardP1RightDown = false; break; case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = false; p1JustFiredSingle = false; break; case "KeyJ": case "Numpad4": keyboardP2LeftDown = false; break; case "KeyL": case "Numpad6": keyboardP2RightDown = false; break; case "KeyI": case "Numpad0": keyboardP2ShootDown = false; p2JustFiredSingle = false; break; } if (e.key.toLowerCase() === "j") keyboardP2LeftDown = false; if (e.key.toLowerCase() === "l") keyboardP2RightDown = false; if (e.key.toLowerCase() === "i") { keyboardP2ShootDown = false; p2JustFiredSingle = false; } } catch(err) { console.error("Error in handleKeyUp:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false;} }
+function handleKeyDown(e) { try { if (audioContext && audioContext.state === 'suspended') { audioContext.resume().then(() => { audioContextInitialized = true; /* console.log("AudioContext resumed by keydown."); */ }); } const relevantKeys = [" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Escape", "w", "a", "s", "d", "p", "P", "j", "J", "l", "L", "i", "I", "Numpad4", "Numpad6", "Numpad0"]; if (relevantKeys.includes(e.key) || relevantKeys.includes(e.code)) { e.preventDefault(); } let blockAllKeyboardInput = false; if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage) { blockAllKeyboardInput = true; } if (blockAllKeyboardInput) { return; } if (isInGameState) { if ((e.key === 'p' || e.key === 'P') && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage && !isPlayer1ShowingGameOverMessage && !isPlayer2ShowingGameOverMessage) { if(typeof togglePause === 'function') togglePause(); return; } if (!isPaused) { if (!isManualControl) { if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) { /* AI P2 is active, P1 (mens) kan niet stoppen. */ } else { if (e.key === "Escape" || e.key === "Enter") { if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu(); } else if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') { if(typeof showMenuState === 'function') showMenuState(); } } } else { switch (e.code) { case "ArrowLeft": case "KeyA": keyboardP1LeftDown = true; break; case "ArrowRight": case "KeyD": keyboardP1RightDown = true; break; case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = true; break; case "KeyJ": case "Numpad4": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2LeftDown = true; break; case "KeyL": case "Numpad6": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2RightDown = true; break; case "KeyI": case "Numpad0": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2ShootDown = true; break; case "Escape": case "Enter": if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu(); break; } if (!keyboardP2LeftDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "j") keyboardP2LeftDown = true; if (!keyboardP2RightDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "l") keyboardP2RightDown = true; if (!keyboardP2ShootDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "i") keyboardP2ShootDown = true; } } } else { if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) { if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') { if(typeof showMenuState === 'function') showMenuState(); return; } } else if (!isShowingScoreScreen) { stopAutoDemoTimer(); switch (e.key) { case "ArrowUp": case "w": selectedButtonIndex = (selectedButtonIndex <= 0) ? 1 : 0; startAutoDemoTimer(); break; case "ArrowDown": case "s": selectedButtonIndex = (selectedButtonIndex >= 1) ? 0 : 1; startAutoDemoTimer(); break; case "Enter": case " ": if (isPlayerSelectMode) { if (selectedButtonIndex === 0) { startGame1P(); } else { startGame2P(); } } else if (isOnePlayerGameTypeSelectMode) { if (selectedButtonIndex === 0) { isOnePlayerGameTypeSelectMode = false; isFiringModeSelectMode = true; selectedOnePlayerGameVariant = 'CLASSIC_1P'; selectedGameMode = 'normal'; isTwoPlayerMode = false; isPlayerTwoAI = false; selectedButtonIndex = 0; } else { isOnePlayerGameTypeSelectMode = false; isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = 0; } } else if (isOnePlayerVsAIGameTypeSelectMode) { if (selectedButtonIndex === 0) { selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL'; selectedGameMode = 'normal'; } else { selectedOnePlayerGameVariant = '1P_VS_AI_COOP'; selectedGameMode = 'coop'; } isOnePlayerVsAIGameTypeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = true; selectedButtonIndex = 0; } else if (isGameModeSelectMode) { if (selectedButtonIndex === 0) { selectedGameMode = 'normal'; } else { selectedGameMode = 'coop'; } isGameModeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = false; selectedButtonIndex = 0; } else if (isFiringModeSelectMode) { if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; } baseStartGame(true); } else { if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0;} else if (selectedButtonIndex === 1) { exitGame(); } } startAutoDemoTimer(); break; case "Escape": if (isFiringModeSelectMode) { isFiringModeSelectMode = false; if (selectedOnePlayerGameVariant === 'CLASSIC_1P') { isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0; } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0); } else if (isTwoPlayerMode && !isPlayerTwoAI) { isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0); } else { isPlayerSelectMode = false; selectedButtonIndex = 0; } selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; selectedGameMode = 'normal'; } else if (isOnePlayerVsAIGameTypeSelectMode) { isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1; } else if (isOnePlayerGameTypeSelectMode) { isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0; } else if (isGameModeSelectMode) { isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1; } else if (isPlayerSelectMode) { isPlayerSelectMode = false; selectedButtonIndex = 0; } else { triggerFullscreen(); } startAutoDemoTimer(); break; default: startAutoDemoTimer(); break; } } } } catch(err) { console.error("Error in handleKeyDown:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; } }
+function handleKeyUp(e) { try { switch (e.code) { case "ArrowLeft": case "KeyA": keyboardP1LeftDown = false; break; case "ArrowRight": case "KeyD": keyboardP1RightDown = false; break; case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = false; p1JustFiredSingle = false; break; case "KeyJ": case "Numpad4": keyboardP2LeftDown = false; break; case "KeyL": case "Numpad6": keyboardP2RightDown = false; break; case "KeyI": case "Numpad0": keyboardP2ShootDown = false; p2JustFiredSingle = false; break; } if (e.key.toLowerCase() === "j") keyboardP2LeftDown = false; if (e.key.toLowerCase() === "l") keyboardP2RightDown = false; if (e.key.toLowerCase() === "i") { keyboardP2ShootDown = false; p2JustFiredSingle = false; } } catch(err) { console.error("Error in handleKeyUp:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false;} }
 
 // --- Gamepad Event Handlers ---
-function handleGamepadConnected(event) { /* ... ongewijzigd ... */ try { if (audioContext && audioContext.state === 'suspended') { audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by gamepad connection."); }); } if (connectedGamepadIndex === null) { connectedGamepadIndex = event.gamepad.index; const numButtons = event.gamepad.buttons.length; previousButtonStates = new Array(numButtons).fill(false); previousDemoButtonStates = new Array(numButtons).fill(false); previousGameButtonStates = new Array(numButtons).fill(false); if (!isInGameState) { stopAutoDemoTimer(); selectedButtonIndex = 0; } } else if (connectedGamepadIndexP2 === null) { connectedGamepadIndexP2 = event.gamepad.index; const numButtons = event.gamepad.buttons.length; previousGameButtonStatesP2 = new Array(numButtons).fill(false); } } catch(e) { console.error("Error in handleGamepadConnected:", e); } }
-function handleGamepadDisconnected(event) { /* ... ongewijzigd ... */ try { if (connectedGamepadIndex === event.gamepad.index) { connectedGamepadIndex = null; previousButtonStates = []; previousDemoButtonStates = []; previousGameButtonStates = []; if (!isInGameState) { selectedButtonIndex = -1; joystickMovedVerticallyLastFrame = false; startAutoDemoTimer(); } p1FireInputWasDown = false; } else if (connectedGamepadIndexP2 === event.gamepad.index) { connectedGamepadIndexP2 = null; previousGameButtonStatesP2 = []; p2FireInputWasDown = false; } } catch(e) { console.error("Error in handleGamepadDisconnected:", e); p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; } }
+function handleGamepadConnected(event) { try { if (audioContext && audioContext.state === 'suspended') { audioContext.resume().then(() => { audioContextInitialized = true; /* console.log("AudioContext resumed by gamepad connection."); */ }); } if (connectedGamepadIndex === null) { connectedGamepadIndex = event.gamepad.index; const numButtons = event.gamepad.buttons.length; previousButtonStates = new Array(numButtons).fill(false); previousDemoButtonStates = new Array(numButtons).fill(false); previousGameButtonStates = new Array(numButtons).fill(false); if (!isInGameState) { stopAutoDemoTimer(); selectedButtonIndex = 0; } } else if (connectedGamepadIndexP2 === null) { connectedGamepadIndexP2 = event.gamepad.index; const numButtons = event.gamepad.buttons.length; previousGameButtonStatesP2 = new Array(numButtons).fill(false); } } catch(e) { console.error("Error in handleGamepadConnected:", e); } }
+function handleGamepadDisconnected(event) { try { if (connectedGamepadIndex === event.gamepad.index) { connectedGamepadIndex = null; previousButtonStates = []; previousDemoButtonStates = []; previousGameButtonStates = []; if (!isInGameState) { selectedButtonIndex = -1; joystickMovedVerticallyLastFrame = false; startAutoDemoTimer(); } p1FireInputWasDown = false; } else if (connectedGamepadIndexP2 === event.gamepad.index) { connectedGamepadIndexP2 = null; previousGameButtonStatesP2 = []; p2FireInputWasDown = false; } } catch(e) { console.error("Error in handleGamepadDisconnected:", e); p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; } }
 
 // --- High Score ---
-function saveHighScore() { /* ... ongewijzigd ... */ try { let potentialNewHighScore = 0; if (isTwoPlayerMode && selectedGameMode === 'coop') { potentialNewHighScore = Math.max(player1Score, player2Score); } else if (isTwoPlayerMode && selectedGameMode === 'normal') { potentialNewHighScore = Math.max(player1Score, player2Score); } else { potentialNewHighScore = score; } if (isManualControl && potentialNewHighScore > highScore) { highScore = potentialNewHighScore; } } catch (e) { console.error("Error in saveHighScore:", e); } }
-function loadHighScore() { /* ... ongewijzigd ... */ try { highScore = 20000; } catch (e) { console.error("Error in loadHighScore:", e); highScore = 20000; } }
+function saveHighScore() { try { let potentialNewHighScore = 0; if (isTwoPlayerMode && selectedGameMode === 'coop') { potentialNewHighScore = Math.max(player1Score, player2Score); } else if (isTwoPlayerMode && selectedGameMode === 'normal') { potentialNewHighScore = Math.max(player1Score, player2Score); } else { potentialNewHighScore = score; } if (isManualControl && potentialNewHighScore > highScore) { highScore = potentialNewHighScore; } } catch (e) { console.error("Error in saveHighScore:", e); } }
+function loadHighScore() { try { highScore = 20000; } catch (e) { console.error("Error in loadHighScore:", e); highScore = 20000; } }
 
 // --- Pauze Functies (Web Audio) ---
 /** Mutes all Web Audio sound by setting the master gain to 0. */
 function muteAllSounds() {
-    // <<< Functie ongewijzigd tov vorige iteratie (met individuele gain nodes) >>>
-    if (audioContext && masterGainNode) { // Gebruik audioContext
-        previousMasterGain = masterGainNode.gain.value; // Bewaar huidige master volume
-        masterGainNode.gain.setTargetAtTime(0, audioContext.currentTime, 0.01); // Gebruik audioContext
+    if (audioContext && masterGainNode) {
+        previousMasterGain = masterGainNode.gain.value;
+        masterGainNode.gain.setTargetAtTime(0, audioContext.currentTime, 0.01);
     }
-    // Stop ALLE loops, ongeacht pauze of niet. stopSound zal de gainNode van de loop ook disconnecten.
     for (const key in playingLoopSources) {
         stopSound(key);
     }
-    // Reset flags expliciet voor zekerheid
     isGridSoundPlaying = false;
 }
 
 /** Unmutes all Web Audio sound by restoring the master gain. */
 function unmuteAllSounds() {
-    // <<< Functie ongewijzigd tov vorige iteratie (met individuele gain nodes) >>>
-    if (audioContext && masterGainNode) { // Gebruik audioContext
-        masterGainNode.gain.setTargetAtTime(previousMasterGain, audioContext.currentTime, 0.01); // Herstel master volume // Gebruik audioContext
+    if (audioContext && masterGainNode) {
+        masterGainNode.gain.setTargetAtTime(previousMasterGain, audioContext.currentTime, 0.01);
     }
-    // Herstart loops alleen als de condities kloppen
-    if (!isInGameState && typeof menuMusicSound !== 'undefined') { playSound(menuMusicSound, true); }
-    if (isInGameState && !isChallengingStage && enemies.some(e => e?.state === 'in_grid')) { playSound(gridBackgroundSound, true); }
-    if (isShowingResultsScreen) { playSound(resultsMusicSound, true); }
+    if (!isInGameState && typeof menuMusicSound !== 'undefined') { playSound("MENU_MUSIC", true); } // Gebruik string identifier
+    if (isInGameState && !isChallengingStage && enemies.some(e => e?.state === 'in_grid')) { playSound("GRID_BACKGROUND", true); } // Gebruik string identifier
+    if (isShowingResultsScreen) { playSound("RESULTS_MUSIC", true); } // Gebruik string identifier
 }
 
 
 /** Toggles the pause state and handles sounds via muting/unmuting. */
 function togglePause() {
-    // <<< Functie ongewijzigd tov vorige iteratie >>>
     let canPause = false;
     const isAnyGameOverMessageShowing = isShowingPlayerGameOverMessage || (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage));
 
@@ -880,10 +874,10 @@ function togglePause() {
         if (!isManualControl) {
             canPause = true;
         } else if (isTwoPlayerMode && selectedGameMode === 'coop') {
-            canPause = (player1Lives > 0 && ship1 && !isPlayer1ShipCaptured && !player1NeedsRespawnAfterCapture) ||
-                       (player2Lives > 0 && ship2 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture);
+            canPause = (player1Lives > 0 && ship1 && !isPlayer1ShipCaptured && !player1NeedsRespawnAfterCapture && !isPlayer1ShowingGameOverMessage) ||
+                       (player2Lives > 0 && ship2 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture && !isPlayer2ShowingGameOverMessage);
         } else if (isTwoPlayerMode && selectedGameMode === 'normal' && isPlayerTwoAI && currentPlayer === 2) {
-             canPause = false; // AI P2 kan niet pauzeren
+             canPause = false;
         } else {
             canPause = playerLives > 0 && ship && !isShipCaptured;
         }
@@ -893,73 +887,63 @@ function togglePause() {
 
     isPaused = !isPaused;
     if (isPaused) {
-        muteAllSounds(); // Demped master volume en stopt loops via stopSound
-
+        muteAllSounds();
         clearTimeout(mouseIdleTimerId);
         mouseIdleTimerId = null;
         if (gameCanvas) gameCanvas.style.cursor = 'default';
     } else {
-        unmuteAllSounds(); // Herstelt master volume en herstart loops indien nodig
-
+        unmuteAllSounds();
         clearTimeout(mouseIdleTimerId);
-        mouseIdleTimerId = setTimeout(hideCursor, 2000); // Herstart cursor hide timer
-         if (audioContext && audioContext.state === 'suspended') { // Zorg ervoor dat context hervat wordt na pauze, als die nog suspended was
-            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed explicitly after unpause.");});
+        mouseIdleTimerId = setTimeout(hideCursor, 2000);
+         if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => { audioContextInitialized = true; /* console.log("AudioContext resumed explicitly after unpause."); */});
         }
     }
 }
 
 
-// <<< HELPER FUNCTIE processSingleController (ongewijzigd) >>>
-function processSingleController(gamepad, previousButtonStates) { const currentButtonStates = gamepad.buttons.map(b => b.pressed); const result = { left: false, right: false, shoot: false, pause: false, back: false, newButtonStates: currentButtonStates.slice() }; const crossButton = currentButtonStates[PS5_BUTTON_CROSS]; const r1ButtonNow = currentButtonStates[PS5_BUTTON_R1]; const r1ButtonLast = previousButtonStates[PS5_BUTTON_R1] ?? false; const triangleButtonNow = currentButtonStates[PS5_BUTTON_TRIANGLE]; const triangleButtonLast = previousButtonStates[PS5_BUTTON_TRIANGLE] ?? false; const axisX = gamepad.axes[PS5_LEFT_STICK_X] ?? 0; const dpadLeft = currentButtonStates[PS5_DPAD_LEFT]; const dpadRight = currentButtonStates[PS5_DPAD_RIGHT]; const AXIS_THRESHOLD = AXIS_DEAD_ZONE_GAMEPLAY; if (axisX < -AXIS_THRESHOLD || dpadLeft) { result.left = true; } else if (axisX > AXIS_THRESHOLD || dpadRight) { result.right = true; } if (crossButton) { result.shoot = true; } if (r1ButtonNow && !r1ButtonLast) { result.pause = true; } if (triangleButtonNow && !triangleButtonLast) { result.back = true; } return result; }
+function processSingleController(gamepad, previousButtonStatesArray) { const currentButtonStates = gamepad.buttons.map(b => b.pressed); const result = { left: false, right: false, shoot: false, pause: false, back: false, newButtonStates: currentButtonStates.slice() }; const crossButton = currentButtonStates[PS5_BUTTON_CROSS]; const r1ButtonNow = currentButtonStates[PS5_BUTTON_R1]; const r1ButtonLast = previousButtonStatesArray[PS5_BUTTON_R1] ?? false; const triangleButtonNow = currentButtonStates[PS5_BUTTON_TRIANGLE]; const triangleButtonLast = previousButtonStatesArray[PS5_BUTTON_TRIANGLE] ?? false; const axisX = gamepad.axes[PS5_LEFT_STICK_X] ?? 0; const dpadLeft = currentButtonStates[PS5_DPAD_LEFT]; const dpadRight = currentButtonStates[PS5_DPAD_RIGHT]; const AXIS_THRESHOLD = AXIS_DEAD_ZONE_GAMEPLAY; if (axisX < -AXIS_THRESHOLD || dpadLeft) { result.left = true; } else if (axisX > AXIS_THRESHOLD || dpadRight) { result.right = true; } if (crossButton) { result.shoot = true; } if (r1ButtonNow && !r1ButtonLast) { result.pause = true; } if (triangleButtonNow && !triangleButtonLast) { result.back = true; } return result; }
 
 /**
  * Functie om de *definitieve* game over sequence te starten
  */
 function triggerFinalGameOverSequence() {
-    // <<< GEWIJZIGD: Expliciete stopSound(resultsMusicSound) toegevoegd (blijft behouden) >>>
     if (isInGameState && gameOverSequenceStartTime === 0) {
-        isPaused = false; isShowingDemoText = false; isShowingIntro = false; isWaveTransitioning = false; showCsHitsMessage = false; showExtraLifeMessage = false; showPerfectMessage = false; showCSClearMessage = false; showCsHitsForClearMessage = false; showCsScoreForClearMessage = false; showReadyMessage = false; showCsBonusScoreMessage = false; isShowingPlayerGameOverMessage = false; isEntrancePhaseActive = false; isCsCompletionDelayActive = false; csCompletionDelayStartTime = 0; csCompletionResultIsPerfect = false; csIntroSoundPlayed = false;
+        isPaused = false; isShowingDemoText = false; isShowingIntro = false; isWaveTransitioning = false; showCsHitsMessage = false; showExtraLifeMessage = false; showPerfectMessage = false; showCSClearMessage = false; showCsHitsForClearMessage = false; showCsScoreForClearMessage = false; showReadyMessage = false; showCsBonusScoreMessage = false; isShowingPlayerGameOverMessage = false; isPlayer1ShowingGameOverMessage = false; isPlayer2ShowingGameOverMessage = false; isEntrancePhaseActive = false; isCsCompletionDelayActive = false; csCompletionDelayStartTime = 0; csCompletionResultIsPerfect = false; csIntroSoundPlayed = false;
         if (isManualControl) { saveHighScore(); }
 
-        // Stop alle expliciet loopende geluiden
-        stopSound(gridBackgroundSound);
-        stopSound(menuMusicSound);
-        stopSound(resultsMusicSound); // <<< TOEGEVOEGD (extra zekerheid) >>>
-        // Stop andere potentieel lange geluiden
-        stopSound(captureSound);
-        stopSound(entranceSound);
+        stopSound("GRID_BACKGROUND"); // Gebruik string identifiers
+        stopSound("MENU_MUSIC");
+        stopSound("RESULTS_MUSIC");
+        stopSound("CAPTURE");
+        stopSound("ENTRANCE");
         isGridSoundPlaying = false;
 
         const now = Date.now();
-        // Game over logic based on player mode (ongewijzigd)
-        const isTrueSinglePlayer = !isTwoPlayerMode && !isPlayerTwoAI && selectedGameMode === 'normal';
-        const isSinglePlayerVsAINormalAndP1Died = isTwoPlayerMode && isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 1 && playerLives <= 0;
+        const isTrueSinglePlayerGameOver = !isTwoPlayerMode || (isPlayerTwoAI && selectedGameMode === 'normal' && player1Lives <= 0 && player2Lives <= 0); // Echte 1P of beide dood in 1P vs AI Normal
 
-        if (isTrueSinglePlayer || isSinglePlayerVsAINormalAndP1Died) {
-            playSound(gameOverSound);
+        if (isTrueSinglePlayerGameOver) {
+            playSound("GAME_OVER");
             gameOverSequenceStartTime = now;
-        } else { // Alle andere gevallen (2P Human, 1P vs AI Coop, Coop AI Demo, of P2 dood in 1P vs AI Normal)
+        } else { // Alle andere 2P gevallen (Human 2P, COOPs)
             gameOverSequenceStartTime = now - GAME_OVER_DURATION;
-            playSound(resultsMusicSound, true);
+            playSound("RESULTS_MUSIC", true);
             isShowingResultsScreen = true;
         }
 
-
         bullets = []; enemyBullets = []; explosions = []; fallingShips = []; isDualShipActive = false;
         player1IsDualShipActive = false; player2IsDualShipActive = false;
-        // isShowingResultsScreen is hierboven al gezet indien nodig
         previousButtonStates = []; previousGameButtonStates = []; previousDemoButtonStates = []; previousGameButtonStatesP2 = [];
     }
 }
 
 /** Triggert de game over sequence (roept nu helper aan) */
-function triggerGameOver() { /* ... ongewijzigd ... */ triggerFinalGameOverSequence(); }
+function triggerGameOver() { triggerFinalGameOverSequence(); }
 
 
 // --- Touch Event Handlers ---
 function handleTouchStart(event) {
-    event.preventDefault(); // Voorkom scrollen/zoomen etc.
+    event.preventDefault();
     if (!gameCanvas) return;
 
     if (audioContext && audioContext.state === 'suspended') {
@@ -975,67 +959,80 @@ function handleTouchStart(event) {
 
     isTouching = true;
     touchCurrentX = touchX;
-    touchStartX = touchX; // Sla startpositie op voor tap vs drag
-    lastTapTime = Date.now(); // Update lastTapTime voor tap/drag detectie
+    touchStartX = touchX;
+    lastTapTime = Date.now();
 
-    let activeShipForTouch = null;
-    let isShipCapturedForTouch = false;
-    let playerLivesForTouch = 0;
+    let activeShipForTouchLogic = null;
+    let isShipCapturedForTouchLogic = false;
+    let playerLivesForTouchLogic = 0;
+    let shipIsDualForTouchLogic = false;
+    let currentShipID = null;
 
     if (isTwoPlayerMode && selectedGameMode === 'coop') {
-        // Bepaal welk schip dichterbij is, als beide actief zijn
-        const p1Active = ship1 && player1Lives > 0 && !isPlayer1ShipCaptured;
-        const p2Active = ship2 && player2Lives > 0 && !isPlayer2ShipCaptured;
+        const p1CanBeTouched = ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !player1NeedsRespawnAfterCapture;
+        const p2CanBeTouched = ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture;
 
-        if (p1Active && p2Active) {
-            const distToP1 = Math.abs(touchX - (ship1.x + ship1.width / 2));
-            const distToP2 = Math.abs(touchX - (ship2.x + ship2.width / 2));
+        if (p1CanBeTouched && p2CanBeTouched) {
+            const distToP1 = Math.abs(touchX - (ship1.x + (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X/2 + ship1.width/2 : ship1.width / 2) ));
+            const distToP2 = Math.abs(touchX - (ship2.x + (player2IsDualShipActive ? DUAL_SHIP_OFFSET_X/2 + ship2.width/2 : ship2.width / 2) ));
             if (distToP1 <= distToP2) {
-                activeShipForTouch = ship1;
-                isShipCapturedForTouch = isPlayer1ShipCaptured;
-                playerLivesForTouch = player1Lives;
+                activeShipForTouchLogic = ship1; currentShipID = 'player1';
+                isShipCapturedForTouchLogic = isPlayer1ShipCaptured; playerLivesForTouchLogic = player1Lives; shipIsDualForTouchLogic = player1IsDualShipActive;
             } else {
-                activeShipForTouch = ship2;
-                isShipCapturedForTouch = isPlayer2ShipCaptured;
-                playerLivesForTouch = player2Lives;
+                activeShipForTouchLogic = ship2; currentShipID = 'player2'; // of 'ai_p2' als P2 AI is
+                isShipCapturedForTouchLogic = isPlayer2ShipCaptured; playerLivesForTouchLogic = player2Lives; shipIsDualForTouchLogic = player2IsDualShipActive;
             }
-        } else if (p1Active) {
-            activeShipForTouch = ship1;
-            isShipCapturedForTouch = isPlayer1ShipCaptured;
-            playerLivesForTouch = player1Lives;
-        } else if (p2Active) {
-            activeShipForTouch = ship2;
-            isShipCapturedForTouch = isPlayer2ShipCaptured;
-            playerLivesForTouch = player2Lives;
+        } else if (p1CanBeTouched) {
+            activeShipForTouchLogic = ship1; currentShipID = 'player1';
+            isShipCapturedForTouchLogic = isPlayer1ShipCaptured; playerLivesForTouchLogic = player1Lives; shipIsDualForTouchLogic = player1IsDualShipActive;
+        } else if (p2CanBeTouched) {
+            activeShipForTouchLogic = ship2; currentShipID = 'player2';
+            isShipCapturedForTouchLogic = isPlayer2ShipCaptured; playerLivesForTouchLogic = player2Lives; shipIsDualForTouchLogic = player2IsDualShipActive;
         }
-    } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
-        activeShipForTouch = ship;
-        isShipCapturedForTouch = isShipCaptured;
-        playerLivesForTouch = playerLives;
+    } else {
+        activeShipForTouchLogic = ship; currentShipID = 'player1'; // of currentPlayer id
+        isShipCapturedForTouchLogic = isShipCaptured; playerLivesForTouchLogic = playerLives; shipIsDualForTouchLogic = isDualShipActive;
     }
 
 
-    if (isInGameState && isManualControl && playerLivesForTouch > 0 && activeShipForTouch && !isShipCapturedForTouch && !isPaused && !isShowingPlayerGameOverMessage && !isPlayer1ShowingGameOverMessage && !isPlayer2ShowingGameOverMessage && gameOverSequenceStartTime === 0 && !isWaitingForRespawn) {
-        const shipEffectiveWidth = activeShipForTouch.width + ((isTwoPlayerMode && selectedGameMode === 'coop' ? (activeShipForTouch.id === 'p1' ? player1IsDualShipActive : player2IsDualShipActive) : isDualShipActive) ? DUAL_SHIP_OFFSET_X : 0);
+    if (isInGameState && isManualControl && playerLivesForTouchLogic > 0 && activeShipForTouchLogic && !isShipCapturedForTouchLogic && !isPaused && !isShowingPlayerGameOverMessage && !isPlayer1ShowingGameOverMessage && !isPlayer2ShowingGameOverMessage && gameOverSequenceStartTime === 0 && !((currentShipID === 'player1' && isPlayer1WaitingForRespawn) || (currentShipID === 'player2' && isPlayer2WaitingForRespawn) || (!(isTwoPlayerMode && selectedGameMode === 'coop') && isWaitingForRespawn) ) ) {
+        const shipEffectiveWidth = activeShipForTouchLogic.width + (shipIsDualForTouchLogic ? DUAL_SHIP_OFFSET_X : 0);
         const shipRectForTouch = {
-            x: activeShipForTouch.x,
-            y: activeShipForTouch.y,
+            x: activeShipForTouchLogic.x,
+            y: activeShipForTouchLogic.y,
             width: shipEffectiveWidth,
-            height: activeShipForTouch.height
+            height: activeShipForTouchLogic.height + 20 // Groter gebied voor Y-as touch
         };
 
         if (checkCollision({x: touchX, y: touchY, width: 1, height: 1}, shipRectForTouch)) {
             isDraggingShip = true;
-            shipTouchOffsetX = touchX - (activeShipForTouch.x + shipEffectiveWidth / 2); // Offset tov midden van (potentieel dual) schip
+            shipTouchOffsetX = touchX - (activeShipForTouchLogic.x + shipEffectiveWidth / 2);
+            isTouchFiringActive = false; // Niet direct vuren als we beginnen met slepen op het schip
         } else {
             isDraggingShip = false;
-            // Als niet op schip geklikt, activeer direct vuren (indien rapid)
             if (selectedFiringMode === 'rapid') {
-                isTouchFiringActive = true;
+                isTouchFiringActive = true; // Activeer continu vuren als naast het schip wordt getapt
             }
         }
-    } else if (!isInGameState && !isShowingScoreScreen) { // Menu click
-        handleCanvasClick({ clientX: touch.clientX, clientY: touch.clientY }); // Hergebruik bestaande click logic
+    } else if (!isInGameState && !isShowingScoreScreen) {
+        // Menu click (check voor 2UP)
+        if (ui2upRect && checkCollision({x: touchX, y: touchY, width: 1, height: 1}, ui2upRect)) {
+            if (isOnePlayerGameTypeSelectMode) { // Van "NORMAL GAME" naar "GAME VS AI" of andersom
+                 selectedButtonIndex = (selectedButtonIndex === 0) ? 1 : 0; // Toggle selectie
+                 // Update game mode etc. alsof op knop geklikt is (vereenvoudigd)
+                 stopAutoDemoTimer();
+                 if (selectedButtonIndex === 0) { /* Normal */ } else { /* Vs AI */ }
+                 startAutoDemoTimer();
+                 return; // Voorkom dat handleCanvasClick de main menu logica triggert
+            } else if (isOnePlayerVsAIGameTypeSelectMode || isGameModeSelectMode) {
+                 selectedButtonIndex = (selectedButtonIndex === 0) ? 1 : 0;
+                 stopAutoDemoTimer();
+                 if (selectedButtonIndex === 0) { /* Normal */ } else { /* Coop */ }
+                 startAutoDemoTimer();
+                 return;
+            }
+        }
+        handleCanvasClick({ clientX: touch.clientX, clientY: touch.clientY });
     } else if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
         if(typeof showMenuState === 'function') showMenuState();
     }
@@ -1051,43 +1048,37 @@ function handleTouchMove(event) {
     touchCurrentX = (touch.clientX - rect.left) * scaleX;
 
     if (isInGameState && isManualControl && isDraggingShip) {
-        let activeShipForTouch = null;
-        let shipIsDualForTouch = false;
+        let shipToMove = null;
+        let shipIsDualForMove = false;
 
         if (isTwoPlayerMode && selectedGameMode === 'coop') {
-            // Probeer het schip te vinden dat het dichtst bij de *start* van de drag was,
-            // of het schip dat momenteel gesleept wordt (als dat al bepaald is).
-            // Dit is een simplificatie; een robuustere oplossing zou de ID van het gesleepte schip bijhouden.
+            // Bepaal welk schip gesleept wordt (dit zou idealiter opgeslagen worden in touchstart)
+            // Voor nu, neem aan dat het schip dat het dichtst bij de *start* van de drag was, wordt gesleept.
             const p1Active = ship1 && player1Lives > 0 && !isPlayer1ShipCaptured;
             const p2Active = ship2 && player2Lives > 0 && !isPlayer2ShipCaptured;
-
             if (p1Active && p2Active) {
-                const distToP1 = Math.abs(touchStartX - (ship1.x + ship1.width / 2)); // Gebruik touchStartX voor consistentie
-                const distToP2 = Math.abs(touchStartX - (ship2.x + ship2.width / 2));
-                activeShipForTouch = (distToP1 <= distToP2) ? ship1 : ship2;
-                shipIsDualForTouch = (activeShipForTouch.id === 'p1') ? player1IsDualShipActive : player2IsDualShipActive;
+                const distToP1 = Math.abs(touchStartX - (ship1.x + (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X/2 + ship1.width/2 : ship1.width / 2)));
+                const distToP2 = Math.abs(touchStartX - (ship2.x + (player2IsDualShipActive ? DUAL_SHIP_OFFSET_X/2 + ship2.width/2 : ship2.width / 2)));
+                shipToMove = (distToP1 <= distToP2) ? ship1 : ship2;
+                shipIsDualForMove = (shipToMove === ship1) ? player1IsDualShipActive : player2IsDualShipActive;
             } else if (p1Active) {
-                activeShipForTouch = ship1;
-                shipIsDualForTouch = player1IsDualShipActive;
+                shipToMove = ship1; shipIsDualForMove = player1IsDualShipActive;
             } else if (p2Active) {
-                activeShipForTouch = ship2;
-                shipIsDualForTouch = player2IsDualShipActive;
+                shipToMove = ship2; shipIsDualForMove = player2IsDualShipActive;
             }
-        } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
-            activeShipForTouch = ship;
-            shipIsDualForTouch = isDualShipActive;
+        } else {
+            shipToMove = ship;
+            shipIsDualForMove = isDualShipActive;
         }
 
-
-        if (activeShipForTouch) {
-            const shipEffectiveWidth = activeShipForTouch.width + (shipIsDualForTouch ? DUAL_SHIP_OFFSET_X : 0);
-            // Nieuwe X is touch positie minus de initiële offset BINNEN het schip, GECORRIGEERD voor het midden van het schip.
+        if (shipToMove) {
+            const shipEffectiveWidth = shipToMove.width + (shipIsDualForMove ? DUAL_SHIP_OFFSET_X : 0);
             let newShipCenterX = touchCurrentX - shipTouchOffsetX;
             let newShipX = newShipCenterX - (shipEffectiveWidth / 2);
 
             newShipX = Math.max(0, Math.min(gameCanvas.width - shipEffectiveWidth, newShipX));
-            activeShipForTouch.x = newShipX;
-            activeShipForTouch.targetX = newShipX; // Voor AI componenten indien van toepassing
+            shipToMove.x = newShipX;
+            shipToMove.targetX = newShipX;
         }
     }
 }
@@ -1100,56 +1091,60 @@ function handleTouchEnd(event) {
     const touchDuration = touchEndTime - lastTapTime;
     const dragDistance = Math.abs(touchCurrentX - touchStartX);
 
-    let activeShipForTouch = null;
-    let isShipCapturedForTouch = false;
-    let playerLivesForTouch = 0;
+    let activeShipForEndLogic = null;
+    let isShipCapturedForEndLogic = false;
+    let playerLivesForEndLogic = 0;
+    let currentShipIDForEnd = null;
+
 
     if (isTwoPlayerMode && selectedGameMode === 'coop') {
-        const p1Active = ship1 && player1Lives > 0 && !isPlayer1ShipCaptured;
-        const p2Active = ship2 && player2Lives > 0 && !isPlayer2ShipCaptured;
-        if (p1Active && p2Active) {
-            const distToP1 = Math.abs(touchStartX - (ship1.x + ship1.width / 2));
-            const distToP2 = Math.abs(touchStartX - (ship2.x + ship2.width / 2));
-            activeShipForTouch = (distToP1 <= distToP2) ? ship1 : ship2;
-            isShipCapturedForTouch = (activeShipForTouch.id === 'p1') ? isPlayer1ShipCaptured : isPlayer2ShipCaptured;
-            playerLivesForTouch = (activeShipForTouch.id === 'p1') ? player1Lives : player2Lives;
-        } else if (p1Active) {
-            activeShipForTouch = ship1; isShipCapturedForTouch = isPlayer1ShipCaptured; playerLivesForTouch = player1Lives;
-        } else if (p2Active) {
-            activeShipForTouch = ship2; isShipCapturedForTouch = isPlayer2ShipCaptured; playerLivesForTouch = player2Lives;
+        const p1CanBeActive = ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !player1NeedsRespawnAfterCapture;
+        const p2CanBeActive = ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture;
+        if (p1CanBeActive && p2CanBeActive) {
+            const distToP1 = Math.abs(touchStartX - (ship1.x + (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X/2 + ship1.width/2 : ship1.width / 2)));
+            const distToP2 = Math.abs(touchStartX - (ship2.x + (player2IsDualShipActive ? DUAL_SHIP_OFFSET_X/2 + ship2.width/2 : ship2.width / 2)));
+            activeShipForEndLogic = (distToP1 <= distToP2) ? ship1 : ship2;
+            currentShipIDForEnd = (activeShipForEndLogic === ship1) ? 'player1' : 'player2';
+        } else if (p1CanBeActive) {
+            activeShipForEndLogic = ship1; currentShipIDForEnd = 'player1';
+        } else if (p2CanBeActive) {
+            activeShipForEndLogic = ship2; currentShipIDForEnd = 'player2';
+        }
+        if(activeShipForEndLogic) {
+            isShipCapturedForEndLogic = (currentShipIDForEnd === 'player1') ? isPlayer1ShipCaptured : isPlayer2ShipCaptured;
+            playerLivesForEndLogic = (currentShipIDForEnd === 'player1') ? player1Lives : player2Lives;
         }
     } else {
-        activeShipForTouch = ship; isShipCapturedForTouch = isShipCaptured; playerLivesForTouch = playerLives;
+        activeShipForEndLogic = ship; currentShipIDForEnd = (currentPlayer === 1 || !isTwoPlayerMode) ? 'player1' : 'player2';
+        isShipCapturedForEndLogic = isShipCaptured; playerLivesForEndLogic = playerLives;
     }
 
 
-    if (isInGameState && isManualControl && playerLivesForTouch > 0 && activeShipForTouch && !isShipCapturedForTouch && !isPaused && !isShowingPlayerGameOverMessage && !isPlayer1ShowingGameOverMessage && !isPlayer2ShowingGameOverMessage && gameOverSequenceStartTime === 0 && !isWaitingForRespawn) {
+    if (isInGameState && isManualControl && playerLivesForEndLogic > 0 && activeShipForEndLogic && !isShipCapturedForEndLogic && !isPaused && !isShowingPlayerGameOverMessage && !isPlayer1ShowingGameOverMessage && !isPlayer2ShowingGameOverMessage && gameOverSequenceStartTime === 0 && !((currentShipIDForEnd === 'player1' && isPlayer1WaitingForRespawn) || (currentShipIDForEnd === 'player2' && isPlayer2WaitingForRespawn) || (!(isTwoPlayerMode && selectedGameMode === 'coop') && isWaitingForRespawn))) {
+        // Was het een TAP? (Niet gesleept of maar heel kort/weinig gesleept)
         if (!isDraggingShip || (dragDistance < MIN_DRAG_DISTANCE_FOR_TAP_CANCEL && touchDuration < MIN_DRAG_TIME_FOR_TAP_CANCEL)) {
-            // Het was een TAP (of een hele korte drag die als tap telt)
             if (selectedFiringMode === 'single') {
-                if (!touchJustFiredSingle) {
-                    if (firePlayerBullet(false)) {
-                        playerLastShotTime = touchEndTime; // Gebruik touchEndTime voor consistentie
-                        touchJustFiredSingle = true;
+                if (!touchJustFiredSingle) { // Voorkom dubbel vuren bij snelle taps
+                    if (firePlayerBullet(currentShipIDForEnd)) { // Geef ID van schutter mee
+                        // Cooldown wordt in firePlayerBullet gezet
+                        touchJustFiredSingle = true; // Zet vlag dat er net via touch getapt is
                     }
                 }
-            } else { // Rapid fire mode voor tap
-                if (firePlayerBullet(false)) {
-                    playerLastShotTime = touchEndTime;
-                }
+            } else { // Rapid fire mode: een tap vuurt ook één keer
+                // Cooldown check gebeurt in firePlayerBullet
+                 if (firePlayerBullet(currentShipIDForEnd)) { // Geef ID van schutter mee
+                    // Cooldown wordt in firePlayerBullet gezet
+                 }
             }
         }
     }
 
     isTouching = false;
     isDraggingShip = false;
-    isTouchFiringActive = false; // Stop altijd touch fire bij touchend
-    touchStartX = 0; // Reset startX
-    // Reset touchJustFiredSingle alleen als de vinger *echt* losgelaten is (niet al bij keyup)
-    // Dit gebeurt nu correct in handlePlayerInput bij loslaten van *fysieke* knop,
-    // en hier voor touch.
+    isTouchFiringActive = false;
+    touchStartX = 0;
     if (selectedFiringMode === 'single') {
-        touchJustFiredSingle = false;
+        touchJustFiredSingle = false; // Reset altijd bij loslaten voor single tap
     }
 }
 // --- EINDE Touch Event Handlers ---
