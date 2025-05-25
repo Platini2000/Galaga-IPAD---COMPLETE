@@ -1255,7 +1255,7 @@ function handleEnemyHit(enemy, shootingPlayerId = null) {
                     player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
                     if (player1Score > highScore) { highScore = player1Score; if (!player1TriggeredHighScoreSound) { player1TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }}
                     checkAndAwardExtraLife(1);
-                } else if (shootingPlayerId === 'ai_p2') { // AI P2 schoot <<<< GEWIJZIGD: Controleer op 'ai_p2'
+                } else if (shootingPlayerId === 'ai_p2') { // AI P2 schoot
                     player2Score += points; playerSpecificEnemiesHitIncrementer = () => player2EnemiesHit++;
                     if (player2Score > highScore) { highScore = player2Score; if (!player2TriggeredHighScoreSound) { player2TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }}
                     checkAndAwardExtraLife(2);
@@ -1378,23 +1378,53 @@ function moveEntities() {
 
 /**
  * Switches the current player in a 2-player game. (Vooral voor 'alternating' mode)
+ * <<< GEWIJZIGD: Zorgt ervoor dat playerXMaxLevelReached correct wordt geüpdatet
+ *     met het level waarop de speler zijn/haar beurt beëindigde. >>>
  */
 function switchPlayerTurn() {
-    if (!isTwoPlayerMode || selectedGameMode === 'coop') return false;
+    if (!isTwoPlayerMode || selectedGameMode === 'coop') return false; // Niet voor CO-OP
     stopSound('hiScoreSound');
-    if (currentPlayer === 1) { player1Score = score; player1IsDualShipActive = isDualShipActive; if (player1Score > highScore) highScore = player1Score; }
-    else { player2Score = score; player2IsDualShipActive = isDualShipActive; if (player2Score > highScore) highScore = player2Score; }
+
+    // Sla de staat van de Zojuist Geëindigde Speler op.
+    // 'level' is hier het level waarop de vorige speler zijn beurt eindigde.
+    // Belangrijk: playerXMaxLevelReached wordt hier bijgewerkt VOORDAT 'level' mogelijk verandert
+    // door de logica in runSingleGameUpdate (als beide spelers het level hebben voltooid).
+    if (currentPlayer === 1) {
+        player1Score = score;
+        player1IsDualShipActive = isDualShipActive;
+        player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+        if (player1Score > highScore) highScore = player1Score;
+    } else { // currentPlayer === 2
+        player2Score = score;
+        player2IsDualShipActive = isDualShipActive;
+        player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
+        if (player2Score > highScore) highScore = player2Score;
+    }
+
     const nextPlayer = (currentPlayer === 1) ? 2 : 1;
     const nextPlayerLives = (nextPlayer === 1) ? player1Lives : player2Lives;
+
     if (nextPlayerLives <= 0) {
-        const currentSpelersLives = (currentPlayer === 1) ? player1Lives : player2Lives;
-        if (currentSpelersLives <= 0) { triggerFinalGameOverSequence(); return false; }
-        else { forceCenterShipNextReset = false; return false; }
+        const livesOfCurrentPlayerEndingTurn = (currentPlayer === 1) ? player1Lives : player2Lives;
+        if (livesOfCurrentPlayerEndingTurn <= 0) {
+            triggerFinalGameOverSequence();
+            return false;
+        } else {
+            forceCenterShipNextReset = false;
+            return false; // Geen succesvolle wissel, huidige speler gaat door (indien nog levens)
+        }
     }
+
+    // Wissel naar de volgende speler
     currentPlayer = nextPlayer;
     score = (currentPlayer === 1) ? player1Score : player2Score;
     playerLives = (currentPlayer === 1) ? player1Lives : player2Lives;
     isDualShipActive = (currentPlayer === 1) ? player1IsDualShipActive : player2IsDualShipActive;
+
+    // Het 'level' (de globale variabele) blijft ongewijzigd hier.
+    // resetWaveInternal zal het correcte intro tonen voor het huidige `level`.
+    // De logica in runSingleGameUpdate (na een succesvolle wave) bepaalt of `level` omhoog gaat.
+
     forceCenterShipNextReset = true;
     scoreEarnedThisCS = 0;
     csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
@@ -3559,19 +3589,40 @@ function runSingleGameUpdate(timestamp) {
                 isShowingPlayerGameOverMessage = false;
                 explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
                 const prevPlayerGameOver = playerWhoIsGameOver;
-                playerWhoIsGameOver = 0;
+                playerWhoIsGameOver = 0; // Reset voor de volgende keer
+
                 if (nextActionAfterPlayerGameOver === 'switch_player') {
-                    if (switchPlayerTurn()) {
-                        let levelForNextWaveReset = level;
+                    // 'level' is nog steeds het level waarop prevPlayerGameOver eindigde.
+                    // switchPlayerTurn zal playerXMaxLevelReached voor prevPlayerGameOver updaten met dit 'level'.
+                    if (switchPlayerTurn()) { // true als wissel succesvol was (volgende speler heeft levens)
+                        // 'currentPlayer' is nu de volgende speler.
+                        // 'level' is nog steeds het level waarop de vorige speler was.
+
+                        // Als prevPlayerGameOver P2 was, en currentPlayer nu P1 is,
+                        // EN P1 dit level al eerder had voltooid (player1CompletedLevel === level),
+                        // DAN verhoog het globale level.
                         if (prevPlayerGameOver === 2 && currentPlayer === 1 && player1CompletedLevel === level) {
-                           level++; player1CompletedLevel = -1; levelForNextWaveReset = level;
+                           level++; // Verhoog het globale level
+                           player1CompletedLevel = -1; // Reset de vlag voor P1 voor het nieuwe level
+                           player1MaxLevelReached = Math.max(player1MaxLevelReached, level); // P1 bereikt nu officieel dit nieuwe level
+                           // player2MaxLevelReached is al correct ingesteld door switchPlayerTurn
                         }
-                        if (currentPlayer === 1 && player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
-                        else if (currentPlayer === 2 && player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
-                        resetWaveInternal(); gameJustStartedAndWaveLaunched = false; gameJustStarted = true; // Reset gameJustStarted zodat wave opnieuw start
-                    } else { triggerFinalGameOverSequence(); }
-                } else if (nextActionAfterPlayerGameOver === 'show_results') triggerFinalGameOverSequence();
-                else triggerFinalGameOverSequence();
+                        // Als prevPlayerGameOver P1 was, en currentPlayer nu P2 is,
+                        // dan blijft het globale 'level' hetzelfde. P2 start op het level waar P1 eindigde.
+                        // P1's `player1CompletedLevel` wordt NIET gezet, want P2 moet het eerst halen.
+                        // Als P2 het level haalt, wordt in de wave completion logic `level` verhoogd,
+                        // en dan wordt `player1CompletedLevel` -1 (omdat P1 het *nieuwe* level dan nog niet heeft gehaald).
+
+                        resetWaveInternal(); // Reset wave met het (mogelijk nieuwe) globale level
+                        gameJustStartedAndWaveLaunched = false; gameJustStarted = true;
+                    } else { // switchPlayerTurn was false (andere speler ook game over, of huidige speler gaat door)
+                         triggerFinalGameOverSequence();
+                    }
+                } else if (nextActionAfterPlayerGameOver === 'show_results') {
+                    triggerFinalGameOverSequence();
+                } else { // Default naar final game over als nextAction onbekend is
+                    triggerFinalGameOverSequence();
+                }
                 renderGame(); return;
             } else { renderGame(); return; }
         }
@@ -3727,8 +3778,6 @@ function runSingleGameUpdate(timestamp) {
                         aiControl();
                     }
                 }
-                // handlePlayerInput wordt nu ALTIJD aangeroepen als isManualControl true is,
-                // ongeacht of het een AI-variant is. De functie zelf handelt de details.
                 if (isManualControl) {
                      handlePlayerInput();
                 }
@@ -3924,7 +3973,7 @@ function runSingleGameUpdate(timestamp) {
                         playLevelUpAfterCSBonus = false;
                      } else if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP' && level > 1) {
                         playSound('levelUpSound', false, 0.2);
-                     } else if (!isTwoPlayerMode && level > 1 ) { // <<<< GEWIJZIGD: Speel levelUpSound voor 1P Classic (level > 1)
+                     } else if (!isTwoPlayerMode && level > 1 ) {
                         playSound('levelUpSound', false, 0.2);
                      } else if (selectedGameMode === 'coop' && level === 1 && !coopStartSoundPlayedThisSession) {
                      } else if (level > 1 && !playerIntroSoundPlayed && !(isPlayerTwoAI && selectedGameMode === 'normal') && !initialGameStartSoundPlayedThisSession ) {
@@ -3972,9 +4021,6 @@ function runSingleGameUpdate(timestamp) {
                 } else if (!isManualControl && !isPlayerTwoAI) { // 1P AI Demo
                     aiControl();
                 }
-                 // handlePlayerInput wordt hieronder globaal aangeroepen na de AI controls,
-                 // zodat touch input voor menselijke spelers ook tijdens de intro werkt.
-                // De functie zelf checkt isManualControl.
 
                 if (typeof moveEntities === 'function') {
                     moveEntities(p1LeftOverrideForMoveEntities, p1RightOverrideForMoveEntities);
@@ -4016,7 +4062,7 @@ function runSingleGameUpdate(timestamp) {
                             if (isFullGridWave) startFullGridWave();
                             else { scheduleEntranceFlightWave(); playSound('entranceSound', false, 0.4); }
                         } else {
-                            isEntrancePhaseActive = false; stopSound('entranceSound'); isWaveTransitioning = true; readyForNextWaveReset = true; bullets = []; enemyBullets = []; explosions = [];
+                             isEntrancePhaseActive = false; stopSound('entranceSound'); isWaveTransitioning = true; readyForNextWaveReset = true; bullets = []; enemyBullets = []; explosions = [];
                             setTimeout(() => {
                                 const livesCheck = (isTwoPlayerMode && selectedGameMode === 'coop') ? (player1Lives > 0 || player2Lives > 0) : (playerLives > 0);
                                 if ((isInGameState || (!isInGameState && livesCheck)) && typeof resetWaveInternal === 'function') {
@@ -4029,7 +4075,6 @@ function runSingleGameUpdate(timestamp) {
                     if (isNonCoopL1Normal || level > 1 || isChallengingStage || isCoopL1 ) gameJustStartedAndWaveLaunched = true;
                 }
             }
-             // Roep handlePlayerInput hier aan, zodat touch input werkt tijdens de normale intro's
             if (isManualControl && inNormalIntro && noPlayerGameOverIsActive && gameOverSequenceStartTime === 0) {
                 handlePlayerInput();
             }
@@ -4039,10 +4084,9 @@ function runSingleGameUpdate(timestamp) {
 
         const noSpecialOrNormalIntroRunning = !coopLevel1IntroIsCurrentlyActive && !inNormalIntro && !messageTimeoutCompleted && !isShowingCaptureMessage;
 
-        // Als de game net gestart is (maar niet COOP L1 intro) en geen intro's meer, lanceer wave
         if (gameJustStarted && noSpecialOrNormalIntroRunning) {
              if (!gameJustStartedAndWaveLaunched) {
-                const isCoopModeL1NotAlreadyHandled = selectedGameMode === 'coop' && level === 1 && coopPlayersReadyStartTime !== 0; // Als Coop L1 intro nog bezig was
+                const isCoopModeL1NotAlreadyHandled = selectedGameMode === 'coop' && level === 1 && coopPlayersReadyStartTime !== 0;
 
                 if (!isCoopModeL1NotAlreadyHandled) {
                     if (isChallengingStage) startChallengingStageSequence();
@@ -4060,10 +4104,8 @@ function runSingleGameUpdate(timestamp) {
             gameJustStarted = false;
         }
 
-        // Verplaats handlePlayerInput naar na AI control en voor moveEntities
         if (noSpecialOrNormalIntroRunning && isInGameState && noPlayerGameOverIsActive && gameOverSequenceStartTime === 0) {
             if (!isShowingCSBonusScreen || (isShowingCSBonusScreen && isManualControl)) {
-                 // AI Control EERST
                 if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
                     aiControlCoop();
                 } else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
@@ -4071,11 +4113,9 @@ function runSingleGameUpdate(timestamp) {
                 } else if (!isManualControl && !isPlayerTwoAI) {
                     aiControl();
                 }
-                // DAN Player Input (inclusief touch)
                 if (isManualControl) {
                     handlePlayerInput();
                 }
-                // DAN Move Entities
                 if (typeof moveEntities === 'function') moveEntities();
                 updateExplosions();
                 updateFloatingScores();
@@ -4204,53 +4244,82 @@ function runSingleGameUpdate(timestamp) {
                          resetDelay = POST_MESSAGE_RESET_DELAY;
                      }
 
-                     setTimeout(() => {
-                         let advanceLevel = false; let playerToStartNext = currentPlayer;
-                         if (isTwoPlayerMode && selectedGameMode === 'normal') { // Geldt voor Human 2P Normal & 1P_VS_AI_NORMAL
-                             const playerWhoCompleted = currentPlayer;
-                             if (currentPlayer === 1) player1Score = score; else player2Score = score;
-                             const switchedOK = switchPlayerTurn();
-                             if (switchedOK) {
-                                 playerToStartNext = currentPlayer;
-                                 if (playerWhoCompleted === 2 && player1CompletedLevel === level) {
-                                     advanceLevel = true; player1CompletedLevel = -1;
-                                 } else {
-                                     advanceLevel = false;
-                                     if(playerWhoCompleted === 1) player1CompletedLevel = level;
-                                 }
-                             } else {
-                                 playerToStartNext = playerWhoCompleted;
-                                 advanceLevel = true; player1CompletedLevel = -1;
-                             }
-                         } else { // 1P Classic, COOP (Human, vs AI, of Demo)
-                             advanceLevel = true;
-                             playerToStartNext = (isTwoPlayerMode && selectedGameMode === 'coop') ? 0 : 1; // 0 voor COOP betekent beide, 1 voor 1P
-                         }
+                    // <<< START GEWIJZIGD BLOK voor level progressie >>>
+                    setTimeout(() => {
+                        let advanceLevelGlobally = false; // Moet het globale 'level' omhoog?
+                        let playerWhoseTurnEnded = 0; // Wie was er net aan de beurt?
 
-                         if (advanceLevel) {
-                             level++;
-                             if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                                 if (player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
-                                 if (player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
-                             } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
-                                 if (playerToStartNext === 1 && player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
-                                 else if (playerToStartNext === 2 && player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
-                             } else { // 1P Classic
-                                 if (playerLives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
-                             }
-                         }
+                        if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                            playerWhoseTurnEnded = currentPlayer; // De speler die net de wave heeft voltooid
 
-                         const p1NextLives = player1Lives; const p2NextLives = player2Lives; let canContinue = false;
-                         if (isTwoPlayerMode && selectedGameMode === 'coop') canContinue = (p1NextLives > 0 || p2NextLives > 0);
-                         else if (isTwoPlayerMode && selectedGameMode === 'normal') canContinue = (playerToStartNext === 1 ? p1NextLives : p2NextLives) > 0;
-                         else canContinue = player1Lives > 0;
+                            // Update MaxLevelReached voor de speler die de wave voltooide
+                            if (playerWhoseTurnEnded === 1) {
+                                player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                            } else { // playerWhoseTurnEnded === 2
+                                player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
+                            }
 
-                         if (canContinue) {
-                             resetWaveInternal(); gameJustStartedAndWaveLaunched = false; gameJustStarted = true;
-                         } else {
-                             triggerFinalGameOverSequence();
-                         }
-                     }, resetDelay);
+                            const switchedOK = switchPlayerTurn(); // switchPlayerTurn update MaxLevelReached correct
+
+                            if (switchedOK) { // Succesvol gewisseld naar de ANDERE speler
+                                // currentPlayer is nu de speler die gaat beginnen
+                                // Als P2 net klaar was (playerWhoseTurnEnded === 2) en P1 (nu currentPlayer)
+                                // dit level al gehaald had (player1CompletedLevel === level),
+                                // DAN gaan we naar het volgende globale level.
+                                if (playerWhoseTurnEnded === 2 && currentPlayer === 1 && player1CompletedLevel === level) {
+                                    advanceLevelGlobally = true;
+                                    player1CompletedLevel = -1; // Reset voor het nieuwe level
+                                } else if (playerWhoseTurnEnded === 1) {
+                                    // P1 was klaar, P2 is nu aan de beurt.
+                                    // Globale level blijft hetzelfde. Markeer dat P1 dit level heeft gehaald.
+                                    player1CompletedLevel = level;
+                                    advanceLevelGlobally = false;
+                                } else {
+                                     // P2 was klaar, P1 is aan de beurt maar had dit level nog NIET gehaald.
+                                     // Globale level blijft hetzelfde.
+                                    advanceLevelGlobally = false;
+                                }
+                            } else { // Wissel niet gelukt (andere speler game over), huidige speler gaat door
+                                advanceLevelGlobally = true; // Level gaat altijd omhoog als dezelfde speler doorgaat
+                                player1CompletedLevel = -1; // Reset, want we gaan naar een nieuw level
+                            }
+                        } else { // 1P Classic, COOP (Human, vs AI, of Demo)
+                            advanceLevelGlobally = true;
+                            if (!isTwoPlayerMode) player1MaxLevelReached = Math.max(player1MaxLevelReached, level); // 1P Classic
+                            else if (isTwoPlayerMode && selectedGameMode === 'coop') { // COOP
+                                if (player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                                if (player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
+                            }
+                        }
+
+                        if (advanceLevelGlobally) {
+                            level++; // Verhoog het globale level
+                            // Update MaxLevelReached voor de speler die het *nieuwe* level start,
+                            // indien van toepassing en het een nieuw record is.
+                            if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                                if (player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                                if (player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
+                            } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                                // currentPlayer is de speler die het *nieuwe* level start
+                                if (currentPlayer === 1 && player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                                else if (currentPlayer === 2 && player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
+                            } else { // 1P Classic
+                                if (playerLives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                            }
+                        }
+
+                        let canContinue = false;
+                        if (isTwoPlayerMode && selectedGameMode === 'coop') canContinue = (player1Lives > 0 || player2Lives > 0);
+                        else if (isTwoPlayerMode && selectedGameMode === 'normal') canContinue = (currentPlayer === 1 ? player1Lives : player2Lives) > 0;
+                        else canContinue = player1Lives > 0; // of playerLives voor 1P
+
+                        if (canContinue) {
+                            resetWaveInternal(); gameJustStartedAndWaveLaunched = false; gameJustStarted = true;
+                        } else {
+                            triggerFinalGameOverSequence();
+                        }
+                    }, resetDelay);
+                    // <<< EINDE GEWIJZIGD BLOK voor level progressie >>>
                     renderGame(); return;
                 }
 
