@@ -831,17 +831,11 @@ function handleCanvasClick(event) {
 
     if (isInGameState) {
         if (isPaused) { if(typeof togglePause === 'function') togglePause(); return; }
-        if (!isManualControl) {
-            if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
-                // AI P2 is active, P1 (mens) kan niet stoppen met klikken.
-            } else {
-                isCoopAIDemoActive = false;
-                aiPlayerActivelySeekingCaptureById = null;
-                isPlayerTwoAI = false;
-                if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu();
-            }
-        }
-        // Game-specifieke klik (tap) logica wordt nu via handleTouchEndGlobal afgehandeld als isTap
+
+        // In-game klik wordt NIET MEER gebruikt om demo te stoppen of menu te tonen.
+        // Dit wordt nu afgehandeld door controller/keyboard.
+        // De touch 'tap' voor schieten wordt afgehandeld in handleTouchEndGlobal.
+
     } else { // Menu of score screen
         handleCanvasTouch(event, 'end', true); // Behandel klik als een 'tap end'
     }
@@ -1567,39 +1561,41 @@ function renderGame() {
 function hideCursor() { if (gameCanvas) { gameCanvas.style.cursor = 'none'; } mouseIdleTimerId = null; }
 
 function handleCanvasMouseMove(event) {
-    if (!gameCanvas || isTouchActiveMenu || isTouchActiveGame) { // <<< GEWIJZIGD: Doe niets als er een actieve touch is
-        if (!isTouchActiveMenu && !isTouchActiveGame) { // Alleen cursor resetten als GEEN touch actief is
-             clearTimeout(mouseIdleTimerId);
-             mouseIdleTimerId = setTimeout(hideCursor, 2000);
-        }
+    if (!gameCanvas) return; // Canvas nog niet klaar
+
+    // Als touch actief is (voor menu of game), doe niets met muisbeweging
+    // om conflicten te voorkomen. De cursor wordt dan verborgen/getoond door touch events.
+    if (isTouchActiveMenu || isTouchActiveGame) {
         return;
     }
-    clearTimeout(mouseIdleTimerId); mouseIdleTimerId = null;
-    let currentCursorStyle = 'default';
+
+    clearTimeout(mouseIdleTimerId); // Stop de timer die de cursor verbergt
+    mouseIdleTimerId = null;
+    let currentCursorStyle = 'default'; // Standaard cursor
 
     const isInAnyMenuState = !isInGameState && !isShowingScoreScreen;
 
     if (isInAnyMenuState) {
-        handleCanvasTouch(event, 'move'); // Gebruik de centrale touch handler voor hover
-        // De cursorstijl wordt gezet door de 'move' in handleCanvasTouch als dat relevant is
-        const rect = gameCanvas.getBoundingClientRect(); const scaleX = gameCanvas.width / rect.width; const scaleY = gameCanvas.height / rect.height; const mouseX = (event.clientX - rect.left) * scaleX; const mouseY = (event.clientY - rect.top) * scaleY;
-        const button0Rect = getMenuButtonRect(0);
-        const button1Rect = getMenuButtonRect(1);
-        if ((button0Rect && checkCollision({ x: mouseX, y: mouseY, width: 1, height: 1 }, button0Rect)) ||
-            (button1Rect && checkCollision({ x: mouseX, y: mouseY, width: 1, height: 1 }, button1Rect))) {
+        // Gebruik handleCanvasTouch om te bepalen of de muis over een knop hovert
+        // Dit is alleen voor de cursorstijl; de daadwerkelijke klik wordt door handleCanvasClick afgehandeld.
+        handleCanvasTouch(event, 'move'); // Type 'move' simuleert hover
+
+        // Bepaal cursorstijl gebaseerd op selectedButtonIndex (die door handleCanvasTouch is bijgewerkt)
+        if (selectedButtonIndex !== -1) {
             currentCursorStyle = 'pointer';
         }
     } else {
-        currentCursorStyle = 'default';
-        selectedButtonIndex = -1;
+        selectedButtonIndex = -1; // Zorg ervoor dat er geen menu-hover is als we in-game zijn
     }
-    gameCanvas.style.cursor = currentCursorStyle;
-    mouseIdleTimerId = setTimeout(hideCursor, 2000);
 
+    gameCanvas.style.cursor = currentCursorStyle; // Zet de cursorstijl
+    mouseIdleTimerId = setTimeout(hideCursor, 2000); // Start de timer om cursor te verbergen
+
+    // Start de demo timer opnieuw als de muis beweegt en niet over een knop is (alleen in menu)
     if (!isInGameState) {
         const now = Date.now();
-        if (now - lastMouseMoveResetTime > 500) {
-            if (typeof startAutoDemoTimer === 'function' && selectedButtonIndex === -1) { // Alleen als niet over knop hovert
+        if (now - lastMouseMoveResetTime > 500) { // Voorkom te snelle resets
+            if (typeof startAutoDemoTimer === 'function' && selectedButtonIndex === -1) {
                  startAutoDemoTimer();
             }
             lastMouseMoveResetTime = now;

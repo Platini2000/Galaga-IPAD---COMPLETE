@@ -791,11 +791,11 @@ function handleTouchStartGlobal(event) {
 
         if (isInGameState) {
             isTouchActiveGame = true;
-            isTouchActiveMenu = false;
+            isTouchActiveMenu = false; // Zorg ervoor dat menu-touch niet tegelijk actief is
             // Verdere game-specifieke logica in game_logic.js -> handlePlayerInput
-        } else {
+        } else { // In Menu
             isTouchActiveMenu = true;
-            isTouchActiveGame = false;
+            isTouchActiveGame = false; // Zorg ervoor dat game-touch niet tegelijk actief is
             // Verdere menu-specifieke logica in rendering_menu.js -> handleCanvasTouch
             if (typeof handleCanvasTouch === 'function') {
                 handleCanvasTouch(event, 'start');
@@ -826,40 +826,62 @@ function handleTouchEndGlobal(event) {
     event.preventDefault();
     const touchEndTime = Date.now();
     const touchDuration = touchEndTime - touchStartTime;
-    const dx = touchCurrentX - touchStartX;
-    const dy = touchCurrentY - touchStartY;
+    let dx = 0, dy = 0;
+    // Zorg ervoor dat touchCurrentX en touchStartX gedefinieerd zijn
+    if (typeof touchCurrentX === 'number' && typeof touchStartX === 'number') {
+        dx = touchCurrentX - touchStartX;
+    }
+    if (typeof touchCurrentY === 'number' && typeof touchStartY === 'number') {
+        dy = touchCurrentY - touchStartY;
+    }
     const distance = Math.sqrt(dx * dx + dy * dy);
     const isTap = touchDuration < TOUCH_TAP_MAX_DURATION && distance < TOUCH_TAP_MAX_MOVEMENT;
 
     if (isTouchActiveGame && isInGameState) {
-        isTouchActiveGame = false;
-        // Reset schip bewegingsvlaggen hier
-        leftPressed = false;
-        rightPressed = false;
-        // Schieten stopt automatisch als touch losgelaten wordt (afhankelijk van implementatie in handlePlayerInput)
-        // Indien 'single fire' op tap:
+        // De vlag isTouchActiveGame blijft true tot na de eventuele firePlayerBullet,
+        // zodat handlePlayerInput niet per ongeluk keyboard/gamepad input direct overneemt.
+        // De vlag wordt false gezet aan het einde van de logica hieronder, of als het geen tap was.
+
         if (isTap && selectedFiringMode === 'single') {
             const now = Date.now();
-            if (now - lastTapTime > SHOOT_COOLDOWN) { // Eenvoudige debounce
-                shootPressed = true; // Trigger eenmalig schot
-                p1FireInputWasDown = true; // Emuleer button down voor firePlayerBullet
-                if (typeof handlePlayerInput === 'function') {
-                     handlePlayerInput(); // Laat handlePlayerInput het schot verwerken
+            if (now - lastTapTime > SHOOT_COOLDOWN / 2) { // Kortere debounce voor tap
+                // Stel tijdelijk p1FireInputWasDown in, zodat firePlayerBullet het als een knopdruk ziet.
+                // Dit wordt direct na de firePlayerBullet call gereset.
+                // We moeten bepalen welke speler schiet in CO-OP. Voor nu, P1 default bij touch.
+                let shooterPlayerIdForTap = 'player1';
+                if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                    // Hier zou je logica kunnen toevoegen om te bepalen welke speler geschoten heeft
+                    // op basis van de tap locatie, of een andere methode.
+                    // Voor nu, P1 als default.
+                } else if (isTwoPlayerMode && selectedGameMode === 'normal'){
+                     shooterPlayerIdForTap = (currentPlayer === 1) ? 'player1' : 'player2';
                 }
-                shootPressed = false; // Reset direct
-                p1FireInputWasDown = false;
+
+
+                if (shooterPlayerIdForTap === 'player1') p1FireInputWasDown = true;
+                else if (shooterPlayerIdForTap === 'player2') p2FireInputWasDown = true;
+
+                if (typeof firePlayerBullet === 'function') {
+                     firePlayerBullet(shooterPlayerIdForTap);
+                }
+                if (shooterPlayerIdForTap === 'player1') p1FireInputWasDown = false;
+                else if (shooterPlayerIdForTap === 'player2') p2FireInputWasDown = false;
+
                 lastTapTime = now;
             }
-        } else {
-           shootPressed = false; // Stop rapid fire
-           p1FireInputWasDown = false;
         }
+        // Reset shootPressed voor keyboard/gamepad, omdat touch de primary input was.
+        shootPressed = false;
+        p2ShootPressed = false; // Ook voor P2 als relevant
+        isTouchActiveGame = false; // Zet nu pas false
     } else if (isTouchActiveMenu && !isInGameState) {
         isTouchActiveMenu = false;
-        // Menu-specifieke tap/release logica in rendering_menu.js -> handleCanvasTouch
         if (typeof handleCanvasTouch === 'function') {
             handleCanvasTouch(event, 'end', isTap);
         }
+    } else { // Geen van beide was actief, of een andere onverwachte state
+        isTouchActiveGame = false;
+        isTouchActiveMenu = false;
     }
     touchedMenuButtonIndex = -1; // Reset altijd
 }
@@ -868,6 +890,17 @@ function handleTouchEndGlobal(event) {
 // --- Keyboard Event Handlers ---
 function handleKeyDown(e) {
     try {
+        // Voorkom dat keyboard input de game bestuurt als touch actief is voor de game.
+        if (isTouchActiveGame && isInGameState) {
+            if (e.key === 'p' || e.key === 'P') { // Pauze mag altijd
+                 if(typeof togglePause === 'function') togglePause();
+            } else if (e.key === "Escape" || e.key === "Enter") { // Menu verlaten mag altijd
+                 if(isInGameState && typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu();
+            }
+            // Andere game-gerelateerde keyboard input wordt genegeerd als touch actief is.
+            return;
+        }
+
         if (audioContext && audioContext.state === 'suspended') {
             audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by keydown."); });
         }
@@ -903,7 +936,7 @@ function handleKeyDown(e) {
                         case "ArrowLeft": case "KeyA": keyboardP1LeftDown = true; break;
                         case "ArrowRight": case "KeyD": keyboardP1RightDown = true; break;
                         case "Space": case "ArrowUp": case "KeyW":
-                            if (!isTouchActiveGame) keyboardP1ShootDown = true; // Alleen als geen touch actief is
+                            keyboardP1ShootDown = true;
                             break;
                         case "KeyJ": case "Numpad4": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2LeftDown = true; break;
                         case "KeyL": case "Numpad6": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2RightDown = true; break;
@@ -915,12 +948,14 @@ function handleKeyDown(e) {
                     if (!keyboardP2ShootDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "i") keyboardP2ShootDown = true;
                 }
             }
-        } else {
+        } else { // Menu or Score Screen
+            if (isTouchActiveMenu) return; // Negeer keyboard als menu touch actief is
+
             if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
                 if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') {
                     if(typeof showMenuState === 'function') showMenuState(); return;
                 }
-            } else if (!isShowingScoreScreen) {
+            } else if (!isShowingScoreScreen) { // Menu
                 stopAutoDemoTimer();
                 switch (e.key) {
                     case "ArrowUp": case "w": selectedButtonIndex = (selectedButtonIndex <= 0) ? 1 : 0; startAutoDemoTimer(); break;
@@ -945,10 +980,10 @@ function handleKeyDown(e) {
                         } else if (isOnePlayerVsAIGameTypeSelectMode) { // 1P -> GAME VS AI -> Normal / Coop
                             if (selectedButtonIndex === 0) { // 1P vs AI NORMAL
                                 selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL';
-                                selectedGameMode = 'normal'; // << GEWIJZIGD: Correcte mode instellen
+                                selectedGameMode = 'normal';
                             } else { // 1P vs AI COOP
                                 selectedOnePlayerGameVariant = '1P_VS_AI_COOP';
-                                selectedGameMode = 'coop'; // << GEWIJZIGD: Correcte mode instellen
+                                selectedGameMode = 'coop';
                             }
                             isOnePlayerVsAIGameTypeSelectMode = false;
                             isFiringModeSelectMode = true;
@@ -1000,20 +1035,28 @@ function handleKeyDown(e) {
 }
 function handleKeyUp(e) {
     try {
+        // Key up events worden altijd verwerkt, ongeacht touch state,
+        // om te zorgen dat knoppen correct losgelaten worden.
         switch (e.code) {
             case "ArrowLeft": case "KeyA": keyboardP1LeftDown = false; break;
             case "ArrowRight": case "KeyD": keyboardP1RightDown = false; break;
             case "Space": case "ArrowUp": case "KeyW":
                 keyboardP1ShootDown = false;
-                if (!isTouchActiveGame) p1JustFiredSingle = false; // Reset alleen als touch niet schiet
+                if (selectedFiringMode === 'single') p1JustFiredSingle = false;
                 break;
             case "KeyJ": case "Numpad4": keyboardP2LeftDown = false; break;
             case "KeyL": case "Numpad6": keyboardP2RightDown = false; break;
-            case "KeyI": case "Numpad0": keyboardP2ShootDown = false; p2JustFiredSingle = false; break;
+            case "KeyI": case "Numpad0":
+                keyboardP2ShootDown = false;
+                if (selectedFiringMode === 'single') p2JustFiredSingle = false;
+                break;
         }
         if (e.key.toLowerCase() === "j") keyboardP2LeftDown = false;
         if (e.key.toLowerCase() === "l") keyboardP2RightDown = false;
-        if (e.key.toLowerCase() === "i") { keyboardP2ShootDown = false; p2JustFiredSingle = false; }
+        if (e.key.toLowerCase() === "i") {
+            keyboardP2ShootDown = false;
+            if (selectedFiringMode === 'single') p2JustFiredSingle = false;
+        }
 
     } catch(err) { console.error("Error in handleKeyUp:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false;}
 }
@@ -1031,7 +1074,9 @@ function handleGamepadConnected(event) {
             previousButtonStates = new Array(numButtons).fill(false);
             previousDemoButtonStates = new Array(numButtons).fill(false);
             previousGameButtonStates = new Array(numButtons).fill(false);
-            if (!isInGameState) { stopAutoDemoTimer(); selectedButtonIndex = 0; }
+            if (!isInGameState && !isTouchActiveMenu) { // Alleen als touch niet al het menu bestuurt
+                 stopAutoDemoTimer(); selectedButtonIndex = 0;
+            }
         } else if (connectedGamepadIndexP2 === null) {
             connectedGamepadIndexP2 = event.gamepad.index;
             const numButtons = event.gamepad.buttons.length;
@@ -1044,7 +1089,9 @@ function handleGamepadDisconnected(event) {
         if (connectedGamepadIndex === event.gamepad.index) {
             connectedGamepadIndex = null;
             previousButtonStates = []; previousDemoButtonStates = []; previousGameButtonStates = [];
-            if (!isInGameState) { selectedButtonIndex = -1; joystickMovedVerticallyLastFrame = false; startAutoDemoTimer(); }
+            if (!isInGameState && !isTouchActiveMenu) { // Alleen als touch niet al het menu bestuurt
+                selectedButtonIndex = -1; joystickMovedVerticallyLastFrame = false; startAutoDemoTimer();
+            }
             p1FireInputWasDown = false;
         } else if (connectedGamepadIndexP2 === event.gamepad.index) {
             connectedGamepadIndexP2 = null;
@@ -1084,7 +1131,7 @@ function resumeAllSounds() {
     if (audioContext && audioContext.state === 'suspended') {
         audioContext.resume().then(() => console.log("AudioContext resumed from pause.")).catch(e => console.error("Error resuming AudioContext:", e));
     }
-    if (!isInGameState && audioContext) { // Als we terug in het menu zijn, speel menu muziek
+    if (!isInGameState && audioContext && !isTouchActiveMenu) { // Als we terug in het menu zijn EN touch niet actief is, speel menu muziek
         playSound('menuMusicSound', true, 0.2);
     }
     // Andere geluiden worden hervat wanneer ze opnieuw worden getriggerd door playSound
