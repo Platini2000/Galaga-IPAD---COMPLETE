@@ -576,27 +576,27 @@ function scaleValue(currentLevel, baseValue, maxValue) { const levelForCalc = Ma
 // --- DEEL 3      van 3 dit code blok    ---
 
 // IDEALITER ZOUDEN DEZE NIEUWE TOUCH-GERELATEERDE VARIABELEN IN DEEL 1 (setup_utils.js) KOMEN
-let touchStartX = 0;
-let touchStartY = 0;
+let touchStartX = 0; // Algemeen, wordt per touch in de handler gezet. Beter zou een map zijn per touch.identifier.
+let touchStartY = 0; // Idem
 let isDraggingShip1 = false;
 let isDraggingShip2 = false;
 let draggedShipInitialX1 = 0;
 let draggedShipInitialX2 = 0;
 let touchIdentifier1 = null; // Voor P1 schip (of hoofd schip)
 let touchIdentifier2 = null; // Voor P2 schip (in CO-OP)
-let touchOnShip1 = false; // Houdt bij of een actieve touch op schip P1 is (voor vuren)
-let touchOnShip2 = false; // Houdt bij of een actieve touch op schip P2 is (voor vuren)
-let touchLastFireTimeP1 = 0; // Voor P1 rapid fire via touch
-let touchLastFireTimeP2 = 0; // Voor P2 rapid fire via touch
-const TOUCH_SHIP_SENSITIVITY_MARGIN_X = SHIP_WIDTH * 0.5; // Extra marge X rondom schip voor touch detectie
-const TOUCH_SHIP_SENSITIVITY_MARGIN_Y = SHIP_HEIGHT * 1.5; // Extra marge Y (ruimer boven/onder)
+let touchOnShip1 = false;
+let touchOnShip2 = false;
+let touchLastFireTimeP1 = 0;
+let touchLastFireTimeP2 = 0;
+// <<< GEWIJZIGD: Marges vergroot >>>
+const TOUCH_SHIP_SENSITIVITY_MARGIN_X = SHIP_WIDTH * 0.8; // Was 0.5
+const TOUCH_SHIP_SENSITIVITY_MARGIN_Y = SHIP_HEIGHT * 2.0; // Was 1.5
 
 function setupInitialEventListeners() { /* ... ongewijzigd ... */ try { window.addEventListener("gamepadconnected", handleGamepadConnected); window.addEventListener("gamepaddisconnected", handleGamepadDisconnected); window.addEventListener('resize', resizeCanvases); } catch(e) { console.error("Error setting up initial event listeners:", e); } }
 
 
 function getCurrentGridSlotPosition(gridRow, gridCol, enemyWidth) {
     if (!gameCanvas || gameCanvas.width === 0 || gridRow < 0 || gridCol < 0) {
-        // console.warn(`[DEBUG] getCurrentGridSlotPosition called with invalid params or zero canvas width. Row: ${gridRow}, Col: ${gridCol}, CanvasW: ${gameCanvas?.width}`);
         return { x: gameCanvas?.width / 2 || 200, y: ENEMY_TOP_MARGIN || 100 };
     }
     const baseEnemyWidthForCalc = ENEMY_WIDTH;
@@ -623,69 +623,53 @@ function getCurrentGridSlotPosition(gridRow, gridCol, enemyWidth) {
 
 
 /** Safely attempts to play a sound from the beginning. Handles potential errors. */
-function playSound(soundId, loop = false, volume = 1) {
-    if (!audioContext || !audioContextInitialized || audioContext.state === 'suspended' || !soundBuffers[soundId]) {
-        // console.warn(`Cannot play sound: ${soundId}. Context suspended or buffer not ready.`);
-        return;
-    }
-    if (isPaused && soundId !== 'menuMusicSound') return;
+function playSound(soundIdentifier, loop = false) {
+    try {
+        if (!audioCtx || !masterGainNode) { return; }
+        if (audioCtx.state === 'suspended') { audioCtx.resume().catch(e => console.warn("AudioContext resume failed in playSound:", e));}
+        if (isPaused && soundIdentifier !== menuMusicSound && soundIdentifier !== resultsMusicSound) { return; }
+        if (soundIdentifier === menuMusicSound) { stopSound(resultsMusicSound); }
 
-    // Stop any existing instance of this sound before playing a new one, unless it's music
-    if (soundId !== 'menuMusicSound' && soundId !== 'gridBackgroundSound') {
-        stopSound(soundId);
-    } else if ((soundId === 'menuMusicSound' || soundId === 'gridBackgroundSound') && soundSources[soundId]) {
-        // If it's looping music and already playing, don't restart
-        return;
-    }
+        const buffer = audioBuffers[soundIdentifier];
+        if (!buffer) { return; }
 
-
-    const source = audioContext.createBufferSource();
-    source.buffer = soundBuffers[soundId];
-    source.loop = loop;
-
-    let gainNode = soundGainNodes[soundId];
-    if (!gainNode) {
-        gainNode = audioContext.createGain();
-        soundGainNodes[soundId] = gainNode;
-    }
-    // Ensure volume is within a reasonable range (0.0 to 1.0 typical, but can be higher for gain)
-    const safeVolume = Math.max(0, Math.min(2, volume)); // Cap at 2 as an example
-    gainNode.gain.setValueAtTime(safeVolume, audioContext.currentTime);
-    source.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    source.start(0);
-    soundSources[soundId] = source; // Store the source to allow stopping it
-
-    source.onended = () => {
-        if (soundSources[soundId] === source) { // Only delete if it's the current one
-            delete soundSources[soundId];
+        if (loop && playingLoopSources[soundIdentifier]) {
+            try { playingLoopSources[soundIdentifier].source.stop(); playingLoopSources[soundIdentifier].gainNode.disconnect(); } catch (e) { /* Ignore */ }
+            delete playingLoopSources[soundIdentifier];
         }
-    };
+
+        const source = audioCtx.createBufferSource(); source.buffer = buffer;
+        const individualGainNode = audioCtx.createGain();
+        const baseVolume = soundVolumes[soundIdentifier] !== undefined ? soundVolumes[soundIdentifier] : 1.0;
+        individualGainNode.gain.value = baseVolume;
+        source.connect(individualGainNode); individualGainNode.connect(masterGainNode);
+        source.loop = loop; source.start(0);
+        if (loop) { playingLoopSources[soundIdentifier] = { source: source, gainNode: individualGainNode }; if (soundIdentifier === gridBackgroundSound) { isGridSoundPlaying = true; } }
+    } catch (e) { console.error(`Error in playSound for ${soundIdentifier}:`, e); }
 }
 
 /** Safely attempts to stop a sound and reset its position. */
-function stopSound(soundId) {
-    if (soundSources[soundId]) {
-        try {
-            soundSources[soundId].stop(0);
-        } catch (e) {
-            // Can throw if already stopped or not playing.
+function stopSound(soundIdentifier) {
+    try {
+        if (playingLoopSources[soundIdentifier]) {
+            const loopData = playingLoopSources[soundIdentifier];
+            if (loopData.source) { try { loopData.source.stop(0); } catch (e) { /* Ignore */ } }
+            if (loopData.gainNode) { try { loopData.gainNode.disconnect(); } catch (e) { /* Ignore */ } }
+            delete playingLoopSources[soundIdentifier];
+            if (soundIdentifier === gridBackgroundSound) { isGridSoundPlaying = false; }
         }
-        // Don't delete immediately, onended will handle it.
-        // delete soundSources[soundId]; // This was causing issues with rapidly replayed sounds
-    }
+    } catch (e) { console.error(`Error in stopSound for ${soundIdentifier}:`, e); }
 }
 
 /** Helper to set volume for a specific sound */
 function setVolume(soundId, volume) {
-    if (!audioContext) return;
+    if (!audioCtx) return;
     if (!soundGainNodes[soundId]) {
-        soundGainNodes[soundId] = audioContext.createGain();
-        soundGainNodes[soundId].connect(audioContext.destination);
+        soundGainNodes[soundId] = audioCtx.createGain();
+        soundGainNodes[soundId].connect(audioContext.destination); // Assuming audioContext is an alias for audioCtx
     }
     const safeVolume = Math.max(0, Math.min(2, volume));
-    soundGainNodes[soundId].gain.setValueAtTime(safeVolume, audioContext.currentTime);
+    soundGainNodes[soundId].gain.setValueAtTime(safeVolume, audioCtx.currentTime);
 }
 
 
@@ -695,49 +679,23 @@ function triggerFullscreen() {
         const element = document.documentElement;
         let requestFullscreenPromise = null;
 
-        if (element.requestFullscreen) {
-            requestFullscreenPromise = element.requestFullscreen();
-        } else if (element.mozRequestFullScreen) { /* Firefox */
-            requestFullscreenPromise = element.mozRequestFullScreen();
-        } else if (element.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-            requestFullscreenPromise = element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) { /* IE/Edge */
-            requestFullscreenPromise = element.msRequestFullscreen();
-        }
+        if (element.requestFullscreen) { requestFullscreenPromise = element.requestFullscreen(); }
+        else if (element.mozRequestFullScreen) { requestFullscreenPromise = element.mozRequestFullScreen(); }
+        else if (element.webkitRequestFullscreen) { requestFullscreenPromise = element.webkitRequestFullscreen(); }
+        else if (element.msRequestFullscreen) { requestFullscreenPromise = element.msRequestFullscreen(); }
 
         const playMenuMusicAfterAction = () => {
-            if (audioContext && audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    audioContextInitialized = true;
-                    playSound('menuMusicSound', true, 0.2);
-                }).catch(e => console.error("Error resuming AudioContext for fullscreen music:", e));
-            } else if (audioContext) {
-                playSound('menuMusicSound', true, 0.2);
-            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().then(() => { playSound(menuMusicSound, true); }).catch(e => console.error("Error resuming AudioContext for fullscreen music:", e));
+            } else if (audioCtx) { playSound(menuMusicSound, true); }
         };
 
         if (requestFullscreenPromise) {
-            requestFullscreenPromise
-                .then(() => {
-                    playMenuMusicAfterAction();
-                })
-                .catch(err => {
-                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-                    playMenuMusicAfterAction();
-                });
-        } else {
-            console.warn("Fullscreen API is not supported by this browser.");
-            playMenuMusicAfterAction();
-        }
+            requestFullscreenPromise.then(playMenuMusicAfterAction).catch(err => { console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`); playMenuMusicAfterAction(); });
+        } else { console.warn("Fullscreen API is not supported by this browser."); playMenuMusicAfterAction(); }
     } else {
-         if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => {
-                audioContextInitialized = true;
-                playSound('menuMusicSound', true, 0.2);
-            });
-        } else if (audioContext) {
-            playSound('menuMusicSound', true, 0.2);
-        }
+        if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume().then(() => { playSound(menuMusicSound, true); }); }
+        else if (audioCtx) { playSound(menuMusicSound, true); }
     }
 }
 
@@ -758,7 +716,7 @@ function drawRetroGrid() { /* ... ongewijzigd ... */ try { if (!retroGridCtx || 
 function calculateBezierPoint(t, p0, p1, p2, p3) { /* ... ongewijzigd ... */ const u = 1 - t; const tt = t * t; const uu = u * u; const uuu = uu * u; const ttt = tt * t; let p = uuu * p0; p += 3 * uu * t * p1; p += 3 * u * tt * p2; p += ttt * p3; return p; }
 
 /** Defines the Bezier curve paths for normal wave enemy entrances. */
- function defineNormalWaveEntrancePaths() { /* ... ongewijzigd ... */ normalWaveEntrancePaths = {}; const w = gameCanvas?.width; const h = gameCanvas?.height; if (!w || !h || w === 0) { console.error("Cannot define Normal Wave entrance paths: Canvas size unknown or zero width."); return; } const sX = w / 800; const sY = h / 600; const offTop = -Math.max(ENEMY1_HEIGHT, ENEMY_HEIGHT) * 1.5; const midScreenX = w / 2; const horizontalShift = -25; const baseEnemyWidthForCalc = ENEMY_WIDTH; const fixedSpacing = ENEMY_H_SPACING_FIXED; const actualGridWidth = GRID_COLS * baseEnemyWidthForCalc + (GRID_COLS - 1) * fixedSpacing; const initialGridStartX = Math.round((w - actualGridWidth) / 2); const col4CenterX = initialGridStartX + 4 * (baseEnemyWidthForCalc + fixedSpacing) + baseEnemyWidthForCalc / 2; const col5CenterX = initialGridStartX + 5 * (baseEnemyWidthForCalc + fixedSpacing) + baseEnemyWidthForCalc / 2; const targetCenterX_shifted = (col4CenterX + col5CenterX) / 2 + horizontalShift; const targetY_row1 = Math.round(ENEMY_TOP_MARGIN + 1 * (ENEMY_HEIGHT + ENEMY_V_SPACING)); const finalPathEndY_shifted = targetY_row1 + 60 * sY; const leftPath = [{ p0: { x: (80/400*800) * sX + horizontalShift, y: offTop }, p1: { x: (440/400*800) * sX + horizontalShift, y: (140/300*600) * sY }, p2: { x: (260/400*800) * sX + horizontalShift, y: (340/300*600) * sY }, p3: { x: targetCenterX_shifted, y: finalPathEndY_shifted } }]; normalWaveEntrancePaths['new_path_left'] = leftPath; const rightPath_shifted = leftPath.map(seg => ({ p0: { x: w - (seg.p0.x - horizontalShift) + horizontalShift, y: seg.p0.y }, p1: { x: w - (seg.p1.x - horizontalShift) + horizontalShift, y: seg.p1.y }, p2: { x: w - (seg.p2.x - horizontalShift) + horizontalShift, y: seg.p2.y }, p3: { x: targetCenterX_shifted, y: seg.p3.y } })); normalWaveEntrancePaths['new_path_right'] = rightPath_shifted; const createBossLoopPath = (isRightSide) => { const pathId = isRightSide ? 'boss_loop_right' : 'boss_loop_left'; const mirror = (x) => isRightSide ? w - x : x; const offsetY_new = 130 * sY; const radius_new = 80 * sX; const circleCenterX_new = 300 * sX; const circleCenterY_new = 300 * sY; const circleStartPointX = circleCenterX_new + radius_new; const circleStartPointY = circleCenterY_new; const startX_new = mirror(-100 * sX); const startY_new = (350 + offsetY_new) * sY; const finalY_new = ENEMY_TOP_MARGIN - 20; const P_Start = { x: startX_new, y: startY_new }; const P_Entry = { x: mirror(circleStartPointX), y: circleCenterY_new }; const P_Top = { x: mirror(circleCenterX_new), y: circleCenterY_new - radius_new }; const P_Left = { x: mirror(circleCenterX_new - radius_new), y: circleCenterY_new }; const P_Bottom = { x: mirror(circleCenterX_new), y: circleCenterY_new + radius_new }; const P_Final = { x: P_Entry.x, y: finalY_new }; const preEntryDistanceFactor = 0.25; const angleToEntry = Math.atan2(P_Entry.y - startY_new, P_Entry.x - startX_new); const P_Before_Entry = { x: P_Entry.x - Math.cos(angleToEntry) * radius_new * preEntryDistanceFactor, y: P_Entry.y - Math.sin(angleToEntry) * radius_new * preEntryDistanceFactor }; const P_Mid_Start_BeforeEntry = { x: (P_Start.x + P_Before_Entry.x) / 2, y: (P_Start.y + P_Before_Entry.y) / 2 }; const P_Mid_Entry_Final = { x: P_Entry.x, y: (P_Entry.y + P_Final.y) / 2 }; const kappa = 0.552284749831; const kRadX = radius_new * kappa; const kRadY = radius_new * kappa; let bossLoopPath = []; bossLoopPath.push({ p0: P_Start, p1: { x: P_Start.x + (P_Mid_Start_BeforeEntry.x - P_Start.x) * 0.33, y: P_Start.y + (P_Mid_Start_BeforeEntry.y - P_Start.y) * 0.33 }, p2: { x: P_Start.x + (P_Mid_Start_BeforeEntry.x - P_Start.x) * 0.66, y: P_Start.y + (P_Mid_Start_BeforeEntry.y - P_Start.y) * 0.66 }, p3: P_Mid_Start_BeforeEntry }); bossLoopPath.push({ p0: P_Mid_Start_BeforeEntry, p1: { x: P_Mid_Start_BeforeEntry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.33, y: P_Mid_Start_BeforeEntry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.33 }, p2: { x: P_Mid_Start_BeforeEntry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.66, y: P_Mid_Start_BeforeEntry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.66 }, p3: P_Before_Entry }); const cp1_smooth = { x: P_Before_Entry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.3, y: P_Before_Entry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.3 }; const cp2_smooth = { x: mirror(circleCenterX_new + kRadX), y: P_Top.y }; bossLoopPath.push({ p0: P_Before_Entry, p1: cp1_smooth, p2: cp2_smooth, p3: P_Top }); bossLoopPath.push({ p0: P_Top, p1: { x: mirror(circleCenterX_new - kRadX), y: P_Top.y }, p2: { x: P_Left.x, y: P_Left.y - kRadY }, p3: P_Left }); bossLoopPath.push({ p0: P_Left, p1: { x: P_Left.x, y: P_Left.y + kRadY }, p2: { x: mirror(circleCenterX_new - kRadX), y: P_Bottom.y }, p3: P_Bottom }); bossLoopPath.push({ p0: P_Bottom, p1: { x: mirror(circleCenterX_new + kRadX), y: P_Bottom.y }, p2: { x: P_Entry.x, y: P_Entry.y + kRadY }, p3: P_Entry }); bossLoopPath.push({ p0: P_Entry, p1: { x: P_Entry.x + (P_Mid_Entry_Final.x - P_Entry.x) * 0.33, y: P_Entry.y + (P_Mid_Entry_Final.y - P_Entry.y) * 0.33 }, p2: { x: P_Entry.x + (P_Mid_Entry_Final.x - P_Entry.x) * 0.66, y: P_Entry.y + (P_Mid_Entry_Final.y - P_Entry.y) * 0.66 }, p3: P_Mid_Entry_Final }); bossLoopPath.push({ p0: P_Mid_Entry_Final, p1: { x: P_Mid_Entry_Final.x + (P_Final.x - P_Mid_Entry_Final.x) * 0.33, y: P_Mid_Entry_Final.y + (P_Final.y - P_Mid_Entry_Final.y) * 0.33 }, p2: { x: P_Mid_Entry_Final.x + (P_Final.x - P_Mid_Entry_Final.x) * 0.66, y: P_Mid_Entry_Final.y + (P_Final.y - P_Mid_Entry_Final.y) * 0.66 }, p3: P_Final }); return bossLoopPath; }; normalWaveEntrancePaths['boss_loop_left'] = createBossLoopPath(false); normalWaveEntrancePaths['boss_loop_right'] = createBossLoopPath(true); const effectiveCurveY = 750; const finalEndY = 350 * sY; const midCurveRight_p0 = { x: midScreenX, y: offTop }; const midCurveRight_p1 = { x: (midScreenX + (750 - 400) * (2/3)) * sX, y: (-50 + (effectiveCurveY - (-50)) * (2/3)) * sY }; const midCurveRight_p2 = { x: (400 + (750 - 400) * (1/3)) * sX, y: (finalEndY + (effectiveCurveY - finalEndY) * (1/3)) * sY }; const midCurveRight_p3 = { x: midScreenX, y: finalEndY }; normalWaveEntrancePaths['mid_curve_right'] = [ { p0: midCurveRight_p0, p1: midCurveRight_p1, p2: midCurveRight_p2, p3: midCurveRight_p3 } ]; const midCurveLeft_p0 = { x: midScreenX, y: offTop }; const midCurveLeft_p1 = { x: w - midCurveRight_p1.x, y: midCurveRight_p1.y }; const midCurveLeft_p2 = { x: w - midCurveRight_p2.x, y: midCurveRight_p2.y }; const midCurveLeft_p3 = { x: midScreenX, y: finalEndY }; normalWaveEntrancePaths['mid_curve_left'] = [ { p0: midCurveLeft_p0, p1: midCurveLeft_p1, p2: midCurveLeft_p2, p3: midCurveLeft_p3 } ]; for (const pathId in normalWaveEntrancePaths) { if (!Array.isArray(normalWaveEntrancePaths[pathId])) { console.error(`Normal Wave Path ${pathId} is not an array! Using basic fallback.`); normalWaveEntrancePaths[pathId] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:ENEMY_TOP_MARGIN} }]; continue; } normalWaveEntrancePaths[pathId] = normalWaveEntrancePaths[pathId].filter(seg => seg?.p0 && seg?.p1 && seg?.p2 && seg?.p3 && typeof seg.p0.x === 'number' && typeof seg.p0.y === 'number' && typeof seg.p1.x === 'number' && typeof seg.p1.y === 'number' && typeof seg.p2.x === 'number' && typeof seg.p2.y === 'number' && typeof seg.p3.x === 'number' && typeof seg.p3.y === 'number' && !isNaN(seg.p0.x + seg.p0.y + seg.p1.x + seg.p1.y + seg.p2.x + seg.p2.y + seg.p3.x + seg.p3.y) ); if (normalWaveEntrancePaths[pathId].length === 0) { console.error(`Normal Wave Path ${pathId} empty after validation! Using basic fallback.`); normalWaveEntrancePaths[pathId] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:ENEMY_TOP_MARGIN} }]; } } }
+ function defineNormalWaveEntrancePaths() { /* ... ongewijzigd ... */ normalWaveEntrancePaths = {}; const w = gameCanvas?.width; const h = gameCanvas?.height; if (!w || !h || w === 0) { console.error("Cannot define Normal Wave entrance paths: Canvas size unknown or zero width."); return; } const sX = w / 800; const sY = h / 600; const offTop = -Math.max(ENEMY1_HEIGHT, ENEMY_HEIGHT) * 1.5; const midScreenX = w / 2; const horizontalShift = -25; const baseEnemyWidthForCalc = ENEMY_WIDTH; const fixedSpacing = ENEMY_H_SPACING_FIXED; const actualGridWidth = GRID_COLS * baseEnemyWidthForCalc + (GRID_COLS - 1) * fixedSpacing; const initialGridStartX = Math.round((w - actualGridWidth) / 2); const col4CenterX = initialGridStartX + 4 * (baseEnemyWidthForCalc + fixedSpacing) + baseEnemyWidthForCalc / 2; const col5CenterX = initialGridStartX + 5 * (baseEnemyWidthForCalc + fixedSpacing) + baseEnemyWidthForCalc / 2; const targetCenterX_shifted = (col4CenterX + col5CenterX) / 2 + horizontalShift; const targetY_row1 = Math.round(ENEMY_TOP_MARGIN + 1 * (ENEMY_HEIGHT + ENEMY_V_SPACING)); const finalPathEndY_shifted = targetY_row1 + 60 * sY; const leftPath = [{ p0: { x: (80/400*800) * sX + horizontalShift, y: offTop }, p1: { x: (440/400*800) * sX + horizontalShift, y: (140/300*600) * sY }, p2: { x: (260/400*800) * sX + horizontalShift, y: (340/300*600) * sY }, p3: { x: targetCenterX_shifted, y: finalPathEndY_shifted } }]; normalWaveEntrancePaths['new_path_left'] = leftPath; const rightPath_shifted = leftPath.map(seg => ({ p0: { x: w - (seg.p0.x - horizontalShift) + horizontalShift, y: seg.p0.y }, p1: { x: w - (seg.p1.x - horizontalShift) + horizontalShift, y: seg.p1.y }, p2: { x: w - (seg.p2.x - horizontalShift) + horizontalShift, y: seg.p2.y }, p3: { x: targetCenterX_shifted, y: seg.p3.y } })); normalWaveEntrancePaths['new_path_right'] = rightPath_shifted; const createBossLoopPath = (isRightSide) => { const pathId = isRightSide ? 'boss_loop_right' : 'boss_loop_left'; const mirror = (x) => isRightSide ? w - x : x; const offsetY_new = 130 * sY; const radius_new = 80 * sX; const circleCenterX_new = 300 * sX; const circleCenterY_new = 300 * sY; const circleStartPointX = circleCenterX_new + radius_new; const circleStartPointY = circleCenterY_new; const startX_new = mirror(-100 * sX); const startY_new = (350 + offsetY_new) * sY; const finalY_new = ENEMY_TOP_MARGIN - 20; const P_Start = { x: startX_new, y: startY_new }; const P_Entry = { x: mirror(circleStartPointX), y: circleStartPointY }; const P_Top = { x: mirror(circleCenterX_new), y: circleCenterY_new - radius_new }; const P_Left = { x: mirror(circleCenterX_new - radius_new), y: circleCenterY_new }; const P_Bottom = { x: mirror(circleCenterX_new), y: circleCenterY_new + radius_new }; const P_Final = { x: P_Entry.x, y: finalY_new }; const preEntryDistanceFactor = 0.25; const angleToEntry = Math.atan2(P_Entry.y - startY_new, P_Entry.x - startX_new); const P_Before_Entry = { x: P_Entry.x - Math.cos(angleToEntry) * radius_new * preEntryDistanceFactor, y: P_Entry.y - Math.sin(angleToEntry) * radius_new * preEntryDistanceFactor }; const P_Mid_Start_BeforeEntry = { x: (P_Start.x + P_Before_Entry.x) / 2, y: (P_Start.y + P_Before_Entry.y) / 2 }; const P_Mid_Entry_Final = { x: P_Entry.x, y: (P_Entry.y + P_Final.y) / 2 }; const kappa = 0.552284749831; const kRadX = radius_new * kappa; const kRadY = radius_new * kappa; let bossLoopPath = []; bossLoopPath.push({ p0: P_Start, p1: { x: P_Start.x + (P_Mid_Start_BeforeEntry.x - P_Start.x) * 0.33, y: P_Start.y + (P_Mid_Start_BeforeEntry.y - P_Start.y) * 0.33 }, p2: { x: P_Start.x + (P_Mid_Start_BeforeEntry.x - P_Start.x) * 0.66, y: P_Start.y + (P_Mid_Start_BeforeEntry.y - P_Start.y) * 0.66 }, p3: P_Mid_Start_BeforeEntry }); bossLoopPath.push({ p0: P_Mid_Start_BeforeEntry, p1: { x: P_Mid_Start_BeforeEntry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.33, y: P_Mid_Start_BeforeEntry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.33 }, p2: { x: P_Mid_Start_BeforeEntry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.66, y: P_Mid_Start_BeforeEntry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.66 }, p3: P_Before_Entry }); const cp1_smooth = { x: P_Before_Entry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.3, y: P_Before_Entry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.3 }; const cp2_smooth = { x: mirror(circleCenterX_new + kRadX), y: P_Top.y }; bossLoopPath.push({ p0: P_Before_Entry, p1: cp1_smooth, p2: cp2_smooth, p3: P_Top }); bossLoopPath.push({ p0: P_Top, p1: { x: mirror(circleCenterX_new - kRadX), y: P_Top.y }, p2: { x: P_Left.x, y: P_Left.y - kRadY }, p3: P_Left }); bossLoopPath.push({ p0: P_Left, p1: { x: P_Left.x, y: P_Left.y + kRadY }, p2: { x: mirror(circleCenterX_new - kRadX), y: P_Bottom.y }, p3: P_Bottom }); bossLoopPath.push({ p0: P_Bottom, p1: { x: mirror(circleCenterX_new + kRadX), y: P_Bottom.y }, p2: { x: P_Entry.x, y: P_Entry.y + kRadY }, p3: P_Entry }); bossLoopPath.push({ p0: P_Entry, p1: { x: P_Entry.x + (P_Mid_Entry_Final.x - P_Entry.x) * 0.33, y: P_Entry.y + (P_Mid_Entry_Final.y - P_Entry.y) * 0.33 }, p2: { x: P_Entry.x + (P_Mid_Entry_Final.x - P_Entry.x) * 0.66, y: P_Entry.y + (P_Mid_Entry_Final.y - P_Entry.y) * 0.66 }, p3: P_Mid_Entry_Final }); bossLoopPath.push({ p0: P_Mid_Entry_Final, p1: { x: P_Mid_Entry_Final.x + (P_Final.x - P_Mid_Entry_Final.x) * 0.33, y: P_Mid_Entry_Final.y + (P_Final.y - P_Mid_Entry_Final.y) * 0.33 }, p2: { x: P_Mid_Entry_Final.x + (P_Final.x - P_Mid_Entry_Final.x) * 0.66, y: P_Mid_Entry_Final.y + (P_Final.y - P_Mid_Entry_Final.y) * 0.66 }, p3: P_Final }); return bossLoopPath; }; normalWaveEntrancePaths['boss_loop_left'] = createBossLoopPath(false); normalWaveEntrancePaths['boss_loop_right'] = createBossLoopPath(true); const effectiveCurveY = 750; const finalEndY = 350 * sY; const midCurveRight_p0 = { x: midScreenX, y: offTop }; const midCurveRight_p1 = { x: (midScreenX + (750 - 400) * (2/3)) * sX, y: (-50 + (effectiveCurveY - (-50)) * (2/3)) * sY }; const midCurveRight_p2 = { x: (400 + (750 - 400) * (1/3)) * sX, y: (finalEndY + (effectiveCurveY - finalEndY) * (1/3)) * sY }; const midCurveRight_p3 = { x: midScreenX, y: finalEndY }; normalWaveEntrancePaths['mid_curve_right'] = [ { p0: midCurveRight_p0, p1: midCurveRight_p1, p2: midCurveRight_p2, p3: midCurveRight_p3 } ]; const midCurveLeft_p0 = { x: midScreenX, y: offTop }; const midCurveLeft_p1 = { x: w - midCurveRight_p1.x, y: midCurveRight_p1.y }; const midCurveLeft_p2 = { x: w - midCurveRight_p2.x, y: midCurveRight_p2.y }; const midCurveLeft_p3 = { x: midScreenX, y: finalEndY }; normalWaveEntrancePaths['mid_curve_left'] = [ { p0: midCurveLeft_p0, p1: midCurveLeft_p1, p2: midCurveLeft_p2, p3: midCurveLeft_p3 } ]; for (const pathId in normalWaveEntrancePaths) { if (!Array.isArray(normalWaveEntrancePaths[pathId])) { console.error(`Normal Wave Path ${pathId} is not an array! Using basic fallback.`); normalWaveEntrancePaths[pathId] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:ENEMY_TOP_MARGIN} }]; continue; } normalWaveEntrancePaths[pathId] = normalWaveEntrancePaths[pathId].filter(seg => seg?.p0 && seg?.p1 && seg?.p2 && seg?.p3 && typeof seg.p0.x === 'number' && typeof seg.p0.y === 'number' && typeof seg.p1.x === 'number' && typeof seg.p1.y === 'number' && typeof seg.p2.x === 'number' && typeof seg.p2.y === 'number' && typeof seg.p3.x === 'number' && typeof seg.p3.y === 'number' && !isNaN(seg.p0.x + seg.p0.y + seg.p1.x + seg.p1.y + seg.p2.x + seg.p2.y + seg.p3.x + seg.p3.y) ); if (normalWaveEntrancePaths[pathId].length === 0) { console.error(`Normal Wave Path ${pathId} empty after validation! Using basic fallback.`); normalWaveEntrancePaths[pathId] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:ENEMY_TOP_MARGIN} }]; } } }
 
 /** Defines the Bezier curve paths specifically for Challenging Stages. */
 function defineChallengingStagePaths() { /* ... ongewijzigd ... */ challengingStagePaths = {}; const w = gameCanvas?.width; const h = gameCanvas?.height; if (!w || !h || w === 0) { console.error("Cannot define CS paths: Canvas size unknown or zero width."); return; } const enemyW = ENEMY_WIDTH; const enemyH = ENEMY_HEIGHT; const offTop = -enemyH * 1.5; const offBottom = h + enemyH * 2; const offLeft = -enemyW * 1.5; const offRight = w + enemyW * 1.5; const midX = w / 2; const midY = h / 2; const CS3_START_SHIFT_X = -28; const shiftPathX = (originalPath, shiftX) => { return originalPath.map(seg => { const newSeg = JSON.parse(JSON.stringify(seg)); if (newSeg.p0 && typeof newSeg.p0.x === 'number') newSeg.p0.x += shiftX; if (newSeg.p1 && typeof newSeg.p1.x === 'number') newSeg.p1.x += shiftX; if (newSeg.p2 && typeof newSeg.p2.x === 'number') newSeg.p2.x += shiftX; if (newSeg.p3 && typeof newSeg.p3.x === 'number' && newSeg.p3.x !== offLeft && newSeg.p3.x !== offRight) { newSeg.p3.x += shiftX; } return newSeg; }); }; const cmScale = (37.8 / 800) * 0.3; const exampleStartX_L_frac_orig = 0.5 - cmScale; const exampleMidY_frac = 450 / 600; const exampleCp1X_L_frac_orig = 0.49; const exampleCp1Y_frac = 600 / 600; const exampleCp2X_L_frac_orig = 0.48; const exampleCp2Y_frac = 300 / 600; const path5_startX_orig = w * exampleStartX_L_frac_orig; const path5_midY = h * exampleMidY_frac; const path5_cp1X_orig = w * exampleCp1X_L_frac_orig; const path5_cp1Y = h * Math.min(1.0, exampleCp1Y_frac); const path5_cp2X_orig = w * exampleCp2X_L_frac_orig; const path5_cp2Y = h * exampleCp2Y_frac; const path5_endX_orig = offLeft; const path5_endY = offTop; const path5_seg1_p0_orig = { x: path5_startX_orig, y: offTop }; const path5_seg1_p3_orig = { x: path5_startX_orig, y: path5_midY }; const path5_seg1_p1_orig = { x: path5_startX_orig, y: offTop + (path5_midY - offTop) * 0.33 }; const path5_seg1_p2_orig = { x: path5_startX_orig, y: offTop + (path5_midY - offTop) * 0.66 }; const path5_seg2_p0_orig = path5_seg1_p3_orig; const path5_seg2_p1_orig = { x: path5_cp1X_orig, y: path5_cp1Y }; const path5_seg2_p2_orig = { x: path5_cp2X_orig, y: path5_cp2Y }; const path5_seg2_p3_orig = { x: path5_endX_orig, y: path5_endY }; const original_CS3_DiveLoopL_Sharp = [ { p0: path5_seg1_p0_orig, p1: path5_seg1_p1_orig, p2: path5_seg1_p2_orig, p3: path5_seg1_p3_orig }, { p0: path5_seg2_p0_orig, p1: path5_seg2_p1_orig, p2: path5_seg2_p2_orig, p3: path5_seg2_p3_orig } ]; const original_CS3_DiveLoopR_Sharp = original_CS3_DiveLoopL_Sharp.map(seg => ({ p0: { x: w - seg.p0.x, y: seg.p0.y }, p1: { x: w - seg.p1.x, y: seg.p1.y }, p2: { x: w - seg.p2.x, y: seg.p2.y }, p3: { x: (seg.p3.x === offLeft) ? offRight : w - seg.p3.x, y: seg.p3.y } })); challengingStagePaths['CS3_DiveLoopL_Sharp'] = shiftPathX(original_CS3_DiveLoopL_Sharp, CS3_START_SHIFT_X); challengingStagePaths['CS3_DiveLoopR_Sharp'] = shiftPathX(original_CS3_DiveLoopR_Sharp, CS3_START_SHIFT_X); const flyByY = h * 0.70; const controlOffsetYFlyBy = h * 0.03; const controlOffsetXFlyBy = w * 0.15; challengingStagePaths['CS_HorizontalFlyByL'] = [{ p0: { x: offLeft, y: flyByY }, p1: { x: offLeft + controlOffsetXFlyBy, y: flyByY - controlOffsetYFlyBy }, p2: { x: offRight - controlOffsetXFlyBy, y: flyByY + controlOffsetYFlyBy }, p3: { x: offRight, y: flyByY } }]; challengingStagePaths['CS_HorizontalFlyByR'] = [{ p0: { x: offRight, y: flyByY }, p1: { x: offRight - controlOffsetXFlyBy, y: flyByY - controlOffsetYFlyBy }, p2: { x: offLeft + controlOffsetXFlyBy, y: flyByY + controlOffsetYFlyBy }, p3: { x: offLeft, y: flyByY } }]; const loopDipY = h * 0.80; const loopRiseY = h * 0.55; const loopExitY = h * 0.15; challengingStagePaths['CS_LoopAttack_TL'] = [ { p0: { x: w * 0.1, y: offTop }, p1: { x: w * 0.2, y: h * 0.2 }, p2: { x: w * 0.6, y: loopDipY }, p3: { x: w * 0.7, y: loopDipY } }, { p0: { x: w * 0.7, y: loopDipY }, p1: { x: w * 0.8, y: loopDipY }, p2: { x: w * 0.8, y: loopRiseY }, p3: { x: w * 0.7, y: loopRiseY } }, { p0: { x: w * 0.7, y: loopRiseY }, p1: { x: w * 0.6, y: loopRiseY }, p2: { x: offRight, y: loopExitY }, p3: { x: offRight, y: loopExitY + h*0.1 } } ]; challengingStagePaths['CS_LoopAttack_TR'] = [ { p0: { x: w * 0.9, y: offTop }, p1: { x: w * 0.8, y: h * 0.2 }, p2: { x: w * 0.4, y: loopDipY }, p3: { x: w * 0.3, y: loopDipY } }, { p0: { x: w * 0.3, y: loopDipY }, p1: { x: w * 0.2, y: loopDipY }, p2: { x: w * 0.2, y: loopRiseY }, p3: { x: w * 0.3, y: loopRiseY } }, { p0: { x: w * 0.3, y: loopRiseY }, p1: { x: w * 0.4, y: loopRiseY }, p2: { x: offLeft, y: loopExitY }, p3: { x: offLeft, y: loopExitY + h*0.1 } } ]; challengingStagePaths['CS_LoopAttack_BL'] = [ { p0: { x: offLeft, y: h * 0.6 }, p1: { x: w * 0.1, y: h * 0.4 }, p2: { x: w * 0.6, y: h * 0.2 }, p3: { x: midX, y: h * 0.3 } }, { p0: { x: midX, y: h * 0.3 }, p1: { x: w * 0.4, y: h * 0.4 }, p2: { x: w * 0.3, y: loopDipY * 0.9 }, p3: { x: w*0.4, y: loopDipY } }, { p0: { x: w*0.4, y: loopDipY }, p1: { x: w * 0.5, y: loopDipY * 1.05 }, p2: { x: midX, y: offTop }, p3: { x: midX + w*0.1, y: offTop } } ]; challengingStagePaths['CS_LoopAttack_BR'] = [ { p0: { x: offRight, y: h * 0.6 }, p1: { x: w * 0.9, y: h * 0.4 }, p2: { x: w * 0.4, y: h * 0.2 }, p3: { x: midX, y: h * 0.3 } }, { p0: { x: midX, y: h * 0.3 }, p1: { x: w * 0.6, y: h * 0.4 }, p2: { x: w * 0.7, y: loopDipY * 0.9 }, p3: { x: w*0.6, y: loopDipY } }, { p0: { x: w*0.6, y: loopDipY }, p1: { x: w * 0.5, y: loopDipY * 1.05 }, p2: { x: midX, y: offTop }, p3: { x: midX - w*0.1, y: offTop } } ]; for (const key in challengingStagePaths) { challengingStagePaths[key] = challengingStagePaths[key].filter(seg => seg?.p0 && seg?.p1 && seg?.p2 && seg?.p3 && !isNaN(seg.p0.x + seg.p0.y + seg.p1.x + seg.p1.y + seg.p2.x + seg.p2.y + seg.p3.x + seg.p3.y) ); if (challengingStagePaths[key].length === 0) { console.error(`CS Path ${key} empty after validation! Adding fallback.`); challengingStagePaths[key] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:offBottom} }]; } } }
@@ -770,327 +728,132 @@ function resizeCanvases() { /* ... ongewijzigd ... */ try { const width = window
 function handleResizeGameElements(oldWidth, newWidth, newHeight) { /* ... ongewijzigd ... */ try { currentGridOffsetX = 0; if (ship) { if (oldWidth > 0 && newWidth > 0 && typeof ship.x !== 'undefined') { ship.x = (ship.x / oldWidth) * newWidth; } else { ship.x = newWidth / 2 - ship.width / 2; } ship.x = Math.max(0, Math.min(newWidth - ship.width, ship.x)); ship.y = newHeight - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN; ship.targetX = ship.x; } enemies.forEach((e) => { if (e && (e.state === 'in_grid' || e.state === 'returning' || e.state === 'moving_to_grid')) { try { const enemyWidthForGrid = (e.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((e.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH); const { x: newTargetX, y: newTargetY } = getCurrentGridSlotPosition(e.gridRow, e.gridCol, enemyWidthForGrid); e.targetGridX = newTargetX; e.targetGridY = newTargetY; if (e.state === 'in_grid') { e.x = newTargetX; e.y = newTargetY; } } catch (gridPosError) { console.error(`Error recalculating grid pos for enemy ${e.id} on resize:`, gridPosError); if(e.state === 'in_grid' || e.state === 'moving_to_grid' || e.state === 'returning'){ e.x = newWidth / 2; e.y = ENEMY_TOP_MARGIN + e.gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING); e.targetGridX = e.x; e.targetGridY = e.y; } } } }); } catch (e) { console.error("Error handling game resize specifics:", e); } }
 
 // --- Keyboard Event Handlers ---
-function handleKeyDown(e) {
-    try {
-        if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by keydown."); });
-        }
-        const relevantKeys = [" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Escape", "w", "a", "s", "d", "p", "P", "j", "J", "l", "L", "i", "I", "Numpad4", "Numpad6", "Numpad0"];
-        if (relevantKeys.includes(e.key) || relevantKeys.includes(e.code)) {
-            e.preventDefault();
-        }
-        let blockAllKeyboardInput = false;
-        if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0) {
-            blockAllKeyboardInput = true;
-        }
-        if (blockAllKeyboardInput) { return; }
-
-        if (isInGameState) {
-            if ((e.key === 'p' || e.key === 'P') && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage) {
-                if(typeof togglePause === 'function') togglePause();
-                return;
-            }
-
-            if (!isPaused) {
-                if (!isManualControl) {
-                    if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
-                        // AI P2 is active, P1 (mens) kan niet stoppen.
-                    } else {
-                        if (e.key === "Escape" || e.key === "Enter") {
-                            if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu();
-                        } else if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') {
-                            if(typeof showMenuState === 'function') showMenuState();
-                        }
-                    }
-                } else {
-                    switch (e.code) {
-                        case "ArrowLeft": case "KeyA": keyboardP1LeftDown = true; break;
-                        case "ArrowRight": case "KeyD": keyboardP1RightDown = true; break;
-                        case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = true; break;
-                        case "KeyJ": case "Numpad4": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2LeftDown = true; break;
-                        case "KeyL": case "Numpad6": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2RightDown = true; break;
-                        case "KeyI": case "Numpad0": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2ShootDown = true; break;
-                        case "Escape": case "Enter": if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu(); break;
-                    }
-                    if (!keyboardP2LeftDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "j") keyboardP2LeftDown = true;
-                    if (!keyboardP2RightDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "l") keyboardP2RightDown = true;
-                    if (!keyboardP2ShootDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "i") keyboardP2ShootDown = true;
-                }
-            }
-        } else {
-            if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
-                if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') {
-                    if(typeof showMenuState === 'function') showMenuState(); return;
-                }
-            } else if (!isShowingScoreScreen) {
-                stopAutoDemoTimer();
-                switch (e.key) {
-                    case "ArrowUp": case "w": selectedButtonIndex = (selectedButtonIndex <= 0) ? 1 : 0; startAutoDemoTimer(); break;
-                    case "ArrowDown": case "s": selectedButtonIndex = (selectedButtonIndex >= 1) ? 0 : 1; startAutoDemoTimer(); break;
-                    case "Enter": case " ":
-                        if (isPlayerSelectMode) {
-                            if (selectedButtonIndex === 0) { startGame1P(); }
-                            else { startGame2P(); }
-                        } else if (isOnePlayerGameTypeSelectMode) {
-                            if (selectedButtonIndex === 0) { // 1P -> NORMAL GAME (Classic)
-                                isOnePlayerGameTypeSelectMode = false;
-                                isFiringModeSelectMode = true;
-                                selectedOnePlayerGameVariant = 'CLASSIC_1P';
-                                selectedGameMode = 'normal';
-                                isTwoPlayerMode = false; isPlayerTwoAI = false;
-                                selectedButtonIndex = 0;
-                            } else { // 1P -> GAME VS AI
-                                isOnePlayerGameTypeSelectMode = false;
-                                isOnePlayerVsAIGameTypeSelectMode = true;
-                                selectedButtonIndex = 0;
-                            }
-                        } else if (isOnePlayerVsAIGameTypeSelectMode) { // 1P -> GAME VS AI -> Normal / Coop
-                            if (selectedButtonIndex === 0) { // 1P vs AI NORMAL
-                                selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL';
-                                selectedGameMode = 'normal'; // << GEWIJZIGD: Correcte mode instellen
-                            } else { // 1P vs AI COOP
-                                selectedOnePlayerGameVariant = '1P_VS_AI_COOP';
-                                selectedGameMode = 'coop'; // << GEWIJZIGD: Correcte mode instellen
-                            }
-                            isOnePlayerVsAIGameTypeSelectMode = false;
-                            isFiringModeSelectMode = true;
-                            isTwoPlayerMode = true; isPlayerTwoAI = true;
-                            selectedButtonIndex = 0;
-                        } else if (isGameModeSelectMode) { // 2P HUMAN -> Normal / Coop
-                            if (selectedButtonIndex === 0) { selectedGameMode = 'normal'; }
-                            else { selectedGameMode = 'coop'; }
-                            isGameModeSelectMode = false; isFiringModeSelectMode = true;
-                            isTwoPlayerMode = true; isPlayerTwoAI = false;
-                            selectedButtonIndex = 0;
-                        } else if (isFiringModeSelectMode) {
-                            if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; }
-                            else { selectedFiringMode = 'single'; }
-                            baseStartGame(true);
-                        } else { // Hoofdmenu
-                            if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0;}
-                            else if (selectedButtonIndex === 1) { exitGame(); }
-                        }
-                        startAutoDemoTimer(); break;
-                    case "Escape":
-                        if (isFiringModeSelectMode) {
-                            isFiringModeSelectMode = false;
-                            if (selectedOnePlayerGameVariant === 'CLASSIC_1P') {
-                                isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0;
-                            } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
-                                isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0);
-                            } else if (isTwoPlayerMode && !isPlayerTwoAI) { // Human 2P
-                                isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0);
-                            } else { // Fallback
-                                isPlayerSelectMode = false; selectedButtonIndex = 0;
-                            }
-                            selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; selectedGameMode = 'normal'; // Reset game mode bij teruggaan
-                        } else if (isOnePlayerVsAIGameTypeSelectMode) {
-                            isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1;
-                        } else if (isOnePlayerGameTypeSelectMode) {
-                            isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0;
-                        } else if (isGameModeSelectMode) {
-                            isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1;
-                        } else if (isPlayerSelectMode) {
-                            isPlayerSelectMode = false; selectedButtonIndex = 0;
-                        } else { triggerFullscreen(); }
-                        startAutoDemoTimer(); break;
-                    default: startAutoDemoTimer(); break;
-                }
-            }
-        }
-    } catch(err) { console.error("Error in handleKeyDown:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; }
-}
-function handleKeyUp(e) {
-    try {
-        switch (e.code) {
-            case "ArrowLeft": case "KeyA": keyboardP1LeftDown = false; break;
-            case "ArrowRight": case "KeyD": keyboardP1RightDown = false; break;
-            case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = false; p1JustFiredSingle = false; break;
-            case "KeyJ": case "Numpad4": keyboardP2LeftDown = false; break;
-            case "KeyL": case "Numpad6": keyboardP2RightDown = false; break;
-            case "KeyI": case "Numpad0": keyboardP2ShootDown = false; p2JustFiredSingle = false; break;
-        }
-        if (e.key.toLowerCase() === "j") keyboardP2LeftDown = false;
-        if (e.key.toLowerCase() === "l") keyboardP2RightDown = false;
-        if (e.key.toLowerCase() === "i") { keyboardP2ShootDown = false; p2JustFiredSingle = false; }
-
-    } catch(err) { console.error("Error in handleKeyUp:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false;}
-}
-
+function handleKeyDown(e) { /* ... ongewijzigd ... */ try { const relevantKeys = [" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Escape", "w", "a", "s", "d", "p", "P", "j", "J", "l", "L", "i", "I", "Numpad4", "Numpad6", "Numpad0"]; if (relevantKeys.includes(e.key) || relevantKeys.includes(e.code)) { e.preventDefault(); } let blockAllKeyboardInput = false; if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0) { blockAllKeyboardInput = true; } if (blockAllKeyboardInput) { return; } if (isInGameState) { if ((e.key === 'p' || e.key === 'P') && playerLives > 0 && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage) { if(typeof togglePause === 'function') togglePause(); return; } if (!isPaused) { if (playerLives > 0) { if (!isManualControl) { if (e.key === "Escape" || e.key === "Enter") { if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu(); } else if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) { if(typeof showMenuState === 'function') showMenuState(); } } else { switch (e.code) { case "ArrowLeft": case "KeyA": keyboardP1LeftDown = true; break; case "ArrowRight": case "KeyD": keyboardP1RightDown = true; break; case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = true; break; case "KeyJ": if(isTwoPlayerMode) keyboardP2LeftDown = true; break; case "KeyL": if(isTwoPlayerMode) keyboardP2RightDown = true; break; case "KeyI": if(isTwoPlayerMode) keyboardP2ShootDown = true; break; case "Numpad4": if(isTwoPlayerMode) keyboardP2LeftDown = true; break; case "Numpad6": if(isTwoPlayerMode) keyboardP2RightDown = true; break; case "Numpad0": if(isTwoPlayerMode) keyboardP2ShootDown = true; break; case "Escape": case "Enter": if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu(); break; } if (!keyboardP2LeftDown && isTwoPlayerMode && e.key === "j") keyboardP2LeftDown = true; if (!keyboardP2RightDown && isTwoPlayerMode && e.key === "l") keyboardP2RightDown = true; if (!keyboardP2ShootDown && isTwoPlayerMode && e.key === "i") keyboardP2ShootDown = true; } } } } else { if (isShowingScoreScreen) { if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') { if(typeof showMenuState === 'function') showMenuState(); return; } } else { stopAutoDemoTimer(); switch (e.key) { case "ArrowUp": case "w": selectedButtonIndex = (selectedButtonIndex <= 0) ? 1 : 0; startAutoDemoTimer(); break; case "ArrowDown": case "s": selectedButtonIndex = (selectedButtonIndex >= 1) ? 0 : 1; startAutoDemoTimer(); break; case "Enter": case " ": if (isFiringModeSelectMode) { if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; } baseStartGame(true); } else if (isPlayerSelectMode) { if (selectedButtonIndex === 0) { startGame1P(); } else { startGame2P(); } } else { if (selectedButtonIndex === 0) { isPlayerSelectMode = true; isFiringModeSelectMode = false; selectedButtonIndex = 0; startAutoDemoTimer(); } else if (selectedButtonIndex === 1) { exitGame(); } } break; case "Escape": if (isFiringModeSelectMode) { isFiringModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0; startAutoDemoTimer(); } else if (isPlayerSelectMode) { isPlayerSelectMode = false; isFiringModeSelectMode = false; selectedButtonIndex = 0; startAutoDemoTimer(); } else { exitGame(); } break; default: startAutoDemoTimer(); break; } } } } catch(err) { console.error("Error in handleKeyDown:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; } }
+function handleKeyUp(e) { /* ... ongewijzigd ... */ try { switch (e.code) { case "ArrowLeft": case "KeyA": keyboardP1LeftDown = false; break; case "ArrowRight": case "KeyD": keyboardP1RightDown = false; break; case "Space": case "ArrowUp": case "KeyW": keyboardP1ShootDown = false; break; case "KeyJ": keyboardP2LeftDown = false; break; case "KeyL": keyboardP2RightDown = false; break; case "KeyI": keyboardP2ShootDown = false; break; case "Numpad4": keyboardP2LeftDown = false; break; case "Numpad6": keyboardP2RightDown = false; break; case "Numpad0": keyboardP2ShootDown = false; break; } if (keyboardP2LeftDown && e.key === "j") keyboardP2LeftDown = false; if (keyboardP2RightDown && e.key === "l") keyboardP2RightDown = false; if (keyboardP2ShootDown && e.key === "i") keyboardP2ShootDown = false; } catch(err) { console.error("Error in handleKeyUp:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; } }
 
 // --- Gamepad Event Handlers ---
-function handleGamepadConnected(event) {
-    try {
-        if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by gamepad connection."); });
-        }
-        if (connectedGamepadIndex === null) {
-            connectedGamepadIndex = event.gamepad.index;
-            const numButtons = event.gamepad.buttons.length;
-            previousButtonStates = new Array(numButtons).fill(false);
-            previousDemoButtonStates = new Array(numButtons).fill(false);
-            previousGameButtonStates = new Array(numButtons).fill(false);
-            if (!isInGameState) { stopAutoDemoTimer(); selectedButtonIndex = 0; }
-        } else if (connectedGamepadIndexP2 === null) {
-            connectedGamepadIndexP2 = event.gamepad.index;
-            const numButtons = event.gamepad.buttons.length;
-            previousGameButtonStatesP2 = new Array(numButtons).fill(false);
-        }
-    } catch(e) { console.error("Error in handleGamepadConnected:", e); }
-}
-function handleGamepadDisconnected(event) {
-    try {
-        if (connectedGamepadIndex === event.gamepad.index) {
-            connectedGamepadIndex = null;
-            previousButtonStates = []; previousDemoButtonStates = []; previousGameButtonStates = [];
-            if (!isInGameState) { selectedButtonIndex = -1; joystickMovedVerticallyLastFrame = false; startAutoDemoTimer(); }
-            p1FireInputWasDown = false;
-        } else if (connectedGamepadIndexP2 === event.gamepad.index) {
-            connectedGamepadIndexP2 = null;
-            previousGameButtonStatesP2 = [];
-            p2FireInputWasDown = false;
-        }
-    } catch(e) { console.error("Error in handleGamepadDisconnected:", e); p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; }
-}
+function handleGamepadConnected(event) { /* ... inhoud ongewijzigd ... */ try { if (connectedGamepadIndex === null) { connectedGamepadIndex = event.gamepad.index; const numButtons = event.gamepad.buttons.length; previousButtonStates = new Array(numButtons).fill(false); previousDemoButtonStates = new Array(numButtons).fill(false); previousGameButtonStates = new Array(numButtons).fill(false); if (!isInGameState) { stopAutoDemoTimer(); selectedButtonIndex = 0; } } else if (connectedGamepadIndexP2 === null) { connectedGamepadIndexP2 = event.gamepad.index; const numButtons = event.gamepad.buttons.length; previousGameButtonStatesP2 = new Array(numButtons).fill(false); } } catch(e) { console.error("Error in handleGamepadConnected:", e); } }
+function handleGamepadDisconnected(event) { /* ... inhoud ongewijzigd ... */ try { if (connectedGamepadIndex === event.gamepad.index) { connectedGamepadIndex = null; previousButtonStates = []; previousDemoButtonStates = []; previousGameButtonStates = []; if (!isInGameState) { selectedButtonIndex = -1; joystickMovedVerticallyLastFrame = false; startAutoDemoTimer(); } p1FireInputWasDown = false; } else if (connectedGamepadIndexP2 === event.gamepad.index) { connectedGamepadIndexP2 = null; previousGameButtonStatesP2 = []; p2FireInputWasDown = false; } } catch(e) { console.error("Error in handleGamepadDisconnected:", e); p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; } }
 
-
-// --- Touch Event Handlers ---
-function getTouchCanvasCoordinates(touch) {
-    if (!gameCanvas) return { x: 0, y: 0 };
-    const rect = gameCanvas.getBoundingClientRect();
-    const scaleX = gameCanvas.width / rect.width;
-    const scaleY = gameCanvas.height / rect.height;
-    return {
-        x: (touch.clientX - rect.left) * scaleX,
-        y: (touch.clientY - rect.top) * scaleY
-    };
-}
+// --- Touch Event Handlers (met console.log voor debug) ---
+function getTouchCanvasCoordinates(touch) { /* ... ongewijzigd ... */ if (!gameCanvas) return { x: 0, y: 0 }; const rect = gameCanvas.getBoundingClientRect(); const scaleX = gameCanvas.width / rect.width; const scaleY = gameCanvas.height / rect.height; return { x: (touch.clientX - rect.left) * scaleX, y: (touch.clientY - rect.top) * scaleY }; }
 
 function handleTouchStart(event) {
-    console.log("[TOUCH_DEBUG] TouchStart fired. Touches:", event.touches.length, "Changed:", event.changedTouches.length); // DIAGNOSTIC LOG
+    console.log("[TOUCH_DEBUG] TouchStart fired. Changed touches:", event.changedTouches.length);
     try {
-        event.preventDefault(); // Belangrijk om default browser acties te stoppen
+        event.preventDefault();
         if (!isInGameState || isPaused || !isManualControl || !gameCanvas || gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage || (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage))) {
-            console.log("[TOUCH_DEBUG] TouchStart ignored due to game state."); // DIAGNOSTIC LOG
+            console.log("[TOUCH_DEBUG] TouchStart ignored due to game state.");
             return;
         }
-        if (audioContext && audioContext.state === 'suspended') {
-            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by touchstart."); });
-        }
+        if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume().catch(e => console.warn("AudioContext resume failed in touchstart:", e));}
 
         const touches = event.changedTouches;
         const now = Date.now();
-        console.log("[TOUCH_DEBUG] Processing", touches.length, "changed touches in TouchStart."); // DIAGNOSTIC LOG
 
         for (let i = 0; i < touches.length; i++) {
             const touch = touches[i];
             const { x: touchX, y: touchY } = getTouchCanvasCoordinates(touch);
-            console.log(`[TOUCH_DEBUG] TouchStart - Touch ID: ${touch.identifier}, Coords: (${touchX.toFixed(1)}, ${touchY.toFixed(1)})`); // DIAGNOSTIC LOG
+            console.log(`[TOUCH_DEBUG] TouchStart - Touch ID: ${touch.identifier}, Coords: (${touchX.toFixed(1)}, ${touchY.toFixed(1)})`);
+
+            let shipToCheck = null;
+            let shipIsDual = false;
+            let shipPlayerId = null;
+            let isCurrentShipP1 = false; // Voor P1-specifieke vlaggen
+            let currentTouchIdentifierState = null;
+            let setTouchIdentifierFunc = null;
+            let setIsDraggingFunc = null;
+            let setTouchOnShipFunc = null;
+            let setDraggedShipInitialXFunc = null;
+            let getJustFiredSingleFunc = null;
+            let setJustFiredSingleFunc = null;
+            let setTouchLastFireTimeFunc = null;
+            let currentTouchOnShipState = false;
 
             if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                console.log("[TOUCH_DEBUG] TouchStart - COOP Mode"); // DIAGNOSTIC LOG
-                // Player 1 (Human COOP or 1P in 1P vs AI COOP)
+                // Probeer P1
                 if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !player1NeedsRespawnAfterCapture && touchIdentifier1 === null) {
-                    const ship1Rect = {
-                        x: ship1.x - TOUCH_SHIP_SENSITIVITY_MARGIN_X,
-                        y: ship1.y - TOUCH_SHIP_SENSITIVITY_MARGIN_Y,
-                        width: ship1.width + (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0) + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_X,
-                        height: ship1.height + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_Y
-                    };
-                    console.log("[TOUCH_DEBUG] P1 Ship Rect for touch:", ship1Rect); // DIAGNOSTIC LOG
-                    if (checkCollision({ x: touchX, y: touchY, width: 1, height: 1 }, ship1Rect)) {
-                        console.log("[TOUCH_DEBUG] TouchStart - P1 ship hit!"); // DIAGNOSTIC LOG
-                        touchIdentifier1 = touch.identifier;
-                        isDraggingShip1 = true;
-                        touchOnShip1 = true;
-                        touchStartX = touchX;
-                        draggedShipInitialX1 = ship1.x;
-                        if (selectedFiringMode === 'single') {
-                            if (!p1JustFiredSingle) {
-                                if (typeof firePlayerBullet === 'function') firePlayerBullet('player1');
-                            }
-                        } else if (selectedFiringMode === 'rapid') {
-                             if (typeof firePlayerBullet === 'function') firePlayerBullet('player1');
-                             touchLastFireTimeP1 = now;
-                        }
-                        continue;
-                    } else { console.log("[TOUCH_DEBUG] TouchStart - P1 ship miss.");}
+                    shipToCheck = ship1; shipIsDual = player1IsDualShipActive; shipPlayerId = 'player1'; isCurrentShipP1 = true;
+                    currentTouchIdentifierState = touchIdentifier1; setTouchIdentifierFunc = (id) => touchIdentifier1 = id;
+                    setIsDraggingFunc = (val) => isDraggingShip1 = val; setTouchOnShipFunc = (val) => touchOnShip1 = val;
+                    setDraggedShipInitialXFunc = (val) => draggedShipInitialX1 = val;
+                    getJustFiredSingleFunc = () => p1JustFiredSingle; setJustFiredSingleFunc = (val) => p1JustFiredSingle = val;
+                    setTouchLastFireTimeFunc = (time) => touchLastFireTimeP1 = time;
+                    currentTouchOnShipState = touchOnShip1;
                 }
-                // Player 2 (Human COOP only)
-                if (!isPlayerTwoAI && ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture && touchIdentifier2 === null) {
-                    const ship2Rect = {
-                        x: ship2.x - TOUCH_SHIP_SENSITIVITY_MARGIN_X,
-                        y: ship2.y - TOUCH_SHIP_SENSITIVITY_MARGIN_Y,
-                        width: ship2.width + (player2IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0) + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_X,
-                        height: ship2.height + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_Y
-                    };
-                     console.log("[TOUCH_DEBUG] P2 Ship Rect for touch:", ship2Rect); // DIAGNOSTIC LOG
-                    if (checkCollision({ x: touchX, y: touchY, width: 1, height: 1 }, ship2Rect)) {
-                        console.log("[TOUCH_DEBUG] TouchStart - P2 ship hit!"); // DIAGNOSTIC LOG
-                        touchIdentifier2 = touch.identifier;
-                        isDraggingShip2 = true;
-                        touchOnShip2 = true;
-                        // touchStartX specifiek voor deze touch, maar we gebruiken een globale voor eenvoud
-                        // Idealiter zou touchStartX een array/map zijn per touch.identifier als meerdere schepen tegelijk gesleept kunnen worden.
-                        // Voor nu: de laatste touch op een schip zet touchStartX. Dit kan problemen geven bij multitouch op 2 schepen.
-                        touchStartX = touchX;
-                        draggedShipInitialX2 = ship2.x;
-                        if (selectedFiringMode === 'single') {
-                            if (!p2JustFiredSingle) {
-                                if (typeof firePlayerBullet === 'function') firePlayerBullet('player2');
-                            }
-                        } else if (selectedFiringMode === 'rapid') {
-                             if (typeof firePlayerBullet === 'function') firePlayerBullet('player2');
-                             touchLastFireTimeP2 = now;
-                        }
-                        continue;
-                    } else { console.log("[TOUCH_DEBUG] TouchStart - P2 ship miss.");}
+                // Probeer P2 (alleen human)
+                else if (!isPlayerTwoAI && ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture && touchIdentifier2 === null) {
+                    shipToCheck = ship2; shipIsDual = player2IsDualShipActive; shipPlayerId = 'player2'; isCurrentShipP1 = false;
+                    currentTouchIdentifierState = touchIdentifier2; setTouchIdentifierFunc = (id) => touchIdentifier2 = id;
+                    setIsDraggingFunc = (val) => isDraggingShip2 = val; setTouchOnShipFunc = (val) => touchOnShip2 = val;
+                    setDraggedShipInitialXFunc = (val) => draggedShipInitialX2 = val;
+                    getJustFiredSingleFunc = () => p2JustFiredSingle; setJustFiredSingleFunc = (val) => p2JustFiredSingle = val;
+                    setTouchLastFireTimeFunc = (time) => touchLastFireTimeP2 = time;
+                    currentTouchOnShipState = touchOnShip2;
                 }
-            } else { // 1P Classic, 1P vs AI Normal, 2P Normal
-                console.log("[TOUCH_DEBUG] TouchStart - Single Ship/Alternating Mode"); // DIAGNOSTIC LOG
+            } else { // 1P of 2P Normal (actieve speler)
                 if (ship && playerLives > 0 && !isShipCaptured && (!isPlayerTwoAI || (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 1)) && touchIdentifier1 === null) {
-                    const shipRect = {
-                        x: ship.x - TOUCH_SHIP_SENSITIVITY_MARGIN_X,
-                        y: ship.y - TOUCH_SHIP_SENSITIVITY_MARGIN_Y,
-                        width: ship.width + (isDualShipActive ? DUAL_SHIP_OFFSET_X : 0) + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_X,
-                        height: ship.height + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_Y
-                    };
-                    console.log("[TOUCH_DEBUG] Main Ship Rect for touch:", shipRect); // DIAGNOSTIC LOG
-                    if (checkCollision({ x: touchX, y: touchY, width: 1, height: 1 }, shipRect)) {
-                        console.log("[TOUCH_DEBUG] TouchStart - Main ship hit!"); // DIAGNOSTIC LOG
-                        touchIdentifier1 = touch.identifier;
-                        isDraggingShip1 = true;
-                        touchOnShip1 = true;
-                        touchStartX = touchX;
-                        draggedShipInitialX1 = ship.x;
-                        const shooterId = (isTwoPlayerMode && selectedGameMode === 'normal') ? `player${currentPlayer}` : 'player1';
-                        if (selectedFiringMode === 'single') {
-                            const justFiredFlag = (currentPlayer === 1 || !isTwoPlayerMode) ? p1JustFiredSingle : p2JustFiredSingle;
-                            if (!justFiredFlag) {
-                                if (typeof firePlayerBullet === 'function') firePlayerBullet(shooterId);
+                    shipToCheck = ship; shipIsDual = isDualShipActive;
+                    shipPlayerId = (isTwoPlayerMode && selectedGameMode === 'normal') ? `player${currentPlayer}` : 'player1';
+                    isCurrentShipP1 = (currentPlayer === 1 || !isTwoPlayerMode);
+                    currentTouchIdentifierState = touchIdentifier1; setTouchIdentifierFunc = (id) => touchIdentifier1 = id;
+                    setIsDraggingFunc = (val) => isDraggingShip1 = val; setTouchOnShipFunc = (val) => touchOnShip1 = val;
+                    setDraggedShipInitialXFunc = (val) => draggedShipInitialX1 = val;
+                    getJustFiredSingleFunc = () => (isCurrentShipP1 ? p1JustFiredSingle : p2JustFiredSingle);
+                    setJustFiredSingleFunc = (val) => { if (isCurrentShipP1) p1JustFiredSingle = val; else p2JustFiredSingle = val; };
+                    setTouchLastFireTimeFunc = (time) => touchLastFireTimeP1 = time; // Gebruik P1 timer voor hoofd schip
+                    currentTouchOnShipState = touchOnShip1;
+                }
+            }
+
+            if (shipToCheck && currentTouchIdentifierState === null) {
+                const shipRect = {
+                    x: shipToCheck.x - TOUCH_SHIP_SENSITIVITY_MARGIN_X,
+                    y: shipToCheck.y - TOUCH_SHIP_SENSITIVITY_MARGIN_Y,
+                    width: shipToCheck.width + (shipIsDual ? DUAL_SHIP_OFFSET_X : 0) + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_X,
+                    height: shipToCheck.height + 2 * TOUCH_SHIP_SENSITIVITY_MARGIN_Y
+                };
+                console.log(`[TOUCH_DEBUG] Ship ${shipPlayerId} Rect for touch:`, shipRect);
+
+                if (checkCollision({ x: touchX, y: touchY, width: 1, height: 1 }, shipRect)) {
+                    console.log(`[TOUCH_DEBUG] TouchStart - Ship ${shipPlayerId} hit!`);
+                    setTouchIdentifierFunc(touch.identifier);
+                    setIsDraggingFunc(true);
+                    setTouchOnShipFunc(true);
+                    touchStartX = touchX; // Gemeenschappelijk, maar initiële X per schip is specifiek
+                    setDraggedShipInitialXFunc(shipToCheck.x);
+                    isTouchFiringActive = true; // <<< TOEGEVOEGD: Activeer touch vuren >>>
+
+                    if (selectedFiringMode === 'single') {
+                        if (!getJustFiredSingleFunc()) { // Alleen vuren als vlag niet al staat
+                            if (typeof firePlayerBullet === 'function') {
+                                if (firePlayerBullet(shipPlayerId)) { // Geef shooterId mee
+                                    setJustFiredSingleFunc(true); // Zet vlag na succesvol vuren
+                                }
                             }
-                        } else if (selectedFiringMode === 'rapid') {
-                            if (typeof firePlayerBullet === 'function') firePlayerBullet(shooterId);
-                            touchLastFireTimeP1 = now;
                         }
-                    } else { console.log("[TOUCH_DEBUG] TouchStart - Main ship miss.");}
+                    } else if (selectedFiringMode === 'rapid') {
+                        if (typeof firePlayerBullet === 'function') firePlayerBullet(shipPlayerId); // Eerste schot
+                        setTouchLastFireTimeFunc(now);
+                    }
+                    continue; // Ga naar de volgende touch
+                } else {
+                     console.log(`[TOUCH_DEBUG] TouchStart - Ship ${shipPlayerId} miss.`);
                 }
             }
         }
     } catch (err) {
         console.error("[TOUCH_ERROR] Error in handleTouchStart:", err);
-        // Reset states bij error voor de zekerheid
-        isDraggingShip1 = false; touchOnShip1 = false; touchIdentifier1 = null;
+        isDraggingShip1 = false; touchOnShip1 = false; touchIdentifier1 = null; isTouchFiringActive = false;
         isDraggingShip2 = false; touchOnShip2 = false; touchIdentifier2 = null;
     }
 }
 
 function handleTouchMove(event) {
-    console.log("[TOUCH_DEBUG] TouchMove fired. Touches:", event.touches.length, "Changed:", event.changedTouches.length); // DIAGNOSTIC LOG
+    console.log("[TOUCH_DEBUG] TouchMove fired. Changed touches:", event.changedTouches.length);
     try {
         event.preventDefault();
         if (!isInGameState || isPaused || !isManualControl || !gameCanvas || gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage || (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage))) {
-            // console.log("[TOUCH_DEBUG] TouchMove ignored due to game state."); // Kan te veel loggen
             return;
         }
 
@@ -1100,53 +863,50 @@ function handleTouchMove(event) {
         for (let i = 0; i < touches.length; i++) {
             const touch = touches[i];
             const { x: touchX, y: touchY } = getTouchCanvasCoordinates(touch);
-            // console.log(`[TOUCH_DEBUG] TouchMove - Touch ID: ${touch.identifier}, Coords: (${touchX.toFixed(1)}, ${touchY.toFixed(1)})`); // Kan te veel loggen
+
+            let currentShipObject = null;
+            let isDual = false;
+            let playerShooterId = null;
+            let initialXToUse = 0;
+            let isCurrentShipP1 = false;
+            let touchOnShipState = false;
+            let lastFireTimeState = 0;
+            let setLastFireTimeFunc = null;
 
             if (touch.identifier === touchIdentifier1 && isDraggingShip1) {
-                // console.log("[TOUCH_DEBUG] TouchMove - Dragging Ship 1"); // DIAGNOSTIC LOG
-                let currentShipObject = null;
-                let isDual = false;
-                let playerShooterId = 'player1';
-
+                isCurrentShipP1 = true;
+                touchOnShipState = touchOnShip1;
+                lastFireTimeState = touchLastFireTimeP1;
+                setLastFireTimeFunc = (time) => touchLastFireTimeP1 = time;
+                initialXToUse = draggedShipInitialX1;
                 if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                    currentShipObject = ship1;
-                    isDual = player1IsDualShipActive;
+                    currentShipObject = ship1; isDual = player1IsDualShipActive; playerShooterId = 'player1';
                 } else {
-                    currentShipObject = ship;
-                    isDual = isDualShipActive;
+                    currentShipObject = ship; isDual = isDualShipActive;
                     playerShooterId = (isTwoPlayerMode && selectedGameMode === 'normal') ? `player${currentPlayer}` : 'player1';
                 }
-
-                if (currentShipObject) {
-                    const deltaX = touchX - touchStartX;
-                    currentShipObject.x = draggedShipInitialX1 + deltaX;
-                    const effectiveWidth = currentShipObject.width + (isDual ? DUAL_SHIP_OFFSET_X : 0);
-                    currentShipObject.x = Math.max(0, Math.min(gameCanvas.width - effectiveWidth, currentShipObject.x));
-                    currentShipObject.targetX = currentShipObject.x;
-
-                    if (selectedFiringMode === 'rapid' && touchOnShip1 && now - touchLastFireTimeP1 > SHOOT_COOLDOWN) {
-                         if (typeof firePlayerBullet === 'function') firePlayerBullet(playerShooterId);
-                         touchLastFireTimeP1 = now;
-                    }
-                }
             } else if (touch.identifier === touchIdentifier2 && isDraggingShip2 && isTwoPlayerMode && selectedGameMode === 'coop' && !isPlayerTwoAI) {
-                // console.log("[TOUCH_DEBUG] TouchMove - Dragging Ship 2"); // DIAGNOSTIC LOG
-                if (ship2) {
-                    // touchStartX moet hier idealiter specifiek zijn voor touchIdentifier2
-                    // Als we 1 globale touchStartX gebruiken, kan dit problemen geven.
-                    // Echter, draggedShipInitialX2 is correct voor ship2.
-                    // Aanname: touchStartX is de start X van de *actieve* drag.
-                    // Dit werkt prima als maar 1 vinger sleept.
-                    const deltaX = touchX - touchStartX;
-                    ship2.x = draggedShipInitialX2 + deltaX;
-                    const effectiveWidth = ship2.width + (player2IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
-                    ship2.x = Math.max(0, Math.min(gameCanvas.width - effectiveWidth, ship2.x));
-                    ship2.targetX = ship2.x;
+                isCurrentShipP1 = false;
+                touchOnShipState = touchOnShip2;
+                lastFireTimeState = touchLastFireTimeP2;
+                setLastFireTimeFunc = (time) => touchLastFireTimeP2 = time;
+                initialXToUse = draggedShipInitialX2;
+                currentShipObject = ship2; isDual = player2IsDualShipActive; playerShooterId = 'player2';
+            }
 
-                    if (selectedFiringMode === 'rapid' && touchOnShip2 && now - touchLastFireTimeP2 > SHOOT_COOLDOWN) {
-                         if (typeof firePlayerBullet === 'function') firePlayerBullet('player2');
-                         touchLastFireTimeP2 = now;
-                    }
+            if (currentShipObject) {
+                const deltaX = touchX - touchStartX; // touchStartX is van de *huidige* drag
+                currentShipObject.x = initialXToUse + deltaX;
+                const effectiveWidth = currentShipObject.width + (isDual ? DUAL_SHIP_OFFSET_X : 0);
+                currentShipObject.x = Math.max(0, Math.min(gameCanvas.width - effectiveWidth, currentShipObject.x));
+                currentShipObject.targetX = currentShipObject.x;
+
+                if (selectedFiringMode === 'rapid' && touchOnShipState && isTouchFiringActive && now - lastFireTimeState > SHOOT_COOLDOWN) {
+                     if (typeof firePlayerBullet === 'function') {
+                        if(firePlayerBullet(playerShooterId)) {
+                            setLastFireTimeFunc(now);
+                        }
+                     }
                 }
             }
         }
@@ -1156,37 +916,43 @@ function handleTouchMove(event) {
 }
 
 function handleTouchEndOrCancel(event) {
-    console.log("[TOUCH_DEBUG] TouchEndOrCancel fired. Touches:", event.touches.length, "Changed:", event.changedTouches.length, "Type:", event.type); // DIAGNOSTIC LOG
+    console.log("[TOUCH_DEBUG] TouchEndOrCancel fired. Changed touches:", event.changedTouches.length, "Type:", event.type);
     try {
         event.preventDefault();
-        if (!isInGameState || !isManualControl || !gameCanvas) {
-            if (touchIdentifier1 !== null) { isDraggingShip1 = false; touchOnShip1 = false; touchIdentifier1 = null; if (selectedFiringMode === 'single') p1JustFiredSingle = false;}
-            if (touchIdentifier2 !== null) { isDraggingShip2 = false; touchOnShip2 = false; touchIdentifier2 = null; if (selectedFiringMode === 'single') p2JustFiredSingle = false;}
-            return;
-        }
+        // Geen restrictieve game state check hier, zodat identifiers altijd gereset worden.
+        // De acties (zoals vlaggen resetten) zijn veilig.
 
         const touches = event.changedTouches;
         for (let i = 0; i < touches.length; i++) {
             const touch = touches[i];
-            console.log(`[TOUCH_DEBUG] TouchEnd - Touch ID: ${touch.identifier}`); // DIAGNOSTIC LOG
+            console.log(`[TOUCH_DEBUG] TouchEnd - Processing Touch ID: ${touch.identifier}`);
 
             if (touch.identifier === touchIdentifier1) {
-                console.log("[TOUCH_DEBUG] TouchEnd - Releasing Ship 1 drag/touch."); // DIAGNOSTIC LOG
+                console.log("[TOUCH_DEBUG] TouchEnd - Releasing Ship 1 (or main ship) drag/touch.");
                 isDraggingShip1 = false;
-                touchOnShip1 = false;
+                touchOnShip1 = false; // Belangrijk voor rapid fire stop
                 touchIdentifier1 = null;
+                isTouchFiringActive = false; // Stop touch vuren
                 if (selectedFiringMode === 'single') {
                     if (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 1) p1JustFiredSingle = false;
                     else if (!isTwoPlayerMode || (isTwoPlayerMode && selectedGameMode === 'coop')) p1JustFiredSingle = false;
+                    else if (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 2 && !isPlayerTwoAI) {
+                        // Als P2 (human) het hoofd schip (ship) bestuurde, reset zijn single fire flag.
+                         p2JustFiredSingle = false;
+                    }
+                    touchJustFiredSingle = false; // Algemene touch single fire flag
                 }
             } else if (touch.identifier === touchIdentifier2) {
-                console.log("[TOUCH_DEBUG] TouchEnd - Releasing Ship 2 drag/touch."); // DIAGNOSTIC LOG
+                console.log("[TOUCH_DEBUG] TouchEnd - Releasing Ship 2 drag/touch.");
                 isDraggingShip2 = false;
                 touchOnShip2 = false;
                 touchIdentifier2 = null;
+                isTouchFiringActive = false; // Stop touch vuren (als P2 een aparte vlag had, hier resetten)
                  if (selectedFiringMode === 'single') {
-                    if (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 2 && !isPlayerTwoAI) p2JustFiredSingle = false;
-                    else if (isTwoPlayerMode && selectedGameMode === 'coop' && !isPlayerTwoAI) p2JustFiredSingle = false;
+                    if (isTwoPlayerMode && selectedGameMode === 'coop' && !isPlayerTwoAI) {
+                        p2JustFiredSingle = false;
+                    }
+                    touchJustFiredSingle = false;
                 }
             }
         }
@@ -1194,7 +960,8 @@ function handleTouchEndOrCancel(event) {
         console.error("[TOUCH_ERROR] Error in handleTouchEndOrCancel:", err);
         isDraggingShip1 = false; touchOnShip1 = false; touchIdentifier1 = null;
         isDraggingShip2 = false; touchOnShip2 = false; touchIdentifier2 = null;
-        p1JustFiredSingle = false; p2JustFiredSingle = false;
+        p1JustFiredSingle = false; p2JustFiredSingle = false; touchJustFiredSingle = false;
+        isTouchFiringActive = false;
     }
 }
 // --- EINDE Touch Event Handlers ---
@@ -1216,24 +983,18 @@ function saveHighScore() {
 function loadHighScore() { /* ... ongewijzigd ... */ try { highScore = 20000; } catch (e) { console.error("Error in loadHighScore:", e); highScore = 20000; } }
 
 // --- Pauze Functies ---
-const soundsToPauseOnSystemPause = Object.keys(soundPaths); // Alle geluiden in soundPaths
-let soundPausedStates = {}; // Wordt niet meer gebruikt op dezelfde manier met Web Audio
-
 function pauseAllSounds() {
-    if (audioContext && audioContext.state === 'running') {
-        audioContext.suspend().then(() => console.log("AudioContext suspended for pause.")).catch(e => console.error("Error suspending AudioContext:", e));
+    if (audioCtx && audioCtx.state === 'running') {
+        audioCtx.suspend().catch(e => console.warn("Error suspending AudioContext for pause:", e));
     }
-    stopSound('menuMusicSound'); // Specifiek menu muziek stoppen, niet alleen pauseren
+    stopSound(menuMusicSound);
 }
 
 function resumeAllSounds() {
-    if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume().then(() => console.log("AudioContext resumed from pause.")).catch(e => console.error("Error resuming AudioContext:", e));
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(e => console.warn("Error resuming AudioContext from pause:", e));
     }
-    if (!isInGameState && audioContext) { // Als we terug in het menu zijn, speel menu muziek
-        playSound('menuMusicSound', true, 0.2);
-    }
-    // Andere geluiden worden hervat wanneer ze opnieuw worden getriggerd door playSound
+    if (!isInGameState && audioCtx) { playSound(menuMusicSound, true); }
 }
 
 
@@ -1243,32 +1004,21 @@ function togglePause() {
     const isAnyGameOverMessageShowing = isShowingPlayerGameOverMessage || (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage));
 
     if (isInGameState && gameOverSequenceStartTime === 0 && !isAnyGameOverMessageShowing) {
-        if (!isManualControl) {
-            canPause = true;
-        } else if (isTwoPlayerMode && selectedGameMode === 'coop') {
-            canPause = (player1Lives > 0 && ship1 && !isPlayer1ShipCaptured && !player1NeedsRespawnAfterCapture) ||
-                       (player2Lives > 0 && ship2 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture);
-        } else if (isTwoPlayerMode && selectedGameMode === 'normal' && isPlayerTwoAI && currentPlayer === 2) {
-             canPause = false;
-        } else {
-            canPause = playerLives > 0 && ship && !isShipCaptured;
-        }
+        if (!isManualControl) { canPause = true; }
+        else if (isTwoPlayerMode && selectedGameMode === 'coop') { canPause = (player1Lives > 0 && ship1 && !isPlayer1ShipCaptured && !player1NeedsRespawnAfterCapture) || (player2Lives > 0 && ship2 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture); }
+        else if (isTwoPlayerMode && selectedGameMode === 'normal' && isPlayerTwoAI && currentPlayer === 2) { canPause = false; }
+        else { canPause = playerLives > 0 && ship && !isShipCaptured; }
     }
-
     if (!canPause) return;
 
     isPaused = !isPaused;
     if (isPaused) {
         pauseAllSounds();
-        clearTimeout(mouseIdleTimerId);
-        mouseIdleTimerId = null;
+        clearTimeout(mouseIdleTimerId); mouseIdleTimerId = null; if (gameCanvas) gameCanvas.style.cursor = 'default';
     } else {
         resumeAllSounds();
-        clearTimeout(mouseIdleTimerId);
-        mouseIdleTimerId = setTimeout(hideCursor, 2000);
-         if (audioContext && audioContext.state === 'suspended') { // Zorg ervoor dat context hervat wordt na pauze, als die nog suspended was
-            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed explicitly after unpause.");});
-        }
+        clearTimeout(mouseIdleTimerId); mouseIdleTimerId = setTimeout(hideCursor, 2000);
+        if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume().catch(e => console.warn("AudioContext resume failed after unpause:", e));}
     }
 }
 
@@ -1284,23 +1034,33 @@ function triggerFinalGameOverSequence() {
         isPaused = false; isShowingDemoText = false; isShowingIntro = false; isWaveTransitioning = false; showCsHitsMessage = false; showExtraLifeMessage = false; showPerfectMessage = false; showCSClearMessage = false; showCsHitsForClearMessage = false; showCsScoreForClearMessage = false; showReadyMessage = false; showCsBonusScoreMessage = false; isShowingPlayerGameOverMessage = false; isEntrancePhaseActive = false; isCsCompletionDelayActive = false; csCompletionDelayStartTime = 0; csCompletionResultIsPerfect = false; csIntroSoundPlayed = false;
         if (isManualControl) { saveHighScore(); }
 
-        const soundsToStopOnFinalGameOver = Object.keys(soundPaths).filter(id => id !== 'gameOverSound' && id !== 'resultsMusicSound');
-        soundsToStopOnFinalGameOver.forEach(soundId => stopSound(soundId));
-        isGridSoundPlaying = false;
+        stopSound(gridBackgroundSound); stopSound(menuMusicSound); stopSound(resultsMusicSound);
+        stopSound(captureSound); stopSound(entranceSound); isGridSoundPlaying = false;
 
         const now = Date.now();
-        playSound('gameOverSound', false, 0.4);
+        playSound(gameOverSound); // Speel Game Over SFX (nu geen aparte check voor 2P)
 
-        if ((isTwoPlayerMode && selectedGameMode === 'normal' && player1Lives <= 0 && player2Lives <= 0) ||
-            (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && player1Lives <= 0 && player2Lives <= 0) ) {
-            gameOverSequenceStartTime = now - GAME_OVER_DURATION;
+        // Ga direct naar results in 2P modes als beide spelers 0 levens hebben.
+        // Anders start de normale Game Over timer.
+        let skipGameOverText = false;
+        if (isTwoPlayerMode) {
+            if ((selectedGameMode === 'normal' && player1Lives <= 0 && player2Lives <= 0) ||
+                (selectedGameMode === 'coop' && player1Lives <= 0 && player2Lives <= 0)) {
+                skipGameOverText = true;
+            }
+        }
+
+        if (skipGameOverText) {
+            gameOverSequenceStartTime = now - GAME_OVER_DURATION; // Forceer direct naar results
+            playSound(resultsMusicSound, true);
+            isShowingResultsScreen = true;
         } else {
             gameOverSequenceStartTime = now;
         }
 
         bullets = []; enemyBullets = []; explosions = []; fallingShips = []; isDualShipActive = false;
         player1IsDualShipActive = false; player2IsDualShipActive = false;
-        isShowingResultsScreen = false;
+        if (!skipGameOverText) isShowingResultsScreen = false; // Zorg dat results niet direct toont als we GO tekst willen
         previousButtonStates = []; previousGameButtonStates = []; previousDemoButtonStates = []; previousGameButtonStatesP2 = [];
     }
 }
