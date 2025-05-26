@@ -2274,8 +2274,20 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     const shipTopY = currentShip.y;
     const livesOfThisAIShip = (shipIdentifier === 'p1') ? player1Lives : ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') ? player2Lives : 0) ;
 
-    let laneCenterX = gameCanvasWidth / 2;
-    if (shipIdentifier === 'p1') {
+    let laneCenterX = gameCanvasWidth / 2; // Default center
+
+    // --- NIEUWE LOGICA: Centreren als enige overlevende AI in COOP DEMO tijdens INTRO ---
+    // isShowingIntro wordt gebruikt als proxy voor "tijdens een introductie sequentie"
+    const isCoopDemoAndIntroActive = isCoopAIDemoActive && (isShowingIntro || isShowingCoopPlayersReady);
+    const isSingleSurvivorInCoopDemo = isCoopAIDemoActive &&
+                                       ((shipIdentifier === 'p1' && player1Lives > 0 && player2Lives <= 0) ||
+                                        ((shipIdentifier === 'p2' || shipIdentifier === 'ai_p2') && player2Lives > 0 && player1Lives <= 0));
+
+    if (isCoopDemoAndIntroActive && isSingleSurvivorInCoopDemo) {
+        laneCenterX = gameCanvasWidth / 2; // Forceer naar het midden van het scherm
+    }
+    // --- EINDE NIEUWE LOGICA ---
+    else if (shipIdentifier === 'p1') {
         laneCenterX = gameCanvasWidth * 0.25 + Math.sin(currentTime / (AI_WIGGLE_PERIOD * 1.1)) * (AI_WIGGLE_AMPLITUDE * 0.8);
     } else if (shipIdentifier === 'p2' || shipIdentifier === 'ai_p2') {
         laneCenterX = gameCanvasWidth * 0.75 + Math.cos(currentTime / (AI_WIGGLE_PERIOD * 0.9)) * (AI_WIGGLE_AMPLITUDE * 0.8);
@@ -2283,7 +2295,14 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     let targetCenterShipX = laneCenterX - (effectiveShipWidth / 2);
 
     if (isCurrentShipCompletelyBlocked || isThisShipCaptured || isThisShipWaitingForRespawn || (shipIdentifier === 'p1' && player1NeedsRespawnAfterCapture) || ((shipIdentifier === 'p2' || shipIdentifier === 'ai_p2') && player2NeedsRespawnAfterCapture) ) {
-        desiredTargetX = targetCenterShipX;
+        // --- AANGEPAST: Als het Coop Demo is, enige overlevende, en geblokkeerd (bijv. door intro), ga naar berekende targetCenterShipX ---
+        if (isCoopDemoAndIntroActive && isSingleSurvivorInCoopDemo) {
+             desiredTargetX = targetCenterShipX; // <<< Dit was al correct, maar verduidelijking.
+        }
+        // --- EINDE AANPASSING ---
+        else {
+            desiredTargetX = targetCenterShipX; // Fallback naar lane center alsnog
+        }
         if (isThisShipCaptured || isThisShipWaitingForRespawn || (shipIdentifier === 'p1' && player1NeedsRespawnAfterCapture) || ((shipIdentifier === 'p2' || shipIdentifier === 'ai_p2') && player2NeedsRespawnAfterCapture) ) {
              desiredTargetX = currentShip.x;
         }
@@ -2294,30 +2313,26 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     const otherPlayerIsActuallyCaptured = (otherPlayerId === 'p1' && isPlayer1ShipCaptured) || (otherPlayerId === 'p2' && isPlayer2ShipCaptured);
     const otherPlayerIsShowingGameOver = (otherPlayerId === 'p1' && isPlayer1ShowingGameOverMessage) || (otherPlayerId === 'p2' && isPlayer2ShowingGameOverMessage);
     let bossHoldingPartner = null;
-    let allowTargetingCapturedPartnerBoss = true; // Standaard toegestaan
+    let allowTargetingCapturedPartnerBoss = true; 
 
-    // Reddingslogica alleen voor AI (COOP Demo en 1P vs AI COOP)
     if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
         if (otherPlayerIsActuallyCaptured && !otherPlayerIsShowingGameOver && capturedBossIdWithMessage) {
             const partnerCaptureTime = (otherPlayerId === 'p1') ? coopPartner1CapturedTime : coopPartner2CapturedTime;
-            // Als de partner gevangen is EN minder dan 10 seconden geleden, NIET targeten.
             if (partnerCaptureTime > 0 && (currentTime - partnerCaptureTime < COOP_AI_SAVE_PARTNER_DELAY_MS)) {
                 allowTargetingCapturedPartnerBoss = false;
             }
-            // Vind de boss, ongeacht of we hem mogen targeten, zodat we hem later kunnen negeren.
             bossHoldingPartner = gameEnemies.find(e => e.id === capturedBossIdWithMessage && e.type === ENEMY3_TYPE && e.hasCapturedShip);
         }
     }
 
 
-    // Als de partner-reddende boss getarget mag worden
     if (bossHoldingPartner && !isShipDual && allowTargetingCapturedPartnerBoss) {
         isTargetingCapturedShipBoss = true;
         targetEnemyForAI = bossHoldingPartner;
         const bossCenterX = bossHoldingPartner.x + bossHoldingPartner.width / 2;
         desiredTargetX = bossCenterX - effectiveShipWidth / 2;
         shouldTryShoot = true;
-        isDodgingThreat = false; // Ontwijken wordt hieronder afgehandeld
+        isDodgingThreat = false; 
         if (!isShipInvincible) {
             let threateningBulletsNearBossTarget = [];
             const bulletLookaheadSave = FINAL_DODGE_LOOKAHEAD * 0.4;
@@ -2335,14 +2350,12 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                 isDodgingThreat = true;
                 const dodgeDirection = (currentSmoothedX < gameCanvasWidth / 2) ? -1 : 1;
                 desiredTargetX = currentSmoothedX + dodgeDirection * (effectiveShipWidth * 0.6);
-                shouldTryShoot = false; // Niet schieten tijdens ontwijken
+                shouldTryShoot = false; 
             }
         }
         desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
         return { desiredTargetX, shouldTryShoot, targetEnemyForAI };
     }
-
-    // Als we hier zijn, is het OF geen partner-reddingsscenario, OF we mogen de partner-reddende boss (nog) niet targeten.
 
     if (!isShipInvincible) {
         let threateningBullets = [];
@@ -2384,7 +2397,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
             const enemyCollisionBuffer = AI_COLLISION_BUFFER * ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.0 : 0.8);
             for (const enemy of gameEnemies) {
                 if (!enemy) continue;
-                // Als we de partner-reddende boss NIET mogen targeten, en dit is hem, negeer voor botsingscheck.
                 if (!allowTargetingCapturedPartnerBoss && bossHoldingPartner && enemy.id === bossHoldingPartner.id) {
                     continue;
                 }
@@ -2438,7 +2450,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         }
     }
 
-    if (!isDodgingThreat && !isMovingToCaptureBeam && !isShipDual) { // isTargetingCapturedShipBoss check hier verwijderd, omdat die boven al return{ } doet
+    if (!isDodgingThreat && !isMovingToCaptureBeam && !isShipDual) { 
         const ownFallingShip = gameFallingShips.find(fs => fs.targetPlayerId === shipIdentifier && !fs.landed);
         if (ownFallingShip) {
             isMovingForOwnFallingShip = true;
@@ -2448,9 +2460,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         }
     }
 
-    // Als we niet ontwijken, niet naar capture beam gaan, niet voor eigen schip gaan,
-    // EN we targeten niet al de partner-reddende boss (omdat die sectie al een return heeft),
-    // zoek dan een normaal doelwit.
     if (!isDodgingThreat && !isMovingToCaptureBeam && !isMovingForOwnFallingShip && !isTargetingCapturedShipBoss) {
         let bestTargetScore = -Infinity;
         let localShouldTryShoot = false;
@@ -2459,7 +2468,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         for (const enemy of gameEnemies) {
             if (!enemy) continue;
 
-            // <<<< TOEGEVOEGD: Als de AI de partner-vasthoudende boss (nog) niet mag targeten, sla deze vijand dan over.
             if (!allowTargetingCapturedPartnerBoss && bossHoldingPartner && enemy.id === bossHoldingPartner.id) {
                 continue;
             }
@@ -2563,8 +2571,8 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                 const enemyCenterX = targetEnemyForAI.x + targetEnemyForAI.width / 2;
                 desiredTargetX = enemyCenterX - effectiveShipWidth / 2;
             }
-        } else { // Geen vijand gevonden (of alle vijanden zijn de "niet-targetbare" partner-boss)
-            desiredTargetX = targetCenterShipX; // Ga naar neutrale positie
+        } else { 
+            desiredTargetX = targetCenterShipX; 
             shouldTryShoot = false;
         }
     }
@@ -3490,40 +3498,68 @@ function runSingleGameUpdate(timestamp) {
         if (isPaused) { renderGame(); return; }
 
         const isShowingCSBonusScreen = showCsBonusScoreMessage || showPerfectMessage;
-        if (isShowingCSBonusScreen && gameCanvas?.width > 0) {
-            if (isTwoPlayerMode && selectedGameMode === 'coop') { // Human COOP, 1P vs AI COOP, COOP AI Demo
+        // --- NIEUWE LOGICA: Centreren van overgebleven AI schip in COOP Demo tijdens CS bonus ---
+        if (isCoopAIDemoActive && isShowingCSBonusScreen && gameCanvas?.width > 0) {
+            const p1IsOnlySurvivor = ship1 && player1Lives > 0 && player2Lives <= 0;
+            const p2IsOnlySurvivor = ship2 && player2Lives > 0 && player1Lives <= 0;
+
+            if (p1IsOnlySurvivor) {
+                const p1EffectiveWidth = player1IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                const centeredX1 = Math.round(gameCanvas.width / 2 - p1EffectiveWidth / 2);
+                ship1.x = centeredX1; ship1.targetX = centeredX1; smoothedShip1X = centeredX1;
+                if (ship2) { ship2.targetX = ship2.x; smoothedShip2X = ship2.x; } // Zorg dat P2 niet beweegt
+            } else if (p2IsOnlySurvivor) {
+                const p2EffectiveWidth = player2IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                const centeredX2 = Math.round(gameCanvas.width / 2 - p2EffectiveWidth / 2);
+                ship2.x = centeredX2; ship2.targetX = centeredX2; smoothedShip2X = centeredX2;
+                if (ship1) { ship1.targetX = ship1.x; smoothedShip1X = ship1.x; } // Zorg dat P1 niet beweegt
+            } else if (ship1 && player1Lives > 0 && ship2 && player2Lives > 0) {
+                // Beide leven, standaard posities (al afgehandeld in resetWave/ elders voor CS)
+                // Maar hier specifiek om te zorgen dat ze niet driften als de AI ze probeert te besturen.
+                const p1InitialX = gameCanvas.width / 2 - gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2);
+                ship1.x = p1InitialX; ship1.targetX = p1InitialX; smoothedShip1X = p1InitialX;
+                const p2InitialX = gameCanvas.width / 2 + gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2);
+                ship2.x = p2InitialX; ship2.targetX = p2InitialX; smoothedShip2X = p2InitialX;
+            }
+        }
+        // --- EINDE NIEUWE LOGICA ---
+        else if (isShowingCSBonusScreen && gameCanvas?.width > 0) { // Niet-COOP-Demo AI centreren
+            if (isTwoPlayerMode && selectedGameMode === 'coop') { // Human COOP, 1P vs AI COOP
                 const p1Active = ship1 && player1Lives > 0;
                 const p2Active = ship2 && player2Lives > 0;
 
                 if (p1Active && p2Active) {
-                    if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                    if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { // 1P vs AI COOP
                         const p1InitialX = gameCanvas.width / 2 - gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2);
-                        if(ship1) { ship1.x = p1InitialX; ship1.targetX = p1InitialX; smoothedShip1X = p1InitialX; }
+                        // P1 (mens) blijft waar die is.
                         const p2InitialX = gameCanvas.width / 2 + gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2);
                         if(ship2) { ship2.x = p2InitialX; ship2.targetX = p2InitialX; smoothedShip2X = p2InitialX; }
                     }
-                } else if (p1Active && ship1) {
+                    // Voor Human COOP, geen automatische centrering hier.
+                } else if (p1Active && ship1) { // Alleen P1 over
                     const p1EffectiveWidth = player1IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
                     const centeredX1 = Math.round(gameCanvas.width / 2 - p1EffectiveWidth / 2);
                     ship1.x = centeredX1; ship1.targetX = centeredX1;
-                    if(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) smoothedShip1X = centeredX1;
-                    if(ship2 && (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'))) { ship2.targetX = ship2.x; smoothedShip2X = ship2.x; }
-                } else if (p2Active && ship2) {
+                    // In 1P vs AI COOP, smoothedShip1X is niet relevant als P1 mens is.
+                    if(ship2 && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { ship2.targetX = ship2.x; smoothedShip2X = ship2.x; }
+                } else if (p2Active && ship2) { // Alleen P2 over
                     const p2EffectiveWidth = player2IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
                     const centeredX2 = Math.round(gameCanvas.width / 2 - p2EffectiveWidth / 2);
                     ship2.x = centeredX2; ship2.targetX = centeredX2;
-                    if(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) smoothedShip2X = centeredX2;
-                    if(ship1 && (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'))) { ship1.targetX = ship1.x; smoothedShip1X = ship1.x; }
+                    if(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') smoothedShip2X = centeredX2;
+                    if(ship1 && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { ship1.targetX = ship1.x; /* smoothedShip1X is not human controlled */ }
                 }
             } else if ((!isManualControl || (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2)) && ship) { // 1P AI Demo, AI P2 in Normal
                  const effectiveShipWidthDemo = isDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
                 ship.x = Math.round(gameCanvas.width / 2 - effectiveShipWidthDemo / 2); ship.targetX = ship.x;
+                 if(isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) smoothedShipX = ship.x;
+                 else if (!isManualControl) smoothedShipX = ship.x;
             }
         }
 
 
         let coopLevel1IntroIsCurrentlyActive = false;
-        if (selectedGameMode === 'coop' && level === 1 && coopPlayersReadyStartTime > 0) { // Geldt voor Human COOP, 1P vs AI COOP, COOP AI Demo
+        if (selectedGameMode === 'coop' && level === 1 && coopPlayersReadyStartTime > 0) { 
             coopLevel1IntroIsCurrentlyActive = true;
 
             if (isShowingCoopPlayersReady) {
@@ -3531,35 +3567,34 @@ function runSingleGameUpdate(timestamp) {
                 if (now >= coopPlayersReadyStartTime + 3000) {
                     isShowingCoopPlayersReady = false;
                     explosions = []; if (typeof updateExplosions === 'function') updateExplosions();
-                    // Ga naar de juiste intro stap (PLAYER 1 voor Human Coop, STAGE 1 voor AI Coop)
                     if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
-                        isShowingIntro = true; introStep = 2; introDisplayStartTime = now; // Direct STAGE 1
-                    } else { // Human COOP
-                        isShowingIntro = true; introStep = 1; introDisplayStartTime = now; // Eerst PLAYER 1
+                        isShowingIntro = true; introStep = 2; introDisplayStartTime = now; 
+                    } else { 
+                        isShowingIntro = true; introStep = 1; introDisplayStartTime = now; 
                     }
                 }
             } else if (isShowingIntro) {
                 if (now - introDisplayStartTime < 100) { explosions = []; if (typeof updateExplosions === 'function') updateExplosions(); }
                 let currentCoopIntroStepDuration = INTRO_DURATION_PER_STEP;
-                if (introStep === 1 && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) { // Kortere "PLAYER 1" voor Human COOP
+                if (introStep === 1 && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) { 
                     currentCoopIntroStepDuration = TWO_PLAYER_STAGE_INTRO_DURATION;
                 }
 
                 if (now >= introDisplayStartTime + currentCoopIntroStepDuration) {
                     if (introStep === 1 && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
-                        introStep = 2; introDisplayStartTime = now; // Ga naar "STAGE 1"
+                        introStep = 2; introDisplayStartTime = now; 
                         explosions = []; if (typeof updateExplosions === 'function') updateExplosions();
-                    } else { // Na "STAGE 1" (of als introStep al 2 was)
+                    } else { 
                         isShowingIntro = false; introStep = 0;
                         playerIntroSoundPlayed = false; stageIntroSoundPlayed = false; csIntroSoundPlayed = false;
                         explosions = []; if (typeof updateExplosions === 'function') updateExplosions();
                         coopLevel1IntroIsCurrentlyActive = false;
-                        coopPlayersReadyStartTime = 0; // Markeer Coop L1 intro als volledig klaar.
+                        coopPlayersReadyStartTime = 0; 
                     }
                 }
-            } else { // Geen van beide (CoopPlayersReady of ShowingIntro) is actief
+            } else { 
                 coopLevel1IntroIsCurrentlyActive = false;
-                coopPlayersReadyStartTime = 0; // Markeer Coop L1 intro als volledig klaar.
+                coopPlayersReadyStartTime = 0; 
             }
 
             if (isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) handlePlayerInput();
@@ -3572,7 +3607,6 @@ function runSingleGameUpdate(timestamp) {
         }
 
 
-        // Wave launch na COOP Level 1 intro (of direct als coopPlayersReadyStartTime al 0 was EN gameJustStarted nog true is)
         if (selectedGameMode === 'coop' && level === 1 && !gameJustStartedAndWaveLaunched && coopPlayersReadyStartTime === 0 && gameJustStarted) {
             if (isFullGridWave) startFullGridWave();
             else if (isChallengingStage) startChallengingStageSequence();
@@ -3589,38 +3623,23 @@ function runSingleGameUpdate(timestamp) {
                 isShowingPlayerGameOverMessage = false;
                 explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
                 const prevPlayerGameOver = playerWhoIsGameOver;
-                playerWhoIsGameOver = 0; // Reset voor de volgende keer
+                playerWhoIsGameOver = 0; 
 
                 if (nextActionAfterPlayerGameOver === 'switch_player') {
-                    // 'level' is nog steeds het level waarop prevPlayerGameOver eindigde.
-                    // switchPlayerTurn zal playerXMaxLevelReached voor prevPlayerGameOver updaten met dit 'level'.
-                    if (switchPlayerTurn()) { // true als wissel succesvol was (volgende speler heeft levens)
-                        // 'currentPlayer' is nu de volgende speler.
-                        // 'level' is nog steeds het level waarop de vorige speler was.
-
-                        // Als prevPlayerGameOver P2 was, en currentPlayer nu P1 is,
-                        // EN P1 dit level al eerder had voltooid (player1CompletedLevel === level),
-                        // DAN verhoog het globale level.
+                    if (switchPlayerTurn()) { 
                         if (prevPlayerGameOver === 2 && currentPlayer === 1 && player1CompletedLevel === level) {
-                           level++; // Verhoog het globale level
-                           player1CompletedLevel = -1; // Reset de vlag voor P1 voor het nieuwe level
-                           player1MaxLevelReached = Math.max(player1MaxLevelReached, level); // P1 bereikt nu officieel dit nieuwe level
-                           // player2MaxLevelReached is al correct ingesteld door switchPlayerTurn
+                           level++; 
+                           player1CompletedLevel = -1; 
+                           player1MaxLevelReached = Math.max(player1MaxLevelReached, level); 
                         }
-                        // Als prevPlayerGameOver P1 was, en currentPlayer nu P2 is,
-                        // dan blijft het globale 'level' hetzelfde. P2 start op het level waar P1 eindigde.
-                        // P1's `player1CompletedLevel` wordt NIET gezet, want P2 moet het eerst halen.
-                        // Als P2 het level haalt, wordt in de wave completion logic `level` verhoogd,
-                        // en dan wordt `player1CompletedLevel` -1 (omdat P1 het *nieuwe* level dan nog niet heeft gehaald).
-
-                        resetWaveInternal(); // Reset wave met het (mogelijk nieuwe) globale level
+                        resetWaveInternal(); 
                         gameJustStartedAndWaveLaunched = false; gameJustStarted = true;
-                    } else { // switchPlayerTurn was false (andere speler ook game over, of huidige speler gaat door)
+                    } else { 
                          triggerFinalGameOverSequence();
                     }
                 } else if (nextActionAfterPlayerGameOver === 'show_results') {
                     triggerFinalGameOverSequence();
-                } else { // Default naar final game over als nextAction onbekend is
+                } else { 
                     triggerFinalGameOverSequence();
                 }
                 renderGame(); return;
@@ -4244,66 +4263,53 @@ function runSingleGameUpdate(timestamp) {
                          resetDelay = POST_MESSAGE_RESET_DELAY;
                      }
 
-                    // <<< START GEWIJZIGD BLOK voor level progressie >>>
                     setTimeout(() => {
-                        let advanceLevelGlobally = false; // Moet het globale 'level' omhoog?
-                        let playerWhoseTurnEnded = 0; // Wie was er net aan de beurt?
+                        let advanceLevelGlobally = false; 
+                        let playerWhoseTurnEnded = 0; 
 
                         if (isTwoPlayerMode && selectedGameMode === 'normal') {
-                            playerWhoseTurnEnded = currentPlayer; // De speler die net de wave heeft voltooid
+                            playerWhoseTurnEnded = currentPlayer; 
 
-                            // Update MaxLevelReached voor de speler die de wave voltooide
                             if (playerWhoseTurnEnded === 1) {
                                 player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
-                            } else { // playerWhoseTurnEnded === 2
+                            } else { 
                                 player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
                             }
 
-                            const switchedOK = switchPlayerTurn(); // switchPlayerTurn update MaxLevelReached correct
+                            const switchedOK = switchPlayerTurn(); 
 
-                            if (switchedOK) { // Succesvol gewisseld naar de ANDERE speler
-                                // currentPlayer is nu de speler die gaat beginnen
-                                // Als P2 net klaar was (playerWhoseTurnEnded === 2) en P1 (nu currentPlayer)
-                                // dit level al gehaald had (player1CompletedLevel === level),
-                                // DAN gaan we naar het volgende globale level.
+                            if (switchedOK) { 
                                 if (playerWhoseTurnEnded === 2 && currentPlayer === 1 && player1CompletedLevel === level) {
                                     advanceLevelGlobally = true;
-                                    player1CompletedLevel = -1; // Reset voor het nieuwe level
+                                    player1CompletedLevel = -1; 
                                 } else if (playerWhoseTurnEnded === 1) {
-                                    // P1 was klaar, P2 is nu aan de beurt.
-                                    // Globale level blijft hetzelfde. Markeer dat P1 dit level heeft gehaald.
                                     player1CompletedLevel = level;
                                     advanceLevelGlobally = false;
                                 } else {
-                                     // P2 was klaar, P1 is aan de beurt maar had dit level nog NIET gehaald.
-                                     // Globale level blijft hetzelfde.
                                     advanceLevelGlobally = false;
                                 }
-                            } else { // Wissel niet gelukt (andere speler game over), huidige speler gaat door
-                                advanceLevelGlobally = true; // Level gaat altijd omhoog als dezelfde speler doorgaat
-                                player1CompletedLevel = -1; // Reset, want we gaan naar een nieuw level
+                            } else { 
+                                advanceLevelGlobally = true; 
+                                player1CompletedLevel = -1; 
                             }
-                        } else { // 1P Classic, COOP (Human, vs AI, of Demo)
+                        } else { 
                             advanceLevelGlobally = true;
-                            if (!isTwoPlayerMode) player1MaxLevelReached = Math.max(player1MaxLevelReached, level); // 1P Classic
-                            else if (isTwoPlayerMode && selectedGameMode === 'coop') { // COOP
+                            if (!isTwoPlayerMode) player1MaxLevelReached = Math.max(player1MaxLevelReached, level); 
+                            else if (isTwoPlayerMode && selectedGameMode === 'coop') { 
                                 if (player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
                                 if (player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
                             }
                         }
 
                         if (advanceLevelGlobally) {
-                            level++; // Verhoog het globale level
-                            // Update MaxLevelReached voor de speler die het *nieuwe* level start,
-                            // indien van toepassing en het een nieuw record is.
+                            level++; 
                             if (isTwoPlayerMode && selectedGameMode === 'coop') {
                                 if (player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
                                 if (player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
                             } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
-                                // currentPlayer is de speler die het *nieuwe* level start
                                 if (currentPlayer === 1 && player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
                                 else if (currentPlayer === 2 && player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
-                            } else { // 1P Classic
+                            } else { 
                                 if (playerLives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
                             }
                         }
@@ -4311,7 +4317,7 @@ function runSingleGameUpdate(timestamp) {
                         let canContinue = false;
                         if (isTwoPlayerMode && selectedGameMode === 'coop') canContinue = (player1Lives > 0 || player2Lives > 0);
                         else if (isTwoPlayerMode && selectedGameMode === 'normal') canContinue = (currentPlayer === 1 ? player1Lives : player2Lives) > 0;
-                        else canContinue = player1Lives > 0; // of playerLives voor 1P
+                        else canContinue = player1Lives > 0; 
 
                         if (canContinue) {
                             resetWaveInternal(); gameJustStartedAndWaveLaunched = false; gameJustStarted = true;
@@ -4319,7 +4325,6 @@ function runSingleGameUpdate(timestamp) {
                             triggerFinalGameOverSequence();
                         }
                     }, resetDelay);
-                    // <<< EINDE GEWIJZIGD BLOK voor level progressie >>>
                     renderGame(); return;
                 }
 
