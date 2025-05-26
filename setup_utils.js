@@ -917,29 +917,45 @@ function handleTouchEndGlobal(event) {
 
             // <<< GEWIJZIGD: Logica voor single-tap fire >>>
             if (selectedFiringMode === 'single' && !tapped2UpArea) {
-                // Cooldown check wordt nu binnen firePlayerBullet gedaan (voor taps)
-                let shooterPlayerIdForTap = 'player1'; // Default
-                if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                    // Voor CO-OP: tap op linkerhelft voor P1, rechterhelft voor P2 (als P2 human is)
-                    if (canvasTapX > gameCanvas.width / 2 && ship2 && player2Lives > 0 && !isPlayerTwoAI) {
-                        shooterPlayerIdForTap = 'player2';
-                    } else if (ship1 && player1Lives > 0) {
+                if (now - lastTapTime > SHOOT_COOLDOWN) { // Gebruik volledige cooldown
+                    let shooterPlayerIdForTap = 'player1';
+                    if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                        if (canvasTapX > gameCanvas.width / 2 && ship2 && player2Lives > 0 && !isPlayerTwoAI) { // Alleen voor human P2
+                            shooterPlayerIdForTap = 'player2';
+                        } else if (ship1 && player1Lives > 0) { // Default P1 als P2 niet kan/mag
+                            shooterPlayerIdForTap = 'player1';
+                        } else {
+                             shooterPlayerIdForTap = null; // Geen valide schieter
+                        }
+                    } else if (isTwoPlayerMode && selectedGameMode === 'normal'){
+                         shooterPlayerIdForTap = (currentPlayer === 1) ? 'player1' : ((!isPlayerTwoAI) ? 'player2' : null); // Alleen human P2
+                    } else if (!isTwoPlayerMode) { // 1P Classic
                         shooterPlayerIdForTap = 'player1';
-                    } else {
-                        shooterPlayerIdForTap = null; // Geen valide schieter
                     }
-                } else if (isTwoPlayerMode && selectedGameMode === 'normal'){
-                     shooterPlayerIdForTap = (currentPlayer === 1) ? 'player1' : ((!isPlayerTwoAI) ? 'player2' : null); // Alleen human P2
-                } else if (!isTwoPlayerMode) { // 1P Classic
-                    shooterPlayerIdForTap = 'player1';
-                }
 
-                if (shooterPlayerIdForTap) {
-                    // De fireInputWasDown en justFiredSingle vlaggen zijn niet nodig voor tap,
-                    // omdat firePlayerBullet(id, true) de cooldown direct afhandelt.
-                    if (typeof firePlayerBullet === 'function') {
-                        if (firePlayerBullet(shooterPlayerIdForTap, true)) { // <<<< GEWIJZIGD: true meegegeven voor isTapEvent
-                            lastTapTime = now; // Alleen updaten als succesvol geschoten
+
+                    if (shooterPlayerIdForTap) {
+                        let fireInputWasDownFlagToSetTrue = null;
+                        let justFiredSingleFlagToReset = null;
+
+                        if (shooterPlayerIdForTap === 'player1') {
+                            fireInputWasDownFlagToSetTrue = () => { p1FireInputWasDown = true; };
+                            justFiredSingleFlagToReset = () => { p1JustFiredSingle = false; };
+                        } else if (shooterPlayerIdForTap === 'player2') {
+                            fireInputWasDownFlagToSetTrue = () => { p2FireInputWasDown = true; };
+                            justFiredSingleFlagToReset = () => { p2JustFiredSingle = false; };
+                        }
+
+                        if (fireInputWasDownFlagToSetTrue && justFiredSingleFlagToReset) {
+                            fireInputWasDownFlagToSetTrue(); // Simuleer "key down"
+                            if (typeof firePlayerBullet === 'function') {
+                                if (firePlayerBullet(shooterPlayerIdForTap)) { // Alleen updaten als succesvol geschoten
+                                    lastTapTime = now;
+                                }
+                            }
+                            justFiredSingleFlagToReset(); // Simuleer "key up" voor justFiredSingle
+                            if (shooterPlayerIdForTap === 'player1') p1FireInputWasDown = false; // Reset "key down" status
+                            else if (shooterPlayerIdForTap === 'player2') p2FireInputWasDown = false;
                         }
                     }
                 }
