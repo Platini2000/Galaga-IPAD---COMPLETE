@@ -1622,6 +1622,7 @@ function firePlayerBullet(shooterId = null, isTapEvent = false) {
 
 /**
  * Handles player input (manual control), considering currentPlayer and input sources.
+ * <<< GEWIJZIGD: canvasTouchX correct gescoped voor touch rapid fire. >>>
  */
 function handlePlayerInput() {
      try {
@@ -1650,6 +1651,16 @@ function handlePlayerInput() {
              p1FireInputWasDown = false; p2FireInputWasDown = false;
              return;
          }
+
+        // <<< GEWIJZIGD: canvasTouchX hier declareren en conditioneel berekenen >>>
+        let canvasTouchX = 0; // Default waarde
+        if (isTouchActiveGame && gameCanvas && gameCanvas.width > 0) { // Bereken alleen als touch actief is
+            const rect = gameCanvas.getBoundingClientRect();
+            const scaleX = gameCanvas.width / rect.width;
+            canvasTouchX = (touchCurrentX - rect.left) * scaleX;
+        }
+        // <<< EINDE GEWIJZIGD >>>
+
 
         let ctrlP1Left = false, ctrlP1Right = false, ctrlP1ShootIsRaw = false;
         let ctrlP2Left = false, ctrlP2Right = false, ctrlP2ShootIsRaw = false;
@@ -1689,10 +1700,9 @@ function handlePlayerInput() {
              p2FireInputWasDown = false;
         }
 
-        // <<< GEWIJZIGD: pXJustFiredSingle resetten alleen voor keyboard/gamepad >>>
         if (selectedFiringMode === 'single') {
             if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                if (!isTouchActiveGame) { // Alleen als touch niet de primary input is
+                if (!isTouchActiveGame) { 
                     if (oldP1FireInputWasDown && !p1FireInputWasDown) p1JustFiredSingle = false;
                     if (!isPlayerTwoAI && oldP2FireInputWasDown && !p2FireInputWasDown) p2JustFiredSingle = false;
                 }
@@ -1701,13 +1711,12 @@ function handlePlayerInput() {
                     if (currentPlayer === 1 && oldP1FireInputWasDown && !p1FireInputWasDown) p1JustFiredSingle = false;
                     else if (currentPlayer === 2 && !isPlayerTwoAI && oldP2FireInputWasDown && !p2FireInputWasDown) p2JustFiredSingle = false;
                 }
-            } else { // 1P Classic
+            } else { 
                 if (!isTouchActiveGame) {
                     if (oldP1FireInputWasDown && !p1FireInputWasDown) p1JustFiredSingle = false;
                 }
             }
         }
-        // <<< EINDE GEWIJZIGD >>>
 
 
         leftPressed = false; rightPressed = false; shootPressed = false;
@@ -1715,15 +1724,13 @@ function handlePlayerInput() {
 
         let p1MovementFromTouch = false;
 
+        // <<< GEWIJZIGD: Gebruik de al berekende canvasTouchX >>>
         if (isTouchActiveGame && gameCanvas) {
-            const rect = gameCanvas.getBoundingClientRect();
-            const scaleX = gameCanvas.width / rect.width;
-            const canvasTouchX = (touchCurrentX - rect.left) * scaleX;
-
+            // De variabele canvasTouchX is nu al berekend aan het begin van de functie.
             if (isTwoPlayerMode && selectedGameMode === 'coop') {
                 if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) {
                     const p1EffectiveWidth = ship1.width + (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
-                    let targetShip1X = canvasTouchX - p1EffectiveWidth / 2;
+                    let targetShip1X = canvasTouchX - p1EffectiveWidth / 2; // Gebruik de gescopete canvasTouchX
                     targetShip1X = Math.max(0, Math.min(gameCanvas.width - p1EffectiveWidth, targetShip1X));
                     ship1.x = targetShip1X; ship1.targetX = targetShip1X;
                     p1MovementFromTouch = true;
@@ -1731,13 +1738,15 @@ function handlePlayerInput() {
             } else {
                 if (ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && gameOverSequenceStartTime === 0 && (!isPlayerTwoAI || (isPlayerTwoAI && currentPlayer === 1))) {
                     const effectiveWidth = ship.width + (isDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
-                    let targetShipX = canvasTouchX - effectiveWidth / 2;
+                    let targetShipX = canvasTouchX - effectiveWidth / 2; // Gebruik de gescopete canvasTouchX
                     targetShipX = Math.max(0, Math.min(gameCanvas.width - effectiveWidth, targetShipX));
                     ship.x = targetShipX; ship.targetX = targetShipX;
                     p1MovementFromTouch = true;
                 }
             }
         }
+        // <<< EINDE GEWIJZIGD >>>
+
 
         if (isTwoPlayerMode && selectedGameMode === 'coop') {
             if (!p1MovementFromTouch) {
@@ -1770,10 +1779,10 @@ function handlePlayerInput() {
         }
 
         // <<< GEWIJZIGD: Vuur input vlaggen instellen op basis van bron (touch vs keyboard/gamepad) >>>
+        // <<< GEWIJZIGD: Gebruik de al berekende canvasTouchX >>>
         if (isTwoPlayerMode && selectedGameMode === 'coop') {
             const p1CanShoot = ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture && !inCoopLevel1IntroStrict;
             if (p1CanShoot) {
-                // Voor P1, als touch actief is en rapid fire, dan is shootPressed true. Anders, gebruik keyboard/gamepad.
                 shootPressed = (isTouchActiveGame && selectedFiringMode === 'rapid' && (!isPlayerTwoAI || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP' && canvasTouchX <= gameCanvas.width / 2) ) ) || p1FireInputWasDown;
                 if (isShowingCaptureMessage && isPlayer1ShipCaptured) shootPressed = false;
             }
@@ -1781,7 +1790,6 @@ function handlePlayerInput() {
             if (!isPlayerTwoAI) { // Human P2
                 const p2CanShoot = ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture && !inCoopLevel1IntroStrict;
                 if (p2CanShoot) {
-                    // Voor P2, als touch actief is en rapid fire EN tap op rechterhelft, dan is p2ShootPressed true. Anders, gebruik keyboard/gamepad.
                     p2ShootPressed = (isTouchActiveGame && selectedFiringMode === 'rapid' && canvasTouchX > gameCanvas.width / 2) || p2FireInputWasDown;
                     if (isShowingCaptureMessage && isPlayer2ShipCaptured) p2ShootPressed = false;
                 }
@@ -1802,20 +1810,20 @@ function handlePlayerInput() {
         // <<< EINDE GEWIJZIGD >>>
 
 
-        if (isManualControl) { // AI vuurt via aiControl()
+        if (isManualControl) { 
             if (isTwoPlayerMode && selectedGameMode === 'coop') {
                 if (shootPressed) {
-                    firePlayerBullet('player1', false); // false voor isTapEvent (omdat dit keyboard/gamepad OF touch-hold is)
+                    firePlayerBullet('player1', false); 
                 }
                 if (!isPlayerTwoAI && p2ShootPressed) {
-                    firePlayerBullet('player2', false); // false voor isTapEvent
+                    firePlayerBullet('player2', false); 
                 }
             } else {
                 if (shootPressed) {
                     if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
                         // AI P2 schiet via aiControl
                     } else {
-                        firePlayerBullet(currentPlayer === 1 || !isTwoPlayerMode ? 'player1' : 'player2', false); // false voor isTapEvent
+                        firePlayerBullet(currentPlayer === 1 || !isTwoPlayerMode ? 'player1' : 'player2', false); 
                     }
                 }
             }
