@@ -2631,80 +2631,120 @@ function findAndDetachEnemy() {
 
 /**
  * Start direct een capture dive als aan voorwaarden voldaan is.
+ * Kan nu mogelijk twee bosses sturen in CO-OP/2P modes.
  */
 function triggerImmediateCaptureDive() {
     try {
-        let canAttemptCapture = false;
-        let targetPlayerShipForDive = null;
-
-        if (isTwoPlayerMode && selectedGameMode === 'coop') {
-            const p1CanBeTargeted = ship1 && player1Lives > 1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn;
-            const p2CanBeTargeted = ship2 && player2Lives > 1 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn;
-
-            // In CO-OP Demo, we staan een poging toe zolang `captureAttemptMadeThisLevel` false is,
-            // zelfs als de vorige geselecteerde boss sneuvelde.
-            // De vlag wordt pas true als een beam daadwerkelijk activeert.
-            if ((p1CanBeTargeted || p2CanBeTargeted) && !captureAttemptMadeThisLevel) {
-                canAttemptCapture = true;
-                if (p1CanBeTargeted && p2CanBeTargeted) {
-                    targetPlayerShipForDive = Math.random() < 0.5 ? ship1 : ship2;
-                } else if (p1CanBeTargeted) {
-                    targetPlayerShipForDive = ship1;
-                } else if (p2CanBeTargeted) {
-                    targetPlayerShipForDive = ship2;
-                }
-            }
-        } else {
-            if (playerLives > 1 && ship && !isShipCaptured && !isWaitingForRespawn && !captureAttemptMadeThisLevel) {
-                canAttemptCapture = true;
-                targetPlayerShipForDive = ship;
-            }
-        }
-
-        if (isChallengingStage || !canAttemptCapture || !targetPlayerShipForDive) {
+        if (isChallengingStage || captureAttemptMadeThisLevel) { // Globale vlag voorkomt meerdere *pogingen* per level
             return;
         }
+
+        let p1CanBeTargeted = false;
+        let p2CanBeTargeted = false;
+        let targetPlayerShip1 = null;
+        let targetPlayerShip2 = null;
+
+        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+            p1CanBeTargeted = ship1 && player1Lives > 1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !player1IsDualShipActive;
+            if (p1CanBeTargeted) targetPlayerShip1 = ship1;
+            p2CanBeTargeted = ship2 && player2Lives > 1 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !player2IsDualShipActive;
+            if (p2CanBeTargeted) targetPlayerShip2 = ship2;
+        } else if (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 1 && isPlayerTwoAI) { // P1 (mens) vs AI P2
+            p1CanBeTargeted = ship && playerLives > 1 && !isShipCaptured && !isWaitingForRespawn && !isDualShipActive;
+            if (p1CanBeTargeted) targetPlayerShip1 = ship;
+            // P2 (AI) kan ook een doelwit zijn als P1 er niet is, of als we besluiten dat de AI ook gevangen kan worden.
+            // Voor nu richten we ons op de menselijke speler.
+        } else if (!isTwoPlayerMode) { // 1P Classic
+            p1CanBeTargeted = playerLives > 1 && ship && !isShipCaptured && !isWaitingForRespawn && !isDualShipActive;
+            if (p1CanBeTargeted) targetPlayerShip1 = ship;
+        }
+        // TODO: Overweging voor 2P Human Normal - momenteel niet specifiek afgehandeld voor dubbele duik.
 
         const potentialCapturingBosses = enemies.filter(e =>
             e && e.state === 'in_grid' && e.type === ENEMY3_TYPE && !e.hasCapturedShip && !e.isPreparingForImmediateCapture
         );
 
-        if (potentialCapturingBosses.length > 0) {
-            const chosenBoss = potentialCapturingBosses[Math.floor(Math.random() * potentialCapturingBosses.length)];
-            const now = Date.now();
+        if (potentialCapturingBosses.length === 0) return;
 
-            // Markeer deze boss als geselecteerd, maar zet captureAttemptMadeThisLevel nog NIET.
-            chosenBoss.isPreparingForImmediateCapture = true;
+        const now = Date.now();
 
-            chosenBoss.justReturned = true; // Voorkom dat hij direct weer aanvalt als dit mislukt
-            const attackGroupIds = new Set([chosenBoss.id]);
+        // Functie om een enkele boss dive te initiëren
+        const initiateSingleBossDive = (boss, targetShip) => {
+            if (!boss || !targetShip) return;
+
+            boss.isPreparingForImmediateCapture = true; // Markeer voor deze specifieke duik
+            boss.justReturned = true;
+            const attackGroupIds = new Set([boss.id]);
             resetJustReturnedFlags(attackGroupIds);
 
-            const diveTargetXPos = targetPlayerShipForDive.x + targetPlayerShipForDive.width / 2;
-            const diveSide = (diveTargetXPos < gameCanvas.width / 2) ? 'right' : 'left';
+            const diveTargetPlayerXPos = targetShip.x + targetShip.width / 2;
+            const diveSide = (diveTargetPlayerXPos < gameCanvas.width / 2) ? 'right' : 'left'; // Boss komt van tegenovergestelde kant
+
             const targetX = diveSide === 'left'
                 ? gameCanvas.width * CAPTURE_DIVE_SIDE_MARGIN_FACTOR
                 : gameCanvas.width * (1 - CAPTURE_DIVE_SIDE_MARGIN_FACTOR) - BOSS_WIDTH;
             const targetY = gameCanvas.height * CAPTURE_DIVE_BOTTOM_HOVER_Y_FACTOR;
 
-            chosenBoss.state = 'preparing_capture';
-            chosenBoss.targetX = targetX;
-            chosenBoss.targetY = targetY;
-            chosenBoss.diveStartTime = now; // diveStartTime wordt gebruikt om de beam te timen in moveEntities
+            boss.state = 'preparing_capture';
+            boss.targetX = targetX; // Doelpositie om te hoveren
+            boss.targetY = targetY;
+            boss.diveStartTime = now; // Gebruikt om beam te timen
             playSound('bossGalagaDiveSound', false, 0.2);
-            const leaderId = chosenBoss.id;
+            const leaderId = boss.id;
 
-            chosenBoss.capturePrepareTimeout = setTimeout(() => {
+            boss.capturePrepareTimeout = setTimeout(() => {
                 const currentEnemy = enemies.find(e => e?.id === leaderId);
                 if (currentEnemy && currentEnemy.state === 'preparing_capture') {
                     currentEnemy.state = 'diving_to_capture_position';
                 }
                 if(currentEnemy) currentEnemy.capturePrepareTimeout = null;
-                const timeoutIndex = enemySpawnTimeouts.findIndex(tId => tId === chosenBoss.capturePrepareTimeout); // Moet capturePrepareTimeout van de boss zijn
+                const timeoutIndex = enemySpawnTimeouts.findIndex(tId => tId === boss.capturePrepareTimeout);
                 if (timeoutIndex > -1) enemySpawnTimeouts.splice(timeoutIndex, 1);
             }, 300);
-            enemySpawnTimeouts.push(chosenBoss.capturePrepareTimeout);
+            enemySpawnTimeouts.push(boss.capturePrepareTimeout);
+        };
+
+
+        if ((isCoopAIDemoActive || (isTwoPlayerMode && selectedGameMode === 'coop')) && p1CanBeTargeted && p2CanBeTargeted && potentialCapturingBosses.length >= 2) {
+            // Probeer twee bosses te sturen
+            let boss1 = potentialCapturingBosses.pop();
+            let boss2 = potentialCapturingBosses.pop();
+
+            if (boss1 && boss2 && targetPlayerShip1 && targetPlayerShip2) {
+                // Zorg ervoor dat ze naar verschillende kanten duiken en verschillende schepen targeten
+                // (of op zijn minst verschillende startposities hebben voor de duik)
+                const targetPlayer1X = targetPlayerShip1.x + targetPlayerShip1.width / 2;
+                const targetPlayer2X = targetPlayerShip2.x + targetPlayerShip2.width / 2;
+
+                // Wijs bosses toe op basis van hun huidige positie tov de spelers
+                // om kruisende duiken te minimaliseren (visueel duidelijker)
+                let bossForP1, bossForP2;
+                if (Math.abs(boss1.x - targetPlayer1X) + Math.abs(boss2.x - targetPlayer2X) <
+                    Math.abs(boss1.x - targetPlayer2X) + Math.abs(boss2.x - targetPlayer1X)) {
+                    bossForP1 = boss1;
+                    bossForP2 = boss2;
+                } else {
+                    bossForP1 = boss2;
+                    bossForP2 = boss1;
+                }
+
+                initiateSingleBossDive(bossForP1, targetPlayerShip1);
+                initiateSingleBossDive(bossForP2, targetPlayerShip2);
+                // captureAttemptMadeThisLevel wordt true zodra een beam activeert
+            } else if (boss1 && targetPlayerShip1) { // Fallback naar enkele duik als er niet genoeg bosses/targets zijn
+                initiateSingleBossDive(boss1, targetPlayerShip1);
+            } else if (boss1 && targetPlayerShip2) { // Of als P1 niet targetable was maar P2 wel
+                 initiateSingleBossDive(boss1, targetPlayerShip2);
+            }
+
+        } else if (p1CanBeTargeted && potentialCapturingBosses.length >= 1) {
+            // Standaard enkele duik voor P1 (of actieve speler in 1P modes)
+            initiateSingleBossDive(potentialCapturingBosses[0], targetPlayerShip1);
+        } else if (p2CanBeTargeted && potentialCapturingBosses.length >= 1 && (isTwoPlayerMode && selectedGameMode === 'coop')) {
+            // Enkele duik voor P2 als P1 niet beschikbaar was in CO-OP
+            initiateSingleBossDive(potentialCapturingBosses[0], targetPlayerShip2);
         }
+
     } catch (e) {
         console.error("Error in triggerImmediateCaptureDive:", e);
     }
@@ -2713,7 +2753,6 @@ function triggerImmediateCaptureDive() {
 
 /**
  * Resets justReturned flag for other grid enemies. (Nu met Set<string> of null)
- * <<< GEWIJZIGD: Parameter type aangepast in commentaar en logica >>>
  * @param {Set<string>|string|null} excludedIds - ID(s) to exclude. Set for multiple, string for single, null for none.
  */
 function resetJustReturnedFlags(excludedIds) {
