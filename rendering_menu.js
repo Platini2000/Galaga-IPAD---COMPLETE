@@ -429,7 +429,7 @@ function showMenuState() {
 }
 
 /** Start de AI demo modus. */
-async function startAIDemo() { // Gemaakt async vanwege baseStartGame
+function startAIDemo() {
     if (isInGameState) return;
     stopSound('menuMusicSound');
     isShowingScoreScreen = false;
@@ -451,12 +451,12 @@ async function startAIDemo() { // Gemaakt async vanwege baseStartGame
     wasLastGameAIDemo = true;
     coopStartSoundPlayedThisSession = false;
 
-    await baseStartGame(false); // Wacht op baseStartGame
+    baseStartGame(false);
     gameJustStarted = true;
 }
 
 /** Start de CO-OP AI demo modus. */
-async function startCoopAIDemo() { // Gemaakt async vanwege baseStartGame
+function startCoopAIDemo() {
     if (isInGameState) return;
     stopSound('menuMusicSound');
     isShowingScoreScreen = false;
@@ -473,11 +473,11 @@ async function startCoopAIDemo() { // Gemaakt async vanwege baseStartGame
     selectedGameMode = 'coop';
     isManualControl = false;
     isShowingDemoText = true;
-    isCoopAIDemoActive = true;
+    isCoopAIDemoActive = true; 
     aiPlayerActivelySeekingCaptureById = null;
     wasLastGameAIDemo = true;
 
-    await baseStartGame(false); // Wacht op baseStartGame
+    baseStartGame(false);
     gameJustStarted = true;
 }
 
@@ -493,7 +493,7 @@ function startGame1P() {
     isPlayerTwoAI = false;
 
     isTwoPlayerMode = false;
-    selectedGameMode = 'normal';
+    selectedGameMode = 'normal'; 
     isCoopAIDemoActive = false;
     aiPlayerActivelySeekingCaptureById = null;
     selectedButtonIndex = 0;
@@ -504,15 +504,15 @@ function startGame1P() {
 function startGame2P() {
     if (isInGameState) return;
     isPlayerSelectMode = false;
-    isGameModeSelectMode = true;
+    isGameModeSelectMode = true; 
     isFiringModeSelectMode = false;
     isOnePlayerGameTypeSelectMode = false;
     isOnePlayerVsAIGameTypeSelectMode = false;
     selectedOnePlayerGameVariant = '';
     isPlayerTwoAI = false;
 
-    isTwoPlayerMode = true;
-    selectedGameMode = 'normal';
+    isTwoPlayerMode = true; 
+    selectedGameMode = 'normal'; 
     isCoopAIDemoActive = false;
     aiPlayerActivelySeekingCaptureById = null;
     selectedButtonIndex = 0;
@@ -521,7 +521,7 @@ function startGame2P() {
 }
 
 
-async function baseStartGame(setManualControl) { // <<< FUNCTIE IS ASYNC >>>
+function baseStartGame(setManualControl) {
     try {
         if (!gameCanvas || !gameCtx) { console.error("Cannot start game - canvas not ready."); showMenuState(); return; }
         if (setManualControl) {
@@ -549,14 +549,14 @@ async function baseStartGame(setManualControl) { // <<< FUNCTIE IS ASYNC >>>
         if (setManualControl) {
             wasLastGameAIDemo = false;
             if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
-                isCoopAIDemoActive = false;
+                isCoopAIDemoActive = false; 
             } else {
-                isCoopAIDemoActive = false;
+                isCoopAIDemoActive = false; 
             }
             aiPlayerActivelySeekingCaptureById = null;
-        } else {
-            isPlayerTwoAI = false;
-            selectedOnePlayerGameVariant = '';
+        } else { 
+            isPlayerTwoAI = false; 
+            selectedOnePlayerGameVariant = ''; 
         }
 
 
@@ -572,26 +572,6 @@ async function baseStartGame(setManualControl) { // <<< FUNCTIE IS ASYNC >>>
             return;
         }
 
-        // Probeer fullscreen en oriëntatie te vergrendelen
-        if (typeof window.lockScreenOrientation === 'function') {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                 console.log("Requesting fullscreen from baseStartGame...");
-                try {
-                    await document.documentElement.requestFullscreen({ navigationUI: "hide" });
-                    // De fullscreenchange listener (indien ingesteld) of directe aanroep zal de lock proberen.
-                    // Voor de zekerheid hier ook direct na succesvolle fullscreen.
-                    await window.lockScreenOrientation();
-                } catch (err) {
-                    console.warn("Fullscreen request failed during game start, trying to lock orientation anyway.", err);
-                    await window.lockScreenOrientation();
-                }
-            } else {
-                console.log("Already in fullscreen during baseStartGame, attempting orientation lock.");
-                await window.lockScreenOrientation();
-            }
-        }
-
-
         isShowingCoopPlayersReady = false;
 
         const needsL1StartSound = level === 1 && !initialGameStartSoundPlayedThisSession;
@@ -602,7 +582,7 @@ async function baseStartGame(setManualControl) { // <<< FUNCTIE IS ASYNC >>>
                 if (needsL1StartSound) playStartSoundForThisGame = true;
             } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
                  if (needsL1StartSound) playStartSoundForThisGame = true;
-                 if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+                 if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { 
                     isShowingCoopPlayersReady = true; coopPlayersReadyStartTime = Date.now();
                  }
             } else if (isTwoPlayerMode && !isPlayerTwoAI && selectedGameMode === 'normal') {
@@ -611,9 +591,9 @@ async function baseStartGame(setManualControl) { // <<< FUNCTIE IS ASYNC >>>
                 if (needsL1StartSound && !coopStartSoundPlayedThisSession) playStartSoundForThisGame = true;
                 isShowingCoopPlayersReady = true; coopPlayersReadyStartTime = Date.now();
             }
-        } else {
+        } else { 
             if (needsL1StartSound) playStartSoundForThisGame = true;
-            if (isCoopAIDemoActive) {
+            if (isCoopAIDemoActive) { 
                  isShowingCoopPlayersReady = true; coopPlayersReadyStartTime = Date.now();
             }
         }
@@ -656,7 +636,7 @@ function stopGameAndShowMenu() {
     if (isManualControl) {
         if (typeof window.saveHighScore === 'function') window.saveHighScore(); else saveHighScore();
     }
-    showMenuState();
+    showMenuState(); 
 }
 function exitGame() {
     isPaused = false;
@@ -670,7 +650,7 @@ function exitGame() {
     isOnePlayerVsAIGameTypeSelectMode = false;
     selectedOnePlayerGameVariant = '';
     isPlayerTwoAI = false;
-    showMenuState();
+    showMenuState(); 
     try {
         window.close();
         setTimeout(() => { if(!isInGameState) showMenuState(); }, 200);
@@ -707,7 +687,7 @@ function showScoreScreen() {
 /**
  * Helper functie om een stap terug te gaan in het menu.
  */
-async function goBackInMenu() { // <<< FUNCTIE IS ASYNC >>>
+function goBackInMenu() {
     if (isFiringModeSelectMode) {
         isFiringModeSelectMode = false;
         if (selectedOnePlayerGameVariant === 'CLASSIC_1P') {
@@ -728,12 +708,10 @@ async function goBackInMenu() { // <<< FUNCTIE IS ASYNC >>>
         isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1; // Terug naar P1/P2 (P2 geselecteerd)
     } else if (isPlayerSelectMode) {
         isPlayerSelectMode = false; selectedButtonIndex = 0; // Terug naar hoofdmenu
-    } else {
-        if (typeof triggerFullscreen === 'function') {
-            await triggerFullscreen(); // Wacht op fullscreen en orientatie lock poging
-        }
+    } else { // In hoofdmenu: klik/tap naast knoppen triggert fullscreen
+        triggerFullscreen();
     }
-    startAutoDemoTimer();
+    startAutoDemoTimer(); // Reset inactiviteitstimer
 }
 
 
@@ -743,7 +721,7 @@ async function goBackInMenu() { // <<< FUNCTIE IS ASYNC >>>
  * @param {'start'|'move'|'end'} type - The type of event.
  * @param {boolean} [isTap=false] - True if the 'end' event is considered a tap (relevant for touchend).
  */
-function handleCanvasTouch(event, type, isTap = false) { // Deze functie zelf hoeft niet per se async, tenzij het iets met de results van goBackInMenu/baseStartGame doet
+function handleCanvasTouch(event, type, isTap = false) {
     if (!gameCanvas) return;
 
     let clientX, clientY;
@@ -755,7 +733,7 @@ function handleCanvasTouch(event, type, isTap = false) { // Deze functie zelf ho
             clientX = event.changedTouches[0].clientX;
             clientY = event.changedTouches[0].clientY;
         } else {
-            return;
+            return; 
         }
     } else if (event.type.startsWith('mouse')) { // Muis event
         clientX = event.clientX;
@@ -779,7 +757,7 @@ function handleCanvasTouch(event, type, isTap = false) { // Deze functie zelf ho
     if (isInGameState) {
         // Game-specifieke touch/muis logica in game_logic.js
     } else if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
-        if (type === 'end' && isTap) {
+        if (type === 'end' && isTap) { 
             if (typeof showMenuState === 'function') showMenuState();
         }
     } else if (!isShowingScoreScreen) { // Menu
@@ -794,24 +772,24 @@ function handleCanvasTouch(event, type, isTap = false) { // Deze functie zelf ho
             currentHoverButton = 1;
         }
 
-        if (type === 'start') {
-            isTouchActiveMenu = true;
+        if (type === 'start') { 
+            isTouchActiveMenu = true; 
             touchedMenuButtonIndex = currentHoverButton;
             selectedButtonIndex = currentHoverButton;
-        } else if (type === 'move') {
-            if (event.type === 'mousemove') {
-                selectedButtonIndex = currentHoverButton;
-            } else {
+        } else if (type === 'move') { 
+            if (event.type === 'mousemove') { 
+                selectedButtonIndex = currentHoverButton; 
+            } else { 
                 if (touchedMenuButtonIndex !== -1 && currentHoverButton !== touchedMenuButtonIndex) {
                     selectedButtonIndex = -1;
-                } else if (touchedMenuButtonIndex !== -1) {
+                } else if (touchedMenuButtonIndex !== -1) { 
                     selectedButtonIndex = currentHoverButton;
                 }
             }
-        } else if (type === 'end' && event.type.startsWith('touch')) {
-            isTouchActiveMenu = false;
+        } else if (type === 'end' && event.type.startsWith('touch')) { 
+            isTouchActiveMenu = false; 
             if (isTap && currentHoverButton !== -1 && currentHoverButton === touchedMenuButtonIndex) {
-                selectedButtonIndex = currentHoverButton;
+                selectedButtonIndex = currentHoverButton; 
                 if (isPlayerSelectMode) {
                     if (selectedButtonIndex === 0) { startGame1P(); } else { startGame2P(); }
                 } else if (isOnePlayerGameTypeSelectMode) {
@@ -826,20 +804,22 @@ function handleCanvasTouch(event, type, isTap = false) { // Deze functie zelf ho
                     isGameModeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = false; selectedButtonIndex = 0;
                 } else if (isFiringModeSelectMode) {
                     if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; }
-                    baseStartGame(true); // baseStartGame is async
-                } else {
+                    baseStartGame(true);
+                } else { 
                     if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0; }
                     else if (selectedButtonIndex === 1) { if (typeof exitGame === 'function') exitGame(); }
                 }
             } else if (isTap && currentHoverButton === -1 && touchedMenuButtonIndex === -1) {
-                if (typeof goBackInMenu === 'function') goBackInMenu(); // goBackInMenu is async
+                // <<< GEWIJZIGD: Roep goBackInMenu aan bij tap naast knoppen >>>
+                goBackInMenu();
+                // <<< EINDE GEWIJZIGD >>>
             }
-            touchedMenuButtonIndex = -1;
+            touchedMenuButtonIndex = -1; 
         }
-
-        if (type !== 'end' && currentHoverButton !== -1) {
+        
+        if (type !== 'end' && currentHoverButton !== -1) { 
              stopAutoDemoTimer();
-        } else if (type === 'end' || (type === 'move' && currentHoverButton === -1)) {
+        } else if (type === 'end' || (type === 'move' && currentHoverButton === -1)) { 
              startAutoDemoTimer();
         }
     }
@@ -848,36 +828,10 @@ function handleCanvasTouch(event, type, isTap = false) { // Deze functie zelf ho
 /**
  * Handles click events on the canvas.
  */
-async function handleCanvasClick(event) { // <<< FUNCTIE IS ASYNC >>>
+function handleCanvasClick(event) {
     if (!gameCanvas) return;
-    let audioResumedThisInteraction = false;
      if (audioContext && audioContext.state === 'suspended') {
-        try {
-            await audioContext.resume();
-            audioContextInitialized = true;
-            audioResumedThisInteraction = true;
-            console.log("AudioContext resumed by canvas click.");
-        } catch (e) {
-            console.error("Error resuming AudioContext on canvas click:", e);
-        }
-    }
-
-    if (audioResumedThisInteraction || audioContextInitialized) {
-        if (typeof window.lockScreenOrientation === 'function') {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                try {
-                    console.log("Requesting fullscreen from canvas click...");
-                    await document.documentElement.requestFullscreen({ navigationUI: "hide" });
-                    // Wacht op fullscreenchange event
-                } catch (err) {
-                     console.warn("Fullscreen request failed during canvas click, trying to lock orientation anyway.", err);
-                     await window.lockScreenOrientation();
-                }
-            } else {
-                 console.log("Already in fullscreen during canvas click, attempting orientation lock.");
-                 await window.lockScreenOrientation();
-            }
-        }
+        audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by canvas click."); });
     }
 
     if (isInGameState) {
@@ -904,7 +858,7 @@ async function handleCanvasClick(event) { // <<< FUNCTIE IS ASYNC >>>
         }
 
         if (clickedButton !== -1) {
-            selectedButtonIndex = clickedButton;
+            selectedButtonIndex = clickedButton; 
 
             if (isPlayerSelectMode) {
                 if (selectedButtonIndex === 0) { startGame1P(); } else { startGame2P(); }
@@ -920,15 +874,17 @@ async function handleCanvasClick(event) { // <<< FUNCTIE IS ASYNC >>>
                 isGameModeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = false; selectedButtonIndex = 0;
             } else if (isFiringModeSelectMode) {
                 if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; }
-                await baseStartGame(true); // Wacht op baseStartGame
-            } else {
+                baseStartGame(true);
+            } else { 
                 if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0; }
                 else if (selectedButtonIndex === 1) { if (typeof exitGame === 'function') exitGame(); }
             }
-        } else {
-            if (typeof goBackInMenu === 'function') await goBackInMenu(); // Wacht op goBackInMenu
+        } else { 
+            // <<< GEWIJZIGD: Roep goBackInMenu aan bij klik naast knoppen >>>
+            goBackInMenu();
+            // <<< EINDE GEWIJZIGD >>>
         }
-        startAutoDemoTimer();
+        startAutoDemoTimer(); 
     }
 }
 

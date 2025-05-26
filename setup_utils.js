@@ -694,114 +694,58 @@ function setVolume(soundId, volume) {
     soundGainNodes[soundId].gain.setValueAtTime(safeVolume, audioContext.currentTime);
 }
 
-// <<< FUNCTIE BIJGEWERKT >>>
-/**
- * Attempts to lock the screen orientation to landscape.
- * Returns true if lock was attempted successfully, false otherwise.
- */
-async function lockScreenOrientation() {
-  if (typeof screen === 'undefined' || !screen.orientation || typeof screen.orientation.lock !== 'function') {
-    console.warn('Screen Orientation API lock not available.');
-    // Probeer oudere API's als fallback, hoewel hun succes onwaarschijnlijk is
-    if (typeof screen !== 'undefined' && typeof screen.lockOrientation === 'function') {
-      screen.lockOrientation('landscape'); console.log('Attempted lock via screen.lockOrientation()'); return true;
-    } else if (typeof screen !== 'undefined' && typeof screen.mozLockOrientation === 'function') {
-      screen.mozLockOrientation('landscape'); console.log('Attempted lock via screen.mozLockOrientation()'); return true;
-    } else if (typeof screen !== 'undefined' && typeof screen.msLockOrientation === 'function') {
-      screen.msLockOrientation('landscape'); console.log('Attempted lock via screen.msLockOrientation()'); return true;
-    }
-    return false; // Geen enkele API beschikbaar
-  }
 
-  try {
-    await screen.orientation.lock('landscape');
-    console.log('Screen orientation lock to landscape successful.');
-    return true;
-  } catch (error) {
-    console.error(`Failed to lock screen orientation: ${error.name} - ${error.message}`);
-    // Log de huidige oriëntatie status
-    console.log(`Current orientation: type=${screen.orientation.type}, angle=${screen.orientation.angle}`);
-    // Geef de gebruiker feedback indien mogelijk, of log het probleem.
-    // Bijvoorbeeld, op iOS werkt lock() alleen in fullscreen en voor PWA's die aan het homescreen zijn toegevoegd.
-    // Op desktop browsers wordt de lock() meestal genegeerd.
-    return false;
-  }
-}
-// Maak de functie globaal beschikbaar
-if (typeof window !== 'undefined') {
-  window.lockScreenOrientation = lockScreenOrientation;
-}
-// <<< EINDE FUNCTIE BIJGEWERKT >>>
-
-
-/** Attempts to enter fullscreen mode and plays menu music. Also attempts to lock orientation. */
-// <<< FUNCTIE BIJGEWERKT voor betere timing van lockScreenOrientation >>>
-async function triggerFullscreen() {
-    const attemptLock = async () => {
-        if (typeof window.lockScreenOrientation === 'function') {
-            console.log("Attempting to lock orientation after fullscreen action...");
-            await window.lockScreenOrientation();
-        }
-    };
-
-    const playMusic = async () => {
-        if (audioContext && audioContext.state === 'suspended') {
-            try {
-                await audioContext.resume();
-                audioContextInitialized = true;
-                playSound('menuMusicSound', true, 0.2);
-            } catch (e) {
-                console.error("Error resuming AudioContext for fullscreen music:", e);
-            }
-        } else if (audioContext) {
-            playSound('menuMusicSound', true, 0.2);
-        }
-    };
-
-    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+/** Attempts to enter fullscreen mode and plays menu music. */
+function triggerFullscreen() {
+    if (!document.fullscreenElement) {
         const element = document.documentElement;
         let requestFullscreenPromise = null;
 
         if (element.requestFullscreen) {
-            requestFullscreenPromise = element.requestFullscreen({ navigationUI: "hide" }); // navigationUI: "hide" kan helpen
+            requestFullscreenPromise = element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) { /* Firefox */
+            requestFullscreenPromise = element.mozRequestFullScreen();
         } else if (element.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
             requestFullscreenPromise = element.webkitRequestFullscreen();
-        } else if (element.mozRequestFullScreen) { /* Firefox */
-            requestFullscreenPromise = element.mozRequestFullScreen({ navigationUI: "hide" });
         } else if (element.msRequestFullscreen) { /* IE/Edge */
             requestFullscreenPromise = element.msRequestFullscreen();
         }
 
-        if (requestFullscreenPromise) {
-            try {
-                await requestFullscreenPromise;
-                // Fullscreen is nu actief (of zou moeten zijn).
-                // Wacht even met oriëntatie locken.
-                console.log("Fullscreen activated. Waiting briefly before locking orientation.");
-                // setTimeout(async () => { // Een korte delay kan soms helpen browsers tijd te geven
-                  await playMusic();
-                  await attemptLock();
-                // }, 100); // Bijv. 100ms
-            } catch (err) {
-                console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-                // Fullscreen mislukt, probeer muziek en lock alsnog (minder kans op succes voor lock)
-                await playMusic();
-                await attemptLock();
+        const playMenuMusicAfterAction = () => {
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    audioContextInitialized = true;
+                    playSound('menuMusicSound', true, 0.2);
+                }).catch(e => console.error("Error resuming AudioContext for fullscreen music:", e));
+            } else if (audioContext) {
+                playSound('menuMusicSound', true, 0.2);
             }
+        };
+
+        if (requestFullscreenPromise) {
+            requestFullscreenPromise
+                .then(() => {
+                    playMenuMusicAfterAction();
+                })
+                .catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    playMenuMusicAfterAction();
+                });
         } else {
             console.warn("Fullscreen API is not supported by this browser.");
-            // Geen fullscreen, probeer muziek en lock (minder kans op succes voor lock)
-            await playMusic();
-            await attemptLock();
+            playMenuMusicAfterAction();
         }
     } else {
-        // Al in fullscreen. Speel muziek en probeer (opnieuw) te locken.
-        console.log("Already in fullscreen. Playing music and attempting to lock orientation.");
-        await playMusic();
-        await attemptLock();
+         if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => {
+                audioContextInitialized = true;
+                playSound('menuMusicSound', true, 0.2);
+            });
+        } else if (audioContext) {
+            playSound('menuMusicSound', true, 0.2);
+        }
     }
 }
-// <<< EINDE FUNCTIE BIJGEWERKT >>>
 
 
 /** Creates a single star object with random properties. */
@@ -838,39 +782,11 @@ let lastTapTimestamp = 0;
 const DOUBLE_TAP_MAX_INTERVAL = 300; // ms tussen taps voor een dubbel-tap
 const SCORE_AREA_TAP_MARGIN = 30; // Extra marge rond de score tekst voor tap detectie
 
-// <<< FUNCTIE BIJGEWERKT >>>
-async function handleTouchStartGlobal(event) {
-    event.preventDefault();
-    let audioResumedThisInteraction = false;
+function handleTouchStartGlobal(event) {
+    event.preventDefault(); // Voorkom standaard browsergedrag zoals scrollen
     if (audioContext && audioContext.state === 'suspended') {
-        try {
-            await audioContext.resume();
-            audioContextInitialized = true;
-            audioResumedThisInteraction = true;
-            console.log("AudioContext resumed by touchstart.");
-        } catch (e) {
-            console.error("Error resuming AudioContext on touchstart:", e);
-        }
+        audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by touchstart."); });
     }
-
-    if (audioResumedThisInteraction || audioContextInitialized) {
-        if (typeof window.lockScreenOrientation === 'function') {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                try {
-                    console.log("Requesting fullscreen from touchstart...");
-                    await document.documentElement.requestFullscreen({ navigationUI: "hide" });
-                    // Wacht tot fullscreenchange event (zie hieronder) om lock te proberen
-                } catch (err) {
-                    console.warn("Fullscreen request failed during touchstart, trying to lock orientation anyway.", err);
-                    await window.lockScreenOrientation(); // Probeer direct als fullscreen faalt
-                }
-            } else {
-                console.log("Already in fullscreen during touchstart, attempting orientation lock.");
-                await window.lockScreenOrientation(); // Al fullscreen, probeer direct te locken
-            }
-        }
-    }
-
     if (event.touches.length > 0) {
         const touch = event.touches[0];
         touchStartX = touch.clientX;
@@ -881,18 +797,16 @@ async function handleTouchStartGlobal(event) {
 
         if (isInGameState) {
             isTouchActiveGame = true;
-            isTouchActiveMenu = false;
-        } else {
+            isTouchActiveMenu = false; // Zorg ervoor dat menu-touch niet tegelijk actief is
+        } else { // In Menu
             isTouchActiveMenu = true;
-            isTouchActiveGame = false;
+            isTouchActiveGame = false; // Zorg ervoor dat game-touch niet tegelijk actief is
             if (typeof handleCanvasTouch === 'function') {
                 handleCanvasTouch(event, 'start');
             }
         }
     }
 }
-// <<< EINDE FUNCTIE BIJGEWERKT >>>
-
 
 function handleTouchMoveGlobal(event) {
     event.preventDefault();
@@ -992,7 +906,7 @@ function handleTouchEndGlobal(event) {
                         lastTapArea = null;
                         lastTapTimestamp = 0;
                         isTouchActiveGame = false; // Belangrijk om verdere game-touch te stoppen
-                        return;
+                        return; 
                     }
                 }
                 lastTapArea = '2up';
@@ -1029,61 +943,38 @@ function handleTouchEndGlobal(event) {
             }
         }
         shootPressed = false;
-        p2ShootPressed = false;
-        isTouchActiveGame = false;
+        p2ShootPressed = false; 
+        isTouchActiveGame = false; 
     } else if (isTouchActiveMenu && !isInGameState) {
         isTouchActiveMenu = false;
         if (typeof handleCanvasTouch === 'function') {
             handleCanvasTouch(event, 'end', isTap);
         }
-    } else {
+    } else { 
         isTouchActiveGame = false;
         isTouchActiveMenu = false;
     }
-    touchedMenuButtonIndex = -1;
+    touchedMenuButtonIndex = -1; 
 }
 
 
 // --- Keyboard Event Handlers ---
-// <<< FUNCTIE BIJGEWERKT >>>
-async function handleKeyDown(e) {
+function handleKeyDown(e) {
     try {
+        // Voorkom dat keyboard input de game bestuurt als touch actief is voor de game.
         if (isTouchActiveGame && isInGameState) {
-            if (e.key === 'p' || e.key === 'P') { if(typeof togglePause === 'function') togglePause(); }
-            else if (e.key === "Escape" || e.key === "Enter") { if(isInGameState && typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu(); }
+            if (e.key === 'p' || e.key === 'P') { // Pauze mag altijd
+                 if(typeof togglePause === 'function') togglePause();
+            } else if (e.key === "Escape" || e.key === "Enter") { // Menu verlaten mag altijd
+                 if(isInGameState && typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu();
+            }
+            // Andere game-gerelateerde keyboard input wordt genegeerd als touch actief is.
             return;
         }
 
-        let audioResumedThisInteraction = false;
         if (audioContext && audioContext.state === 'suspended') {
-            try {
-                await audioContext.resume();
-                audioContextInitialized = true;
-                audioResumedThisInteraction = true;
-                console.log("AudioContext resumed by keydown.");
-            } catch (audioErr) {
-                console.error("Error resuming AudioContext on keydown:", audioErr);
-            }
+            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by keydown."); });
         }
-
-        if (audioResumedThisInteraction || audioContextInitialized) {
-            if (typeof window.lockScreenOrientation === 'function') {
-                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                    try {
-                        console.log("Requesting fullscreen from keydown...");
-                        await document.documentElement.requestFullscreen({ navigationUI: "hide" });
-                        // Wacht tot fullscreenchange event om lock te proberen
-                    } catch (err) {
-                        console.warn("Fullscreen request failed during keydown, trying to lock orientation anyway.", err);
-                        await window.lockScreenOrientation();
-                    }
-                } else {
-                    console.log("Already in fullscreen during keydown, attempting orientation lock.");
-                    await window.lockScreenOrientation();
-                }
-            }
-        }
-
         const relevantKeys = [" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Escape", "w", "a", "s", "d", "p", "P", "j", "J", "l", "L", "i", "I", "Numpad4", "Numpad6", "Numpad0"];
         if (relevantKeys.includes(e.key) || relevantKeys.includes(e.code)) {
             e.preventDefault();
@@ -1193,8 +1084,6 @@ async function handleKeyDown(e) {
         }
     } catch(err) { console.error("Error in handleKeyDown:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; }
 }
-// <<< EINDE FUNCTIE BIJGEWERKT >>>
-
 function handleKeyUp(e) {
     try {
         // Key up events worden altijd verwerkt, ongeacht touch state,
@@ -1225,46 +1114,18 @@ function handleKeyUp(e) {
 
 
 // --- Gamepad Event Handlers ---
-// <<< FUNCTIE BIJGEWERKT >>>
-async function handleGamepadConnected(event) {
+function handleGamepadConnected(event) {
     try {
-        let audioResumedThisInteraction = false;
         if (audioContext && audioContext.state === 'suspended') {
-            try {
-                await audioContext.resume();
-                audioContextInitialized = true;
-                audioResumedThisInteraction = true;
-                console.log("AudioContext resumed by gamepad connection.");
-            } catch (e) {
-                console.error("Error resuming AudioContext on gamepad connect:", e);
-            }
+            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by gamepad connection."); });
         }
-
-        if (audioResumedThisInteraction || audioContextInitialized) {
-            if (typeof window.lockScreenOrientation === 'function') {
-                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                    try {
-                        console.log("Requesting fullscreen from gamepad connect...");
-                        await document.documentElement.requestFullscreen({ navigationUI: "hide" });
-                        // Wacht op fullscreenchange event
-                    } catch (err) {
-                        console.warn("Fullscreen request failed during gamepad connect, trying to lock orientation anyway.", err);
-                        await window.lockScreenOrientation();
-                    }
-                } else {
-                    console.log("Already in fullscreen during gamepad connect, attempting orientation lock.");
-                    await window.lockScreenOrientation();
-                }
-            }
-        }
-
         if (connectedGamepadIndex === null) {
             connectedGamepadIndex = event.gamepad.index;
             const numButtons = event.gamepad.buttons.length;
             previousButtonStates = new Array(numButtons).fill(false);
             previousDemoButtonStates = new Array(numButtons).fill(false);
             previousGameButtonStates = new Array(numButtons).fill(false);
-            if (!isInGameState && !isTouchActiveMenu) {
+            if (!isInGameState && !isTouchActiveMenu) { // Alleen als touch niet al het menu bestuurt
                  stopAutoDemoTimer(); selectedButtonIndex = 0;
             }
         } else if (connectedGamepadIndexP2 === null) {
@@ -1274,8 +1135,6 @@ async function handleGamepadConnected(event) {
         }
     } catch(e) { console.error("Error in handleGamepadConnected:", e); }
 }
-// <<< EINDE FUNCTIE BIJGEWERKT >>>
-
 function handleGamepadDisconnected(event) {
     try {
         if (connectedGamepadIndex === event.gamepad.index) {
