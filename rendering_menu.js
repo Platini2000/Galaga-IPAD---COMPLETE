@@ -1161,7 +1161,7 @@ function renderGame() {
                 const p2LivesIconsToDraw = Math.min(livesP2ToDisplay, maxLivesIcons);
                 const showP2LivesInMenuGeneral = (!isInGameState &&
                                            ( (isPlayerSelectMode && selectedButtonIndex === 1) ||
-                                             (isGameModeSelectMode && selectedButtonIndex === 1) ||
+                                             (isGameModeSelectMode && selectedButtonIndex === 1) || // << Gewijzigd: was selectedButtonIndex === 1, nu 0 of 1
                                              (isFiringModeSelectMode && isTwoPlayerMode && !isPlayerTwoAI)
                                            )
                                           );
@@ -1255,12 +1255,12 @@ function renderGame() {
                 const coopLevelIconOffset = 15;
                 if (isPlayer1_Coop_Or_SinglePlayer) {
                     let p1LivesWidth = 0;
-                    if (player1Lives > 0 && (isInGameState || !isInGameState)) {
+                    if (player1Lives > 0 && (isInGameState || !isInGameState)) { // Toon levens als ze er zijn, ongeacht state
                          const livesP1ToDisplay = (player1Lives >= 3) ? 2 : Math.max(0, player1Lives -1);
                          p1LivesWidth = Math.min(livesP1ToDisplay, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
                     }
                     startX = LIFE_ICON_MARGIN_LEFT + p1LivesWidth + coopLevelIconOffset;
-                } else {
+                } else { // P2 in COOP
                     let p2LivesWidth = 0;
                      if (player2Lives > 0 && (isInGameState || !isInGameState)) {
                          const livesP2ToDisplay = (player2Lives >= 3) ? 2 : Math.max(0, player2Lives -1);
@@ -1271,7 +1271,7 @@ function renderGame() {
                 }
             } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
                 const normalLevelIconOffset = 15;
-                 if (isPlayer1_Coop_Or_SinglePlayer) {
+                 if (isPlayer1_Coop_Or_SinglePlayer) { // Altijd P1 info
                     let p1LivesWidth = 0;
                     const livesForP1Calc = (currentPlayer === 1 && isInGameState) ? playerLives : player1Lives;
                      if (livesForP1Calc > 0 && (isInGameState || !isInGameState)) {
@@ -1279,7 +1279,7 @@ function renderGame() {
                          p1LivesWidth = Math.min(livesP1ToDisplay, 5) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
                     }
                     startX = LIFE_ICON_MARGIN_LEFT + p1LivesWidth + normalLevelIconOffset;
-                } else {
+                } else { // P2 info
                     let p2LivesWidth = 0;
                     const livesForP2Calc = (currentPlayer === 2 && isInGameState) ? playerLives : player2Lives;
 
@@ -1290,7 +1290,7 @@ function renderGame() {
                     const p2LivesStartXBasedOnP2UI = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - p2LivesWidth;
                     startX = p2LivesStartXBasedOnP2UI - totalWidth - normalLevelIconOffset;
                 }
-            } else {
+            } else { // Single Player
                  startX = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - totalWidth;
             }
 
@@ -1305,7 +1305,6 @@ function renderGame() {
 
         let levelP1ToDisplay = 1, levelP2ToDisplay = 0;
 
-        // <<< START GEWIJZIGDE CODE BLOK voor bepalen levelP1ToDisplay & levelP2ToDisplay >>>
         if (gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || isShowingResultsScreen) {
             levelP1ToDisplay = Math.max(1, player1MaxLevelReached);
             if (isEffectivelyTwoPlayerUI || isTwoPlayerMode) levelP2ToDisplay = Math.max(1, player2MaxLevelReached);
@@ -1326,24 +1325,23 @@ function renderGame() {
             if (isTwoPlayerMode && selectedGameMode === 'coop') {
                 levelP1ToDisplay = player1Lives > 0 || player1MaxLevelReached > 0 ? Math.max(1, player1MaxLevelReached) : 0;
                 levelP2ToDisplay = player2Lives > 0 || player2MaxLevelReached > 0 ? Math.max(1, player2MaxLevelReached) : 0;
+                 if (player1Lives <= 0) levelP1ToDisplay = 0; // Als geen levens, toon geen level
+                 if (player2Lives <= 0) levelP2ToDisplay = 0; // Als geen levens, toon geen level
+
             } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
-                // Actieve speler toont het HUIDIGE level van de game
-                // Niet-actieve speler toont zijn EIGEN max bereikte level
                 if (currentPlayer === 1) {
-                    levelP1ToDisplay = level; // P1 is actief, toont huidige game level
-                    levelP2ToDisplay = Math.max(1, player2MaxLevelReached); // P2 is niet-actief, toont P2's max
-                } else { // currentPlayer === 2
-                    levelP1ToDisplay = Math.max(1, player1MaxLevelReached); // P1 is niet-actief, toont P1's max
-                    levelP2ToDisplay = level; // P2 is actief, toont huidige game level
+                    levelP1ToDisplay = level; 
+                    levelP2ToDisplay = player2Lives > 0 ? Math.max(1, player2MaxLevelReached) : 0;
+                } else { 
+                    levelP1ToDisplay = player1Lives > 0 ? Math.max(1, player1MaxLevelReached) : 0;
+                    levelP2ToDisplay = level; 
                 }
             } else { // 1P Classic
                 levelP1ToDisplay = level;
                 levelP2ToDisplay = 0;
             }
         }
-        // <<< EINDE GEWIJZIGDE CODE BLOK voor bepalen levelP1ToDisplay & levelP2ToDisplay >>>
-
-
+        
         drawLevelIcons(levelP1ToDisplay, true);
         if (levelP2ToDisplay > 0 && isEffectivelyTwoPlayerUI) {
             drawLevelIcons(levelP2ToDisplay, false);
@@ -1519,11 +1517,11 @@ function renderGame() {
             }
         } else { 
             const noGlobalGameOverOrResults = gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage && !isShowingResultsScreen;
-            const isAnyCoopPlayerGameOverMsgActive = isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage);
+            // isAnyCoopPlayerGameOverMsgActive is defined in UI section.
 
-            if (noGlobalGameOverOrResults || isAnyCoopPlayerGameOverMsgActive) {
+            if (noGlobalGameOverOrResults || isAnyCoopPlayerGameOver) { // Was: isAnyCoopPlayerGameOverMsgActive
                  gameCtx.save();
-                 let showBullets = !showReadyMessage && !showCsHitsMessage && !showPerfectMessage && !showCsBonusScoreMessage && !showCSClearMessage && !isCsCompletionDelayActive && !isShowingIntro && !isShowingCaptureMessage && !isShowingCoopPlayersReady && !isAnyCoopPlayerGameOverMsgActive;
+                 let showBullets = !showReadyMessage && !showCsHitsMessage && !showPerfectMessage && !showCsBonusScoreMessage && !showCSClearMessage && !isCsCompletionDelayActive && !isShowingIntro && !isShowingCaptureMessage && !isShowingCoopPlayersReady && !isAnyCoopPlayerGameOver; // Was: !isAnyCoopPlayerGameOverMsgActive
                  if (showBullets) { bullets.forEach(b => { if (b) { if (typeof bulletImage !== 'undefined' && bulletImage.complete) { gameCtx.drawImage(bulletImage, Math.round(b.x), Math.round(b.y), b.width, b.height); } else { gameCtx.fillStyle = "yellow"; gameCtx.fillRect(Math.round(b.x), Math.round(b.y), b.width, b.height); } } }); enemyBullets.forEach(eb => { if (eb) { if (typeof enemyBulletImage !== 'undefined' && enemyBulletImage.complete && enemyBulletImage.naturalWidth > 0) { gameCtx.drawImage(enemyBulletImage, Math.round(eb.x), Math.round(eb.y), eb.width, eb.height); } else { gameCtx.fillStyle = "white"; gameCtx.fillRect(Math.round(eb.x), Math.round(eb.y), eb.width, eb.height); } } }); }
 
                  if (!isShowingCoopPlayersReady) {
@@ -1538,20 +1536,46 @@ function renderGame() {
                  const hitsText = `NUMBER OF HITS ${challengingStageEnemiesHit}`;
                  const clearBonusText = `BONUS ${scoreEarnedThisCS}`;
                  const lineSpacingGameOver = RESULTS_LINE_V_SPACING_SINGLE;
-                 const playerGameOverYOffset = lineSpacingGameOver * 2;
+                 // playerGameOverYOffset is not used here, messageCenterY_CoopGO or midScreenY is used.
 
-                 if (!isManualControl && isInGameState && isShowingDemoText) {
-                    const isBlockingMessageActive = isShowingIntro ||
-                                                  isShowingCaptureMessage ||
-                                                  showCsBonusScoreMessage || showPerfectMessage || showCsHitsMessage || showCSClearMessage ||
-                                                  showExtraLifeMessage ||
-                                                  showReadyMessage ||
-                                                  isShowingCoopPlayersReady ||
-                                                  isCsCompletionDelayActive ||
-                                                  isShowingPlayerGameOverMessage ||
-                                                  (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage));
+                 // --- BERICHTEN RENDERING MET VOORRANG ---
+                 if (isPaused) {
+                    drawCanvasText("PAUSED", midScreenX, midScreenY, PAUSE_TEXT_FONT, PAUSE_TEXT_COLOR, 'center', 'middle', PAUSE_TEXT_SHADOW);
+                    messageDrawnThisCycle = true;
+                 }
+                 // <<< START GEWIJZIGD BLOK: COOP Player Game Over berichten HIER >>>
+                 else if (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage)) {
+                    const messageCenterY_CoopGO = gameCanvas.height * 0.45; // Gelijk aan 1P game over y
+                    if (isPlayer1ShowingGameOverMessage && !isPlayer2ShowingGameOverMessage) {
+                        const p1goLabel = isCoopAIDemoActive ? "DEMO-1" : (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? "PLAYER 1" : "PLAYER 1");
+                        drawCanvasText(p1goLabel.toUpperCase(), midScreenX, messageCenterY_CoopGO - lineSpacingGameOver / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
+                        drawCanvasText("GAME OVER", midScreenX, messageCenterY_CoopGO + lineSpacingGameOver / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
+                        messageDrawnThisCycle = true;
+                    } else if (isPlayer2ShowingGameOverMessage && !isPlayer1ShowingGameOverMessage) {
+                        const p2goLabel = isCoopAIDemoActive ? "DEMO-2" : (isPlayerTwoAI ? "AI PLAYER 2" : "PLAYER 2");
+                        drawCanvasText(p2goLabel.toUpperCase(), midScreenX, messageCenterY_CoopGO - lineSpacingGameOver / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
+                        drawCanvasText("GAME OVER", midScreenX, messageCenterY_CoopGO + lineSpacingGameOver / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
+                        messageDrawnThisCycle = true;
+                    }
+                    // Als beide game over zijn, zal gameOverSequenceStartTime > 0 zijn en deze tak niet vaak/lang draaien.
+                 }
+                 // <<< EINDE GEWIJZIGD BLOK >>>
+                 else if (isShowingCoopPlayersReady) {
+                    const coopReadyText = isCoopAIDemoActive ? "DEMO PLAYERS READY!" : ((isPlayerTwoAI && selectedGameMode === 'coop') ? "PLAYER & AI READY!" : "PLAYERS READY!");
+                    drawCanvasText(coopReadyText, midScreenX, midScreenY, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true); messageDrawnThisCycle = true;
+                 }
+                 else if (isShowingCaptureMessage) {
+                    drawCanvasText("FIGHTER CAPTURED", midScreenX, midScreenY, INTRO_TEXT_FONT, "red", 'center', 'middle', true);
+                    messageDrawnThisCycle = true;
+                 }
+                 else if (!isManualControl && isInGameState && isShowingDemoText) {
+                    const isBlockingMessageActiveForDemoText = isShowingIntro ||
+                                              showCsBonusScoreMessage || showPerfectMessage || showCsHitsMessage || showCSClearMessage ||
+                                              showExtraLifeMessage ||
+                                              showReadyMessage ||
+                                              isCsCompletionDelayActive; // COOP_READY en CAPTURE zijn al hierboven afgehandeld
 
-                     if (!isBlockingMessageActive) {
+                     if (!isBlockingMessageActiveForDemoText) {
                          const demoBlinkCycle = DEMO_TEXT_BLINK_CYCLE_MS;
                          const demoBlinkOn = DEMO_TEXT_BLINK_ON_MS;
                          if ((now % demoBlinkCycle) < demoBlinkOn) {
@@ -1561,14 +1585,8 @@ function renderGame() {
                      }
                  }
 
-                 if (!messageDrawnThisCycle) {
-                     if (isPaused) { drawCanvasText("PAUSED", midScreenX, midScreenY, PAUSE_TEXT_FONT, PAUSE_TEXT_COLOR, 'center', 'middle', PAUSE_TEXT_SHADOW); messageDrawnThisCycle = true; }
-                     else if (isShowingCoopPlayersReady) {
-                        const coopReadyText = isCoopAIDemoActive ? "DEMO PLAYERS READY!" : ((isPlayerTwoAI && selectedGameMode === 'coop') ? "PLAYER & AI READY!" : "PLAYERS READY!");
-                        drawCanvasText(coopReadyText, midScreenX, midScreenY, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true); messageDrawnThisCycle = true;
-                     }
-                     else if (isShowingCaptureMessage) { drawCanvasText("FIGHTER CAPTURED", midScreenX, midScreenY, INTRO_TEXT_FONT, "red", 'center', 'middle', true); messageDrawnThisCycle = true; }
-                     else if (showCsBonusScoreMessage || showPerfectMessage || showCsHitsMessage) { drawCanvasText(hitsText, midScreenX, midScreenY, INTRO_TEXT_FONT, CS_HITS_TEXT_COLOR, 'center', 'middle', true); messageDrawnThisCycle = true; if (showCsBonusScoreMessage || showPerfectMessage) { drawCanvasText("PERFECT !", midScreenX, midScreenY - CS_MESSAGE_VERTICAL_OFFSET, INTRO_TEXT_FONT, PERFECT_TEXT_COLOR, 'center', 'middle', true); } if (showCsBonusScoreMessage) { drawCanvasText("SPECIAL BONUS 10000 PTS", midScreenX, midScreenY + CS_MESSAGE_VERTICAL_OFFSET, INTRO_TEXT_FONT, CS_BONUS_SCORE_TEXT_COLOR, 'center', 'middle', true); } }
+                 if (!messageDrawnThisCycle) { // Alleen als geen van bovenstaande prioritaire berichten is getoond
+                     if (showCsBonusScoreMessage || showPerfectMessage || showCsHitsMessage) { drawCanvasText(hitsText, midScreenX, midScreenY, INTRO_TEXT_FONT, CS_HITS_TEXT_COLOR, 'center', 'middle', true); messageDrawnThisCycle = true; if (showCsBonusScoreMessage || showPerfectMessage) { drawCanvasText("PERFECT !", midScreenX, midScreenY - CS_MESSAGE_VERTICAL_OFFSET, INTRO_TEXT_FONT, PERFECT_TEXT_COLOR, 'center', 'middle', true); } if (showCsBonusScoreMessage) { drawCanvasText("SPECIAL BONUS 10000 PTS", midScreenX, midScreenY + CS_MESSAGE_VERTICAL_OFFSET, INTRO_TEXT_FONT, CS_BONUS_SCORE_TEXT_COLOR, 'center', 'middle', true); } }
                      else if (showCSClearMessage) { drawCanvasText("STAGE CLEARED", midScreenX, midScreenY - CS_MESSAGE_VERTICAL_OFFSET, INTRO_TEXT_FONT, CS_CLEAR_TEXT_COLOR, 'center', 'middle', true); messageDrawnThisCycle = true; if (showCsHitsForClearMessage) { drawCanvasText(hitsText, midScreenX, midScreenY, INTRO_TEXT_FONT, CS_HITS_TEXT_COLOR, 'center', 'middle', true); } if (showCsScoreForClearMessage) { drawCanvasText(clearBonusText, midScreenX, midScreenY + CS_MESSAGE_VERTICAL_OFFSET, INTRO_TEXT_FONT, CS_CLEAR_SCORE_TEXT_COLOR, 'center', 'middle', true); } }
                      else if (showExtraLifeMessage) { drawCanvasText("EXTRA LIFE", midScreenX, midScreenY, INTRO_TEXT_FONT, EXTRA_LIFE_TEXT_COLOR, 'center', 'middle', true); messageDrawnThisCycle = true; }
                      else if (isShowingIntro && !isShowingCoopPlayersReady) {
@@ -1587,29 +1605,15 @@ function renderGame() {
                         if (introText) { drawCanvasText(introText, midScreenX, midScreenY, INTRO_TEXT_FONT, introColor, 'center', 'middle', true); messageDrawnThisCycle = true; }
                      }
                      else if (showReadyMessage) { drawCanvasText("READY?", midScreenX, midScreenY, INTRO_TEXT_FONT, READY_TEXT_COLOR, 'center', 'middle', true); messageDrawnThisCycle = true; }
-                     else if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                        const playerGameOverTextBaseY = gameCanvas.height * 0.45 + playerGameOverYOffset;
-                        if (isPlayer1ShowingGameOverMessage && !isPlayer2ShowingGameOverMessage) {
-                            const p1goLabel = isCoopAIDemoActive ? "DEMO-1" : (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? "PLAYER 1" : "PLAYER 1");
-                            drawCanvasText(p1goLabel.toUpperCase(), midScreenX, playerGameOverTextBaseY - lineSpacingGameOver / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
-                            drawCanvasText("GAME OVER", midScreenX, playerGameOverTextBaseY + lineSpacingGameOver / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
-                            messageDrawnThisCycle = true;
-                        } else if (isPlayer2ShowingGameOverMessage && !isPlayer1ShowingGameOverMessage) {
-                            const p2goLabel = isCoopAIDemoActive ? "DEMO-2" : (isPlayerTwoAI ? "AI PLAYER 2" : "PLAYER 2");
-                            drawCanvasText(p2goLabel.toUpperCase(), midScreenX, playerGameOverTextBaseY - lineSpacingGameOver / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
-                            drawCanvasText("GAME OVER", midScreenX, playerGameOverTextBaseY + lineSpacingGameOver / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
-                            messageDrawnThisCycle = true;
-                        }
-                     }
-                }
+                 }
                  gameCtx.restore();
             }
             else { 
-                if (isShowingPlayerGameOverMessage && selectedGameMode === 'normal') {
+                if (isShowingPlayerGameOverMessage && selectedGameMode === 'normal') { // Voor 1P/Normaal 2P Game Over
                      const playerText = (isPlayerTwoAI && playerWhoIsGameOver === 2) ? `AI PLAYER 2` : `PLAYER ${playerWhoIsGameOver}`;
                      const lineSpacing = RESULTS_LINE_V_SPACING_SINGLE; const messageCenterY = gameCanvas.height * 0.45; drawCanvasText(playerText, gameCanvas.width / 2, messageCenterY - lineSpacing / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true); drawCanvasText("GAME OVER", gameCanvas.width / 2, messageCenterY + lineSpacing / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
                 }
-                else if (gameOverSequenceStartTime > 0) {
+                else if (gameOverSequenceStartTime > 0) { // Volledig Game Over / Resultaten
                     const elapsedTime = now - gameOverSequenceStartTime;
                     const isShowingGameOverText = elapsedTime < GAME_OVER_DURATION;
                     const isShowingResultsScreenActive = elapsedTime >= GAME_OVER_DURATION;
