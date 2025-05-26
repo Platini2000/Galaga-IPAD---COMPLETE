@@ -2386,8 +2386,19 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         }
     }
 
+    // <<< GEWIJZIGDE LOGICA: AI met laatste leven vermijdt capture beam >>>
     if (!isDodgingThreat && !isShipDual && captureBeamActive && capturingBossId && !isThisShipCaptured) {
-        if (aiPlayerActivelySeekingCaptureById === null || aiPlayerActivelySeekingCaptureById === shipIdentifier) {
+        if (livesOfThisAIShip <= 1) { // Als het het laatste leven is
+            isMovingToCaptureBeam = false; // Ga niet naar de beam
+            if (aiPlayerActivelySeekingCaptureById === shipIdentifier) { // Reset als deze AI actief zocht
+                aiPlayerActivelySeekingCaptureById = null;
+            }
+            // Blijf op de huidige lane of een veilige positie
+            desiredTargetX = targetCenterShipX;
+            shouldTryShoot = false; // Overweeg om niet te schieten om de beam te vermijden
+            targetEnemyForAI = null;
+        } else if (aiPlayerActivelySeekingCaptureById === null || aiPlayerActivelySeekingCaptureById === shipIdentifier) {
+    // <<< EINDE GEWIJZIGDE LOGICA >>>
             const capturingBossEntity = gameEnemies.find(e => e.id === capturingBossId);
             if (capturingBossEntity && capturingBossEntity.state === 'capturing') {
                 if (aiPlayerActivelySeekingCaptureById === null) {
@@ -2491,20 +2502,18 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         targetEnemyForAI = localTargetEnemyForAI;
         shouldTryShoot = localShouldTryShoot;
 
-        // <<< NIEUWE LOGICA OM VUREN TE VOORKOMEN ALS DUAL SHIP AI DE PARTNER KAN REDDEN >>>
-        if (isCoopAIDemoActive && isShipDual && targetEnemyForAI && shouldTryShoot) { // Alleen als het al wilde schieten
+        if (isCoopAIDemoActive && isShipDual && targetEnemyForAI && shouldTryShoot) { 
             const partnerIsCapturedByThisTarget =
                 targetEnemyForAI.type === ENEMY3_TYPE &&
                 targetEnemyForAI.hasCapturedShip &&
-                targetEnemyForAI.id === capturedBossIdWithMessage && // Controleer of dit DE boss is die een schip vasthoudt
-                ( (shipIdentifier === 'p1' && isPlayer2ShipCaptured) || // Als huidige AI P1 is, check of P2 is gevangen door DEZE target
-                  ((shipIdentifier === 'p2' || shipIdentifier === 'ai_p2') && isPlayer1ShipCaptured) ); // Als huidige AI P2 is, check of P1 is gevangen door DEZE target
+                targetEnemyForAI.id === capturedBossIdWithMessage && 
+                ( (shipIdentifier === 'p1' && isPlayer2ShipCaptured) || 
+                  ((shipIdentifier === 'p2' || shipIdentifier === 'ai_p2') && isPlayer1ShipCaptured) ); 
 
             if (partnerIsCapturedByThisTarget) {
-                shouldTryShoot = false; // AI met dual ship houdt in op boss die partner gevangen heeft
+                shouldTryShoot = false; 
             }
         }
-        // <<< EINDE NIEUWE LOGICA >>>
 
 
         if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && isShipDual && targetEnemyForAI) {
