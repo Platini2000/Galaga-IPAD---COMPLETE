@@ -2244,7 +2244,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
     let laneCenterX = gameCanvasWidth / 2; 
 
-    // --- GEWIJZIGDE LOGICA: Centreren als enige overlevende AI in COOP DEMO tijdens INTRO ---
+    // --- GEWIJZIGDE LOGICA: Centreren als enige overlevende AI in COOP Demo tijdens INTRO ---
     // Centreren alleen als het *niet* de entrance phase van een CS is.
     const generalIntroIsActive = (isShowingIntro || isShowingCoopPlayersReady);
     const isCoopDemoAndGeneralIntroActive = isCoopAIDemoActive && generalIntroIsActive && !(isChallengingStage && isEntrancePhaseActive);
@@ -2490,6 +2490,22 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         }
         targetEnemyForAI = localTargetEnemyForAI;
         shouldTryShoot = localShouldTryShoot;
+
+        // <<< NIEUWE LOGICA OM VUREN TE VOORKOMEN ALS DUAL SHIP AI DE PARTNER KAN REDDEN >>>
+        if (isCoopAIDemoActive && isShipDual && targetEnemyForAI && shouldTryShoot) { // Alleen als het al wilde schieten
+            const partnerIsCapturedByThisTarget =
+                targetEnemyForAI.type === ENEMY3_TYPE &&
+                targetEnemyForAI.hasCapturedShip &&
+                targetEnemyForAI.id === capturedBossIdWithMessage && // Controleer of dit DE boss is die een schip vasthoudt
+                ( (shipIdentifier === 'p1' && isPlayer2ShipCaptured) || // Als huidige AI P1 is, check of P2 is gevangen door DEZE target
+                  ((shipIdentifier === 'p2' || shipIdentifier === 'ai_p2') && isPlayer1ShipCaptured) ); // Als huidige AI P2 is, check of P1 is gevangen door DEZE target
+
+            if (partnerIsCapturedByThisTarget) {
+                shouldTryShoot = false; // AI met dual ship houdt in op boss die partner gevangen heeft
+            }
+        }
+        // <<< EINDE NIEUWE LOGICA >>>
+
 
         if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && isShipDual && targetEnemyForAI) {
             const partnerPlayerId = (shipIdentifier === 'p1') ? 'p2' : 'p1';
