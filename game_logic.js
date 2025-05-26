@@ -2576,7 +2576,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
 
 // --- EINDE deel 5      van 8 dit codeblok ---
-// --- END OF FILE game_logic.js ---
+// --- END OF FILE game_logic.js --- 
 
 
 
