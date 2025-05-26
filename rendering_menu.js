@@ -429,7 +429,7 @@ function showMenuState() {
 }
 
 /** Start de AI demo modus. */
-function startAIDemo() {
+async function startAIDemo() { // Gemaakt async vanwege baseStartGame
     if (isInGameState) return;
     stopSound('menuMusicSound');
     isShowingScoreScreen = false;
@@ -451,12 +451,12 @@ function startAIDemo() {
     wasLastGameAIDemo = true;
     coopStartSoundPlayedThisSession = false;
 
-    baseStartGame(false);
+    await baseStartGame(false); // Wacht op baseStartGame
     gameJustStarted = true;
 }
 
 /** Start de CO-OP AI demo modus. */
-function startCoopAIDemo() {
+async function startCoopAIDemo() { // Gemaakt async vanwege baseStartGame
     if (isInGameState) return;
     stopSound('menuMusicSound');
     isShowingScoreScreen = false;
@@ -477,7 +477,7 @@ function startCoopAIDemo() {
     aiPlayerActivelySeekingCaptureById = null;
     wasLastGameAIDemo = true;
 
-    baseStartGame(false);
+    await baseStartGame(false); // Wacht op baseStartGame
     gameJustStarted = true;
 }
 
@@ -520,8 +520,8 @@ function startGame2P() {
     startAutoDemoTimer();
 }
 
-// <<< GEWIJZIGD: baseStartGame is nu async en roept lockScreenOrientation aan >>>
-async function baseStartGame(setManualControl) {
+
+async function baseStartGame(setManualControl) { // <<< FUNCTIE IS ASYNC >>>
     try {
         if (!gameCanvas || !gameCtx) { console.error("Cannot start game - canvas not ready."); showMenuState(); return; }
         if (setManualControl) {
@@ -572,21 +572,24 @@ async function baseStartGame(setManualControl) {
             return;
         }
 
-        // <<< GEWIJZIGD: Probeer fullscreen en oriëntatie te vergrendelen >>>
+        // Probeer fullscreen en oriëntatie te vergrendelen
         if (typeof window.lockScreenOrientation === 'function') {
             if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                 console.log("Requesting fullscreen from baseStartGame...");
                 try {
-                    await document.documentElement.requestFullscreen();
+                    await document.documentElement.requestFullscreen({ navigationUI: "hide" });
+                    // De fullscreenchange listener (indien ingesteld) of directe aanroep zal de lock proberen.
+                    // Voor de zekerheid hier ook direct na succesvolle fullscreen.
                     await window.lockScreenOrientation();
                 } catch (err) {
                     console.warn("Fullscreen request failed during game start, trying to lock orientation anyway.", err);
                     await window.lockScreenOrientation();
                 }
             } else {
-                 await window.lockScreenOrientation(); // Al fullscreen
+                console.log("Already in fullscreen during baseStartGame, attempting orientation lock.");
+                await window.lockScreenOrientation();
             }
         }
-        // <<< EINDE GEWIJZIGD >>>
 
 
         isShowingCoopPlayersReady = false;
@@ -648,8 +651,6 @@ async function baseStartGame(setManualControl) {
         alert("Critical error starting game!"); showMenuState();
     }
 }
-// <<< EINDE GEWIJZIGD >>>
-
 function stopGameAndShowMenu() {
     isPaused = false;
     if (isManualControl) {
@@ -706,7 +707,7 @@ function showScoreScreen() {
 /**
  * Helper functie om een stap terug te gaan in het menu.
  */
-function goBackInMenu() {
+async function goBackInMenu() { // <<< FUNCTIE IS ASYNC >>>
     if (isFiringModeSelectMode) {
         isFiringModeSelectMode = false;
         if (selectedOnePlayerGameVariant === 'CLASSIC_1P') {
@@ -727,13 +728,12 @@ function goBackInMenu() {
         isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1; // Terug naar P1/P2 (P2 geselecteerd)
     } else if (isPlayerSelectMode) {
         isPlayerSelectMode = false; selectedButtonIndex = 0; // Terug naar hoofdmenu
-    } else { // In hoofdmenu: klik/tap naast knoppen triggert fullscreen
-        // <<< GEWIJZIGD: triggerFullscreen is nu async, dus await gebruiken als goBackInMenu ook async wordt, of .then() gebruiken.
-        // Voor nu, roep het aan; het zal zijn eigen async operaties afhandelen.
-        if (typeof triggerFullscreen === 'function') triggerFullscreen();
-        // <<< EINDE GEWIJZIGD >>>
+    } else {
+        if (typeof triggerFullscreen === 'function') {
+            await triggerFullscreen(); // Wacht op fullscreen en orientatie lock poging
+        }
     }
-    startAutoDemoTimer(); // Reset inactiviteitstimer
+    startAutoDemoTimer();
 }
 
 
@@ -743,7 +743,7 @@ function goBackInMenu() {
  * @param {'start'|'move'|'end'} type - The type of event.
  * @param {boolean} [isTap=false] - True if the 'end' event is considered a tap (relevant for touchend).
  */
-function handleCanvasTouch(event, type, isTap = false) {
+function handleCanvasTouch(event, type, isTap = false) { // Deze functie zelf hoeft niet per se async, tenzij het iets met de results van goBackInMenu/baseStartGame doet
     if (!gameCanvas) return;
 
     let clientX, clientY;
@@ -826,15 +826,13 @@ function handleCanvasTouch(event, type, isTap = false) {
                     isGameModeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = false; selectedButtonIndex = 0;
                 } else if (isFiringModeSelectMode) {
                     if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; }
-                    baseStartGame(true);
+                    baseStartGame(true); // baseStartGame is async
                 } else {
                     if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0; }
                     else if (selectedButtonIndex === 1) { if (typeof exitGame === 'function') exitGame(); }
                 }
             } else if (isTap && currentHoverButton === -1 && touchedMenuButtonIndex === -1) {
-                // <<< GEWIJZIGD: Roep goBackInMenu aan bij tap naast knoppen >>>
-                goBackInMenu();
-                // <<< EINDE GEWIJZIGD >>>
+                if (typeof goBackInMenu === 'function') goBackInMenu(); // goBackInMenu is async
             }
             touchedMenuButtonIndex = -1;
         }
@@ -850,46 +848,37 @@ function handleCanvasTouch(event, type, isTap = false) {
 /**
  * Handles click events on the canvas.
  */
-// <<< GEWIJZIGD: handleCanvasClick is nu async en roept lockScreenOrientation aan bij audio resume >>>
-async function handleCanvasClick(event) {
+async function handleCanvasClick(event) { // <<< FUNCTIE IS ASYNC >>>
     if (!gameCanvas) return;
+    let audioResumedThisInteraction = false;
      if (audioContext && audioContext.state === 'suspended') {
         try {
             await audioContext.resume();
             audioContextInitialized = true;
+            audioResumedThisInteraction = true;
             console.log("AudioContext resumed by canvas click.");
-            // Probeer oriëntatie te vergrendelen na succesvolle audio resume en fullscreen
-            if (typeof window.lockScreenOrientation === 'function') {
-                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                    try {
-                        await document.documentElement.requestFullscreen();
-                        await window.lockScreenOrientation();
-                    } catch (err) {
-                         console.warn("Fullscreen request failed during canvas click, trying to lock orientation anyway.", err);
-                         await window.lockScreenOrientation();
-                    }
-                } else {
-                     await window.lockScreenOrientation(); // Al fullscreen
-                }
-            }
         } catch (e) {
             console.error("Error resuming AudioContext on canvas click:", e);
         }
-    } else if (audioContextInitialized && typeof window.lockScreenOrientation === 'function') {
-        // Audio al actief, probeer lock als niet al fullscreen
-        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-            try {
-                await document.documentElement.requestFullscreen();
-                await window.lockScreenOrientation();
-            } catch (err) {
-                 console.warn("Fullscreen request failed during canvas click (audio active), trying to lock orientation anyway.", err);
+    }
+
+    if (audioResumedThisInteraction || audioContextInitialized) {
+        if (typeof window.lockScreenOrientation === 'function') {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                try {
+                    console.log("Requesting fullscreen from canvas click...");
+                    await document.documentElement.requestFullscreen({ navigationUI: "hide" });
+                    // Wacht op fullscreenchange event
+                } catch (err) {
+                     console.warn("Fullscreen request failed during canvas click, trying to lock orientation anyway.", err);
+                     await window.lockScreenOrientation();
+                }
+            } else {
+                 console.log("Already in fullscreen during canvas click, attempting orientation lock.");
                  await window.lockScreenOrientation();
             }
-        } else {
-             await window.lockScreenOrientation();
         }
     }
-// <<< EINDE GEWIJZIGD >>>
 
     if (isInGameState) {
         if (isPaused) { if(typeof togglePause === 'function') togglePause(); return; }
@@ -931,15 +920,13 @@ async function handleCanvasClick(event) {
                 isGameModeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = false; selectedButtonIndex = 0;
             } else if (isFiringModeSelectMode) {
                 if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; }
-                baseStartGame(true);
+                await baseStartGame(true); // Wacht op baseStartGame
             } else {
                 if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0; }
                 else if (selectedButtonIndex === 1) { if (typeof exitGame === 'function') exitGame(); }
             }
         } else {
-            // <<< GEWIJZIGD: Roep goBackInMenu aan bij klik naast knoppen >>>
-            goBackInMenu();
-            // <<< EINDE GEWIJZIGD >>>
+            if (typeof goBackInMenu === 'function') await goBackInMenu(); // Wacht op goBackInMenu
         }
         startAutoDemoTimer();
     }
