@@ -3653,12 +3653,12 @@ function runSingleGameUpdate(timestamp) {
 
             if (p1GameOverMsgDone || p2GameOverMsgDone) {
                 if (player1Lives <= 0 && player2Lives <= 0 && gameOverSequenceStartTime === 0) {
-                    triggerFinalGameOverSequence();
+                    triggerFinalGameOverSequence(); 
                 }
                 if (isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) handlePlayerInput();
                 if (typeof moveEntities === 'function') moveEntities();
                 renderGame();
-                if (gameOverSequenceStartTime > 0 || player1Lives > 0 || player2Lives > 0) {
+                if (gameOverSequenceStartTime > 0 || player1Lives > 0 || player2Lives > 0) { 
                     return;
                 }
             } else if (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage) {
@@ -4301,7 +4301,7 @@ function runSingleGameUpdate(timestamp) {
                         let canContinue = false;
                         if (isTwoPlayerMode && selectedGameMode === 'coop') canContinue = (player1Lives > 0 || player2Lives > 0);
                         else if (isTwoPlayerMode && selectedGameMode === 'normal') canContinue = (currentPlayer === 1 ? player1Lives : player2Lives) > 0;
-                        else canContinue = player1Lives > 0; 
+                        else canContinue = playerLives > 0; // Voor 1P classic, playerLives is player1Lives 
 
                         if (canContinue) {
                             resetWaveInternal(); gameJustStartedAndWaveLaunched = false; gameJustStarted = true;

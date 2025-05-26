@@ -939,7 +939,7 @@ function renderGame() {
         gameCtx.save();
         const UI_FONT="20px 'Press Start 2P'"; const LABEL_COLOR="red"; const SCORE_COLOR="white";
         const maxLivesIcons = 5; 
-        const defaultReserveLives = 2; // <<< defaultReserveLives NU CORRECT GEDEFINIEERD >>>
+        const defaultReserveLives = 2; 
         gameCtx.font=UI_FONT; gameCtx.textBaseline="top";
 
         const drawTopUiElement=(label, scoreValue, labelAlign, labelX, shouldBlink = false)=>{
@@ -1261,7 +1261,7 @@ function renderGame() {
                                      (isPlayer2ShowingGameOverMessage && !isPlayer1_Coop_Or_SinglePlayer);
 
             if (!isInGameState || isShowingScoreScreen || isGameOverOrResults) {
-                numLifeIconsDrawn = (playerLivesForOffset <= 0) ? 0 : defaultReserveLives; // Gebruik defaultReserveLives hier
+                numLifeIconsDrawn = (playerLivesForOffset <= 0) ? 0 : defaultReserveLives; 
             } else if (isInGameState) {
                  const actualPlayerLivesInGame = (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === currentActivePlayerForOffset) ? playerLives : playerLivesForOffset;
                  numLifeIconsDrawn = actualPlayerLivesInGame > 0 ? Math.max(0, actualPlayerLivesInGame - 1) : 0;
@@ -1312,8 +1312,8 @@ function renderGame() {
                 p1LevelToDraw = (currentPlayer === 1) ? level : player1MaxLevelReached;
                 p2LevelToDraw = (currentPlayer === 2) ? level : player2MaxLevelReached;
             } else if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                p1LevelToDraw = level;
-                p2LevelToDraw = level;
+                p1LevelToDraw = player1Lives > 0 ? level : player1MaxLevelReached;
+                p2LevelToDraw = player2Lives > 0 ? level : player2MaxLevelReached;
             } else { 
                 p1LevelToDraw = level;
             }
@@ -1598,8 +1598,10 @@ function renderGame() {
                     const isShowingGameOverText = elapsedTime < GAME_OVER_DURATION;
                     const isShowingResultsScreenActive = elapsedTime >= GAME_OVER_DURATION;
 
-                    if (isShowingGameOverText && !isTwoPlayerMode && !isCoopAIDemoActive && !isPlayerTwoAI && selectedGameMode !== 'coop') { 
+                    if (isShowingGameOverText && !isTwoPlayerMode && !isCoopAIDemoActive && !isPlayerTwoAI && selectedGameMode !== 'coop') { // <<<< Aangepast: Check ook of het NIET COOP Demo is
                         drawCanvasText("GAME OVER", gameCanvas.width / 2, gameCanvas.height / 2, GAME_OVER_FONT, GAME_OVER_COLOR, 'center', 'middle', GAME_OVER_SHADOW);
+                    } else if (isShowingGameOverText && isCoopAIDemoActive && player1Lives <= 0 && player2Lives <=0) { // <<<< NIEUW: GAME OVER tekst voor COOP Demo
+                         drawCanvasText("GAME OVER", gameCanvas.width / 2, gameCanvas.height / 2, GAME_OVER_FONT, GAME_OVER_COLOR, 'center', 'middle', GAME_OVER_SHADOW);
                     }
                     else if (isShowingResultsScreenActive) {
                         gameCtx.save(); const centerX = gameCanvas.width / 2; const canvasWidth = gameCanvas.width; let initialY = RESULTS_START_Y + RESULTS_LINE_V_SPACING_SINGLE;
