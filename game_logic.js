@@ -2631,120 +2631,80 @@ function findAndDetachEnemy() {
 
 /**
  * Start direct een capture dive als aan voorwaarden voldaan is.
- * Kan nu mogelijk twee bosses sturen in CO-OP/2P modes.
  */
 function triggerImmediateCaptureDive() {
     try {
-        if (isChallengingStage || captureAttemptMadeThisLevel) { // Globale vlag voorkomt meerdere *pogingen* per level
-            return;
-        }
-
-        let p1CanBeTargeted = false;
-        let p2CanBeTargeted = false;
-        let targetPlayerShip1 = null;
-        let targetPlayerShip2 = null;
+        let canAttemptCapture = false;
+        let targetPlayerShipForDive = null;
 
         if (isTwoPlayerMode && selectedGameMode === 'coop') {
-            p1CanBeTargeted = ship1 && player1Lives > 1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !player1IsDualShipActive;
-            if (p1CanBeTargeted) targetPlayerShip1 = ship1;
-            p2CanBeTargeted = ship2 && player2Lives > 1 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !player2IsDualShipActive;
-            if (p2CanBeTargeted) targetPlayerShip2 = ship2;
-        } else if (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 1 && isPlayerTwoAI) { // P1 (mens) vs AI P2
-            p1CanBeTargeted = ship && playerLives > 1 && !isShipCaptured && !isWaitingForRespawn && !isDualShipActive;
-            if (p1CanBeTargeted) targetPlayerShip1 = ship;
-            // P2 (AI) kan ook een doelwit zijn als P1 er niet is, of als we besluiten dat de AI ook gevangen kan worden.
-            // Voor nu richten we ons op de menselijke speler.
-        } else if (!isTwoPlayerMode) { // 1P Classic
-            p1CanBeTargeted = playerLives > 1 && ship && !isShipCaptured && !isWaitingForRespawn && !isDualShipActive;
-            if (p1CanBeTargeted) targetPlayerShip1 = ship;
+            const p1CanBeTargeted = ship1 && player1Lives > 1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn;
+            const p2CanBeTargeted = ship2 && player2Lives > 1 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn;
+
+            // In CO-OP Demo, we staan een poging toe zolang `captureAttemptMadeThisLevel` false is,
+            // zelfs als de vorige geselecteerde boss sneuvelde.
+            // De vlag wordt pas true als een beam daadwerkelijk activeert.
+            if ((p1CanBeTargeted || p2CanBeTargeted) && !captureAttemptMadeThisLevel) {
+                canAttemptCapture = true;
+                if (p1CanBeTargeted && p2CanBeTargeted) {
+                    targetPlayerShipForDive = Math.random() < 0.5 ? ship1 : ship2;
+                } else if (p1CanBeTargeted) {
+                    targetPlayerShipForDive = ship1;
+                } else if (p2CanBeTargeted) {
+                    targetPlayerShipForDive = ship2;
+                }
+            }
+        } else {
+            if (playerLives > 1 && ship && !isShipCaptured && !isWaitingForRespawn && !captureAttemptMadeThisLevel) {
+                canAttemptCapture = true;
+                targetPlayerShipForDive = ship;
+            }
         }
-        // TODO: Overweging voor 2P Human Normal - momenteel niet specifiek afgehandeld voor dubbele duik.
+
+        if (isChallengingStage || !canAttemptCapture || !targetPlayerShipForDive) {
+            return;
+        }
 
         const potentialCapturingBosses = enemies.filter(e =>
             e && e.state === 'in_grid' && e.type === ENEMY3_TYPE && !e.hasCapturedShip && !e.isPreparingForImmediateCapture
         );
 
-        if (potentialCapturingBosses.length === 0) return;
+        if (potentialCapturingBosses.length > 0) {
+            const chosenBoss = potentialCapturingBosses[Math.floor(Math.random() * potentialCapturingBosses.length)];
+            const now = Date.now();
 
-        const now = Date.now();
+            // Markeer deze boss als geselecteerd, maar zet captureAttemptMadeThisLevel nog NIET.
+            chosenBoss.isPreparingForImmediateCapture = true;
 
-        // Functie om een enkele boss dive te initiëren
-        const initiateSingleBossDive = (boss, targetShip) => {
-            if (!boss || !targetShip) return;
-
-            boss.isPreparingForImmediateCapture = true; // Markeer voor deze specifieke duik
-            boss.justReturned = true;
-            const attackGroupIds = new Set([boss.id]);
+            chosenBoss.justReturned = true; // Voorkom dat hij direct weer aanvalt als dit mislukt
+            const attackGroupIds = new Set([chosenBoss.id]);
             resetJustReturnedFlags(attackGroupIds);
 
-            const diveTargetPlayerXPos = targetShip.x + targetShip.width / 2;
-            const diveSide = (diveTargetPlayerXPos < gameCanvas.width / 2) ? 'right' : 'left'; // Boss komt van tegenovergestelde kant
-
+            const diveTargetXPos = targetPlayerShipForDive.x + targetPlayerShipForDive.width / 2;
+            const diveSide = (diveTargetXPos < gameCanvas.width / 2) ? 'right' : 'left';
             const targetX = diveSide === 'left'
                 ? gameCanvas.width * CAPTURE_DIVE_SIDE_MARGIN_FACTOR
                 : gameCanvas.width * (1 - CAPTURE_DIVE_SIDE_MARGIN_FACTOR) - BOSS_WIDTH;
             const targetY = gameCanvas.height * CAPTURE_DIVE_BOTTOM_HOVER_Y_FACTOR;
 
-            boss.state = 'preparing_capture';
-            boss.targetX = targetX; // Doelpositie om te hoveren
-            boss.targetY = targetY;
-            boss.diveStartTime = now; // Gebruikt om beam te timen
+            chosenBoss.state = 'preparing_capture';
+            chosenBoss.targetX = targetX;
+            chosenBoss.targetY = targetY;
+            chosenBoss.diveStartTime = now; // diveStartTime wordt gebruikt om de beam te timen in moveEntities
             playSound('bossGalagaDiveSound', false, 0.2);
-            const leaderId = boss.id;
+            const leaderId = chosenBoss.id;
 
-            boss.capturePrepareTimeout = setTimeout(() => {
+            chosenBoss.capturePrepareTimeout = setTimeout(() => {
                 const currentEnemy = enemies.find(e => e?.id === leaderId);
                 if (currentEnemy && currentEnemy.state === 'preparing_capture') {
                     currentEnemy.state = 'diving_to_capture_position';
                 }
                 if(currentEnemy) currentEnemy.capturePrepareTimeout = null;
-                const timeoutIndex = enemySpawnTimeouts.findIndex(tId => tId === boss.capturePrepareTimeout);
+                const timeoutIndex = enemySpawnTimeouts.findIndex(tId => tId === chosenBoss.capturePrepareTimeout); // Moet capturePrepareTimeout van de boss zijn
                 if (timeoutIndex > -1) enemySpawnTimeouts.splice(timeoutIndex, 1);
             }, 300);
-            enemySpawnTimeouts.push(boss.capturePrepareTimeout);
-        };
-
-
-        if ((isCoopAIDemoActive || (isTwoPlayerMode && selectedGameMode === 'coop')) && p1CanBeTargeted && p2CanBeTargeted && potentialCapturingBosses.length >= 2) {
-            // Probeer twee bosses te sturen
-            let boss1 = potentialCapturingBosses.pop();
-            let boss2 = potentialCapturingBosses.pop();
-
-            if (boss1 && boss2 && targetPlayerShip1 && targetPlayerShip2) {
-                // Zorg ervoor dat ze naar verschillende kanten duiken en verschillende schepen targeten
-                // (of op zijn minst verschillende startposities hebben voor de duik)
-                const targetPlayer1X = targetPlayerShip1.x + targetPlayerShip1.width / 2;
-                const targetPlayer2X = targetPlayerShip2.x + targetPlayerShip2.width / 2;
-
-                // Wijs bosses toe op basis van hun huidige positie tov de spelers
-                // om kruisende duiken te minimaliseren (visueel duidelijker)
-                let bossForP1, bossForP2;
-                if (Math.abs(boss1.x - targetPlayer1X) + Math.abs(boss2.x - targetPlayer2X) <
-                    Math.abs(boss1.x - targetPlayer2X) + Math.abs(boss2.x - targetPlayer1X)) {
-                    bossForP1 = boss1;
-                    bossForP2 = boss2;
-                } else {
-                    bossForP1 = boss2;
-                    bossForP2 = boss1;
-                }
-
-                initiateSingleBossDive(bossForP1, targetPlayerShip1);
-                initiateSingleBossDive(bossForP2, targetPlayerShip2);
-                // captureAttemptMadeThisLevel wordt true zodra een beam activeert
-            } else if (boss1 && targetPlayerShip1) { // Fallback naar enkele duik als er niet genoeg bosses/targets zijn
-                initiateSingleBossDive(boss1, targetPlayerShip1);
-            } else if (boss1 && targetPlayerShip2) { // Of als P1 niet targetable was maar P2 wel
-                 initiateSingleBossDive(boss1, targetPlayerShip2);
-            }
-
-        } else if (p1CanBeTargeted && potentialCapturingBosses.length >= 1) {
-            // Standaard enkele duik voor P1 (of actieve speler in 1P modes)
-            initiateSingleBossDive(potentialCapturingBosses[0], targetPlayerShip1);
-        } else if (p2CanBeTargeted && potentialCapturingBosses.length >= 1 && (isTwoPlayerMode && selectedGameMode === 'coop')) {
-            // Enkele duik voor P2 als P1 niet beschikbaar was in CO-OP
-            initiateSingleBossDive(potentialCapturingBosses[0], targetPlayerShip2);
+            enemySpawnTimeouts.push(chosenBoss.capturePrepareTimeout);
         }
-
     } catch (e) {
         console.error("Error in triggerImmediateCaptureDive:", e);
     }
@@ -2753,6 +2713,7 @@ function triggerImmediateCaptureDive() {
 
 /**
  * Resets justReturned flag for other grid enemies. (Nu met Set<string> of null)
+ * <<< GEWIJZIGD: Parameter type aangepast in commentaar en logica >>>
  * @param {Set<string>|string|null} excludedIds - ID(s) to exclude. Set for multiple, string for single, null for none.
  */
 function resetJustReturnedFlags(excludedIds) {
@@ -2797,9 +2758,11 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
         const shipBaseY  = gameCanvas ? gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN : 500;
 
         // --- Ship Movement (CO-OP, 1P, AI) ---
-        if (gameCanvas && !isTouchActiveGame) {
+        // Keyboard/Gamepad beweging (als touch niet actief is voor beweging)
+        if (gameCanvas && !isTouchActiveGame) { // Alleen keyboard/gamepad beweging als touch NIET actief is.
             if (isManualControl) {
                 if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                    // P1 (mens) beweging via keyboard/gamepad
                     if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) {
                         const p1EffectiveWidth = ship1.width + (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
                         if (leftPressed) ship1.x -= ship1.speed;
@@ -2807,6 +2770,7 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
                         ship1.x = Math.max(0, Math.min(gameCanvas.width - p1EffectiveWidth, ship1.x));
                         ship1.targetX = ship1.x;
                     }
+                    // P2 (mens) beweging via keyboard/gamepad (als geen AI)
                     if (!isPlayerTwoAI && ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture) {
                         const p2EffectiveWidth = ship2.width + (player2IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
                         if (p2LeftPressed) ship2.x -= ship2.speed;
@@ -2814,9 +2778,9 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
                         ship2.x = Math.max(0, Math.min(gameCanvas.width - p2EffectiveWidth, ship2.x));
                         ship2.targetX = ship2.x;
                     }
-                } else {
+                } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
                     if (ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && gameOverSequenceStartTime === 0) {
-                        if (!isPlayerTwoAI || (isPlayerTwoAI && currentPlayer === 1) ) {
+                        if (!isPlayerTwoAI || (isPlayerTwoAI && currentPlayer === 1) ) { // Alleen als P1 (mens) aan de beurt is in 1P vs AI
                             const effectiveWidth = ship.width + (isDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
                             let useOverrideLeft = false; let useOverrideRight = false;
                             if (isManualControl && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && currentPlayer === 1 && isShowingIntro) {
@@ -2833,13 +2797,17 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
                 }
             }
         }
+        // Touch beweging wordt direct in handlePlayerInput afgehandeld door ship.x te zetten.
 
+        // AI Control Movement (Demo modes & AI P2 in 1P vs AI Normal & AI in CO-OP modes)
+        // Dit blijft nodig voor de AI-gestuurde schepen.
         if (!isManualControl ||
             (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) ||
             (isCoopAIDemoActive) ||
             (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') ) {
 
             if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                // AI P1 in COOP AI Demo
                 if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) {
                     const moveDifference1 = ship1.targetX - ship1.x;
                     let effectiveShipSpeed1 = ship1.speed * AI_POSITION_MOVE_SPEED_FACTOR;
@@ -2847,6 +2815,7 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
                     const aiEffectiveWidth1 = ship1.width + (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
                     ship1.x = Math.max(0, Math.min(gameCanvas.width - aiEffectiveWidth1, ship1.x));
                 }
+                // AI P2 in COOP AI Demo OF 1P vs AI COOP
                 if (ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture) {
                     const moveDifference2 = ship2.targetX - ship2.x;
                     let effectiveShipSpeed2 = ship2.speed * AI_POSITION_MOVE_SPEED_FACTOR;
@@ -2854,7 +2823,7 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
                     const aiEffectiveWidth2 = ship2.width + (player2IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
                     ship2.x = Math.max(0, Math.min(gameCanvas.width - aiEffectiveWidth2, ship2.x));
                 }
-            } else if (ship) {
+            } else if (ship) { // Standaard 1P AI Demo OF AI P2 in 1P vs AI Normal
                 if (playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && gameOverSequenceStartTime === 0) {
                     const moveDifference = ship.targetX - ship.x;
                     let effectiveShipSpeed = ship.speed * AI_POSITION_MOVE_SPEED_FACTOR;
@@ -2872,16 +2841,18 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
         }
 
 
+        // --- Respawn Timers & Invincibility End Checks ---
         if (isTwoPlayerMode && selectedGameMode === 'coop') {
             if (isPlayer1WaitingForRespawn && now >= player1RespawnTime) isPlayer1WaitingForRespawn = false;
             if (isPlayer1Invincible && now >= player1InvincibilityEndTime) isPlayer1Invincible = false;
             if (isPlayer2WaitingForRespawn && now >= player2RespawnTime) isPlayer2WaitingForRespawn = false;
             if (isPlayer2Invincible && now >= player2InvincibilityEndTime) isPlayer2Invincible = false;
-        } else {
+        } else { // Geldt voor 1P classic, 1P_VS_AI_NORMAL, 2P_NORMAL
             if (isWaitingForRespawn && now >= respawnTime) isWaitingForRespawn = false;
             if (isInvincible && now >= invincibilityEndTime) isInvincible = false;
         }
 
+        // Move Player Bullets & Collision with Enemies
         for (let i = bullets.length - 1; i >= 0; i--) {
             const b = bullets[i]; if (!b) { bullets.splice(i, 1); continue; }
             b.y -= b.speed; if (b.y + PLAYER_BULLET_HEIGHT < 0) { bullets.splice(i, 1); continue; }
@@ -2893,8 +2864,10 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
             }
         }
 
+        // Move Enemy Bullets
         for (let i = enemyBullets.length - 1; i >= 0; i--) { const eb = enemyBullets[i]; if (!eb) { enemyBullets.splice(i, 1); continue; } eb.x += eb.vx; eb.y += eb.vy; if (eb.y > gameCanvas.height || eb.y < -ENEMY_BULLET_HEIGHT || eb.x < -ENEMY_BULLET_WIDTH || eb.x > gameCanvas.width) { enemyBullets.splice(i, 1); } }
 
+        // Move Falling Ships
         const TARGET_FALLING_SHIP_Y = gameCanvas ? gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN : 500;
         const MAX_FALLING_SHIP_ROTATIONS = 2;
         for (let i = fallingShips.length - 1; i >= 0; i--) {
@@ -2909,53 +2882,56 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
                     let rescuingPlayerShipObject = null;
                     let setDualShipForRescuer = () => {};
                     let rescuerAlreadyDual = false;
-                    let playerShipIsCurrentlyCapturedByThisFallingShip = false;
+                    let playerShipIsCurrentlyCaptured = false;
                     let rescuerIsActiveAndExists = false;
+                    let rescuerPlayerId = null;
 
-                    if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                    if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) { // <<<< GEWIJZIGD
                         if (fs.targetPlayerId === 'player1' && ship1 && player1Lives > 0) {
                             rescuingPlayerShipObject = ship1;
                             rescuerAlreadyDual = player1IsDualShipActive;
-                            playerShipIsCurrentlyCapturedByThisFallingShip = isPlayer1ShipCaptured;
-                            setDualShipForRescuer = () => { player1IsDualShipActive = true; if(playerShipIsCurrentlyCapturedByThisFallingShip) isPlayer1ShipCaptured = false;};
+                            setDualShipForRescuer = () => { player1IsDualShipActive = true; };
                             rescuerIsActiveAndExists = true;
-                        } else if ((fs.targetPlayerId === 'player2' || fs.targetPlayerId === 'ai_p2') && ship2 && player2Lives > 0) {
+                            rescuerPlayerId = 'player1';
+                        } else if ((fs.targetPlayerId === 'player2' || fs.targetPlayerId === 'ai_p2') && ship2 && player2Lives > 0) { // <<<< GEWIJZIGD
                             rescuingPlayerShipObject = ship2;
                             rescuerAlreadyDual = player2IsDualShipActive;
-                            playerShipIsCurrentlyCapturedByThisFallingShip = isPlayer2ShipCaptured;
-                            setDualShipForRescuer = () => { player2IsDualShipActive = true; if(playerShipIsCurrentlyCapturedByThisFallingShip) isPlayer2ShipCaptured = false;};
+                            setDualShipForRescuer = () => { player2IsDualShipActive = true; };
                             rescuerIsActiveAndExists = true;
+                            rescuerPlayerId = (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') ? 'ai_p2' : 'player2'; // <<<< GEWIJZIGD
                         }
-                    } else {
-                        let isTargetCurrentPlayer = false;
-                        if (!isTwoPlayerMode && fs.targetPlayerId === 'player1') isTargetCurrentPlayer = true;
-                        if (isTwoPlayerMode && selectedGameMode === 'normal' && String(currentPlayer) === fs.targetPlayerId) isTargetCurrentPlayer = true;
-
-                        if (isTargetCurrentPlayer && ship && playerLives > 0 ) {
-                            rescuingPlayerShipObject = ship;
-                            rescuerAlreadyDual = isDualShipActive;
-                            playerShipIsCurrentlyCapturedByThisFallingShip = isShipCaptured;
-                            setDualShipForRescuer = () => {
-                                isDualShipActive = true;
-                                if (isTwoPlayerMode && selectedGameMode === 'normal') {
-                                    if (currentPlayer === 1) player1IsDualShipActive = true; else player2IsDualShipActive = true;
-                                } else if (!isTwoPlayerMode) player1IsDualShipActive = true;
-                                if(playerShipIsCurrentlyCapturedByThisFallingShip) isShipCaptured = false;
-                            };
-                            rescuerIsActiveAndExists = true;
+                    } else { // Human COOP (niet 1P vs AI COOP)
+                        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                            if (fs.targetPlayerId === 'player1' && ship1 && player1Lives > 0 ) { rescuingPlayerShipObject = ship1; rescuerAlreadyDual = player1IsDualShipActive; playerShipIsCurrentlyCaptured = isPlayer1ShipCaptured; setDualShipForRescuer = () => { player1IsDualShipActive = true; isPlayer1ShipCaptured = false;}; rescuerIsActiveAndExists = true; rescuerPlayerId = 'player1';}
+                            else if (fs.targetPlayerId === 'player2' && ship2 && player2Lives > 0 ) { rescuingPlayerShipObject = ship2; rescuerAlreadyDual = player2IsDualShipActive; playerShipIsCurrentlyCaptured = isPlayer2ShipCaptured; setDualShipForRescuer = () => { player2IsDualShipActive = true; isPlayer2ShipCaptured = false;}; rescuerIsActiveAndExists = true; rescuerPlayerId = 'player2';}
+                        } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+                            if (ship && playerLives > 0 ) {
+                                rescuingPlayerShipObject = ship;
+                                rescuerAlreadyDual = isDualShipActive;
+                                playerShipIsCurrentlyCaptured = isShipCaptured;
+                                setDualShipForRescuer = () => {
+                                    isDualShipActive = true;
+                                    if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                                        if (currentPlayer === 1) player1IsDualShipActive = true; else player2IsDualShipActive = true;
+                                    } else if (!isTwoPlayerMode) player1IsDualShipActive = true;
+                                    isShipCaptured = false;
+                                };
+                                rescuerIsActiveAndExists = true;
+                                rescuerPlayerId = (isTwoPlayerMode && selectedGameMode === 'normal') ? String(currentPlayer) : 'player1';
+                            }
                         }
                     }
 
-                    if (rescuingPlayerShipObject && rescuerIsActiveAndExists && !rescuerAlreadyDual) { // rescuingPlayerShipObject moet bestaan
+                    if (rescuerIsActiveAndExists && !rescuerAlreadyDual) {
                         setDualShipForRescuer();
                         playSound('dualShipSound', false, 0.4);
-                        if (playerShipIsCurrentlyCapturedByThisFallingShip && !(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'))) {
-                            if (fs.targetPlayerId === 'player1' && ship1) { isPlayer1Invincible = true; player1InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
-                            else if ((fs.targetPlayerId === 'player2' || fs.targetPlayerId === 'ai_p2') && ship2) { isPlayer2Invincible = true; player2InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
+                        if (playerShipIsCurrentlyCaptured && !(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'))) { // <<<< GEWIJZIGD
+                            if (rescuerPlayerId === 'player1' && ship1) { isPlayer1Invincible = true; player1InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
+                            else if (rescuerPlayerId === 'player2' && ship2) { isPlayer2Invincible = true; player2InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
                             else if (ship) { isInvincible = true; invincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
                         }
                         fallingShips.splice(i, 1); dockedThisFrame = true; continue;
-                    } else if (rescuingPlayerShipObject && rescuerIsActiveAndExists && rescuerAlreadyDual) {
+                    } else if (rescuerIsActiveAndExists && rescuerAlreadyDual) {
                         fallingShips.splice(i, 1); dockedThisFrame = true; continue;
                     } else {
                         fallingShips.splice(i, 1); dockedThisFrame = true; continue;
@@ -2967,29 +2943,35 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
             if (fs.rotationCompleted) fs.rotation = 0; else if (!fs.landed && typeof fs.rotationDirection === 'number' && typeof FALLING_SHIP_ROTATION_SPEED === 'number' && FALLING_SHIP_ROTATION_SPEED > 0) { const rotationIncrement = FALLING_SHIP_ROTATION_SPEED * fs.rotationDirection; fs.rotation += rotationIncrement; fs.totalRotation += Math.abs(rotationIncrement); if (fs.totalRotation >= (MAX_FALLING_SHIP_ROTATIONS * 2 * Math.PI)) { fs.rotation = 0; fs.rotationCompleted = true; } else { if (fs.rotation > Math.PI * 2) fs.rotation -= Math.PI * 2; if (fs.rotation < 0) fs.rotation += Math.PI * 2; } } else fs.rotation = fs.rotation || 0;
 
             if (!fs.landed) {
-                let targetShipForDocking = null;
-                let setDualShipFlagEarly = () => {};
-                let playerShipCapturedStateForEarlyDock = false;
-                let isTargetShipDualAlready = false;
-
-                if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                let targetShipForDocking = null, setDualShipFlagEarly = () => {}, playerNumForDocking = 0, playerShipCapturedStateForEarlyDock = false, isTargetShipDualAlready = false;
+                 if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) { // <<<< GEWIJZIGD
+                    if (fs.targetPlayerId === 'player1' && ship1 && player1Lives > 0) {
+                        targetShipForDocking = ship1;
+                        isTargetShipDualAlready = player1IsDualShipActive;
+                        setDualShipFlagEarly = () => { if (!isTargetShipDualAlready) player1IsDualShipActive = true; };
+                        playerNumForDocking = 1;
+                    } else if ((fs.targetPlayerId === 'player2' || fs.targetPlayerId === 'ai_p2') && ship2 && player2Lives > 0) { // <<<< GEWIJZIGD
+                        targetShipForDocking = ship2;
+                        isTargetShipDualAlready = player2IsDualShipActive;
+                        setDualShipFlagEarly = () => { if (!isTargetShipDualAlready) player2IsDualShipActive = true; };
+                        playerNumForDocking = 2;
+                    }
+                } else if (isTwoPlayerMode && selectedGameMode === 'coop') {
                     if (fs.targetPlayerId === 'player1' && ship1 && player1Lives > 0 ) {
                         targetShipForDocking = ship1;
                         playerShipCapturedStateForEarlyDock = isPlayer1ShipCaptured;
                         isTargetShipDualAlready = player1IsDualShipActive;
-                        setDualShipFlagEarly = () => { if (!isTargetShipDualAlready) player1IsDualShipActive = true; if(playerShipCapturedStateForEarlyDock) isPlayer1ShipCaptured = false; };
-                    } else if ((fs.targetPlayerId === 'player2' || fs.targetPlayerId === 'ai_p2') && ship2 && player2Lives > 0 ) {
+                        setDualShipFlagEarly = () => { if (!isTargetShipDualAlready) player1IsDualShipActive = true; isPlayer1ShipCaptured = false; };
+                        playerNumForDocking = 1;
+                    } else if (fs.targetPlayerId === 'player2' && ship2 && player2Lives > 0 ) {
                         targetShipForDocking = ship2;
                         playerShipCapturedStateForEarlyDock = isPlayer2ShipCaptured;
                         isTargetShipDualAlready = player2IsDualShipActive;
-                        setDualShipFlagEarly = () => { if (!isTargetShipDualAlready) player2IsDualShipActive = true; if(playerShipCapturedStateForEarlyDock) isPlayer2ShipCaptured = false; };
+                        setDualShipFlagEarly = () => { if (!isTargetShipDualAlready) player2IsDualShipActive = true; isPlayer2ShipCaptured = false; };
+                        playerNumForDocking = 2;
                     }
-                } else {
-                    let isTargetCurrentPlayer = false;
-                    if (!isTwoPlayerMode && fs.targetPlayerId === 'player1') isTargetCurrentPlayer = true;
-                    if (isTwoPlayerMode && selectedGameMode === 'normal' && String(currentPlayer) === fs.targetPlayerId) isTargetCurrentPlayer = true;
-
-                    if (isTargetCurrentPlayer && ship && playerLives > 0 ) {
+                } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+                    if (ship && playerLives > 0 ) {
                         targetShipForDocking = ship;
                         playerShipCapturedStateForEarlyDock = isShipCaptured;
                         isTargetShipDualAlready = isDualShipActive;
@@ -3000,21 +2982,23 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
                                     if (currentPlayer === 1) player1IsDualShipActive = true; else player2IsDualShipActive = true;
                                 } else if (!isTwoPlayerMode) player1IsDualShipActive = true;
                             }
-                            if(playerShipCapturedStateForEarlyDock) isShipCaptured = false;
+                            isShipCaptured = false;
                         };
+                        playerNumForDocking = (isTwoPlayerMode && selectedGameMode === 'normal') ? currentPlayer : 1;
                     }
                 }
-
                 if (targetShipForDocking && !isTargetShipDualAlready) {
                     const fallingShipRect = { x: fs.x, y: fs.y, width: fs.width, height: fs.height };
                     const playerShipRect = { x: targetShipForDocking.x, y: targetShipForDocking.y, width: targetShipForDocking.width, height: targetShipForDocking.height };
                     if (checkCollision(fallingShipRect, playerShipRect)) {
                         setDualShipFlagEarly();
-                        playSound('dualShipSound', false, 0.4);
-                        if (playerShipCapturedStateForEarlyDock && !(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'))) {
-                            if (fs.targetPlayerId === 'player1' && ship1) { isPlayer1Invincible = true; player1InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS ; }
-                            else if ((fs.targetPlayerId === 'player2' || fs.targetPlayerId === 'ai_p2') && ship2) { isPlayer2Invincible = true; player2InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
-                            else if (ship) { isInvincible = true; invincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
+                        if (playerShipCapturedStateForEarlyDock && !(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'))) { // <<<< GEWIJZIGD
+                            playSound('dualShipSound', false, 0.4);
+                            if (playerNumForDocking === 1 && ship1) { isPlayer1Invincible = true; player1InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS ; }
+                            else if (playerNumForDocking === 2 && ship2) { isPlayer2Invincible = true; player2InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
+                            else if (playerNumForDocking !== 0 && ship) { isInvincible = true; invincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
+                        } else {
+                            playSound('dualShipSound', false, 0.4);
                         }
                         fallingShips.splice(i, 1); continue;
                     }
@@ -3023,10 +3007,10 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
             if (!fs.landed && fs.y >= gameCanvas.height) fallingShips.splice(i, 1);
         }
 
+        // Grid Movement
         let gridHorizontalShift = 0; const gridEnemiesPresent = enemies.some(e => e?.state === 'in_grid'); const gridShouldBeMoving = !isChallengingStage && !isWaveTransitioning && gridEnemiesPresent && !isShowingPlayerGameOverMessage && !(isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage)); if (gridShouldBeMoving) { if (!isGridSoundPlaying) { isGridSoundPlaying = true; playSound('gridBackgroundSound', true, 0.1); } const gridEnemiesList = enemies.filter(e => e?.state === 'in_grid'); if (gridEnemiesList.length > 0) { let minX = gameCanvas.width, maxX = 0; gridEnemiesList.forEach(enemy => { if (enemy) { minX = Math.min(minX, enemy.x); maxX = Math.max(maxX, enemy.x + enemy.width); } }); const leftBoundary = gameCanvas.width * GRID_HORIZONTAL_MARGIN_PERCENT; const rightBoundary = gameCanvas.width * (1 - GRID_HORIZONTAL_MARGIN_PERCENT); if (gridMoveDirection === 1 && maxX >= rightBoundary) gridMoveDirection = -1; else if (gridMoveDirection === -1 && minX <= leftBoundary) gridMoveDirection = 1; const effectiveGridMoveSpeed = scaleValue(level, BASE_GRID_MOVE_SPEED, MAX_GRID_MOVE_SPEED); gridHorizontalShift = effectiveGridMoveSpeed * gridMoveDirection; currentGridOffsetX += gridHorizontalShift; enemies.forEach(e => { if (e && (e.state === 'returning' || e.state === 'in_grid' || e.state === 'moving_to_grid')) { try { const enemyWidthForGrid = (e.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((e.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH); const { x: newTargetX, y: newTargetY } = getCurrentGridSlotPosition(e.gridRow, e.gridCol, enemyWidthForGrid); e.targetGridX = newTargetX; e.targetGridY = newTargetY; } catch (gridPosError) { console.error(`Error updating target grid pos for enemy ${e?.id} (state: ${e?.state}) during shift:`, gridPosError); } } }); } } else { if (isGridSoundPlaying) { stopSound('gridBackgroundSound'); isGridSoundPlaying = false; } gridHorizontalShift = 0; }
 
-        let anyBeamActiveThisFrame = false;
-
+        // Enemy State Machine and Movement
         for (let i = enemies.length - 1; i >= 0; i--) {
              let enemy = enemies[i]; if (!enemy) { enemies.splice(i,1); continue; }
              const enemyId = enemy.id;
@@ -3041,203 +3025,34 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
                  case 'in_grid': { try { const enemyWidthForGrid = (enemy.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((enemy.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH); const { x: currentTargetX, y: currentTargetY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, enemyWidthForGrid); if (typeof currentTargetX === 'number' && !isNaN(currentTargetX)) { enemy.x = currentTargetX; } if (typeof currentTargetY === 'number' && !isNaN(currentTargetY)) { enemy.y = currentTargetY; } enemy.targetGridX = currentTargetX; enemy.targetGridY = currentTargetY; } catch(gridPosError) { console.error(`Error getting grid pos within 'in_grid' for ${enemy.id}:`, gridPosError); } enemy.velocityX = gridShouldBeMoving ? gridHorizontalShift : 0; enemy.velocityY = 0; if (enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip && enemy.capturedShipDimensions) { enemy.capturedShipX = enemy.x + CAPTURED_SHIP_OFFSET_X; enemy.capturedShipY = enemy.y + CAPTURED_SHIP_OFFSET_Y; } break; }
                  case 'preparing_attack': { enemy.velocityX = 0; enemy.velocityY = 0; break; }
                  case 'preparing_capture': { enemy.velocityX = 0; enemy.velocityY = 0; break; }
-                 case 'diving_to_capture_position': {
-                    let aShipIsAlreadyCapturedByAnotherBoss = false;
-                    if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                        aShipIsAlreadyCapturedByAnotherBoss = (isPlayer1ShipCaptured && capturedBossIdWithMessage !== enemy.id) || (isPlayer2ShipCaptured && capturedBossIdWithMessage !== enemy.id);
-                    } else {
-                        aShipIsAlreadyCapturedByAnotherBoss = isShipCaptured && capturedBossIdWithMessage !== enemy.id;
-                    }
-
-                    if (aShipIsAlreadyCapturedByAnotherBoss && !enemy.isPreparingForImmediateCapture) {
-                        enemy.state = 'returning';
-                        try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (e) { console.error(`Error getting grid pos for returning boss ${enemy.id}:`, e); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; }
-                        break;
-                    }
-
-                    const targetXCapture = enemy.targetX;
-                    const targetYCapture = enemy.targetY;
-                    if (targetXCapture == null || targetYCapture == null) {
-                        console.error(`Boss ${enemy.id} diving to capture without targetX/Y! Aborting.`);
-                        enemy.state = 'returning';
-                        try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (e) { console.error(`Error getting grid pos for returning boss ${enemy.id}:`, e); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; }
-                        break;
-                    }
-                    const dxCaptureDive = targetXCapture - enemy.x;
-                    const dyCaptureDive = targetYCapture - enemy.y;
-                    const distCaptureDive = Math.sqrt(dxCaptureDive * dxCaptureDive + dyCaptureDive * dyCaptureDive);
-                    const captureDiveSpeed = BOSS_CAPTURE_DIVE_SPEED_FACTOR * BASE_ENEMY_ATTACK_SPEED;
-                    const arrivalThresholdCapture = captureDiveSpeed * 0.6;
-
-                    if (distCaptureDive > arrivalThresholdCapture) {
-                        enemy.velocityX = (dxCaptureDive / distCaptureDive) * captureDiveSpeed;
-                        enemy.velocityY = (dyCaptureDive / distCaptureDive) * captureDiveSpeed;
-                        enemy.x += enemy.velocityX;
-                        enemy.y += enemy.velocityY;
-                    } else {
-                        enemy.x = targetXCapture;
-                        enemy.y = targetYCapture;
-                        enemy.velocityX = 0;
-                        enemy.velocityY = 0;
-                        enemy.state = 'capturing';
-                        enemy.captureStartTime = now;
-                        enemy.isCurrentlyBeaming = true;
-                        enemy.beamProgress = 0;
-                        playSound('captureSound', false, 0.6);
-                        if (enemy.isPreparingForImmediateCapture) {
-                            if (!captureAttemptMadeThisLevel) {
-                                captureAttemptMadeThisLevel = true;
-                            }
-                            delete enemy.isPreparingForImmediateCapture;
-                        }
-                    }
-                    break;
-                 }
+                 case 'diving_to_capture_position': { let aShipIsAlreadyCaptured = (isTwoPlayerMode && selectedGameMode === 'coop') ? (isPlayer1ShipCaptured || isPlayer2ShipCaptured) : isShipCaptured; if (aShipIsAlreadyCaptured) { enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (e) { console.error(`Error getting grid pos for returning boss ${enemy.id}:`, e); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } const targetXCapture = enemy.targetX; const targetYCapture = enemy.targetY; if (targetXCapture == null || targetYCapture == null) { console.error(`Boss ${enemy.id} diving to capture without targetX/Y! Aborting.`); enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (e) { console.error(`Error getting grid pos for returning boss ${enemy.id}:`, e); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } const dxCaptureDive = targetXCapture - enemy.x; const dyCaptureDive = targetYCapture - enemy.y; const distCaptureDive = Math.sqrt(dxCaptureDive * dxCaptureDive + dyCaptureDive * dyCaptureDive); const captureDiveSpeed = BOSS_CAPTURE_DIVE_SPEED_FACTOR * BASE_ENEMY_ATTACK_SPEED; const arrivalThresholdCapture = captureDiveSpeed * 0.6; if (distCaptureDive > arrivalThresholdCapture) { enemy.velocityX = (dxCaptureDive / distCaptureDive) * captureDiveSpeed; enemy.velocityY = (dyCaptureDive / distCaptureDive) * captureDiveSpeed; enemy.x += enemy.velocityX; enemy.y += enemy.velocityY; } else { enemy.x = targetXCapture; enemy.y = targetYCapture; enemy.velocityX = 0; enemy.velocityY = 0; enemy.state = 'capturing'; enemy.captureStartTime = now; capturingBossId = enemy.id; captureBeamActive = true; captureBeamSource = { x: enemy.x + currentEnemyWidthCorrected / 2, y: enemy.y + currentEnemyHeightCorrected }; captureBeamTargetY = enemy.y; captureBeamProgress = 0; playSound('captureSound', false, 0.6); if (enemy.isPreparingForImmediateCapture) { captureAttemptMadeThisLevel = true; delete enemy.isPreparingForImmediateCapture; } } break; }
                  case 'capturing': {
                     enemy.velocityX = 0; enemy.velocityY = 0;
-                    if (!enemy.isCurrentlyBeaming) {
-                        enemy.state = 'returning';
-                        try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (e) { enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; }
-                        break;
-                    }
-                    anyBeamActiveThisFrame = true;
-
-                    let alreadyCapturedByThisSpecificBoss = false;
-                    if (isTwoPlayerMode && selectedGameMode === 'coop') { alreadyCapturedByThisSpecificBoss = (isPlayer1ShipCaptured && capturedBossIdWithMessage === enemy.id) || (isPlayer2ShipCaptured && capturedBossIdWithMessage === enemy.id);
-                    } else { alreadyCapturedByThisSpecificBoss = isShipCaptured && capturedBossIdWithMessage === enemy.id; }
-
-                    if (alreadyCapturedByThisSpecificBoss) {
-                        enemy.isCurrentlyBeaming = false;
-                        enemy.beamProgress = 0;
-                        if (!enemies.some(e => e.isCurrentlyBeaming && e.id !== enemy.id)) stopSound('captureSound');
-                        enemy.state = 'returning';
-                        break;
+                    if (enemy.isPreparingForImmediateCapture && !captureAttemptMadeThisLevel) {
+                        captureAttemptMadeThisLevel = true;
+                        delete enemy.isPreparingForImmediateCapture;
                     }
 
-                    const elapsedCaptureTime = now - (enemy.captureStartTime || now);
-                    const halfAnimationTime = CAPTURE_BEAM_ANIMATION_DURATION_MS / 2;
-                    const totalBeamStayTime = CAPTURE_BEAM_DURATION_MS;
-
-                    if (elapsedCaptureTime < halfAnimationTime) {
-                        enemy.beamProgress = elapsedCaptureTime / halfAnimationTime;
-                    } else if (elapsedCaptureTime < totalBeamStayTime - halfAnimationTime) {
-                        enemy.beamProgress = 1.0;
-                    } else if (elapsedCaptureTime < totalBeamStayTime) {
-                        enemy.beamProgress = 1.0 - ((elapsedCaptureTime - (totalBeamStayTime - halfAnimationTime)) / halfAnimationTime);
-                    } else {
-                        enemy.beamProgress = 0;
-                        enemy.isCurrentlyBeaming = false;
-                        if (!enemies.some(e => e.isCurrentlyBeaming && e.id !== enemy.id)) stopSound('captureSound');
-                        enemy.state = 'attacking';
-                        enemy.attackPathSegments = generateAttackPathInternal(enemy);
-                        enemy.attackPathSegmentIndex = 0;
-                        enemy.attackPathT = 0;
-                        enemy.speed = BASE_ENEMY_ATTACK_SPEED * ENEMY3_ATTACK_SPEED_FACTOR;
-                        enemy.lastFiredTime = 0;
-                        enemy.canFireThisDive = true;
-                        enemy.attackFormationOffsetX = 0;
-                        enemy.attackGroupId = null;
-                        break;
-                    }
-                    enemy.beamProgress = Math.max(0, Math.min(1, enemy.beamProgress));
-
-                    if (enemy.isCurrentlyBeaming && enemy.beamProgress >= 0.95) {
-                        const beamTopWidth = BOSS_WIDTH * CAPTURE_BEAM_WIDTH_TOP_FACTOR;
-                        const beamBottomWidth = SHIP_WIDTH * CAPTURE_BEAM_WIDTH_BOTTOM_FACTOR;
-                        const beamCenterX = enemy.x + currentEnemyWidthCorrected / 2;
-                        const beamVisualTopY = enemy.y + currentEnemyHeightCorrected;
-                        const beamVisualBottomY = gameCanvas.height - LIFE_ICON_MARGIN_BOTTOM - LIFE_ICON_SIZE - 10;
-                        const boxWidth = Math.max(beamTopWidth, beamBottomWidth);
-                        const boxX = beamCenterX - boxWidth / 2;
-                        const boxY = beamVisualTopY;
-                        const boxHeight = beamVisualBottomY - beamVisualTopY;
-
-                        if (boxHeight > 0) {
-                            const beamBoundingBox = { x: boxX, y: boxY, width: boxWidth, height: boxHeight };
-                            let shipHitObject = null;
-                            let playerHitId = 0;
-
-                            if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                                if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && checkCollision(ship1, beamBoundingBox)) { shipHitObject = ship1; playerHitId = 1; }
-                                else if (ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && checkCollision(ship2, beamBoundingBox)) { shipHitObject = ship2; playerHitId = 2; }
-                            } else {
-                                if (ship && playerLives > 0 && !isShipCaptured && checkCollision(ship, beamBoundingBox)) { shipHitObject = ship; playerHitId = currentPlayer; }
-                            }
-
-                            if (shipHitObject) {
-                                enemy.capturedShipDimensions = { width: shipHitObject.width, height: shipHitObject.height };
-                                enemy.hasCapturedShip = true;
-                                enemy.isCurrentlyBeaming = false;
-                                enemy.beamProgress = 0;
-                                enemy.captureMessageStartTime = now;
-                                if (!enemies.some(e => e.isCurrentlyBeaming && e.id !== enemy.id)) stopSound('captureSound');
-                                enemy.state = 'showing_capture_message';
-                                enemy.targetGridX = null; enemy.targetGridY = null;
-                                enemy.initialCaptureAnimationY = shipHitObject.y;
-                                enemy.captureAnimationRotation = 0;
-                                if (!isShowingCaptureMessage) {
-                                    isShowingCaptureMessage = true;
-                                    captureMessageStartTime = now;
-                                    capturedBossIdWithMessage = enemy.id;
-                                }
-                                playSound('shipCapturedSound', false, 0.3);
-                                csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
-                                normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null;
-                                handlePlayerShipCollision(playerHitId, false, now, true);
-                                if((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && aiPlayerActivelySeekingCaptureById) aiPlayerActivelySeekingCaptureById = null;
-                                break;
-                            }
+                    let alreadyCapturedByThisBoss = false;
+                    if (isTwoPlayerMode && selectedGameMode === 'coop') { alreadyCapturedByThisBoss = (isPlayer1ShipCaptured && capturedBossIdWithMessage === enemy.id) || (isPlayer2ShipCaptured && capturedBossIdWithMessage === enemy.id);
+                    } else { alreadyCapturedByThisBoss = isShipCaptured && capturedBossIdWithMessage === enemy.id; }
+                    if (alreadyCapturedByThisBoss) { captureBeamActive = false; if(capturingBossId === enemy.id) capturingBossId = null; enemy.state = 'returning'; stopSound('captureSound'); break; }
+                    const elapsedCaptureTime = now - enemy.captureStartTime; const halfAnimationTime = CAPTURE_BEAM_ANIMATION_DURATION_MS / 2; const totalBeamStayTime = CAPTURE_BEAM_DURATION_MS; if (elapsedCaptureTime < halfAnimationTime) { captureBeamProgress = elapsedCaptureTime / halfAnimationTime; } else if (elapsedCaptureTime < totalBeamStayTime - halfAnimationTime) { captureBeamProgress = 1.0; } else if (elapsedCaptureTime < totalBeamStayTime) { captureBeamProgress = 1.0 - ((elapsedCaptureTime - (totalBeamStayTime - halfAnimationTime)) / halfAnimationTime); } else { captureBeamProgress = 0; captureBeamActive = false; capturingBossId = null; stopSound('captureSound'); enemy.state = 'attacking'; enemy.attackPathSegments = generateAttackPathInternal(enemy); enemy.attackPathSegmentIndex = 0; enemy.attackPathT = 0; enemy.speed = BASE_ENEMY_ATTACK_SPEED * ENEMY3_ATTACK_SPEED_FACTOR; enemy.lastFiredTime = 0; enemy.canFireThisDive = true; enemy.attackFormationOffsetX = 0; enemy.attackGroupId = null; break; } captureBeamProgress = Math.max(0, Math.min(1, captureBeamProgress));
+                    if (captureBeamActive && captureBeamProgress >= 0.95) {
+                        const beamTopWidth = BOSS_WIDTH * CAPTURE_BEAM_WIDTH_TOP_FACTOR; const beamBottomWidth = SHIP_WIDTH * CAPTURE_BEAM_WIDTH_BOTTOM_FACTOR; const beamCenterX = enemy.x + currentEnemyWidthCorrected / 2; const beamVisualTopY = enemy.y + currentEnemyHeightCorrected; const beamVisualBottomY = gameCanvas.height - LIFE_ICON_MARGIN_BOTTOM - LIFE_ICON_SIZE - 10; const boxWidth = Math.max(beamTopWidth, beamBottomWidth); const boxX = beamCenterX - boxWidth / 2; const boxY = beamVisualTopY; const boxHeight = beamVisualBottomY - beamVisualTopY;
+                        if (boxHeight > 0) { const beamBoundingBox = { x: boxX, y: boxY, width: boxWidth, height: boxHeight }; let shipHitObject = null; let playerHitId = 0;
+                            if (isTwoPlayerMode && selectedGameMode === 'coop') { if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && checkCollision(ship1, beamBoundingBox)) { shipHitObject = ship1; playerHitId = 1; } else if (ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && checkCollision(ship2, beamBoundingBox)) { shipHitObject = ship2; playerHitId = 2; }
+                            } else { if (ship && playerLives > 0 && !isShipCaptured && checkCollision(ship, beamBoundingBox)) { shipHitObject = ship; playerHitId = currentPlayer; } }
+                            if (shipHitObject) { enemy.capturedShipDimensions = { width: shipHitObject.width, height: shipHitObject.height }; enemy.hasCapturedShip = true; stopSound('captureSound'); enemy.state = 'showing_capture_message'; enemy.targetGridX = null; enemy.targetGridY = null; enemy.initialCaptureAnimationY = shipHitObject.y; enemy.captureAnimationRotation = 0; isShowingCaptureMessage = true; captureMessageStartTime = now; capturedBossIdWithMessage = enemy.id; playSound('shipCapturedSound', false, 0.3); csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null; normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null; handlePlayerShipCollision(playerHitId, false, now, true); if((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && aiPlayerActivelySeekingCaptureById) aiPlayerActivelySeekingCaptureById = null; break; } // <<<< GEWIJZIGD
                         }
-                    }
-                    break;
+                    } break;
                  }
-                 case 'showing_capture_message': {
-                    enemy.velocityX = 0; enemy.velocityY = 0;
-                    const messageStartTimeForThisBoss = enemy.captureMessageStartTime || captureMessageStartTime;
-
-                    if (enemy.hasCapturedShip && enemy.capturedShipDimensions && typeof enemy.initialCaptureAnimationY === 'number') {
-                        const elapsedMessageTimeThisBoss = now - messageStartTimeForThisBoss;
-                        const animationProgress = Math.min(1.0, elapsedMessageTimeThisBoss / CAPTURE_MESSAGE_DURATION);
-                        const finalCapturedShipY = enemy.y + CAPTURED_SHIP_OFFSET_Y;
-                        const startY = enemy.initialCaptureAnimationY;
-                        enemy.capturedShipY = startY + (finalCapturedShipY - startY) * animationProgress;
-                        enemy.capturedShipX = enemy.x + CAPTURED_SHIP_OFFSET_X;
-                    } else if (enemy.hasCapturedShip) {
-                        enemy.capturedShipX = enemy.x + CAPTURED_SHIP_OFFSET_X;
-                        enemy.capturedShipY = enemy.y + CAPTURED_SHIP_OFFSET_Y;
-                    }
-
-                    if (now - messageStartTimeForThisBoss >= CAPTURE_MESSAGE_DURATION) {
-                        if (enemy.id === capturedBossIdWithMessage) {
-                            isShowingCaptureMessage = false;
-                            capturedBossIdWithMessage = null;
-                            if (!enemies.some(e => e.state === 'showing_capture_message' && e.id !== enemy.id)) {
-                                stopSound('shipCapturedSound');
-                            }
-                        }
-                        enemy.state = 'returning';
-                        enemy.captureAnimationRotation = 0;
-                        delete enemy.captureMessageStartTime;
-                        try {
-                            const bossWidthForGrid = (enemy.type === ENEMY3_TYPE) ? BOSS_WIDTH : ENEMY_WIDTH;
-                            const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, bossWidthForGrid);
-                            enemy.targetGridX = tgtX;
-                            enemy.targetGridY = tgtY;
-                        } catch (e) {
-                            console.error(`[Capture Message End] Error getting grid pos for returning boss ${enemy.id}:`, e);
-                            enemy.targetGridX = gameCanvas.width / 2;
-                            enemy.targetGridY = ENEMY_TOP_MARGIN;
-                        }
-                         // Respawn logica is nu gecondenseerd in handlePlayerShipCollision en wanneer het bericht ECHT voorbij is.
-                        // Hierboven wordt de boss naar 'returning' gezet.
-                        // De globale vlaggen en respawns worden in runSingleGameUpdate afgehandeld na de CAPTURE_MESSAGE_DURATION.
-                    }
-                    break;
-                 }
+                 case 'showing_capture_message': { enemy.velocityX = 0; enemy.velocityY = 0; if (enemy.hasCapturedShip && enemy.capturedShipDimensions && typeof enemy.initialCaptureAnimationY === 'number') { const elapsedMessageTime = now - captureMessageStartTime; const animationProgress = Math.min(1.0, elapsedMessageTime / CAPTURE_MESSAGE_DURATION); const finalCapturedShipY = enemy.y + CAPTURED_SHIP_OFFSET_Y; const startY = enemy.initialCaptureAnimationY; enemy.capturedShipY = startY + (finalCapturedShipY - startY) * animationProgress; enemy.capturedShipX = enemy.x + CAPTURED_SHIP_OFFSET_X; } else { enemy.capturedShipX = enemy.x + CAPTURED_SHIP_OFFSET_X; enemy.capturedShipY = enemy.y + CAPTURED_SHIP_OFFSET_Y; } break; }
                  case 'attacking': { if (isEntrancePhaseActive) break; const attackSegments = enemy.attackPathSegments; const attackPathSpeedFactor = 3.8; if (!attackSegments || attackSegments.length === 0) { console.error(`Enemy ${enemyId} attacking without path! Returning.`); enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (err) { console.error(`Error getting grid pos for returning enemy ${enemyId} (no attack path):`, err); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } if (enemy.attackPathSegmentIndex >= attackSegments.length) { console.warn(`Enemy ${enemyId} attacking, index ${enemy.attackPathSegmentIndex} out of bounds (${attackSegments.length})! Returning.`); enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (err) { console.error(`Error getting grid pos for returning enemy ${enemyId} (invalid attack index):`, err); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } const attackSegment = attackSegments[enemy.attackPathSegmentIndex]; if (!attackSegment || !attackSegment.p0 || !attackSegment.p1 || !attackSegment.p2 || !attackSegment.p3) { console.error(`Enemy ${enemyId} attacking, invalid segment ${enemy.attackPathSegmentIndex}! Returning.`); enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (err) { console.error(`Error getting grid pos for returning enemy ${enemyId} (invalid attack segment):`, err); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } const tIncrement = (enemy.speed / 1000) * attackPathSpeedFactor; enemy.attackPathT += tIncrement; let pathX, pathY; const oldFinalX = enemy.x; const oldFinalY = enemy.y; if (enemy.attackPathT >= 1.0) { try { pathX = calculateBezierPoint(1.0, attackSegment.p0.x, attackSegment.p1.x, attackSegment.p2.x, attackSegment.p3.x); pathY = calculateBezierPoint(1.0, attackSegment.p0.y, attackSegment.p1.y, attackSegment.p2.y, attackSegment.p3.y); } catch(bezierError) { console.error(`Error calculating FINAL bezier point for attack ${enemy.id}:`, bezierError); pathX = enemy.x; pathY = enemy.y; enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch(err){ console.error(`Error getting grid pos after FINAL bezier error for ${enemy.id}:`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } enemy.attackPathT = 0; enemy.attackPathSegmentIndex++; if (enemy.attackPathSegmentIndex >= attackSegments.length) { enemy.state = 'returning'; enemy.lastFiredTime = 0; enemy.attackFormationOffsetX = 0; enemy.attackGroupId = null; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch(err){ console.error(`Error getting grid pos for returning enemy ${enemyId} after attack:`, err); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; } } else { const nextAttackSegment = attackSegments[enemy.attackPathSegmentIndex]; if (!nextAttackSegment?.p0) { console.error(`Enemy ${enemyId} attacking, invalid NEXT segment ${enemy.attackPathSegmentIndex}! Returning.`); pathX = enemy.x; pathY = enemy.y; enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch(err){ console.error(`Error getting grid pos after invalid NEXT attack segment for ${enemy.id}:`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } } } else { try { pathX = calculateBezierPoint(enemy.attackPathT, attackSegment.p0.x, attackSegment.p1.x, attackSegment.p2.x, attackSegment.p3.x); pathY = calculateBezierPoint(enemy.attackPathT, attackSegment.p0.y, attackSegment.p1.y, attackSegment.p2.y, attackSegment.p3.y); } catch (bezierError) { console.error(`Error calculating bezier point during attack for ${enemy.id}:`, bezierError); pathX = enemy.x; pathY = enemy.y; enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch(err){ console.error(`Error getting grid pos after bezier error for ${enemy.id}:`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } } if (enemy && enemy.state === 'attacking') { const formationOffset = enemy.attackFormationOffsetX || 0; const finalX = pathX + formationOffset; const finalY = pathY; enemy.velocityX = finalX - oldFinalX; enemy.velocityY = finalY - oldFinalY; enemy.x = finalX; enemy.y = finalY; if (enemy.y > gameCanvas.height + currentEnemyHeightCorrected * 1.5) { enemy.state = 'returning'; enemy.attackPathSegmentIndex = 0; enemy.attackPathT = 0; enemy.lastFiredTime = 0; enemy.attackFormationOffsetX = 0; enemy.attackGroupId = null; enemy.y = -currentEnemyHeightCorrected * (1.1 + Math.random() * 0.4); enemy.x = Math.random() * (gameCanvas.width - currentEnemyWidthCorrected); enemy.velocityX = 0; enemy.velocityY = 0; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (err) { console.error(`Error getting grid pos for returning enemy ${enemyId} off screen:`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } } } break; }
                  case 'returning': { if (isEntrancePhaseActive) break; if (enemy.targetGridX == null || enemy.targetGridY == null) { console.warn(`Enemy ${enemyId} returning without target coords. Recalculating.`); try { const { x: finalTargetX, y: finalTargetY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = finalTargetX; enemy.targetGridY = finalTargetY; } catch(err){ console.error(`Error getting grid pos for ${enemyId} in returning`, err); enemy.state = 'in_grid'; enemy.x = gameCanvas.width/2; enemy.y = ENEMY_TOP_MARGIN; break; } } const targetReturnX = enemy.targetGridX; const targetReturnY = enemy.targetGridY; const dxReturn = targetReturnX - enemy.x; const dyReturn = targetReturnY - enemy.y; const distReturn = Math.sqrt(dxReturn * dxReturn + dyReturn * dyReturn); const scaledReturnSpeedFactor = scaleValue(level, BASE_RETURN_SPEED_FACTOR, MAX_RETURN_SPEED_FACTOR); const returnSpeed = BASE_RETURN_SPEED * scaledReturnSpeedFactor; const returnArrivalThreshold = returnSpeed * 0.5; if (distReturn > returnArrivalThreshold) { enemy.velocityX = (dxReturn / distReturn) * returnSpeed; enemy.velocityY = (dyReturn / distReturn) * returnSpeed; enemy.x += enemy.velocityX; enemy.y += enemy.velocityY; } else { enemy.x = targetReturnX; enemy.y = targetReturnY; enemy.velocityX = 0; enemy.velocityY = 0; enemy.state = 'in_grid'; enemy.justReturned = true; enemy.attackFormationOffsetX = 0; enemy.attackGroupId = null; if (enemy.hasOwnProperty('returnLogDone')) { delete enemy.returnLogDone; } if (!isGridSoundPlaying && !isChallengingStage) { isGridSoundPlaying = true; playSound('gridBackgroundSound', true, 0.1); } } break; }
              }
 
+            // --- Enemy vs Player Ship Collision Detection ---
             if (enemy && !isShowingPlayerGameOverMessage && !(isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage)) && gameOverSequenceStartTime === 0) {
                 const collisionStates = ['attacking', 'following_entrance_path', 'following_bezier_path', 'diving_to_capture_position'];
                 if (collisionStates.includes(enemy.state)) {
@@ -3245,7 +3060,7 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
                     if (isTwoPlayerMode && selectedGameMode === 'coop') {
                         if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1Invincible && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) shipsToCollideWith.push({shipObj: ship1, playerNum: 1, dual: player1IsDualShipActive});
                         if (ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2Invincible && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture) shipsToCollideWith.push({shipObj: ship2, playerNum: 2, dual: player2IsDualShipActive});
-                    } else {
+                    } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
                         if (ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && !isInvincible) {
                              shipsToCollideWith.push({shipObj: ship, playerNum: currentPlayer, dual: isDualShipActive});
                         }
@@ -3274,15 +3089,14 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
             if (!enemy) continue;
         }
 
-        captureBeamActive = anyBeamActiveThisFrame;
 
-
+        // --- Enemy Bullet vs Player Ship Collision Detection ---
         if (!isShowingPlayerGameOverMessage && !(isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage)) && gameOverSequenceStartTime === 0) {
             let shipsToBulletHitCheck = [];
              if (isTwoPlayerMode && selectedGameMode === 'coop') {
                 if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1Invincible && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) shipsToBulletHitCheck.push({shipObj: ship1, playerNum: 1, dual: player1IsDualShipActive});
                 if (ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2Invincible && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture) shipsToBulletHitCheck.push({shipObj: ship2, playerNum: 2, dual: player2IsDualShipActive});
-            } else {
+            } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
                 if (ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && !isInvincible) {
                      shipsToBulletHitCheck.push({shipObj: ship, playerNum: currentPlayer, dual: isDualShipActive});
                 }
@@ -3314,7 +3128,7 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
         }
         updateHitSparks();
 
-    } catch (e) { console.error("FATAL Error in moveEntities:", e, e.stack); isGridSoundPlaying = false; stopSound('gridBackgroundSound'); isEntrancePhaseActive = false; stopSound('entranceSound'); isShowingPlayerGameOverMessage = false; playerGameOverMessageStartTime = 0; playerWhoIsGameOver = 0; nextActionAfterPlayerGameOver = ''; isPlayer1ShowingGameOverMessage = false; player1GameOverMessageStartTime = 0; isPlayer2ShowingGameOverMessage = false; player2GameOverMessageStartTime = 0; isShipCaptured = false; captureBeamActive = false; enemies.forEach(en => { if(en) { en.isCurrentlyBeaming = false; en.beamProgress = 0;}}); stopSound('captureSound'); stopSound('shipCapturedSound'); isWaitingForRespawn = false; fallingShips = []; isDualShipActive = false; player1IsDualShipActive = false; player2IsDualShipActive = false; isInvincible = false; invincibilityEndTime = 0; hitSparks = []; if(typeof showMenuState === 'function') showMenuState(); if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; alert("Critical error during entity movement/collision. Returning to menu."); }
+    } catch (e) { console.error("FATAL Error in moveEntities:", e, e.stack); isGridSoundPlaying = false; stopSound('gridBackgroundSound'); isEntrancePhaseActive = false; stopSound('entranceSound'); isShowingPlayerGameOverMessage = false; playerGameOverMessageStartTime = 0; playerWhoIsGameOver = 0; nextActionAfterPlayerGameOver = ''; isPlayer1ShowingGameOverMessage = false; player1GameOverMessageStartTime = 0; isPlayer2ShowingGameOverMessage = false; player2GameOverMessageStartTime = 0; isShipCaptured = false; captureBeamActive = false; capturingBossId = null; stopSound('captureSound'); stopSound('shipCapturedSound'); isWaitingForRespawn = false; fallingShips = []; isDualShipActive = false; player1IsDualShipActive = false; player2IsDualShipActive = false; isInvincible = false; invincibilityEndTime = 0; hitSparks = []; if(typeof showMenuState === 'function') showMenuState(); if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; alert("Critical error during entity movement/collision. Returning to menu."); }
 }
 
 
@@ -3340,7 +3154,7 @@ function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, was
         } else {
              if (playerNumber === 1 && typeof player1CaptureRespawnX === 'number' && player1CaptureRespawnX !== 0) lastKnownX = player1CaptureRespawnX;
              else if (playerNumber === 2 && typeof player2CaptureRespawnX === 'number' && player2CaptureRespawnX !== 0) lastKnownX = player2CaptureRespawnX;
-             else if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && gameCanvas) {
+             else if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && gameCanvas) { // <<<< GEWIJZIGD
                  lastKnownX = playerNumber === 1 ? (gameCanvas.width / 2 - gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2)) : (gameCanvas.width / 2 + gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2));
              } else if (gameCanvas) {
                  lastKnownX = gameCanvas.width / 2 - SHIP_WIDTH / 2;
@@ -3348,7 +3162,7 @@ function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, was
                  lastKnownX = 200;
              }
         }
-    } else {
+    } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
         shipObjectToUpdate = ship;
         if (shipObjectToUpdate) {
             lastKnownX = shipObjectToUpdate.x;
@@ -3368,7 +3182,7 @@ function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, was
                 isPlayer1ShipCaptured = true;
                 player1IsDualShipActive = false;
                 player1Lives--;
-                if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) coopPartner1CapturedTime = now;
+                if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) coopPartner1CapturedTime = now; // <<<< GEWIJZIGD
 
 
                 if (player1Lives <= 0) {
@@ -3379,9 +3193,10 @@ function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, was
                     ship1 = null;
                     player1NeedsRespawnAfterCapture = false;
                     if (aiPlayerActivelySeekingCaptureById === 'p1') aiPlayerActivelySeekingCaptureById = null;
-                    const bossHoldingP1 = enemies.find(e => e.id === capturedBossIdWithMessage && e.hasCapturedShip);
-                    if (bossHoldingP1) { bossHoldingP1.hasCapturedShip = false; bossHoldingP1.capturedShipDimensions = null; }
-
+                    if (capturedBossIdWithMessage && enemies.find(e => e.id === capturedBossIdWithMessage)) {
+                        const boss = enemies.find(e => e.id === capturedBossIdWithMessage);
+                        if (boss) { boss.hasCapturedShip = false; boss.capturedShipDimensions = null; }
+                    }
                 } else {
                     player1NeedsRespawnAfterCapture = true;
                     ship1 = null;
@@ -3419,7 +3234,7 @@ function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, was
                 isPlayer2ShipCaptured = true;
                 player2IsDualShipActive = false;
                 player2Lives--;
-                if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) coopPartner2CapturedTime = now;
+                if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) coopPartner2CapturedTime = now; // <<<< GEWIJZIGD
 
 
                 if (player2Lives <= 0) {
@@ -3429,10 +3244,11 @@ function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, was
                     playSound('gameOverSound', false, 0.4);
                     ship2 = null;
                     player2NeedsRespawnAfterCapture = false;
-                    if (aiPlayerActivelySeekingCaptureById === 'p2' || aiPlayerActivelySeekingCaptureById === 'ai_p2') aiPlayerActivelySeekingCaptureById = null;
-                    const bossHoldingP2 = enemies.find(e => e.id === capturedBossIdWithMessage && e.hasCapturedShip);
-                    if (bossHoldingP2) { bossHoldingP2.hasCapturedShip = false; bossHoldingP2.capturedShipDimensions = null; }
-
+                    if (aiPlayerActivelySeekingCaptureById === 'p2' || aiPlayerActivelySeekingCaptureById === 'ai_p2') aiPlayerActivelySeekingCaptureById = null; // <<<< GEWIJZIGD
+                    if (capturedBossIdWithMessage && enemies.find(e => e.id === capturedBossIdWithMessage)) {
+                        const boss = enemies.find(e => e.id === capturedBossIdWithMessage);
+                        if (boss) { boss.hasCapturedShip = false; boss.capturedShipDimensions = null; }
+                    }
                 } else {
                     player2NeedsRespawnAfterCapture = true;
                     ship2 = null;
@@ -3454,7 +3270,7 @@ function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, was
                         player2GameOverMessageStartTime = now;
                         playSound('gameOverSound', false, 0.4);
                         ship2 = null;
-                        if (aiPlayerActivelySeekingCaptureById === 'p2' || aiPlayerActivelySeekingCaptureById === 'ai_p2') aiPlayerActivelySeekingCaptureById = null;
+                        if (aiPlayerActivelySeekingCaptureById === 'p2' || aiPlayerActivelySeekingCaptureById === 'ai_p2') aiPlayerActivelySeekingCaptureById = null; // <<<< GEWIJZIGD
                     } else {
                         isPlayer2Invincible = true; player2InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS;
                         isPlayer2WaitingForRespawn = true; player2RespawnTime = now + RESPAWN_DELAY_MS;
@@ -3471,13 +3287,13 @@ function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, was
              triggerFinalGameOverSequence();
         }
 
-    } else {
+    } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL (Human)
         if (isDualShipActive && !wasCapturedHit && shipObjectToUpdate) {
             isDualShipActive = false;
-            if (isTwoPlayerMode && selectedGameMode === 'normal') {
+            if (isTwoPlayerMode && selectedGameMode === 'normal') { // Geldt voor Human 2P Normal & 1P_VS_AI_NORMAL
                 if (playerNumber === 1) player1IsDualShipActive = false;
                 else if (playerNumber === 2) player2IsDualShipActive = false;
-            } else if (!isTwoPlayerMode) player1IsDualShipActive = false;
+            } else if (!isTwoPlayerMode) player1IsDualShipActive = false; // 1P Classic
 
             const explX = hitDualPart ? (lastKnownX + DUAL_SHIP_OFFSET_X + SHIP_WIDTH/2) : (lastKnownX + SHIP_WIDTH/2);
             createExplosion(explX, shipBaseY + SHIP_HEIGHT/2);
@@ -3486,8 +3302,8 @@ function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, was
             }
             isInvincible = true; invincibilityEndTime = now + INVINCIBILITY_DURATION_MS;
             isWaitingForRespawn = true; respawnTime = now + RESPAWN_DELAY_MS;
-            if (!isManualControl && !isPlayerTwoAI) aiNeedsStabilization = true;
-            else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) aiNeedsStabilization = true;
+            if (!isManualControl && !isPlayerTwoAI) aiNeedsStabilization = true; // Alleen voor pure 1P AI demo
+            else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) aiNeedsStabilization = true; // AI P2 stabiliseren
         } else {
             if(!wasCapturedHit && shipObjectToUpdate) createExplosion(lastKnownX + SHIP_WIDTH/2, shipBaseY + SHIP_HEIGHT/2);
 
@@ -3499,7 +3315,7 @@ function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, was
             playerLives--;
             if (playerLives <= 0) {
                 playerLives = 0;
-                if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                if (isTwoPlayerMode && selectedGameMode === 'normal') { // Geldt voor Human 2P Normal & 1P_VS_AI_NORMAL
                      if (playerNumber === 1) player1Lives = 0; else if (playerNumber === 2) player2Lives = 0;
                      isShowingPlayerGameOverMessage = true; playerGameOverMessageStartTime = now; playerWhoIsGameOver = playerNumber;
                      playSound('gameOverSound', false, 0.4);
@@ -3509,13 +3325,13 @@ function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, was
                      else { nextActionAfterPlayerGameOver = 'show_results'; }
                      bullets = []; enemyBullets = []; explosions = [];
                      if (!(nextPLives > 0)) ship = null;
-                } else {
+                } else { // 1P Classic
                     player1Lives = 0; ship = null;
                     playSound('gameOverSound', false, 0.4);
                     triggerFinalGameOverSequence();
                 }
-            } else {
-                if (isTwoPlayerMode && selectedGameMode === 'normal') {
+            } else { // Nog levens over
+                if (isTwoPlayerMode && selectedGameMode === 'normal') { // Geldt voor Human 2P Normal & 1P_VS_AI_NORMAL
                     if (playerNumber === 1) player1Lives = playerLives; else player2Lives = playerLives;
                 }
 
@@ -3524,8 +3340,8 @@ function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, was
                     isWaitingForRespawn = true; respawnTime = now + RESPAWN_DELAY_MS;
                     if (ship && gameCanvas) {
                         ship.x = lastKnownX; ship.y = shipBaseY; ship.targetX = ship.x;
-                        if (!isManualControl && !isPlayerTwoAI) aiNeedsStabilization = true;
-                        else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) aiNeedsStabilization = true;
+                        if (!isManualControl && !isPlayerTwoAI) aiNeedsStabilization = true; // Alleen voor pure 1P AI demo
+                        else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) aiNeedsStabilization = true; // AI P2 stabiliseren
                     }
                 }
                 if(wasCapturedHit) isDualShipActive = false;
@@ -3585,7 +3401,7 @@ function triggerGridFiring() {
             (player2Lives > 0 && ship2 && !isPlayer2ShipCaptured && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture)) {
             canFireBasedOnPlayerState = true;
         }
-    } else {
+    } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
         if (playerLives > 0 && ship && !isShipCaptured && !isShowingPlayerGameOverMessage) {
             canFireBasedOnPlayerState = true;
         }
