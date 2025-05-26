@@ -1106,31 +1106,43 @@ function handleEnemyHit(enemy, shootingPlayerId = null) {
             challengingStageEnemiesHit++;
         }
 
-        let fallingShipTargetPlayerId = null;
         if (bossHadCapturedShipInitially && bossHadDimensionsInitially) {
-            if (isCoopAIDemoActive) {
-                if (wasPartnershipCapturedByThisBoss && partnerWhoWasCapturedId) {
-                    fallingShipTargetPlayerId = partnerWhoWasCapturedId;
-                } else {
+            let fallingShipTargetPlayerId = null;
+
+            // Priority 1: Return ship to its original owner if a specific partnership was involved
+            if (wasPartnershipCapturedByThisBoss && partnerWhoWasCapturedId) {
+                fallingShipTargetPlayerId = partnerWhoWasCapturedId;
+            } else {
+                // Priority 2: AI Dual ship gives neutral/other's ship to its partner
+                let assignedByAIDualRule = false;
+                if (isCoopAIDemoActive) {
+                    if (shootingPlayerId === 'player1' && player1IsDualShipActive) {
+                        fallingShipTargetPlayerId = 'player2'; // AI P1 dual shot, ship goes to AI P2
+                        assignedByAIDualRule = true;
+                    } else if (shootingPlayerId === 'player2' && player2IsDualShipActive) {
+                        fallingShipTargetPlayerId = 'player1'; // AI P2 dual shot, ship goes to AI P1
+                        assignedByAIDualRule = true;
+                    }
+                } else if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+                    if (shootingPlayerId === 'ai_p2' && player2IsDualShipActive) {
+                        fallingShipTargetPlayerId = 'player1'; // AI P2 dual shot, ship goes to Human P1
+                        assignedByAIDualRule = true;
+                    } else if (shootingPlayerId === 'player1' && player1IsDualShipActive) { // Human P1 is dual
+                        fallingShipTargetPlayerId = 'ai_p2'; // Human P1 dual shot, ship goes to AI P2
+                        assignedByAIDualRule = true;
+                    }
+                }
+
+                if (!assignedByAIDualRule) {
+                    // Priority 3: Default to the shooter if no other rules applied for neutral ship
                     fallingShipTargetPlayerId = shootingPlayerId;
                 }
-            } else if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { // 1P vs AI COOP
-                 if (wasPartnershipCapturedByThisBoss && partnerWhoWasCapturedId) { // Als de gevangen schip van P1 was
-                    fallingShipTargetPlayerId = partnerWhoWasCapturedId; // 'player1'
-                 } else { // Neutraal schip, of AI P2's eigen (zou niet moeten gebeuren), of partner-logica faalde
-                    fallingShipTargetPlayerId = shootingPlayerId; // 'ai_p2' als AI P2 schoot
-                 }
-            } else if (isTwoPlayerMode && selectedGameMode === 'coop') { // Human CO-OP
-                if (wasPartnershipCapturedByThisBoss) {
-                    if (isPlayer1ShipCaptured && capturedBossIdWithMessage === enemy.id) fallingShipTargetPlayerId = 'player1';
-                    else if (isPlayer2ShipCaptured && capturedBossIdWithMessage === enemy.id) fallingShipTargetPlayerId = 'player2';
-                    else fallingShipTargetPlayerId = shootingPlayerId;
-                } else {
-                    fallingShipTargetPlayerId = shootingPlayerId;
-                }
-            } else { // 1P of Alternating 2P
+            }
+            // Fallback if no target was assigned (should ideally not happen if shootingPlayerId is valid)
+            if (fallingShipTargetPlayerId === null && shootingPlayerId) {
                 fallingShipTargetPlayerId = shootingPlayerId;
             }
+
 
             if (enemy.capturedShipDimensions) {
                 const capturedW = enemy.capturedShipDimensions.width;
