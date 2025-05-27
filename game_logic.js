@@ -2836,15 +2836,14 @@ function updateExplosions() { if (isPaused) return; try { const now = Date.now()
 
 
 // --- Functie moveEntities: Update posities en states van alle entiteiten ---
-function moveEntities(overrideP1Left = null, overrideP1Right = null) {
+function moveEntities() { // Override parameters zijn verwijderd
     if (isPaused) return;
     try {
         const now = Date.now();
         const shipBaseY  = gameCanvas ? gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN : 500;
 
         // --- Ship Movement (CO-OP, 1P, AI) ---
-        // Keyboard/Gamepad beweging (als touch niet actief is voor beweging)
-        if (gameCanvas && !isTouchActiveGame) { // Alleen keyboard/gamepad beweging als touch NIET actief is.
+        if (gameCanvas && !isTouchActiveGame) {
             if (isManualControl) {
                 if (isTwoPlayerMode && selectedGameMode === 'coop') {
                     // P1 (mens) beweging via keyboard/gamepad
@@ -2865,29 +2864,53 @@ function moveEntities(overrideP1Left = null, overrideP1Right = null) {
                     }
                 } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
                     if (ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && gameOverSequenceStartTime === 0) {
-                        if (!isPlayerTwoAI || (isPlayerTwoAI && currentPlayer === 1) ) { // Alleen als P1 (mens) aan de beurt is in 1P vs AI
-                            const effectiveWidth = ship.width + (isDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
-                            let useOverrideLeft = false; let useOverrideRight = false;
-                            if (isManualControl && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && currentPlayer === 1 && isShowingIntro) {
-                                if(overrideP1Left !== null) useOverrideLeft = overrideP1Left;
-                                if(overrideP1Right !== null) useOverrideRight = overrideP1Right;
-                            }
+                        
+                        const isP1vsAINormalIntroContext = isManualControl && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && currentPlayer === 1 && isShowingIntro;
 
-                            if (useOverrideLeft || leftPressed) ship.x -= ship.speed;
-                            if (useOverrideRight || rightPressed) ship.x += ship.speed;
+                        if (isP1vsAINormalIntroContext) {
+                            // Lees hier direct de input voor beweging tijdens deze specifieke intro,
+                            // dit is om de globale vlaggen te omzeilen als die problemen geven.
+                            let moveL = keyboardP1LeftDown; // Start met keyboard state
+                            let moveR = keyboardP1RightDown;
+
+                            if (connectedGamepadIndex !== null) {
+                                const gamepads = navigator.getGamepads();
+                                if (gamepads?.[connectedGamepadIndex]) {
+                                    const gamepadP1Obj = gamepads[connectedGamepadIndex];
+                                    // Directe lezing van assen en dpad voor beweging
+                                    const axisX = gamepadP1Obj.axes[PS5_LEFT_STICK_X] ?? 0;
+                                    const dpadLeftPressed = gamepadP1Obj.buttons[PS5_DPAD_LEFT]?.pressed;
+                                    const dpadRightPressed = gamepadP1Obj.buttons[PS5_DPAD_RIGHT]?.pressed;
+
+                                    if (axisX < -AXIS_DEAD_ZONE_GAMEPLAY || dpadLeftPressed) moveL = true;
+                                    if (axisX > AXIS_DEAD_ZONE_GAMEPLAY || dpadRightPressed) moveR = true;
+                                }
+                            }
+                            const effectiveWidth = ship.width + (isDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
+                            if (moveL) ship.x -= ship.speed;
+                            if (moveR) ship.x += ship.speed;
+                            ship.x = Math.max(0, Math.min(gameCanvas.width - effectiveWidth, ship.x));
+                            ship.targetX = ship.x;
+
+                        } else if (!isPlayerTwoAI || (isPlayerTwoAI && currentPlayer === 1) ) {
+                            // Standaard beweging voor P1 human buiten de P1vsAINormalIntro,
+                            // of voor andere 1P/Normal modes waar P1 handmatig bestuurt.
+                            // Vertrouwt op globale leftPressed/rightPressed.
+                            const effectiveWidth = ship.width + (isDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
+                            if (leftPressed) ship.x -= ship.speed;
+                            if (rightPressed) ship.x += ship.speed;
                             ship.x = Math.max(0, Math.min(gameCanvas.width - effectiveWidth, ship.x));
                             ship.targetX = ship.x;
                         }
+                        // AI P2 in 1P_VS_AI_NORMAL wordt bewogen door de AI_Control_Movement sectie hieronder.
                     }
                 }
             }
         }
-        // Touch beweging wordt direct in handlePlayerInput afgehandeld door ship.x te zetten.
 
-        // AI Control Movement (Demo modes & AI P2 in 1P vs AI Normal & AI in CO-OP modes)
-        // Dit blijft nodig voor de AI-gestuurde schepen.
+        // AI Control Movement
         if (!isManualControl ||
-            (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) ||
+            (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) || // AI P2 in 1P_VS_AI_NORMAL
             (isCoopAIDemoActive) ||
             (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') ) {
 
