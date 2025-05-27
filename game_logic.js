@@ -4017,6 +4017,7 @@ function runSingleGameUpdate(timestamp) {
             }
         }
 
+        // --- START OF MODIFIED SECTION FOR INTRO MOVEMENT ---
         if (inNormalIntro && noPlayerGameOverIsActive && gameOverSequenceStartTime === 0) {
             let introTextFinished = false;
             const elapsedIntroTime = now - introDisplayStartTime;
@@ -4101,24 +4102,17 @@ function runSingleGameUpdate(timestamp) {
                 }
             }
 
+            // --- START OF REVISED MOVEMENT/INPUT LOGIC FOR NORMAL INTRO ---
             if (isInGameState && noPlayerGameOverIsActive && gameOverSequenceStartTime === 0 && gameCanvas) {
-                let p1LeftOverrideForMoveEntities = null;
-                let p1RightOverrideForMoveEntities = null;
-
-                const isP1HumanVsAINormalIntro = isManualControl && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && currentPlayer === 1 && isShowingIntro;
-
-                if (isP1HumanVsAINormalIntro) {
-                    let p1CtrlLeft = false, p1CtrlRight = false;
-                    const gamepads = navigator.getGamepads();
-                    if (connectedGamepadIndex !== null && gamepads?.[connectedGamepadIndex]) {
-                        const gamepadP1Obj = gamepads[connectedGamepadIndex];
-                        const resultP1 = processSingleController(gamepadP1Obj, previousGameButtonStates);
-                        p1CtrlLeft = resultP1.left; p1CtrlRight = resultP1.right;
-                    }
-                    p1LeftOverrideForMoveEntities = keyboardP1LeftDown || p1CtrlLeft;
-                    p1RightOverrideForMoveEntities = keyboardP1RightDown || p1CtrlRight;
+                
+                // 1. Handle Player Input if it's a manual control intro
+                // This ensures global flags like leftPressed/rightPressed are set based on current input.
+                if (isManualControl && isShowingIntro) {
+                    handlePlayerInput();
                 }
 
+                // 2. AI control (original logic for AI entities during intro)
+                // const isP1vsAINormal = (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL'); // Already defined above
                 if (isP1vsAINormal && currentPlayer === 2) { // AI P2 in 1P vs AI Normal
                     aiControl();
                 } else if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) { // COOP AI Demo or 1P vs AI COOP
@@ -4127,11 +4121,15 @@ function runSingleGameUpdate(timestamp) {
                     aiControl();
                 }
 
+                // 3. Move Entities
+                // Now uses global flags updated by handlePlayerInput above for manual control.
+                // The P1-specific override arguments are removed from the call.
                 if (typeof moveEntities === 'function') {
-                    moveEntities(p1LeftOverrideForMoveEntities, p1RightOverrideForMoveEntities);
+                    moveEntities(); 
                 }
                 updateExplosions(); updateFloatingScores();
             }
+            // --- END OF REVISED MOVEMENT/INPUT LOGIC FOR NORMAL INTRO ---
 
 
             if (introTextFinished) {
@@ -4180,11 +4178,10 @@ function runSingleGameUpdate(timestamp) {
                     if (isNonCoopL1Normal || level > 1 || isChallengingStage || isCoopL1 ) gameJustStartedAndWaveLaunched = true;
                 }
             }
-            if (isManualControl && inNormalIntro && noPlayerGameOverIsActive && gameOverSequenceStartTime === 0) {
-                handlePlayerInput();
-            }
+            // The redundant handlePlayerInput call that was here is removed as it's now handled earlier in this 'inNormalIntro' block.
             renderGame(); return;
         }
+        // --- END OF MODIFIED SECTION FOR INTRO MOVEMENT ---
 
 
         const noSpecialOrNormalIntroRunning = !coopLevel1IntroIsCurrentlyActive && !inNormalIntro && !messageTimeoutCompleted && !isShowingCaptureMessage;
@@ -4211,6 +4208,8 @@ function runSingleGameUpdate(timestamp) {
 
         if (noSpecialOrNormalIntroRunning && isInGameState && noPlayerGameOverIsActive && gameOverSequenceStartTime === 0) {
             if (!isShowingCSBonusScreen || (isShowingCSBonusScreen && isManualControl)) {
+                // AI control and player input calls were already here and are fine for non-intro gameplay.
+                // The change above specifically addresses intros.
                 if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
                     aiControlCoop();
                 } else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
@@ -4221,7 +4220,7 @@ function runSingleGameUpdate(timestamp) {
                 if (isManualControl) {
                     handlePlayerInput();
                 }
-                if (typeof moveEntities === 'function') moveEntities();
+                if (typeof moveEntities === 'function') moveEntities(); // Uses global flags
                 updateExplosions();
                 updateFloatingScores();
 
