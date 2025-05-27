@@ -1520,7 +1520,7 @@ function firePlayerBullet(shooterId = null, isTapEvent = false) {
                 canShootLogic = true;
             }
         }
-    } else {
+    } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL (Alternating)
         if (ship && playerLives > 0 && !isShipCaptured) {
             shootingShipObject = ship; isDual = isDualShipActive;
             if (isTwoPlayerMode && selectedGameMode === 'normal') {
@@ -1529,19 +1529,27 @@ function firePlayerBullet(shooterId = null, isTapEvent = false) {
                     incrementPlayerShotsFired = (count) => { player1ShotsFired += count; }; useSingleShotFlag = selectedFiringMode === 'single';
                     getSingleShotFlag = () => p1JustFiredSingle; setSingleShotFlag = (val) => { p1JustFiredSingle = val; };
                     if (!currentShooterPlayerId) currentShooterPlayerId = 'player1';
-                } else {
+                } else { // currentPlayer === 2
                     playerSpecificLastShotTime = player2LastShotTime; setPlayerSpecificLastShotTime = (time) => { player2LastShotTime = time; };
                     incrementPlayerShotsFired = (count) => { player2ShotsFired += count; };
                     if (isPlayerTwoAI) {
                         useSingleShotFlag = false;
                         if (!currentShooterPlayerId) currentShooterPlayerId = 'ai_p2';
-                    } else {
+                    } else { // Human P2 in Normal mode
                         useSingleShotFlag = selectedFiringMode === 'single';
-                        getSingleShotFlag = () => p2JustFiredSingle; setSingleShotFlag = (val) => { p2JustFiredSingle = val; };
+                        // <<< GEWIJZIGD: Selecteer de juiste JustFiredSingle vlag voor P2 Human Normal >>>
+                        if (connectedGamepadIndexP2 === null && connectedGamepadIndex !== null) { // P1's controller voor P2
+                            getSingleShotFlag = () => p1JustFiredSingle;
+                            setSingleShotFlag = (val) => { p1JustFiredSingle = val; };
+                        } else { // P2 gebruikt eigen controller of keyboard
+                            getSingleShotFlag = () => p2JustFiredSingle;
+                            setSingleShotFlag = (val) => { p2JustFiredSingle = val; };
+                        }
+                        // <<< EINDE GEWIJZIGD >>>
                         if (!currentShooterPlayerId) currentShooterPlayerId = 'player2';
                     }
                 }
-            } else {
+            } else { // 1P Classic
                 playerSpecificLastShotTime = player1LastShotTime;
                 setPlayerSpecificLastShotTime = (time) => { player1LastShotTime = time; };
                 incrementPlayerShotsFired = (count) => { player1ShotsFired += count; }; useSingleShotFlag = selectedFiringMode === 'single';
@@ -1575,7 +1583,15 @@ function firePlayerBullet(shooterId = null, isTapEvent = false) {
              if (currentShooterPlayerId === 'player1' || (!isTwoPlayerMode && currentShooterPlayerId === 'player1')) {
                 fireButtonIsCurrentlyPressed = keyboardP1ShootDown || (connectedGamepadIndex !== null && navigator.getGamepads()?.[connectedGamepadIndex]?.buttons[PS5_BUTTON_CROSS]?.pressed);
             } else if (currentShooterPlayerId === 'player2' && !isPlayerTwoAI) {
-                fireButtonIsCurrentlyPressed = keyboardP2ShootDown || (connectedGamepadIndexP2 !== null && navigator.getGamepads()?.[connectedGamepadIndexP2]?.buttons[PS5_BUTTON_CROSS]?.pressed);
+                // <<< GEWIJZIGD: Check welke controller P2 gebruikt voor huidige fire button state >>>
+                if (connectedGamepadIndexP2 !== null) { // P2 eigen controller
+                    fireButtonIsCurrentlyPressed = keyboardP2ShootDown || (connectedGamepadIndexP2 !== null && navigator.getGamepads()?.[connectedGamepadIndexP2]?.buttons[PS5_BUTTON_CROSS]?.pressed);
+                } else if (connectedGamepadIndex !== null) { // P1 controller voor P2
+                    fireButtonIsCurrentlyPressed = keyboardP2ShootDown || (connectedGamepadIndex !== null && navigator.getGamepads()?.[connectedGamepadIndex]?.buttons[PS5_BUTTON_CROSS]?.pressed);
+                } else { // Alleen P2 keyboard
+                    fireButtonIsCurrentlyPressed = keyboardP2ShootDown;
+                }
+                // <<< EINDE GEWIJZIGD >>>
             }
 
             if (getSingleShotFlag()) { // Als al een schot is gelost en knop nog ingedrukt/niet gereset
@@ -1622,7 +1638,6 @@ function firePlayerBullet(shooterId = null, isTapEvent = false) {
 
 /**
  * Handles player input (manual control), considering currentPlayer and input sources.
- * <<< GEWIJZIGD: canvasTouchX correct gescoped voor touch rapid fire. >>>
  */
 function handlePlayerInput() {
      try {
@@ -1652,14 +1667,12 @@ function handlePlayerInput() {
              return;
          }
 
-        // <<< GEWIJZIGD: canvasTouchX hier declareren en conditioneel berekenen >>>
-        let canvasTouchX = 0; // Default waarde
-        if (isTouchActiveGame && gameCanvas && gameCanvas.width > 0) { // Bereken alleen als touch actief is
+        let canvasTouchX = 0;
+        if (isTouchActiveGame && gameCanvas && gameCanvas.width > 0) {
             const rect = gameCanvas.getBoundingClientRect();
             const scaleX = gameCanvas.width / rect.width;
             canvasTouchX = (touchCurrentX - rect.left) * scaleX;
         }
-        // <<< EINDE GEWIJZIGD >>>
 
 
         let ctrlP1Left = false, ctrlP1Right = false, ctrlP1ShootIsRaw = false;
@@ -1695,23 +1708,48 @@ function handlePlayerInput() {
         let oldP2FireInputWasDown = false;
         if (!(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
             oldP2FireInputWasDown = p2FireInputWasDown;
-            p2FireInputWasDown = keyboardP2ShootDown || ctrlP2ShootIsRaw;
+            // <<< GEWIJZIGD: Correcte p2FireInputWasDown bepaling voor Normal P2 Human >>>
+            if (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 2 && !isPlayerTwoAI) {
+                 if (connectedGamepadIndexP2 !== null) { // P2 has own controller
+                     p2FireInputWasDown = keyboardP2ShootDown || ctrlP2ShootIsRaw;
+                 } else if (connectedGamepadIndex !== null) { // P1's controller is active, P2's is not
+                     p2FireInputWasDown = keyboardP2ShootDown || ctrlP1ShootIsRaw; // Use P2's keyboard OR P1's gamepad raw state
+                 } else { // No gamepads
+                     p2FireInputWasDown = keyboardP2ShootDown; // P2 keyboard only
+                 }
+            } else { // For COOP P2 Human, or other cases
+                p2FireInputWasDown = keyboardP2ShootDown || ctrlP2ShootIsRaw;
+            }
+            // <<< EINDE GEWIJZIGD >>>
         } else {
              p2FireInputWasDown = false;
         }
 
         if (selectedFiringMode === 'single') {
             if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                if (!isTouchActiveGame) { 
+                if (!isTouchActiveGame) {
                     if (oldP1FireInputWasDown && !p1FireInputWasDown) p1JustFiredSingle = false;
                     if (!isPlayerTwoAI && oldP2FireInputWasDown && !p2FireInputWasDown) p2JustFiredSingle = false;
                 }
             } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
                  if (!isTouchActiveGame) {
                     if (currentPlayer === 1 && oldP1FireInputWasDown && !p1FireInputWasDown) p1JustFiredSingle = false;
-                    else if (currentPlayer === 2 && !isPlayerTwoAI && oldP2FireInputWasDown && !p2FireInputWasDown) p2JustFiredSingle = false;
+                    else if (currentPlayer === 2 && !isPlayerTwoAI) {
+                        let p2UsedP1GamepadLast = (connectedGamepadIndexP2 === null && connectedGamepadIndex !== null);
+                        let p2UsingP1GamepadNow = (connectedGamepadIndexP2 === null && connectedGamepadIndex !== null);
+
+                        if (p2UsedP1GamepadLast && p2UsingP1GamepadNow) { // P2 gebruikte P1's controller en doet dat nog steeds
+                            if (oldP1FireInputWasDown && !p1FireInputWasDown) {
+                                p1JustFiredSingle = false; // Reset P1's vlag (die P2 indirect gebruikt)
+                            }
+                        } else { // P2 gebruikte/gebruikt eigen controller of keyboard
+                            if (oldP2FireInputWasDown && !p2FireInputWasDown) {
+                                p2JustFiredSingle = false;
+                            }
+                        }
+                    }
                 }
-            } else { 
+            } else { // 1P Classic
                 if (!isTouchActiveGame) {
                     if (oldP1FireInputWasDown && !p1FireInputWasDown) p1JustFiredSingle = false;
                 }
@@ -1724,13 +1762,11 @@ function handlePlayerInput() {
 
         let p1MovementFromTouch = false;
 
-        // <<< GEWIJZIGD: Gebruik de al berekende canvasTouchX >>>
         if (isTouchActiveGame && gameCanvas) {
-            // De variabele canvasTouchX is nu al berekend aan het begin van de functie.
             if (isTwoPlayerMode && selectedGameMode === 'coop') {
                 if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) {
                     const p1EffectiveWidth = ship1.width + (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
-                    let targetShip1X = canvasTouchX - p1EffectiveWidth / 2; // Gebruik de gescopete canvasTouchX
+                    let targetShip1X = canvasTouchX - p1EffectiveWidth / 2;
                     targetShip1X = Math.max(0, Math.min(gameCanvas.width - p1EffectiveWidth, targetShip1X));
                     ship1.x = targetShip1X; ship1.targetX = targetShip1X;
                     p1MovementFromTouch = true;
@@ -1738,14 +1774,13 @@ function handlePlayerInput() {
             } else {
                 if (ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && gameOverSequenceStartTime === 0 && (!isPlayerTwoAI || (isPlayerTwoAI && currentPlayer === 1))) {
                     const effectiveWidth = ship.width + (isDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
-                    let targetShipX = canvasTouchX - effectiveWidth / 2; // Gebruik de gescopete canvasTouchX
+                    let targetShipX = canvasTouchX - effectiveWidth / 2;
                     targetShipX = Math.max(0, Math.min(gameCanvas.width - effectiveWidth, targetShipX));
                     ship.x = targetShipX; ship.targetX = targetShipX;
                     p1MovementFromTouch = true;
                 }
             }
         }
-        // <<< EINDE GEWIJZIGD >>>
 
 
         if (isTwoPlayerMode && selectedGameMode === 'coop') {
@@ -1763,23 +1798,29 @@ function handlePlayerInput() {
                     p2RightPressed = keyboardP2RightDown || ctrlP2Right;
                 }
             }
-        } else {
+        } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
             if (!p1MovementFromTouch) {
                 const activePlayerCanControl = ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage;
                 if (activePlayerCanControl) {
-                    if (currentPlayer === 1 || !isTwoPlayerMode) {
+                    if (currentPlayer === 1 || !isTwoPlayerMode) { // P1's turn or 1P mode
                         leftPressed = (keyboardP1LeftDown || ctrlP1Left);
                         rightPressed = (keyboardP1RightDown || ctrlP1Right);
-                    } else if (currentPlayer === 2 && !isPlayerTwoAI) {
-                        leftPressed = (keyboardP2LeftDown || ctrlP2Left);
-                        rightPressed = (keyboardP2RightDown || ctrlP2Right);
+                    } else if (currentPlayer === 2 && !isPlayerTwoAI && selectedGameMode === 'normal') { // Human P2 in Normal mode
+                        if (connectedGamepadIndexP2 !== null) { // P2 has their own controller
+                            leftPressed = (keyboardP2LeftDown || ctrlP2Left);
+                            rightPressed = (keyboardP2RightDown || ctrlP2Right);
+                        } else if (connectedGamepadIndex !== null) { // P1's controller is active, P2's is not
+                            leftPressed = (keyboardP2LeftDown || ctrlP1Left); // Use P2's keyboard OR P1's gamepad
+                            rightPressed = (keyboardP2RightDown || ctrlP1Right); // Use P2's keyboard OR P1's gamepad
+                        } else { // No gamepads connected
+                            leftPressed = keyboardP2LeftDown; // P2 uses P2 keyboard
+                            rightPressed = keyboardP2RightDown;
+                        }
                     }
                 }
             }
         }
 
-        // <<< GEWIJZIGD: Vuur input vlaggen instellen op basis van bron (touch vs keyboard/gamepad) >>>
-        // <<< GEWIJZIGD: Gebruik de al berekende canvasTouchX >>>
         if (isTwoPlayerMode && selectedGameMode === 'coop') {
             const p1CanShoot = ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture && !inCoopLevel1IntroStrict;
             if (p1CanShoot) {
@@ -1798,32 +1839,31 @@ function handlePlayerInput() {
             const activePlayerCanShoot = ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && !isShowingIntro && !inCoopLevel1IntroStrict;
             if (activePlayerCanShoot) {
                 let currentFireInputWasDown = false;
-                if (currentPlayer === 1 || !isTwoPlayerMode) {
+                if (currentPlayer === 1 || !isTwoPlayerMode) { // P1's turn or 1P mode
                     currentFireInputWasDown = p1FireInputWasDown;
-                } else if (currentPlayer === 2 && !isPlayerTwoAI) {
-                    currentFireInputWasDown = p2FireInputWasDown;
+                } else if (currentPlayer === 2 && !isPlayerTwoAI && selectedGameMode === 'normal') { // Human P2 in Normal mode
+                    currentFireInputWasDown = p2FireInputWasDown; // Dit gebruikt de al correct bepaalde p2FireInputWasDown
                 }
                 shootPressed = (isTouchActiveGame && selectedFiringMode === 'rapid') || currentFireInputWasDown;
                 if (isShowingCaptureMessage && isShipCaptured) shootPressed = false;
             }
         }
-        // <<< EINDE GEWIJZIGD >>>
 
 
-        if (isManualControl) { 
+        if (isManualControl) {
             if (isTwoPlayerMode && selectedGameMode === 'coop') {
                 if (shootPressed) {
-                    firePlayerBullet('player1', false); 
+                    firePlayerBullet('player1', false);
                 }
                 if (!isPlayerTwoAI && p2ShootPressed) {
-                    firePlayerBullet('player2', false); 
+                    firePlayerBullet('player2', false);
                 }
-            } else {
+            } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
                 if (shootPressed) {
                     if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
-                        // AI P2 schiet via aiControl
+                        // AI P2 schiet via aiControl, niet hier
                     } else {
-                        firePlayerBullet(currentPlayer === 1 || !isTwoPlayerMode ? 'player1' : 'player2', false); 
+                        firePlayerBullet(currentPlayer === 1 || !isTwoPlayerMode ? 'player1' : 'player2', false);
                     }
                 }
             }
@@ -2006,14 +2046,39 @@ function handlePlayerInput() {
                 targetEnemyForAI = null;
                 shouldTryShoot = false;
             } else if (fallingShips.length > 0 && !isShipCapturedForAI && !isWaitingForRespawn && !isDualActiveForAI ) {
-                // ... (vallend schip logica, ongewijzigd) ...
+                let closestFallingShip = null;
+                let minDist = Infinity;
+                for (const fs of fallingShips) {
+                    if (fs && !fs.landed) {
+                        const dist = Math.abs(fs.x + fs.width / 2 - shipCenterX) + Math.abs(fs.y - activeShipForAI.y);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            closestFallingShip = fs;
+                        }
+                    }
+                }
+                if (closestFallingShip) {
+                    desiredTargetX = closestFallingShip.x + closestFallingShip.width / 2 - effectiveShipWidth / 2;
+                    shouldTryShoot = false;
+                    targetEnemyForAI = null;
+                }
             } else {
                 let shouldConsiderCapture = false;
                 let capturingBoss = null;
                 isMovingToCapture = false;
 
                 if (!ignoreCaptureMode && (!isManualControl || isAIPlayer2NormalMode) && captureBeamActive && capturingBossId && aiLivesForAI > 1 && !isShipCapturedForAI && !isWaitingForRespawn) {
-                    // ... (capture beam logica, ongewijzigd) ...
+                    capturingBoss = enemies.find(e => e.id === capturingBossId && e.type === ENEMY3_TYPE && e.state === 'capturing');
+                    if (capturingBoss) {
+                        const beamCenterX = capturingBoss.x + (capturingBoss.type === ENEMY3_TYPE ? BOSS_WIDTH : ENEMY_WIDTH) / 2;
+                        const dxToBeam = Math.abs(shipCenterX - beamCenterX);
+                        if (dxToBeam < (effectiveShipWidth * 0.8) && (now - (capturingBoss.captureStartTime || 0) >= AI_CAPTURE_BEAM_APPROACH_DELAY_MS)) {
+                            desiredTargetX = beamCenterX - effectiveShipWidth / 2;
+                            shouldTryShoot = false;
+                            targetEnemyForAI = null;
+                            isMovingToCapture = true;
+                        }
+                    }
                 }
 
                 if (!isMovingToCapture) {
@@ -2278,8 +2343,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
     let laneCenterX = gameCanvasWidth / 2;
 
-    // --- GEWIJZIGDE LOGICA: Centreren als enige overlevende AI in COOP Demo tijdens INTRO ---
-    // Centreren alleen als het *niet* de entrance phase van een CS is.
     const generalIntroIsActive = (isShowingIntro || isShowingCoopPlayersReady);
     const isCoopDemoAndGeneralIntroActive = isCoopAIDemoActive && generalIntroIsActive && !(isChallengingStage && isEntrancePhaseActive);
 
@@ -2290,7 +2353,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     if (isCoopDemoAndGeneralIntroActive && isSingleSurvivorInCoopDemo) {
         laneCenterX = gameCanvasWidth / 2;
     }
-    // --- EINDE GEWIJZIGDE LOGICA ---
     else if (shipIdentifier === 'p1') {
         laneCenterX = gameCanvasWidth * 0.25 + Math.sin(currentTime / (AI_WIGGLE_PERIOD * 1.1)) * (AI_WIGGLE_AMPLITUDE * 0.8);
     } else if (shipIdentifier === 'p2' || shipIdentifier === 'ai_p2') {
@@ -2299,7 +2361,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     let targetCenterShipX = laneCenterX - (effectiveShipWidth / 2);
 
     if (isCurrentShipCompletelyBlocked || isThisShipCaptured || isThisShipWaitingForRespawn || (shipIdentifier === 'p1' && player1NeedsRespawnAfterCapture) || ((shipIdentifier === 'p2' || shipIdentifier === 'ai_p2') && player2NeedsRespawnAfterCapture) ) {
-        if (isCoopDemoAndGeneralIntroActive && isSingleSurvivorInCoopDemo) { // Was: isCoopDemoAndIntroActive
+        if (isCoopDemoAndGeneralIntroActive && isSingleSurvivorInCoopDemo) {
              desiredTargetX = targetCenterShipX;
         }
         else {
@@ -2420,19 +2482,16 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         }
     }
 
-    // <<< GEWIJZIGDE LOGICA: AI met laatste leven vermijdt capture beam >>>
     if (!isDodgingThreat && !isShipDual && captureBeamActive && capturingBossId && !isThisShipCaptured) {
-        if (livesOfThisAIShip <= 1) { // Als het het laatste leven is
-            isMovingToCaptureBeam = false; // Ga niet naar de beam
-            if (aiPlayerActivelySeekingCaptureById === shipIdentifier) { // Reset als deze AI actief zocht
+        if (livesOfThisAIShip <= 1) {
+            isMovingToCaptureBeam = false;
+            if (aiPlayerActivelySeekingCaptureById === shipIdentifier) {
                 aiPlayerActivelySeekingCaptureById = null;
             }
-            // Blijf op de huidige lane of een veilige positie
             desiredTargetX = targetCenterShipX;
-            shouldTryShoot = false; // Overweeg om niet te schieten om de beam te vermijden
+            shouldTryShoot = false;
             targetEnemyForAI = null;
         } else if (aiPlayerActivelySeekingCaptureById === null || aiPlayerActivelySeekingCaptureById === shipIdentifier) {
-    // <<< EINDE GEWIJZIGDE LOGICA >>>
             const capturingBossEntity = gameEnemies.find(e => e.id === capturingBossId);
             if (capturingBossEntity && capturingBossEntity.state === 'capturing') {
                 if (aiPlayerActivelySeekingCaptureById === null) {
