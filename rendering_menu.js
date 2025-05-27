@@ -1118,30 +1118,16 @@ function renderGame() {
                 let livesP1ToDisplay = 0;
                 let livesP2ToDisplay = 0;
 
-                // <<< GEWIJZIGD: Conditie voor vaste levensicoontjes in 1P/2P Normal Game Over >>>
-                const inFinalNormalGameOverState = gameOverSequenceStartTime > 0 && 
-                                                 (!isTwoPlayerMode || (isTwoPlayerMode && selectedGameMode === 'normal')) && // Enkel voor 1P of 2P Normal
-                                                 !isShowingPlayerGameOverMessage; // Niet tijdens "PLAYER X GAME OVER"
+                // <<< GEWIJZIGD: Conditie voor vaste levensicoontjes in 2-speler resultatenscherm >>>
+                const inTwoPlayerResultsScreen = isShowingResultsScreen && isTwoPlayerMode;
 
-                if (inFinalNormalGameOverState) {
-                    livesP1ToDisplay = defaultReserveLives; // Altijd 2 voor "1UP" area
-                    // Voor P2 in 2P Normal Game Over: toon levens alleen als het een 2-speler game was
-                    if (isTwoPlayerMode && selectedGameMode === 'normal') {
-                         livesP2ToDisplay = (player2Lives <= 0 && !wasLastGameAIDemo) ? 0 : defaultReserveLives;
-                    } else {
-                        livesP2ToDisplay = 0; // Geen P2 levens in 1P game over
-                    }
-                } else if (isShowingResultsScreen && selectedGameMode === 'coop') { // Alleen voor COOP resultaten, want Normal resultaten vallen al onder inFinalNormalGameOverState
-                    livesP1ToDisplay = defaultReserveLives;
-                    if (isEffectivelyTwoPlayerUI || (wasLastGameAIDemo && isPlayerTwoAI)) {
-                        livesP2ToDisplay = (player2Lives <= 0 && !wasLastGameAIDemo) ? 0 : defaultReserveLives;
-                    } else {
-                        livesP2ToDisplay = 0;
-                    }
-                }
+                if (inTwoPlayerResultsScreen) {
+                    livesP1ToDisplay = defaultReserveLives; // Altijd 2 voor "1UP" area in 2P results
+                    livesP2ToDisplay = defaultReserveLives; // Altijd 2 voor "2UP" area in 2P results
+                } 
                 // <<< EINDE GEWIJZIGD >>>
-                else if (!isInGameState || isShowingScoreScreen || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || (gameOverSequenceStartTime > 0 && (now - gameOverSequenceStartTime) < GAME_OVER_DURATION && selectedGameMode === 'coop') ) {
-                    // Menu, Score Screen, individuele Player Game Over berichten, of de "GAME OVER" tekst voor COOP
+                else if (!isInGameState || isShowingScoreScreen || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || gameOverSequenceStartTime > 0 ) {
+                    // Menu, Score Screen, individuele Player Game Over berichten, of de "GAME OVER" tekst
                     livesP1ToDisplay = (player1Lives <= 0) ? 0 : defaultReserveLives;
 
                     if (isEffectivelyTwoPlayerUI || (!isInGameState && (!isPlayerSelectMode || selectedButtonIndex === 1 )) ) {
@@ -1197,7 +1183,9 @@ function renderGame() {
                                            )
                                           );
 
-                if (p2LivesIconsToDraw > 0 && ( (isEffectivelyTwoPlayerUI && isInGameState) || (inFinalNormalGameOverState && isTwoPlayerMode && selectedGameMode === 'normal') || (isShowingResultsScreen && selectedGameMode === 'coop' && isEffectivelyTwoPlayerUI) || showP2LivesInMenuGeneral || showP2LivesInMenuForAICoop ) ) {
+                // <<< GEWIJZIGD: Conditie voor P2 levens tekenen aangepast >>>
+                if (p2LivesIconsToDraw > 0 && ( (isEffectivelyTwoPlayerUI && isInGameState) || inTwoPlayerResultsScreen || showP2LivesInMenuGeneral || showP2LivesInMenuForAICoop ) ) {
+                // <<< EINDE GEWIJZIGD >>>
                     const p2LivesTotalWidth = p2LivesIconsToDraw * LIFE_ICON_SIZE + Math.max(0, p2LivesIconsToDraw - 1) * LIFE_ICON_SPACING;
                     const p2LivesStartX = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - p2LivesTotalWidth;
                     for (let i = 0; i < p2LivesIconsToDraw; i++) {
@@ -1290,22 +1278,15 @@ function renderGame() {
                                      (isPlayer1ShowingGameOverMessage && isPlayer1_Coop_Or_SinglePlayer) ||
                                      (isPlayer2ShowingGameOverMessage && !isPlayer1_Coop_Or_SinglePlayer);
 
-            if (!isInGameState || isShowingScoreScreen || isGameOverOrResults) {
-                // <<< GEWIJZIGD: Conditie voor vaste levensicoontjes in 1P/2P Normal Game Over >>>
-                const inFinalNormalGameOverStateForLevel = gameOverSequenceStartTime > 0 && 
-                                                           (!isTwoPlayerMode || (isTwoPlayerMode && selectedGameMode === 'normal')) &&
-                                                           !isShowingPlayerGameOverMessage;
+            // <<< GEWIJZIGD: Conditie voor vaste levensicoontjes in 2-speler resultatenscherm >>>
+            const inTwoPlayerResultsScreenForLevel = isShowingResultsScreen && isTwoPlayerMode;
 
-                if (inFinalNormalGameOverStateForLevel && isPlayer1_Coop_Or_SinglePlayer) { // Linkerzijde (1UP area)
-                    numLifeIconsDrawn = defaultReserveLives;
-                } else if (inFinalNormalGameOverStateForLevel && !isPlayer1_Coop_Or_SinglePlayer && isTwoPlayerMode && selectedGameMode === 'normal') { // Rechterzijde (2UP area) in 2P Normal
-                    numLifeIconsDrawn = (player2Lives <= 0 && !wasLastGameAIDemo) ? 0 : defaultReserveLives;
-                }
-                // <<< EINDE GEWIJZIGD >>>
-                else {
-                     numLifeIconsDrawn = (playerLivesForOffset <= 0) ? 0 : defaultReserveLives;
-                }
-
+            if (inTwoPlayerResultsScreenForLevel) {
+                numLifeIconsDrawn = defaultReserveLives; // Altijd 2 voor beide spelers
+            }
+            // <<< EINDE GEWIJZIGD >>>
+            else if (!isInGameState || isShowingScoreScreen || isGameOverOrResults) {
+                 numLifeIconsDrawn = (playerLivesForOffset <= 0) ? 0 : defaultReserveLives; 
             } else if (isInGameState) {
                  const actualPlayerLivesInGame = (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === currentActivePlayerForOffset) ? playerLives : playerLivesForOffset;
                  numLifeIconsDrawn = actualPlayerLivesInGame > 0 ? Math.max(0, actualPlayerLivesInGame - 1) : 0;
