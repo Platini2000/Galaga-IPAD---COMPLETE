@@ -4054,13 +4054,18 @@ function runSingleGameUpdate(timestamp) {
                         playSound('levelUpSound', false, 0.2);
                         playLevelUpAfterCSBonus = false;
                      }
-                     else if (selectedGameMode === 'coop') { // <<< GECORRIGEERDE LOGICA >>>
-                        if (isTwoPlayerMode && !isPlayerTwoAI && !isCoopAIDemoActive) { // Alleen 2-Player Human CO-OP
-                            playSound('levelUpSound', false, 0.2); // Speel altijd, ook voor level 1
-                        } else if (level > 1) { // Voor CO-OP Demo en 1P vs AI CO-OP, alleen als level > 1
+                     // <<< GECORRIGEERDE LOGICA VOOR STAGE X SOUND >>>
+                     else if (selectedGameMode === 'coop') {
+                        // Voor 2-Player Human CO-OP: speel levelUpSound altijd (ook voor level 1).
+                        if (isTwoPlayerMode && !isPlayerTwoAI && !isCoopAIDemoActive) {
                             playSound('levelUpSound', false, 0.2);
                         }
-                     } // <<< EINDE GECORRIGEERDE LOGICA >>>
+                        // Voor CO-OP Demo en 1P vs AI CO-OP: speel levelUpSound alleen als level > 1.
+                        else if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && level > 1) {
+                            playSound('levelUpSound', false, 0.2);
+                        }
+                     }
+                     // <<< EINDE GECORRIGEERDE LOGICA >>>
                      else if (!isTwoPlayerMode && level > 1 ) {
                         playSound('levelUpSound', false, 0.2);
                      } else if (level > 1 && !playerIntroSoundPlayed && !(isPlayerTwoAI && selectedGameMode === 'normal') && !initialGameStartSoundPlayedThisSession ) {
