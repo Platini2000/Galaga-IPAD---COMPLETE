@@ -3507,7 +3507,7 @@ function triggerGridFiring() {
 
 
 // --- START OF FILE game_logic.js ---
-// --- DEEL 8      van 8 dit code blok    ---
+// --- DEEL 8      van 8 dit code blok    --- (Focus: Geluidslogica introStep === 2 aangepast)
 
 function runSingleGameUpdate(timestamp) {
     try {
@@ -4053,27 +4053,38 @@ function runSingleGameUpdate(timestamp) {
                      if (playLevelUpAfterCSBonus && (isTwoPlayerMode && selectedGameMode === 'coop')) {
                         playSound('levelUpSound', false, 0.2);
                         playLevelUpAfterCSBonus = false;
+                        stageIntroSoundPlayed = true; // Markeer als gespeeld
                      }
-                     // <<< GECORRIGEERDE LOGICA VOOR STAGE X SOUND >>>
+                     // <<< AANGEPASTE LOGICA VOOR STAGE X SOUND (Human 2P CO-OP) >>>
                      else if (selectedGameMode === 'coop') {
                         // Voor 2-Player Human CO-OP: speel levelUpSound altijd (ook voor level 1).
                         if (isTwoPlayerMode && !isPlayerTwoAI && !isCoopAIDemoActive) {
-                            playSound('levelUpSound', false, 0.2);
+                            playSound('levelUpSound', false, 0.2); // Speel levelUpSound hier expliciet
+                            stageIntroSoundPlayed = true; // Markeer als gespeeld
                         }
                         // Voor CO-OP Demo en 1P vs AI CO-OP: speel levelUpSound alleen als level > 1.
                         else if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && level > 1) {
                             playSound('levelUpSound', false, 0.2);
+                            stageIntroSoundPlayed = true; // Markeer als gespeeld
+                        }
+                        // Voor CO-OP Demo en 1P vs AI CO-OP level 1, geen extra geluid hier (startSound is al gespeeld in baseStartGame)
+                        else if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && level === 1) {
+                             stageIntroSoundPlayed = true; // Markeer als gespeeld (omdat startSound de "introductie" was)
                         }
                      }
-                     // <<< EINDE GECORRIGEERDE LOGICA >>>
-                     else if (!isTwoPlayerMode && level > 1 ) {
+                     // <<< EINDE AANGEPASTE LOGICA >>>
+                     else if (!isTwoPlayerMode && level > 1 ) { // 1P Classic, level > 1
                         playSound('levelUpSound', false, 0.2);
-                     } else if (level > 1 && !playerIntroSoundPlayed && !(isPlayerTwoAI && selectedGameMode === 'normal') && !initialGameStartSoundPlayedThisSession ) {
+                        stageIntroSoundPlayed = true; // Markeer als gespeeld
+                     } else if (level > 1 && !playerIntroSoundPlayed && !(isPlayerTwoAI && selectedGameMode === 'normal') && !initialGameStartSoundPlayedThisSession ) { // 2P Normal, level > 1
                          playSound('levelUpSound', false, 0.2);
-                     } else if (level === 1 && !isManualControl && !isCoopAIDemoActive && !initialGameStartSoundPlayedThisSession) {
-                         playSound('startSound', false, 0.4); initialGameStartSoundPlayedThisSession = true;
+                         stageIntroSoundPlayed = true; // Markeer als gespeeld
+                     } else if (level === 1 && !isManualControl && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedGameMode === 'coop') && !initialGameStartSoundPlayedThisSession) { // 1P AI Demo, level 1 (enige keer dat startSound hier speelt)
+                         playSound('startSound', false, 0.4);
+                         initialGameStartSoundPlayedThisSession = true;
+                         stageIntroSoundPlayed = true; // Markeer als gespeeld
                      }
-                    stageIntroSoundPlayed = true;
+                    // stageIntroSoundPlayed = true; // Verplaatst naar binnen de condities
                 }
                 if (elapsedIntroTime >= currentIntroStepDuration) {
                     introTextFinished = true;
@@ -4081,7 +4092,7 @@ function runSingleGameUpdate(timestamp) {
                 }
             } else if (introStep === 3) { // CHALLENGING STAGE
                 if(elapsedIntroTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
-                if (!csIntroSoundPlayed) { playSound('entranceSound', false, 0.4); csIntroSoundPlayed = true; }
+                if (!csIntroSoundPlayed) { playSound('entranceSound', false, 0.4); csIntroSoundPlayed = true; stageIntroSoundPlayed = true;} // Ook stageIntroSoundPlayed hier true zetten
                 if (elapsedIntroTime >= currentIntroStepDuration) {
                     introTextFinished = true;
                     explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
