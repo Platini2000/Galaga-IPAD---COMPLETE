@@ -443,29 +443,16 @@ function resetWaveInternal() {
             }
         }
     } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
-        // --- START GEWIJZIGDE CENTRERINGSLOGICA ---
-        let shouldCenterThisShip = forceCenterShipNextReset;
-        if (!isManualControl && selectedGameMode !== 'coop') { // Pure AI demo (1P Classic AI)
-            shouldCenterThisShip = true;
-        } else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) { // AI P2's beurt in 1P_VS_AI_NORMAL
-            shouldCenterThisShip = true;
-        }
-        // In 1P Classic (human) of 1P_VS_AI_NORMAL (P1's beurt), wordt het schip NIET automatisch gecentreerd bij wave start,
-        // tenzij forceCenterShipNextReset expliciet true is (bv. na een player switch in 2P Normal).
-        // Dit laat het schip staan waar de speler het achterliet, wat wenselijk is.
-
-        if (ship && gameCanvas && gameCanvas.width > 0 && gameCanvas.height > 0 && shouldCenterThisShip) {
+        if (ship && gameCanvas && gameCanvas.width > 0 && gameCanvas.height > 0 && (forceCenterShipNextReset || !isManualControl || (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2))) {
             let effectiveWidthForCentering = ship.width;
             if (isDualShipActive) effectiveWidthForCentering = DUAL_SHIP_OFFSET_X + SHIP_WIDTH;
             ship.x = Math.round(gameCanvas.width / 2 - effectiveWidthForCentering / 2);
             ship.targetX = ship.x;
             ship.y = gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN;
             if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) smoothedShipX = ship.x;
-            else if (!isManualControl && selectedGameMode !== 'coop') smoothedShipX = ship.x; // Voor 1P AI demo
-        } else if (ship && gameCanvas && gameCanvas.width > 0) { // Alleen Y resetten als niet gecentreerd hoeft te worden
+        } else if (ship && gameCanvas && gameCanvas.width > 0) {
             ship.y = gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN;
         }
-        // --- EINDE GEWIJZIGDE CENTRERINGSLOGICA ---
     }
     forceCenterShipNextReset = false;
 
