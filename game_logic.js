@@ -3622,7 +3622,7 @@ function runSingleGameUpdate(timestamp) {
 
 
         let coopLevel1IntroIsCurrentlyActive = false;
-        if (selectedGameMode === 'coop' && level === 1 && coopPlayersReadyStartTime > 0) { 
+        if (selectedGameMode === 'coop' && level === 1 && coopPlayersReadyStartTime > 0) {
             coopLevel1IntroIsCurrentlyActive = true;
 
             if (isShowingCoopPlayersReady) {
@@ -3631,33 +3631,33 @@ function runSingleGameUpdate(timestamp) {
                     isShowingCoopPlayersReady = false;
                     explosions = []; if (typeof updateExplosions === 'function') updateExplosions();
                     if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
-                        isShowingIntro = true; introStep = 2; introDisplayStartTime = now; 
-                    } else { 
-                        isShowingIntro = true; introStep = 1; introDisplayStartTime = now; 
+                        isShowingIntro = true; introStep = 2; introDisplayStartTime = now;
+                    } else {
+                        isShowingIntro = true; introStep = 1; introDisplayStartTime = now;
                     }
                 }
             } else if (isShowingIntro) {
                 if (now - introDisplayStartTime < 100) { explosions = []; if (typeof updateExplosions === 'function') updateExplosions(); }
                 let currentCoopIntroStepDuration = INTRO_DURATION_PER_STEP;
-                if (introStep === 1 && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) { 
+                if (introStep === 1 && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
                     currentCoopIntroStepDuration = TWO_PLAYER_STAGE_INTRO_DURATION;
                 }
 
                 if (now >= introDisplayStartTime + currentCoopIntroStepDuration) {
                     if (introStep === 1 && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
-                        introStep = 2; introDisplayStartTime = now; 
+                        introStep = 2; introDisplayStartTime = now;
                         explosions = []; if (typeof updateExplosions === 'function') updateExplosions();
-                    } else { 
+                    } else {
                         isShowingIntro = false; introStep = 0;
                         playerIntroSoundPlayed = false; stageIntroSoundPlayed = false; csIntroSoundPlayed = false;
                         explosions = []; if (typeof updateExplosions === 'function') updateExplosions();
                         coopLevel1IntroIsCurrentlyActive = false;
-                        coopPlayersReadyStartTime = 0; 
+                        coopPlayersReadyStartTime = 0;
                     }
                 }
-            } else { 
+            } else {
                 coopLevel1IntroIsCurrentlyActive = false;
-                coopPlayersReadyStartTime = 0; 
+                coopPlayersReadyStartTime = 0;
             }
 
             if (isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) handlePlayerInput();
@@ -3686,23 +3686,23 @@ function runSingleGameUpdate(timestamp) {
                 isShowingPlayerGameOverMessage = false;
                 explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
                 const prevPlayerGameOver = playerWhoIsGameOver;
-                playerWhoIsGameOver = 0; 
+                playerWhoIsGameOver = 0;
 
                 if (nextActionAfterPlayerGameOver === 'switch_player') {
-                    if (switchPlayerTurn()) { 
+                    if (switchPlayerTurn()) {
                         if (prevPlayerGameOver === 2 && currentPlayer === 1 && player1CompletedLevel === level) {
-                           level++; 
-                           player1CompletedLevel = -1; 
-                           player1MaxLevelReached = Math.max(player1MaxLevelReached, level); 
+                           level++;
+                           player1CompletedLevel = -1;
+                           player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
                         }
-                        resetWaveInternal(); 
+                        resetWaveInternal();
                         gameJustStartedAndWaveLaunched = false; gameJustStarted = true;
-                    } else { 
+                    } else {
                          triggerFinalGameOverSequence();
                     }
                 } else if (nextActionAfterPlayerGameOver === 'show_results') {
                     triggerFinalGameOverSequence();
-                } else { 
+                } else {
                     triggerFinalGameOverSequence();
                 }
                 renderGame(); return;
@@ -3732,12 +3732,12 @@ function runSingleGameUpdate(timestamp) {
 
             if (p1GameOverMsgDone || p2GameOverMsgDone) {
                 if (player1Lives <= 0 && player2Lives <= 0 && gameOverSequenceStartTime === 0) {
-                    triggerFinalGameOverSequence(); 
+                    triggerFinalGameOverSequence();
                 }
                 if (isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) handlePlayerInput();
                 if (typeof moveEntities === 'function') moveEntities();
                 renderGame();
-                if (gameOverSequenceStartTime > 0 || player1Lives > 0 || player2Lives > 0) { 
+                if (gameOverSequenceStartTime > 0 || player1Lives > 0 || player2Lives > 0) {
                     return;
                 }
             } else if (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage) {
@@ -4050,14 +4050,20 @@ function runSingleGameUpdate(timestamp) {
             } else if (introStep === 2) { // STAGE X
                 if(elapsedIntroTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
                 if (!stageIntroSoundPlayed) {
-                     if (playLevelUpAfterCSBonus && (isTwoPlayerMode && selectedGameMode === 'coop')) {
+                     // <<< GEWIJZIGDE LOGICA VOOR LEVEL UP SOUND >>>
+                     if (playLevelUpAfterCSBonus && (isTwoPlayerMode && selectedGameMode === 'coop')) { // Na CS, altijd voor COOP
                         playSound('levelUpSound', false, 0.2);
                         playLevelUpAfterCSBonus = false;
-                     } else if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP' && level > 1) {
+                     } else if (selectedGameMode === 'coop' && level > 1) { // Alle COOP modes, level > 1
                         playSound('levelUpSound', false, 0.2);
-                     } else if (!isTwoPlayerMode && level > 1 ) {
+                     } else if (isCoopAIDemoActive && level > 1) { // Coop AI Demo, level > 1 (kan overlappen met vorige, maar extra check)
+                        playSound('levelUpSound', false, 0.2);
+                     }
+                     // <<< EINDE GEWIJZIGDE LOGICA >>>
+                     else if (!isTwoPlayerMode && level > 1 ) { // 1P Classic, level > 1
                         playSound('levelUpSound', false, 0.2);
                      } else if (selectedGameMode === 'coop' && level === 1 && !coopStartSoundPlayedThisSession) {
+                        // Start sound wordt al afgehandeld in baseStartGame voor L1 COOP
                      } else if (level > 1 && !playerIntroSoundPlayed && !(isPlayerTwoAI && selectedGameMode === 'normal') && !initialGameStartSoundPlayedThisSession ) {
                          playSound('levelUpSound', false, 0.2);
                      } else if (level === 1 && !isManualControl && !isCoopAIDemoActive && !initialGameStartSoundPlayedThisSession) {
@@ -4327,52 +4333,52 @@ function runSingleGameUpdate(timestamp) {
                      }
 
                     setTimeout(() => {
-                        let advanceLevelGlobally = false; 
-                        let playerWhoseTurnEnded = 0; 
+                        let advanceLevelGlobally = false;
+                        let playerWhoseTurnEnded = 0;
 
                         if (isTwoPlayerMode && selectedGameMode === 'normal') {
-                            playerWhoseTurnEnded = currentPlayer; 
+                            playerWhoseTurnEnded = currentPlayer;
 
                             if (playerWhoseTurnEnded === 1) {
                                 player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
-                            } else { 
+                            } else {
                                 player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
                             }
 
-                            const switchedOK = switchPlayerTurn(); 
+                            const switchedOK = switchPlayerTurn();
 
-                            if (switchedOK) { 
+                            if (switchedOK) {
                                 if (playerWhoseTurnEnded === 2 && currentPlayer === 1 && player1CompletedLevel === level) {
                                     advanceLevelGlobally = true;
-                                    player1CompletedLevel = -1; 
+                                    player1CompletedLevel = -1;
                                 } else if (playerWhoseTurnEnded === 1) {
                                     player1CompletedLevel = level;
                                     advanceLevelGlobally = false;
                                 } else {
                                     advanceLevelGlobally = false;
                                 }
-                            } else { 
-                                advanceLevelGlobally = true; 
-                                player1CompletedLevel = -1; 
+                            } else {
+                                advanceLevelGlobally = true;
+                                player1CompletedLevel = -1;
                             }
-                        } else { 
+                        } else {
                             advanceLevelGlobally = true;
-                            if (!isTwoPlayerMode) player1MaxLevelReached = Math.max(player1MaxLevelReached, level); 
-                            else if (isTwoPlayerMode && selectedGameMode === 'coop') { 
+                            if (!isTwoPlayerMode) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                            else if (isTwoPlayerMode && selectedGameMode === 'coop') {
                                 if (player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
                                 if (player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
                             }
                         }
 
                         if (advanceLevelGlobally) {
-                            level++; 
+                            level++;
                             if (isTwoPlayerMode && selectedGameMode === 'coop') {
                                 if (player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
                                 if (player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
                             } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
                                 if (currentPlayer === 1 && player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
                                 else if (currentPlayer === 2 && player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
-                            } else { 
+                            } else {
                                 if (playerLives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
                             }
                         }
@@ -4380,7 +4386,7 @@ function runSingleGameUpdate(timestamp) {
                         let canContinue = false;
                         if (isTwoPlayerMode && selectedGameMode === 'coop') canContinue = (player1Lives > 0 || player2Lives > 0);
                         else if (isTwoPlayerMode && selectedGameMode === 'normal') canContinue = (currentPlayer === 1 ? player1Lives : player2Lives) > 0;
-                        else canContinue = playerLives > 0; // Voor 1P classic, playerLives is player1Lives 
+                        else canContinue = playerLives > 0; // Voor 1P classic, playerLives is player1Lives
 
                         if (canContinue) {
                             resetWaveInternal(); gameJustStartedAndWaveLaunched = false; gameJustStarted = true;
