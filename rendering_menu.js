@@ -970,19 +970,23 @@ function renderGame() {
                 if (shouldDrawShip) {
                     let shipDrawX = ship.x;
 
-                    // --- DEZE CENTRERINGSLOGICA WAS AL CORRECT VOOR P1 HUMAN INTRO ---
                     let isShipActuallyAIControlledDuringIntro = false;
                     if (isInGameState && isShowingIntro && (introStep === 1 || introStep === 2 || introStep === 3)) {
-                        if (!isManualControl) { // Pure AI Demo
+                        if (!isManualControl) { 
                             isShipActuallyAIControlledDuringIntro = true;
-                        } else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) { // AI P2's beurt in 1P vs AI Normal
+                        } else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) { 
                             isShipActuallyAIControlledDuringIntro = true;
                         }
-                        // In P1 vs AI Normal, als currentPlayer === 1, is het schip NIET AI-gestuurd, DUS isShipActuallyAIControlledDuringIntro = false
                     }
 
                     let shouldCenterSingleShip = (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || !isInGameState || isShowingScoreScreen || isShipActuallyAIControlledDuringIntro) && !isDualShipActive;
-                    // --- EINDE CENTRERINGSLOGICA ---
+                    
+                    // --- START TOEGEVOEGDE EXPLICIETE OVERRIDE ---
+                    // Forceer GEEN centrering als P1 (mens) aan de beurt is in "1P vs AI Normal" tijdens de intro.
+                    if (isManualControl && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && currentPlayer === 1 && isInGameState && isShowingIntro) {
+                        shouldCenterSingleShip = false;
+                    }
+                    // --- EINDE TOEGEVOEGDE EXPLICIETE OVERRIDE ---
 
                     if (shouldCenterSingleShip) { shipDrawX = Math.round(gameCanvas.width / 2 - ship.width / 2); }
 
