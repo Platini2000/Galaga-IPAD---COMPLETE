@@ -4050,13 +4050,12 @@ function runSingleGameUpdate(timestamp) {
             } else if (introStep === 2) { // STAGE X
                 if(elapsedIntroTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
                 if (!stageIntroSoundPlayed) {
-                     if (playLevelUpAfterCSBonus && (isTwoPlayerMode && selectedGameMode === 'coop')) { // Na CS bonus, COOP
+                     if (playLevelUpAfterCSBonus && (isTwoPlayerMode && selectedGameMode === 'coop')) {
                         playSound('levelUpSound', false, 0.2);
                         playLevelUpAfterCSBonus = false;
                      }
-                     // <<< GEWIJZIGDE EN GECORRIGEERDE LOGICA VOOR STAGE X SOUND >>>
                      else if (selectedGameMode === 'coop') {
-                        // Voor 2-Player Human CO-OP: speel levelUpSound altijd, ook voor level 1.
+                        // Voor 2-Player Human CO-OP: speel levelUpSound altijd (ook voor level 1).
                         if (isTwoPlayerMode && !isPlayerTwoAI && !isCoopAIDemoActive) {
                             playSound('levelUpSound', false, 0.2);
                         }
@@ -4064,11 +4063,8 @@ function runSingleGameUpdate(timestamp) {
                         else if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && level > 1) {
                             playSound('levelUpSound', false, 0.2);
                         }
-                        // De `coopStartSoundPlayedThisSession` check is hier niet meer relevant voor de levelUpSound.
-                        // De algemene StartSound voor COOP L1 wordt in baseStartGame afgehandeld.
                      }
-                     // <<< EINDE GEWIJZIGDE LOGICA >>>
-                     else if (!isTwoPlayerMode && level > 1 ) { // 1P Classic, level > 1
+                     else if (!isTwoPlayerMode && level > 1 ) {
                         playSound('levelUpSound', false, 0.2);
                      } else if (level > 1 && !playerIntroSoundPlayed && !(isPlayerTwoAI && selectedGameMode === 'normal') && !initialGameStartSoundPlayedThisSession ) {
                          playSound('levelUpSound', false, 0.2);
