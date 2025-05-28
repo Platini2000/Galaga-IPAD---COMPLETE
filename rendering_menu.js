@@ -904,7 +904,7 @@ function createExplosion(x, y) { try { playSound('explosionSound', false, 0.4); 
 
 
 // --- START OF FILE rendering_menu.js ---
-// --- DEEL 3 van 3 dit code blok --- (Focus: 1P Normal Mode Level Icon display on Game Over/Results)
+// --- DEEL 3 van 3 dit code blok --- (Aangepast voor 1P Normal Mode UI in Game Over/Results)
 
 /** Rendert de actieve explosies op het game canvas. */
 function renderExplosions() { try { if (!gameCtx) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; explosions.forEach(explosion => { explosion.particles.forEach(p => { const drawAlpha = p.alpha * EXPLOSION_MAX_OPACITY; if (drawAlpha > 0.01) { gameCtx.beginPath(); gameCtx.arc(Math.round(p.x), Math.round(p.y), p.radius, 0, Math.PI * 2); gameCtx.fillStyle = `rgba(255, 200, 80, ${drawAlpha.toFixed(3)})`; gameCtx.fill(); } }); }); gameCtx.restore(); } catch (e) { console.error("Error rendering explosions:", e); } }
@@ -939,7 +939,7 @@ function renderGame() {
         gameCtx.save();
         const UI_FONT="20px 'Press Start 2P'"; const LABEL_COLOR="red"; const SCORE_COLOR="white";
         const maxLivesIcons = 5;
-        const defaultReserveLives = 2; 
+        const defaultReserveLives = 2;
         gameCtx.font=UI_FONT; gameCtx.textBaseline="top";
 
         const drawTopUiElement=(label, scoreValue, labelAlign, labelX, shouldBlink = false)=>{
@@ -1110,13 +1110,19 @@ function renderGame() {
             if (shipImage.complete && shipImage.naturalHeight !== 0) {
                 const lifeIconY = gameCanvas.height - LIFE_ICON_MARGIN_BOTTOM - LIFE_ICON_SIZE;
                 let livesP1ToDisplay = 0;
-                let livesP2ToDisplay = 0; 
+                let livesP2ToDisplay = 0;
 
-                if (inNormal2PResults) {
-                    livesP1ToDisplay = defaultReserveLives; 
+                // --- GEWIJZIGDE LEVEN LOGICA VOOR P1 (LINKS) ---
+                const is1PNormalMode = !isTwoPlayerMode && selectedGameMode === 'normal';
+                const is1PNormalGameOverOrResults = is1PNormalMode && (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || isShowingResultsScreen);
+
+                if (is1PNormalGameOverOrResults) {
+                    livesP1ToDisplay = defaultReserveLives; // Altijd 2 voor P1 in 1P Normal Game Over/Results
+                } else if (inNormal2PResults) {
+                    livesP1ToDisplay = defaultReserveLives; // Specifiek voor P1 in 2P Normal Results
                 } else if (!isInGameState || isShowingScoreScreen || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || gameOverSequenceStartTime > 0 ) {
                     livesP1ToDisplay = (player1Lives <= 0) ? 0 : defaultReserveLives;
-                } else { 
+                } else { // In game logic (onveranderd)
                     if (isTwoPlayerMode && selectedGameMode === 'coop') {
                         livesP1ToDisplay = player1Lives > 0 ? Math.max(0, player1Lives - 1) : 0;
                     } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
@@ -1126,10 +1132,12 @@ function renderGame() {
                             livesP1ToDisplay = player1Lives > 0 ? Math.max(0, player1Lives - 1) : 0;
                         }
                     }
-                    else { 
+                    else { // 1P Classic in game
                         livesP1ToDisplay = playerLives > 0 ? Math.max(0, playerLives - 1) : 0;
                     }
                 }
+                // --- EINDE GEWIJZIGDE LEVEN LOGICA P1 ---
+
                 if (livesP1ToDisplay > 0) {
                     let p1LivesStartX = LIFE_ICON_MARGIN_LEFT;
                     for (let i = 0; i < Math.min(livesP1ToDisplay, maxLivesIcons); i++) {
@@ -1137,13 +1145,13 @@ function renderGame() {
                         gameCtx.drawImage(shipImage, Math.round(currentIconX), Math.round(lifeIconY), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
                     }
                 }
-                
-                if (!inNormal2PResults) { 
+
+                if (!inNormal2PResults) {
                     if (!isInGameState || isShowingScoreScreen || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || gameOverSequenceStartTime > 0 ) {
                          if (isEffectivelyTwoPlayerUI || (!isInGameState && (!isPlayerSelectMode || selectedButtonIndex === 1 )) ) {
                             livesP2ToDisplay = (player2Lives <= 0) ? 0 : defaultReserveLives;
                         }
-                    } else { 
+                    } else {
                         if (isTwoPlayerMode && selectedGameMode === 'coop') {
                             livesP2ToDisplay = player2Lives > 0 ? Math.max(0, player2Lives - 1) : 0;
                         } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
@@ -1176,7 +1184,7 @@ function renderGame() {
                              gameCtx.drawImage(shipImage, Math.round(currentIconX), Math.round(lifeIconY), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
                          }
                      }
-                } 
+                }
             }
         }
 
@@ -1184,8 +1192,17 @@ function renderGame() {
         const iconTypes = [ { val: 50, img: level50Image }, { val: 30, img: level30Image }, { val: 20, img: level20Image }, { val: 10, img: level10Image }, { val: 5, img: level5Image }, { val: 1, img: level1Image } ];
 
         const drawLevelIcons = (levelValueToDisplay, isPlayer1_Coop_Or_SinglePlayer) => {
-            if (inNormal2PResults && isPlayer1_Coop_Or_SinglePlayer) return;
-            
+            // <<< GEWIJZIGD: P1 Levelicoontjes (links onder) NIET tonen in normaal 2-speler resultatenscherm >>>
+            // EN in 1P normaal modus Game Over / Results NIET tonen als het voor P1 is (die worden rechts getoond)
+            const is1PNormalModeGameOverOrResults = !isTwoPlayerMode && selectedGameMode === 'normal' &&
+                                                (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || isShowingResultsScreen);
+
+            if ( (inNormal2PResults && isPlayer1_Coop_Or_SinglePlayer) ||
+                 (is1PNormalModeGameOverOrResults && isPlayer1_Coop_Or_SinglePlayer) ) {
+                return;
+            }
+            // <<< EINDE GEWIJZIGD >>>
+
             let actualLevelValueForDisplay = Math.max(1, levelValueToDisplay);
             if (actualLevelValueForDisplay <= 0 || typeof LEVEL_ICON_MARGIN_BOTTOM === 'undefined' || typeof LEVEL_ICON_SIZE === 'undefined' || typeof LEVEL_ICON_MARGIN_RIGHT === 'undefined' || typeof LEVEL_ICON_SPACING === 'undefined') return;
             let remainingLevelVal = actualLevelValueForDisplay;
@@ -1256,14 +1273,16 @@ function renderGame() {
                                      (isPlayer2ShowingGameOverMessage && !isPlayer1_Coop_Or_SinglePlayer);
 
             if (!isInGameState || isShowingScoreScreen || isGameOverOrResults) {
-                if (inNormal2PResults && isPlayer1_Coop_Or_SinglePlayer) {
+                if (is1PNormalModeGameOverOrResults && isPlayer1_Coop_Or_SinglePlayer) { // P1 in 1P Normal Game Over/Results
+                    numLifeIconsDrawn = defaultReserveLives;
+                } else if (inNormal2PResults && isPlayer1_Coop_Or_SinglePlayer) {
                     numLifeIconsDrawn = defaultReserveLives;
                 } else if (inNormal2PResults && !isPlayer1_Coop_Or_SinglePlayer) {
                     numLifeIconsDrawn = 0;
-                } else { 
+                } else {
                     numLifeIconsDrawn = (playerLivesForOffset <= 0) ? 0 : defaultReserveLives;
                 }
-            } else if (isInGameState) { 
+            } else if (isInGameState) {
                  const actualPlayerLivesInGame = (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === currentActivePlayerForOffset) ? playerLives : playerLivesForOffset;
                  numLifeIconsDrawn = actualPlayerLivesInGame > 0 ? Math.max(0, actualPlayerLivesInGame - 1) : 0;
             }
@@ -1273,7 +1292,7 @@ function renderGame() {
             if (numLifeIconsDrawn > 0) {
                 livesWidthForOffset = numLifeIconsDrawn * LIFE_ICON_SIZE + (numLifeIconsDrawn -1) * LIFE_ICON_SPACING;
             } else {
-                livesWidthForOffset = -LIFE_ICON_SPACING; 
+                livesWidthForOffset = -LIFE_ICON_SPACING;
             }
 
 
@@ -1293,7 +1312,7 @@ function renderGame() {
                     const p2LivesStartXArea = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - livesWidthForOffset;
                     startX = p2LivesStartXArea - totalWidth - normalLevelIconOffset;
                 }
-            } else { 
+            } else { // 1P
                  startX = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - totalWidth;
             }
 
@@ -1325,27 +1344,23 @@ function renderGame() {
             }
         }
 
-        drawLevelIcons(Math.max(1, p1LevelToDraw), true); 
+        drawLevelIcons(Math.max(1, p1LevelToDraw), true);
 
-        // --- GEWIJZIGD DEEL START ---
-        const isFinalGameOverOrResults = isShowingResultsScreen ||
-                                         (gameOverSequenceStartTime > 0 &&
-                                          !isShowingPlayerGameOverMessage && 
-                                          !(isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage)) 
-                                         );
+        const is1PNormalModeGameOverOrResults = !isTwoPlayerMode && selectedGameMode === 'normal' &&
+                                            (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || isShowingResultsScreen);
 
-        if (!isTwoPlayerMode && isFinalGameOverOrResults) {
-            drawLevelIcons(Math.max(1, player1MaxLevelReached), false); 
+        if (is1PNormalModeGameOverOrResults) {
+            // In 1P Normal Game Over/Results, P1's levels worden rechts getoond (alsof het P2 is)
+            drawLevelIcons(Math.max(1, player1MaxLevelReached), false);
         }
-        else if (isEffectivelyTwoPlayerUI || isTwoPlayerMode) { 
+        else if (isEffectivelyTwoPlayerUI || isTwoPlayerMode) {
              if (typeof p2LevelToDraw === 'number' && p2LevelToDraw > 0) {
-                 drawLevelIcons(Math.max(1, p2LevelToDraw), false); 
+                 drawLevelIcons(Math.max(1, p2LevelToDraw), false);
              } else if (player2MaxLevelReached > 0) {
-                 drawLevelIcons(Math.max(1, player2MaxLevelReached), false); 
+                 drawLevelIcons(Math.max(1, player2MaxLevelReached), false);
              }
         }
-        // --- GEWIJZIGD DEEL EINDE ---
-
+        
         gameCtx.restore();
 
         gameCtx.save();
@@ -1608,9 +1623,9 @@ function renderGame() {
                     const isShowingGameOverText = elapsedTime < GAME_OVER_DURATION;
                     const isShowingResultsScreenActive = elapsedTime >= GAME_OVER_DURATION;
 
-                    if (isShowingGameOverText && !isTwoPlayerMode && !isCoopAIDemoActive && !isPlayerTwoAI && selectedGameMode !== 'coop') { 
+                    if (isShowingGameOverText && !isTwoPlayerMode && !isCoopAIDemoActive && !isPlayerTwoAI && selectedGameMode !== 'coop') {
                         drawCanvasText("GAME OVER", gameCanvas.width / 2, gameCanvas.height / 2, GAME_OVER_FONT, GAME_OVER_COLOR, 'center', 'middle', GAME_OVER_SHADOW);
-                    } else if (isShowingGameOverText && isCoopAIDemoActive && player1Lives <= 0 && player2Lives <=0) { 
+                    } else if (isShowingGameOverText && isCoopAIDemoActive && player1Lives <= 0 && player2Lives <=0) {
                          drawCanvasText("GAME OVER", gameCanvas.width / 2, gameCanvas.height / 2, GAME_OVER_FONT, GAME_OVER_COLOR, 'center', 'middle', GAME_OVER_SHADOW);
                     }
                     else if (isShowingResultsScreenActive) {
