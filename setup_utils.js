@@ -920,45 +920,23 @@ function handleTouchEndGlobal(event) {
 
             if (selectedFiringMode === 'single' && !tapped2UpArea) { // Alleen vuren als NIET op 2UP getapt is (of de dubbeltap niet succesvol was voor menu)
                 if (now - lastTapTime > SHOOT_COOLDOWN / 2) {
-                    let shooterPlayerIdForTap = 'player1'; // Standaard P1
-                    
-                    // --- GECORRIGEERDE LOGICA VOOR "1P VS AI COOP" TOUCH FIRE ---
-                    // De volgorde van de checks is cruciaal. Eerst de meest specifieke.
-                    if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
-                        // In "1P vs AI COOP" is de menselijke speler (P1) de enige die via touch kan vuren.
-                        // De AI (P2) reageert niet op touch. Tap is overal voor P1.
-                        shooterPlayerIdForTap = 'player1';
-                    } else if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                        // Dit deel wordt nu alleen geraakt voor Human 2P COOP of COOP AI Demo.
-                        // Voor Human 2P COOP, blijft de helft-scherm logica.
-                        if (!isPlayerTwoAI) { // Human 2P COOP
-                            if (canvasTapX > gameCanvas.width / 2 && ship2 && player2Lives > 0) {
-                                shooterPlayerIdForTap = 'player2';
-                            }
+                    let shooterPlayerIdForTap = 'player1';
+                    if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                        if (canvasTapX > gameCanvas.width / 2 && ship2 && player2Lives > 0) {
+                            shooterPlayerIdForTap = isPlayerTwoAI ? 'ai_p2' : 'player2';
                         }
-                        // Voor COOP AI Demo, de AI handelt dit zelf af, maar standaard wordt P1 toegewezen als shooterId hier.
-                    } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
-                         // Voor 2P Normal (human of vs AI) is het de actieve speler.
+                    } else if (isTwoPlayerMode && selectedGameMode === 'normal'){
                          shooterPlayerIdForTap = (currentPlayer === 1) ? 'player1' : 'player2';
-                         // Als AI P2 aan de beurt is, wordt vuren afgehandeld door AI, niet door tap.
-                         if (isPlayerTwoAI && currentPlayer === 2) { 
-                            shooterPlayerIdForTap = 'ai_p2'; 
-                         }
                     }
-                    // Voor 1P classic is het standaard 'player1'.
 
                     if (shooterPlayerIdForTap === 'player1') p1FireInputWasDown = true;
-                    else if (shooterPlayerIdForTap === 'player2') p2FireInputWasDown = true;
-                    // AI (ai_p2) hoeft geen fireInputWasDown, die schiet via aiControl.
+                    else if (shooterPlayerIdForTap === 'player2' || shooterPlayerIdForTap === 'ai_p2') p2FireInputWasDown = true;
 
                     if (typeof firePlayerBullet === 'function') {
-                         // Alleen daadwerkelijk vuren als de shooter niet 'ai_p2' is (want AI regelt zijn eigen schoten)
-                         if (shooterPlayerIdForTap !== 'ai_p2') {
-                            firePlayerBullet(shooterPlayerIdForTap, true); // Geef isTapEvent door
-                         }
+                         firePlayerBullet(shooterPlayerIdForTap);
                     }
                     if (shooterPlayerIdForTap === 'player1') p1FireInputWasDown = false;
-                    else if (shooterPlayerIdForTap === 'player2') p2FireInputWasDown = false;
+                    else if (shooterPlayerIdForTap === 'player2' || shooterPlayerIdForTap === 'ai_p2') p2FireInputWasDown = false;
 
                     lastTapTime = now;
                 }
@@ -1273,8 +1251,7 @@ function triggerFinalGameOverSequence() {
         }
 
         bullets = []; enemyBullets = []; explosions = []; fallingShips = []; isDualShipActive = false;
-        player1IsDualShipActive = false;
-        player2IsDualShipActive = false;
+        player1IsDualShipActive = false; player2IsDualShipActive = false;
         isShowingResultsScreen = false;
         previousButtonStates = []; previousGameButtonStates = []; previousDemoButtonStates = []; previousGameButtonStatesP2 = [];
     }
