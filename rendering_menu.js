@@ -1121,24 +1121,34 @@ function renderGame() {
                 let livesP2ToDisplay = 0; // Voor P2 levens rechtsonder
 
                 // --- GEWIJZIGD: Logica voor levensicoontjes P1 (links) ---
-                if (inNormal2PResults) {
+                const is1PNormalModeScenario = !isTwoPlayerMode; // selectedGameMode is impliciet 'normal' voor 1P of CLASSIC_1P
+                const isGameOverOrResultsScreenFor1PNormal = is1PNormalModeScenario && (isShowingResultsScreen || (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage && !isAnyCoopPlayerGameOver));
+
+                if (isGameOverOrResultsScreenFor1PNormal) {
+                    livesP1ToDisplay = defaultReserveLives; // Altijd 2 voor 1P Normal Game Over / Results
+                } else if (inNormal2PResults) { // Dit is: isShowingResultsScreen && isTwoPlayerMode && selectedGameMode === 'normal'
                     livesP1ToDisplay = defaultReserveLives; // Altijd 2 voor P1 links onder in dit specifieke scherm
                 } else if (!isInGameState || isShowingScoreScreen || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || gameOverSequenceStartTime > 0 ) {
-                    livesP1ToDisplay = (player1Lives <= 0) ? 0 : defaultReserveLives;
-                } else { // In game logic
+                    // General menu/score/game over states (not covered by the specific 1P/2P Normal Results above)
+                    // Voor 1P, playerLives is de bron. Voor 2P, player1Lives is de bron voor P1 display.
+                    let livesSourceForP1Display = isTwoPlayerMode ? player1Lives : playerLives;
+                    livesP1ToDisplay = (livesSourceForP1Display <= 0) ? 0 : defaultReserveLives;
+                } else { // In game logic (actieve gameplay)
                     if (isTwoPlayerMode && selectedGameMode === 'coop') {
                         livesP1ToDisplay = player1Lives > 0 ? Math.max(0, player1Lives - 1) : 0;
                     } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
-                        if (currentPlayer === 1) {
+                        if (currentPlayer === 1) { // P1's beurt
                             livesP1ToDisplay = playerLives > 0 ? Math.max(0, playerLives - 1) : 0;
-                        } else {
+                        } else { // P2's beurt, toon P1's reserve
                             livesP1ToDisplay = player1Lives > 0 ? Math.max(0, player1Lives - 1) : 0;
                         }
                     }
-                    else { // 1P
+                    else { // 1P Classic (in-game)
                         livesP1ToDisplay = playerLives > 0 ? Math.max(0, playerLives - 1) : 0;
                     }
                 }
+                // --- EINDE GEWIJZIGDE LOGICA P1 LEVENS ---
+
                 // Teken P1 levens links onder (indien > 0)
                 if (livesP1ToDisplay > 0) {
                     let p1LivesStartX = LIFE_ICON_MARGIN_LEFT;
@@ -1147,7 +1157,6 @@ function renderGame() {
                         gameCtx.drawImage(shipImage, Math.round(currentIconX), Math.round(lifeIconY), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
                     }
                 }
-                // --- EINDE GEWIJZIGDE LOGICA P1 LEVENS ---
 
 
                 // --- Logica voor levensicoontjes P2 (rechtsonder) - blijft grotendeels ongewijzigd, maar wordt niet getekend in 2P Normal Results ---
@@ -1280,7 +1289,15 @@ function renderGame() {
                     // Voor P2 (rechts) in 2P normal results, worden geen levens getoond
                     numLifeIconsDrawn = 0;
                 } else { // Andere scenarios
-                    numLifeIconsDrawn = (playerLivesForOffset <= 0) ? 0 : defaultReserveLives;
+                     // Voor 1P Normal Game Over/Results, `isGameOverOrResultsScreenFor1PNormal` (eerder gedefinieerd)
+                     // zorgt ervoor dat `livesP1ToDisplay` al op `defaultReserveLives` staat.
+                     // Hier gebruiken we `livesP1ToDisplay` direct voor de offset berekening in dat geval.
+                    const is1PNormalGameOverOrResults = !isTwoPlayerMode && (isShowingResultsScreen || (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage && !isAnyCoopPlayerGameOver));
+                    if (is1PNormalGameOverOrResults && isPlayer1_Coop_Or_SinglePlayer) {
+                        numLifeIconsDrawn = livesP1ToDisplay; // Gebruik de al berekende waarde
+                    } else {
+                        numLifeIconsDrawn = (playerLivesForOffset <= 0) ? 0 : defaultReserveLives;
+                    }
                 }
                 // --- EINDE GEWIJZIGDE LOGICA ---
             } else if (isInGameState) { // In-game
