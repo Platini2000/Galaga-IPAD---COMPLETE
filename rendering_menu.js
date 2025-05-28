@@ -1113,9 +1113,6 @@ function renderGame() {
         }
 
         const inNormal2PResults = isShowingResultsScreen && isTwoPlayerMode && selectedGameMode === 'normal';
-        // --- NIEUWE VLAG VOOR 1P NORMAL GAME OVER/RESULTS ---
-        const is1PNormalGameOverOrResults = !isTwoPlayerMode && (isShowingResultsScreen || (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage && !isAnyCoopPlayerGameOver));
-
 
         if (typeof shipImage !== 'undefined' && typeof LIFE_ICON_MARGIN_BOTTOM !== 'undefined' && typeof LIFE_ICON_SIZE !== 'undefined' && typeof LIFE_ICON_MARGIN_LEFT !== 'undefined' && typeof LIFE_ICON_SPACING !== 'undefined' ) {
             if (shipImage.complete && shipImage.naturalHeight !== 0) {
@@ -1124,30 +1121,24 @@ function renderGame() {
                 let livesP2ToDisplay = 0; // Voor P2 levens rechtsonder
 
                 // --- GEWIJZIGD: Logica voor levensicoontjes P1 (links) ---
-                if (is1PNormalGameOverOrResults) { // <<<< NIEUWE SPECIFIEKE CHECK VOOR 1P NORMAL GAME OVER/RESULTS
-                    livesP1ToDisplay = defaultReserveLives;
-                } else if (inNormal2PResults) {
-                    livesP1ToDisplay = defaultReserveLives;
-                } else if ((!isInGameState || isShowingScoreScreen || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || gameOverSequenceStartTime > 0)) {
-                    // Algemeen menu/score/game over (NIET 1P Normal Results en NIET 2P Normal Results)
-                    let livesSourceForP1Display = isTwoPlayerMode ? player1Lives : playerLives;
-                    livesP1ToDisplay = (livesSourceForP1Display <= 0) ? 0 : defaultReserveLives;
-                } else { // In game logic (actieve gameplay)
+                if (inNormal2PResults) {
+                    livesP1ToDisplay = defaultReserveLives; // Altijd 2 voor P1 links onder in dit specifieke scherm
+                } else if (!isInGameState || isShowingScoreScreen || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || gameOverSequenceStartTime > 0 ) {
+                    livesP1ToDisplay = (player1Lives <= 0) ? 0 : defaultReserveLives;
+                } else { // In game logic
                     if (isTwoPlayerMode && selectedGameMode === 'coop') {
                         livesP1ToDisplay = player1Lives > 0 ? Math.max(0, player1Lives - 1) : 0;
                     } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
-                        if (currentPlayer === 1) { // P1's beurt
+                        if (currentPlayer === 1) {
                             livesP1ToDisplay = playerLives > 0 ? Math.max(0, playerLives - 1) : 0;
-                        } else { // P2's beurt, toon P1's reserve
+                        } else {
                             livesP1ToDisplay = player1Lives > 0 ? Math.max(0, player1Lives - 1) : 0;
                         }
                     }
-                    else { // 1P Classic (in-game)
+                    else { // 1P
                         livesP1ToDisplay = playerLives > 0 ? Math.max(0, playerLives - 1) : 0;
                     }
                 }
-                // --- EINDE GEWIJZIGDE LOGICA P1 LEVENS ---
-
                 // Teken P1 levens links onder (indien > 0)
                 if (livesP1ToDisplay > 0) {
                     let p1LivesStartX = LIFE_ICON_MARGIN_LEFT;
@@ -1156,6 +1147,7 @@ function renderGame() {
                         gameCtx.drawImage(shipImage, Math.round(currentIconX), Math.round(lifeIconY), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
                     }
                 }
+                // --- EINDE GEWIJZIGDE LOGICA P1 LEVENS ---
 
 
                 // --- Logica voor levensicoontjes P2 (rechtsonder) - blijft grotendeels ongewijzigd, maar wordt niet getekend in 2P Normal Results ---
@@ -1207,8 +1199,7 @@ function renderGame() {
 
         const drawLevelIcons = (levelValueToDisplay, isPlayer1_Coop_Or_SinglePlayer) => {
             // <<< GEWIJZIGD: P1 Levelicoontjes (links onder) NIET tonen in normaal 2-speler resultatenscherm >>>
-            // <<< EN OOK NIET in 1P NORMAL GAME OVER / RESULTS >>>
-            if ((inNormal2PResults || is1PNormalGameOverOrResults) && isPlayer1_Coop_Or_SinglePlayer) return;
+            if (inNormal2PResults && isPlayer1_Coop_Or_SinglePlayer) return;
             // <<< EINDE GEWIJZIGD >>>
 
             let actualLevelValueForDisplay = Math.max(1, levelValueToDisplay);
@@ -1282,12 +1273,13 @@ function renderGame() {
 
             if (!isInGameState || isShowingScoreScreen || isGameOverOrResults) {
                 // --- GEWIJZIGD: Specifieke logica voor `numLifeIconsDrawn` in 2P normal results ---
-                // --- EN 1P NORMAL GAME OVER/RESULTS ---
-                if ((inNormal2PResults || is1PNormalGameOverOrResults) && isPlayer1_Coop_Or_SinglePlayer) {
+                if (inNormal2PResults && isPlayer1_Coop_Or_SinglePlayer) {
+                    // Voor P1 (links) in 2P normal results, we tonen altijd 2 levens, dus baseer offset daarop
                     numLifeIconsDrawn = defaultReserveLives;
                 } else if (inNormal2PResults && !isPlayer1_Coop_Or_SinglePlayer) {
+                    // Voor P2 (rechts) in 2P normal results, worden geen levens getoond
                     numLifeIconsDrawn = 0;
-                } else {
+                } else { // Andere scenarios
                     numLifeIconsDrawn = (playerLivesForOffset <= 0) ? 0 : defaultReserveLives;
                 }
                 // --- EINDE GEWIJZIGDE LOGICA ---
