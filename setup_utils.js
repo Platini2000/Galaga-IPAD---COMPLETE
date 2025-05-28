@@ -922,25 +922,28 @@ function handleTouchEndGlobal(event) {
                 if (now - lastTapTime > SHOOT_COOLDOWN / 2) {
                     let shooterPlayerIdForTap = 'player1'; // Standaard P1
                     
-                    // <<< GEWIJZIGDE LOGICA HIER OM "1P VS AI COOP" VUREN VIA TOUCH CORRECT AF TE HANDELEN >>>
-                    if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                        // In "1P vs AI COOP", is de menselijke speler altijd P1. Tap overal op het scherm is voor P1.
-                        // P2 (AI) gebruikt geen touch input voor vuren.
-                        if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
-                            shooterPlayerIdForTap = 'player1'; 
-                        } else if (!isPlayerTwoAI) { // Human 2P COOP (niet 1P vs AI COOP)
-                            // De helft-scherm logica blijft voor Human 2P COOP
+                    // <<< GECORRIGEERDE LOGICA VOOR "1P VS AI COOP" TOUCH FIRE >>>
+                    // Eerst expliciet checken of het de "1P vs AI COOP" modus is.
+                    if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+                        // In deze modus is de menselijke speler ALTIJD P1.
+                        // AI (P2) gebruikt geen touch. Tap is altijd voor P1.
+                        shooterPlayerIdForTap = 'player1';
+                    } else if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                        // Deze `else if` wordt nu alleen geraakt voor Human 2P COOP of COOP AI Demo.
+                        // Voor Human 2P COOP, blijft de helft-scherm logica.
+                        // Voor COOP AI Demo zal de AI zelf schieten, tap is hier minder relevant maar standaard P1.
+                        if (!isPlayerTwoAI) { // Human 2P COOP
                             if (canvasTapX > gameCanvas.width / 2 && ship2 && player2Lives > 0) {
                                 shooterPlayerIdForTap = 'player2';
                             }
                         }
-                        // Voor COOP AI Demo, wordt vuren afgehandeld door de AI, niet direct door tap, maar standaard P1.
+                        // Als het COOP AI Demo is, blijft shooterPlayerIdForTap 'player1' (de AI handelt dit verder af).
                     } else if (isTwoPlayerMode && selectedGameMode === 'normal'){
                          // Voor 2P Normal (human of vs AI) is het de actieve speler.
-                         // Als AI P2 aan de beurt is, wordt vuren afgehandeld door AI, niet door tap.
                          shooterPlayerIdForTap = (currentPlayer === 1) ? 'player1' : 'player2';
+                         // Als AI P2 aan de beurt is, wordt vuren afgehandeld door AI, niet door tap.
                          if (isPlayerTwoAI && currentPlayer === 2) { 
-                            shooterPlayerIdForTap = 'ai_p2'; // AI zal zelf schieten.
+                            shooterPlayerIdForTap = 'ai_p2'; 
                          }
                     }
                     // Voor 1P classic is het standaard 'player1'.
@@ -950,7 +953,10 @@ function handleTouchEndGlobal(event) {
                     // AI (ai_p2) hoeft geen fireInputWasDown, die schiet via aiControl.
 
                     if (typeof firePlayerBullet === 'function') {
-                         firePlayerBullet(shooterPlayerIdForTap, true); // Geef isTapEvent door
+                         // Alleen daadwerkelijk vuren als de shooter niet 'ai_p2' is (want AI regelt zijn eigen schoten)
+                         if (shooterPlayerIdForTap !== 'ai_p2') {
+                            firePlayerBullet(shooterPlayerIdForTap, true); // Geef isTapEvent door
+                         }
                     }
                     if (shooterPlayerIdForTap === 'player1') p1FireInputWasDown = false;
                     else if (shooterPlayerIdForTap === 'player2') p2FireInputWasDown = false;
