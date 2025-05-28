@@ -939,7 +939,7 @@ function renderGame() {
         gameCtx.save();
         const UI_FONT="20px 'Press Start 2P'"; const LABEL_COLOR="red"; const SCORE_COLOR="white";
         const maxLivesIcons = 5;
-        const defaultReserveLives = 2; // Dit wordt nu de vaste waarde voor links onder in 2P normal results en 1P normal results/gameover
+        const defaultReserveLives = 2;
         gameCtx.font=UI_FONT; gameCtx.textBaseline="top";
 
         const drawTopUiElement=(label, scoreValue, labelAlign, labelX, shouldBlink = false)=>{
@@ -979,7 +979,7 @@ function renderGame() {
         const isEffectivelyTwoPlayerUI = isTwoPlayerMode || (isPlayerTwoAI && selectedGameMode === 'coop');
 
         if (isEffectivelyTwoPlayerUI) {
-            // ... (Deze logica voor score2PValue en label2P blijft ongewijzigd) ...
+            // ... (Logica voor P2 score en label blijft ongewijzigd) ...
             if (selectedGameMode === 'coop' && isInGameState) {
                 score2PValue = player2Score;
                 if (isCoopAIDemoActive) label2P = "DEMO-2";
@@ -1018,7 +1018,7 @@ function renderGame() {
 
 
         if (isShowingResultsScreen) {
-            // ... (Deze logica voor P1 waarden in results blijft ongewijzigd) ...
+            // ... (Logica P1 score en label blijft ongewijzigd) ...
             score1PValue = player1Score || 0; sessionHighScore = highScore || 20000; sessionHighScore = Math.max(sessionHighScore, score1PValue, score2PValue);
             label1P = (wasLastGameAIDemo && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedGameMode === 'coop')) ? "DEMO" :
                       ((isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop')) ? "DEMO-1" : "1UP");
@@ -1027,7 +1027,7 @@ function renderGame() {
             highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
         }
         else if (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage && !isAnyCoopPlayerGameOver) {
-            // ... (Deze logica voor P1 waarden tijdens game over blijft ongewijzigd) ...
+            // ... (Logica P1 score en label blijft ongewijzigd) ...
             score1PValue = player1Score || 0; sessionHighScore = highScore || 20000; sessionHighScore = Math.max(sessionHighScore, score1PValue, score2PValue);
             label1P = (wasLastGameAIDemo && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedGameMode === 'coop')) ? "DEMO" :
                       ((isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop')) ? "DEMO-1" : "1UP");
@@ -1036,7 +1036,7 @@ function renderGame() {
             highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
         }
         else if (isShowingPlayerGameOverMessage || isAnyCoopPlayerGameOver) {
-            // ... (Deze logica voor P1 waarden tijdens player game over blijft ongewijzigd) ...
+            // ... (Logica P1 score en label blijft ongewijzigd) ...
             score1PValue = player1Score || 0; sessionHighScore = highScore || 20000; sessionHighScore = Math.max(sessionHighScore, score1PValue, score2PValue);
             label1P = (isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop')) ? "DEMO-1" : "1UP";
              if (isPlayerTwoAI && !isCoopAIDemoActive && selectedGameMode === 'normal' && playerWhoIsGameOver === 1) label1P = "1UP";
@@ -1044,12 +1044,12 @@ function renderGame() {
             highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
         }
         else if (!isInGameState) { // Menu
-            // ... (Deze logica voor P1 waarden in menu blijft ongewijzigd) ...
+            // ... (Logica P1 score en label blijft ongewijzigd) ...
             score1PValue = 0; sessionHighScore = highScore || 20000; label1P = "1UP";
             highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
         }
         else { // In game
-            // ... (Deze logica voor P1 waarden in game blijft ongewijzigd) ...
+            // ... (Logica P1 score en label blijft ongewijzigd) ...
             sessionHighScore = highScore || 0;
             const baseBlinkCondition = !isPaused && !isShowingCoopPlayersReady;
 
@@ -1090,7 +1090,7 @@ function renderGame() {
 
         isHighScoreBlinkingNow = false;
         if (highScoreConditionMet) {
-            // ... (Deze logica voor high score blink blijft ongewijzigd) ...
+            // ... (Logica high score blink blijft ongewijzigd) ...
             if (!isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop') ) {
                  isHighScoreBlinkingNow = (player1Score >= sessionHighScore && player1Score > 0 && show1UPBlink && !isPlayer1ShowingGameOverMessage) ||
                                        ((isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop')) && player2Score >= sessionHighScore && player2Score > 0 && show2UPBlink && !isPlayer2ShowingGameOverMessage);
@@ -1113,6 +1113,9 @@ function renderGame() {
         }
 
         const inNormal2PResults = isShowingResultsScreen && isTwoPlayerMode && selectedGameMode === 'normal';
+        // <<< NIEUWE VLAG voor 1P Normal Game Over / Results >>>
+        const inNormal1PGameOverOrResults = (!isTwoPlayerMode || (isTwoPlayerMode && selectedGameMode !== 'coop')) && // Zeker zijn dat het GEEN COOP is
+                                           (isShowingResultsScreen || (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage));
 
         if (typeof shipImage !== 'undefined' && typeof LIFE_ICON_MARGIN_BOTTOM !== 'undefined' && typeof LIFE_ICON_SIZE !== 'undefined' && typeof LIFE_ICON_MARGIN_LEFT !== 'undefined' && typeof LIFE_ICON_SPACING !== 'undefined' ) {
             if (shipImage.complete && shipImage.naturalHeight !== 0) {
@@ -1124,14 +1127,13 @@ function renderGame() {
                 if (inNormal2PResults) {
                     livesP1ToDisplay = defaultReserveLives;
                 }
-                // <<< START GEWIJZIGD DEEL >>>
-                else if (!isTwoPlayerMode && (isShowingResultsScreen || (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage))) {
-                    // Voor 1P Normal Game Over of 1P Normal Results screen: altijd 2 levens.
-                    livesP1ToDisplay = defaultReserveLives;
+                // <<< START GEWIJZIGD DEEL (1P Levens) >>>
+                else if (inNormal1PGameOverOrResults && !isTwoPlayerMode) { // Specifiek voor 1P Normal Game Over of Results
+                    livesP1ToDisplay = defaultReserveLives; // Altijd 2 levens tonen
                 }
-                // <<< EINDE GEWIJZIGD DEEL >>>
+                // <<< EINDE GEWIJZIGD DEEL (1P Levens) >>>
                 else if (!isInGameState || isShowingScoreScreen || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || gameOverSequenceStartTime > 0 ) {
-                    // Algemene "out-of-active-gameplay" of "game over" states voor andere modes (bv. CO-OP Game Over, Menu)
+                    // Algemene "out-of-active-gameplay" of "game over" states voor andere modes
                     livesP1ToDisplay = (player1Lives <= 0) ? 0 : defaultReserveLives;
                 } else { // In actieve game logica
                     if (isTwoPlayerMode && selectedGameMode === 'coop') {
@@ -1159,8 +1161,8 @@ function renderGame() {
                 // --- EINDE LOGICA P1 LEVENS ---
 
 
-                // --- Logica voor levensicoontjes P2 (rechtsonder) - blijft grotendeels ongewijzigd, maar wordt niet getekend in 2P Normal Results ---
-                if (!inNormal2PResults) { // Alleen tekenen als het NIET het 2P Normal Results scherm is
+                // --- Logica voor levensicoontjes P2 (rechtsonder) - blijft grotendeels ongewijzigd ---
+                if (!inNormal2PResults && !inNormal1PGameOverOrResults) { // <<< GEWIJZIGD: P2 Levens niet tonen in 1P Game Over/Results >>>
                     if (!isInGameState || isShowingScoreScreen || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || gameOverSequenceStartTime > 0 ) {
                          if (isEffectivelyTwoPlayerUI || (!isInGameState && (!isPlayerSelectMode || selectedButtonIndex === 1 )) ) {
                             livesP2ToDisplay = (player2Lives <= 0) ? 0 : defaultReserveLives;
@@ -1175,7 +1177,6 @@ function renderGame() {
                                 livesP2ToDisplay = player2Lives > 0 ? Math.max(0, player2Lives - 1) : 0;
                             }
                         }
-                        // In 1P mode is livesP2ToDisplay al 0
                     }
 
                      const p2LivesIconsToDraw = Math.min(livesP2ToDisplay, maxLivesIcons);
@@ -1199,7 +1200,7 @@ function renderGame() {
                              gameCtx.drawImage(shipImage, Math.round(currentIconX), Math.round(lifeIconY), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
                          }
                      }
-                } // Einde 'if (!inNormal2PResults)' voor P2 levens
+                } // Einde 'if (!inNormal2PResults && !inNormal1PGameOverOrResults)' voor P2 levens
             }
         }
 
@@ -1207,13 +1208,12 @@ function renderGame() {
         const iconTypes = [ { val: 50, img: level50Image }, { val: 30, img: level30Image }, { val: 20, img: level20Image }, { val: 10, img: level10Image }, { val: 5, img: level5Image }, { val: 1, img: level1Image } ];
 
         const drawLevelIcons = (levelValueToDisplay, isPlayer1_Coop_Or_SinglePlayer) => {
-            // <<< GEWIJZIGD: P1 Levelicoontjes (links onder) NIET tonen in normaal 2-speler resultatenscherm >>>
-            // <<< OOK GEWIJZIGD: P1 Levelicoontjes NIET tonen in 1-speler normaal resultatenscherm / game over >>>
+            // <<< START GEWIJZIGD DEEL (Level Iconen verbergen) >>>
             if ((inNormal2PResults && isPlayer1_Coop_Or_SinglePlayer) ||
-                (!isTwoPlayerMode && isPlayer1_Coop_Or_SinglePlayer && (isShowingResultsScreen || (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage))) ) {
-                return;
+                (inNormal1PGameOverOrResults && isPlayer1_Coop_Or_SinglePlayer && !isTwoPlayerMode) ) {
+                return; // Verberg P1 level iconen in 2P Normal Results EN in 1P Normal Game Over/Results
             }
-            // <<< EINDE GEWIJZIGD >>>
+            // <<< EINDE GEWIJZIGD DEEL (Level Iconen verbergen) >>>
 
             let actualLevelValueForDisplay = Math.max(1, levelValueToDisplay);
             if (actualLevelValueForDisplay <= 0 || typeof LEVEL_ICON_MARGIN_BOTTOM === 'undefined' || typeof LEVEL_ICON_SIZE === 'undefined' || typeof LEVEL_ICON_MARGIN_RIGHT === 'undefined' || typeof LEVEL_ICON_SPACING === 'undefined') return;
@@ -1290,12 +1290,12 @@ function renderGame() {
                 } else if (inNormal2PResults && !isPlayer1_Coop_Or_SinglePlayer) {
                     numLifeIconsDrawn = 0;
                 }
-                // <<< START GEWIJZIGD DEEL (Level icon offset) >>>
-                else if (!isTwoPlayerMode && isPlayer1_Coop_Or_SinglePlayer && (isShowingResultsScreen || (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage))) {
+                // <<< START GEWIJZIGD DEEL (Level icon offset voor 1P) >>>
+                else if (inNormal1PGameOverOrResults && isPlayer1_Coop_Or_SinglePlayer && !isTwoPlayerMode) {
                     // Voor 1P Normal Game Over/Results, baseer offset op de 2 getoonde levens.
                     numLifeIconsDrawn = defaultReserveLives;
                 }
-                // <<< EINDE GEWIJZIGD DEEL (Level icon offset) >>>
+                // <<< EINDE GEWIJZIGD DEEL (Level icon offset voor 1P) >>>
                 else {
                     numLifeIconsDrawn = (playerLivesForOffset <= 0) ? 0 : defaultReserveLives;
                 }
@@ -1374,7 +1374,7 @@ function renderGame() {
         gameCtx.restore();
 
         // --- STAP 1.6: Teken Spelersschip (Hoofd + Dual) ---
-        // ... (Deze sectie blijft ongewijzigd zoals in de oorspronkelijke DEEL 3 van 3) ...
+        // ... (Deze sectie blijft ongewijzigd) ...
         gameCtx.save();
         let drawMenuShip = false;
         let gameIsEffectivelyOverOrInMenu = !isInGameState || isShowingScoreScreen || isShowingResultsScreen || gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage;
@@ -1473,7 +1473,7 @@ function renderGame() {
 
 
         // --- STAP 2: State-specifieke content (Menu / Game / Score) ---
-        // ... (Rest van de renderGame functie - Menu, Gameplay Messages, Game Over/Results text - blijft ongewijzigd zoals in de oorspronkelijke DEEL 3 van 3) ...
+        // ... (Rest van de renderGame functie blijft ongewijzigd) ...
         if (!isInGameState) {
              if (isShowingScoreScreen) {
                 if (typeof LIFE_ICON_SIZE !== 'undefined') {
@@ -1639,9 +1639,9 @@ function renderGame() {
                     const isShowingGameOverText = elapsedTime < GAME_OVER_DURATION;
                     const isShowingResultsScreenActive = elapsedTime >= GAME_OVER_DURATION;
 
-                    if (isShowingGameOverText && !isTwoPlayerMode && !isCoopAIDemoActive && !isPlayerTwoAI && selectedGameMode !== 'coop') { // <<<< Aangepast: Check ook of het NIET COOP Demo is
+                    if (isShowingGameOverText && !isTwoPlayerMode && !isCoopAIDemoActive && !isPlayerTwoAI && selectedGameMode !== 'coop') {
                         drawCanvasText("GAME OVER", gameCanvas.width / 2, gameCanvas.height / 2, GAME_OVER_FONT, GAME_OVER_COLOR, 'center', 'middle', GAME_OVER_SHADOW);
-                    } else if (isShowingGameOverText && isCoopAIDemoActive && player1Lives <= 0 && player2Lives <=0) { // <<<< NIEUW: GAME OVER tekst voor COOP Demo
+                    } else if (isShowingGameOverText && isCoopAIDemoActive && player1Lives <= 0 && player2Lives <=0) {
                          drawCanvasText("GAME OVER", gameCanvas.width / 2, gameCanvas.height / 2, GAME_OVER_FONT, GAME_OVER_COLOR, 'center', 'middle', GAME_OVER_SHADOW);
                     }
                     else if (isShowingResultsScreenActive) {
