@@ -639,8 +639,14 @@ function playSound(soundId, loop = false, volume = 1) {
         // console.warn(`Cannot play sound: ${soundId}. Context suspended or buffer not ready.`);
         return;
     }
-    if (isPaused && soundId !== 'menuMusicSound' && !isShowingPortraitMessage) return; // Allow menu music if paused by portrait
-    if (isShowingPortraitMessage && soundId !== 'menuMusicSound') return; // Only allow menu music if portrait message showing
+
+    // <<< GEWIJZIGD: Als portrait message getoond wordt, blokkeer ALLE geluiden. >>>
+    if (isShowingPortraitMessage) return;
+
+    // Als gepauzeerd (en NIET in portrait mode, want dat is hierboven afgehandeld),
+    // sta menu muziek toe maar blokkeer andere geluiden.
+    if (isPaused && soundId !== 'menuMusicSound') return;
+    // <<< EINDE GEWIJZIGD >>>
 
 
     // Stop any existing instance of this sound before playing a new one, unless it's music
