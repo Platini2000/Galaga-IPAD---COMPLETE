@@ -954,22 +954,23 @@ function renderGame() {
             ];
 
             // Bepaal de hoogte van een regel tekst (ongeveer)
-            gameCtx.font = portraitFont; // Stel de font in om de hoogte correct te meten (of gebruik een vaste waarde)
+            gameCtx.font = portraitFont; // Stel de font in om de hoogte correct te meten
             const metrics = gameCtx.measureText("M"); // 'M' is vaak een goede letter voor hoogte
-            const lineHeight = (metrics.actualBoundingBoxAscent || parseInt(portraitFont, 10) * 1.2) + (metrics.actualBoundingBoxDescent || 0); // Inclusief wat marge
+            // Probeer actualBoundingBoxAscent/Descent te gebruiken, anders val terug op een schatting gebaseerd op de font size
+            const textHeightPerLine = (metrics.actualBoundingBoxAscent || parseInt(portraitFont, 10) * 1.2) + (metrics.actualBoundingBoxDescent || 0) + 5; // +5 voor wat extra marge
 
-            const gapAfterDisclaimer = lineHeight * 2; // 2 regels overslaan
+            const gapAfterDisclaimer = textHeightPerLine * 2; // 2 regels overslaan
 
-            const totalDisclaimerHeight = disclaimerLines.length * lineHeight;
-            const totalRotateHeight = rotateLines.length * lineHeight;
+            const totalDisclaimerHeight = disclaimerLines.length * textHeightPerLine;
+            const totalRotateHeight = rotateLines.length * textHeightPerLine; // Gebruik dezelfde textHeightPerLine
             const totalBlockHeight = totalDisclaimerHeight + gapAfterDisclaimer + totalRotateHeight;
 
             let currentY = (gameCanvas.height - totalBlockHeight) / 2; // Start Y voor het hele blok
 
             // Teken disclaimer regels
             for (const line of disclaimerLines) {
-                drawCanvasText(line, midX, currentY + lineHeight / 2, portraitFont, textColor, 'center', 'middle', true);
-                currentY += lineHeight;
+                drawCanvasText(line, midX, currentY + textHeightPerLine / 2, portraitFont, textColor, 'center', 'middle', true);
+                currentY += textHeightPerLine;
             }
 
             // Voeg de gap toe
@@ -977,8 +978,8 @@ function renderGame() {
 
             // Teken "ROTATE TO LANDSCAPE" en "TO PLAY GAME"
             for (const line of rotateLines) {
-                drawCanvasText(line, midX, currentY + lineHeight / 2, portraitFont, textColor, 'center', 'middle', true);
-                currentY += lineHeight;
+                drawCanvasText(line, midX, currentY + textHeightPerLine / 2, portraitFont, textColor, 'center', 'middle', true);
+                currentY += textHeightPerLine;
             }
 
             gameCtx.restore();
