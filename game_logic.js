@@ -1,1 +1,4662 @@
-const _0x1d45a4=_0x5b67;(function(_0x5620b8,_0x3485fe){const _0x37f532=_0x5b67,_0x238f56=_0x5620b8();while(!![]){try{const _0x2c173c=parseInt(_0x37f532(0x196))/0x1+-parseInt(_0x37f532(0xd4))/0x2+-parseInt(_0x37f532(0x199))/0x3+-parseInt(_0x37f532(0xba))/0x4+parseInt(_0x37f532(0xab))/0x5+parseInt(_0x37f532(0x13e))/0x6+parseInt(_0x37f532(0xb9))/0x7;if(_0x2c173c===_0x3485fe)break;else _0x238f56['push'](_0x238f56['shift']());}catch(_0x4d0cae){_0x238f56['push'](_0x238f56['shift']());}}}(_0x1298,0xe0529));function generateAttackPathInternal(_0x52447e){const _0x465bb7=_0x5b67;try{if(!_0x52447e||!gameCanvas)return[];const _0x7e777d=_0x52447e[_0x465bb7(0x19d)]===ENEMY3_TYPE?BOSS_WIDTH:_0x52447e[_0x465bb7(0x19d)]===ENEMY1_TYPE?ENEMY1_WIDTH:ENEMY_WIDTH,_0x29225b=_0x52447e[_0x465bb7(0x19d)]===ENEMY3_TYPE?BOSS_HEIGHT:_0x52447e[_0x465bb7(0x19d)]===ENEMY1_TYPE?ENEMY1_HEIGHT:ENEMY_HEIGHT,_0x3872d9=_0x7e777d*0.5,_0x1903b1=gameCanvas['width'],_0x34892b=gameCanvas[_0x465bb7(0x74)];let _0x13ea52=[];const _0x160e94={'x':_0x52447e['x'],'y':_0x52447e['y']},_0x39a278=Math[_0x465bb7(0x99)](_0x34892b*0.06,_0x29225b*1.8),_0x27b2a3=Math[_0x465bb7(0x99)](_0x1903b1*0.04,_0x7e777d*1.2),_0x20b729=_0x52447e['x']+_0x7e777d/0x2<_0x1903b1/0x2?0x1:-0x1,_0x15d0bf={'x':_0x160e94['x']-_0x20b729*_0x27b2a3*0.6,'y':_0x160e94['y']-_0x39a278};_0x15d0bf['x']=Math[_0x465bb7(0x12c)](_0x3872d9,Math[_0x465bb7(0x99)](_0x1903b1-_0x3872d9-_0x7e777d,_0x15d0bf['x'])),_0x15d0bf['y']=Math[_0x465bb7(0x12c)](_0x3872d9,_0x15d0bf['y']);const _0x15dc0b={'x':_0x160e94['x']+_0x20b729*_0x27b2a3*0.1,'y':_0x160e94['y']-_0x39a278*1.4},_0x172efb={'x':_0x15d0bf['x']+_0x20b729*_0x27b2a3*0.3,'y':_0x160e94['y']-_0x39a278*1.5},_0x47d21e={'p0':_0x160e94,'p1':_0x15dc0b,'p2':_0x172efb,'p3':_0x15d0bf};_0x13ea52['push'](_0x47d21e);const _0x3196e3=_0x15d0bf,_0x210667=_0x34892b*0.45,_0x593364=_0x1903b1*0.22,_0x5f4bba=_0x34892b*0.28,_0x1f6c5b=0.5,_0x1fe05d=0.6,_0x5311c3=_0x34892b*0.85,_0x28f27a=Math[_0x465bb7(0x119)](Math[_0x465bb7(0x107)]()*0x3);let _0xf881ec=[];if(_0x28f27a===0x0){const _0x123c7a=_0x210667+Math[_0x465bb7(0x107)]()*_0x34892b*0.1,_0x271ece=_0x593364+Math['random']()*_0x1903b1*0.08,_0x2a04e4=_0x5f4bba+Math[_0x465bb7(0x107)]()*_0x34892b*0.08,_0x43f6af=_0x3196e3['x']+_0x20b729*_0x271ece*0.5,_0x5e69c4=Math[_0x465bb7(0x99)](_0x5311c3,_0x3196e3['y']+_0x123c7a),_0x22ba56=_0x43f6af+_0x20b729*_0x271ece*0.5,_0x5c956f=Math['max'](_0x3196e3['y']+0x14,_0x5e69c4-_0x2a04e4),_0x16c389=_0x22ba56-_0x20b729*_0x271ece*0.9,_0x4243f3=Math['max'](_0x3196e3['y']+0x28,_0x5c956f+_0x2a04e4*0.6),_0x57371f=_0x16c389-_0x20b729*_0x271ece*0.3,_0x54db08=_0x34892b+_0x29225b*0x2,_0xdc6638=Math[_0x465bb7(0x12c)](_0x3872d9,Math['min'](_0x1903b1-_0x3872d9-_0x7e777d,_0x43f6af)),_0x28413c=Math[_0x465bb7(0x12c)](_0x3872d9,Math[_0x465bb7(0x99)](_0x1903b1-_0x3872d9-_0x7e777d,_0x22ba56)),_0x24d6d1=Math[_0x465bb7(0x12c)](_0x3872d9,Math[_0x465bb7(0x99)](_0x1903b1-_0x3872d9-_0x7e777d,_0x16c389)),_0x6fb28e={'x':_0x3196e3['x'],'y':_0x3196e3['y']+_0x123c7a*_0x1fe05d*0.5},_0x25f938={'x':_0xdc6638-_0x20b729*_0x271ece*_0x1f6c5b,'y':_0x5e69c4},_0x38b7b4={'x':_0xdc6638,'y':_0x5e69c4},_0x1cb766={'x':_0xdc6638+_0x20b729*_0x271ece*_0x1f6c5b,'y':_0x5e69c4},_0x530383={'x':_0x28413c,'y':_0x5c956f+_0x2a04e4*_0x1fe05d},_0x25e8bc={'x':_0x28413c,'y':_0x5c956f},_0x2905cc={'x':_0x28413c,'y':_0x5c956f-_0x2a04e4*_0x1fe05d*0.5},_0x57141b={'x':_0x24d6d1+_0x20b729*_0x271ece*_0x1f6c5b,'y':_0x4243f3},_0x77ca0e={'x':_0x24d6d1,'y':_0x4243f3},_0xe30dc6={'x':_0x77ca0e['x'],'y':_0x77ca0e['y']+_0x34892b*0.1},_0x484b2c={'x':_0x57371f,'y':_0x54db08-_0x34892b*0.2},_0x41cab4={'x':_0x57371f,'y':_0x54db08};_0xf881ec=[{'p0':_0x3196e3,'p1':_0x6fb28e,'p2':_0x25f938,'p3':_0x38b7b4},{'p0':_0x38b7b4,'p1':_0x1cb766,'p2':_0x530383,'p3':_0x25e8bc},{'p0':_0x25e8bc,'p1':_0x2905cc,'p2':_0x57141b,'p3':_0x77ca0e},{'p0':_0x77ca0e,'p1':_0xe30dc6,'p2':_0x484b2c,'p3':_0x41cab4}];}else{if(_0x28f27a===0x1){const _0x12e96b=_0x210667*0.8+Math[_0x465bb7(0x107)]()*_0x34892b*0.1,_0x3d26f2=_0x593364*1.2+Math[_0x465bb7(0x107)]()*_0x1903b1*0.1,_0x53afb7=_0x5f4bba*0.7+Math[_0x465bb7(0x107)]()*_0x34892b*0.1,_0x1db22b=_0x3196e3['x']+_0x20b729*_0x3d26f2*0.4,_0x18d36a=Math[_0x465bb7(0x99)](_0x5311c3-_0x53afb7*0.5,_0x3196e3['y']+_0x12e96b*0.6),_0x42978e=_0x1db22b+_0x20b729*_0x3d26f2*0.6,_0x3227ca=Math[_0x465bb7(0x99)](_0x5311c3,_0x18d36a+_0x53afb7),_0x4917f5=_0x42978e-_0x20b729*_0x3d26f2*0.5,_0x31c8db=_0x34892b+_0x29225b*0x2,_0x4f1aef=Math[_0x465bb7(0x12c)](_0x3872d9,Math[_0x465bb7(0x99)](_0x1903b1-_0x3872d9-_0x7e777d,_0x1db22b)),_0x1499d9=Math[_0x465bb7(0x12c)](_0x3872d9,Math['min'](_0x1903b1-_0x3872d9-_0x7e777d,_0x42978e)),_0x368bb5={'x':_0x3196e3['x']-_0x20b729*_0x3d26f2*0.1,'y':_0x3196e3['y']+_0x12e96b*0.3},_0x4d3606={'x':_0x4f1aef-_0x20b729*_0x3d26f2*_0x1f6c5b*0.8,'y':_0x18d36a+_0x53afb7*_0x1fe05d*0.4},_0x64b10d={'x':_0x4f1aef,'y':_0x18d36a},_0x14abe6={'x':_0x4f1aef+_0x20b729*_0x3d26f2*_0x1f6c5b*0.8,'y':_0x18d36a-_0x53afb7*_0x1fe05d*0.4},_0x47137a={'x':_0x1499d9+_0x20b729*_0x3d26f2*_0x1f6c5b*0.6,'y':_0x3227ca+_0x53afb7*_0x1fe05d*0.5},_0x253e4a={'x':_0x1499d9,'y':_0x3227ca},_0x341eb8={'x':_0x1499d9-_0x20b729*_0x3d26f2*0.2,'y':_0x3227ca+_0x34892b*0.1},_0x313696={'x':_0x4917f5,'y':_0x31c8db-_0x34892b*0.3},_0xa43439={'x':_0x4917f5,'y':_0x31c8db};_0xf881ec=[{'p0':_0x3196e3,'p1':_0x368bb5,'p2':_0x4d3606,'p3':_0x64b10d},{'p0':_0x64b10d,'p1':_0x14abe6,'p2':_0x47137a,'p3':_0x253e4a},{'p0':_0x253e4a,'p1':_0x341eb8,'p2':_0x313696,'p3':_0xa43439}];}else{const _0x1f98f8=_0x210667*0.6+Math[_0x465bb7(0x107)]()*_0x34892b*0.05,_0x375aae=_0x593364*0.7+Math[_0x465bb7(0x107)]()*_0x1903b1*0.05,_0x95f5a3=_0x5f4bba*0.6+Math[_0x465bb7(0x107)]()*_0x34892b*0.05,_0x470376=_0x95f5a3*1.5,_0x49150c=_0x3196e3['x']+_0x20b729*_0x375aae*0.5,_0x2a111c=Math[_0x465bb7(0x99)](_0x5311c3-_0x470376,_0x3196e3['y']+_0x1f98f8),_0x3b5cc7=_0x49150c+_0x20b729*_0x375aae*0.5,_0x2a3447=_0x2a111c+_0x95f5a3,_0x5b3465=_0x3b5cc7-_0x20b729*_0x375aae*0.8,_0x473232=Math['min'](_0x5311c3,_0x2a3447+_0x470376*0.7),_0xe930c1=_0x5b3465+_0x20b729*_0x375aae*0.4,_0x418cfb=_0x473232+_0x95f5a3*0.8,_0xb94aa4=_0xe930c1,_0x230527=_0x34892b+_0x29225b*0x2,_0x9fa78b=Math['max'](_0x3872d9,Math[_0x465bb7(0x99)](_0x1903b1-_0x3872d9-_0x7e777d,_0x49150c)),_0x181377=Math[_0x465bb7(0x12c)](_0x3872d9,Math[_0x465bb7(0x99)](_0x1903b1-_0x3872d9-_0x7e777d,_0x3b5cc7)),_0x559a2d=Math['max'](_0x3872d9,Math[_0x465bb7(0x99)](_0x1903b1-_0x3872d9-_0x7e777d,_0x5b3465)),_0x5cee92=Math['max'](_0x3872d9,Math[_0x465bb7(0x99)](_0x1903b1-_0x3872d9-_0x7e777d,_0xe930c1)),_0x50ba4a={'x':_0x3196e3['x'],'y':_0x3196e3['y']+_0x1f98f8*0.5},_0xfae2c={'x':_0x9fa78b-_0x20b729*_0x375aae*_0x1f6c5b,'y':_0x2a111c+_0x95f5a3*_0x1fe05d*0.3},_0x8ce323={'x':_0x9fa78b,'y':_0x2a111c},_0x58bc16={'x':_0x9fa78b+_0x20b729*_0x375aae*_0x1f6c5b,'y':_0x2a111c-_0x95f5a3*_0x1fe05d*0.3},_0x224107={'x':_0x181377+_0x20b729*_0x375aae*_0x1f6c5b,'y':_0x2a3447+_0x95f5a3*_0x1fe05d*0.5},_0x25a9e2={'x':_0x181377,'y':_0x2a3447},_0x490936={'x':_0x181377-_0x20b729*_0x375aae*_0x1f6c5b,'y':_0x2a3447-_0x95f5a3*_0x1fe05d*0.5},_0x45dd5b={'x':_0x559a2d-_0x20b729*_0x375aae*_0x1f6c5b,'y':_0x473232+_0x95f5a3*_0x1fe05d*0.4},_0x173bd8={'x':_0x559a2d,'y':_0x473232},_0x3db614={'x':_0x559a2d+_0x20b729*_0x375aae*_0x1f6c5b,'y':_0x473232-_0x95f5a3*_0x1fe05d*0.4},_0x415314={'x':_0x5cee92+_0x20b729*_0x375aae*_0x1f6c5b,'y':_0x418cfb+_0x95f5a3*_0x1fe05d*0.6},_0xfd9d17={'x':_0x5cee92,'y':_0x418cfb},_0x106d17={'x':_0x5cee92-_0x20b729*_0x375aae*0.1,'y':_0x418cfb+_0x34892b*0.05},_0x150a57={'x':_0xb94aa4,'y':_0x230527-_0x34892b*0.2},_0x100c25={'x':_0xb94aa4,'y':_0x230527};_0xf881ec=[{'p0':_0x3196e3,'p1':_0x50ba4a,'p2':_0xfae2c,'p3':_0x8ce323},{'p0':_0x8ce323,'p1':_0x58bc16,'p2':_0x224107,'p3':_0x25a9e2},{'p0':_0x25a9e2,'p1':_0x490936,'p2':_0x45dd5b,'p3':_0x173bd8},{'p0':_0x173bd8,'p1':_0x3db614,'p2':_0x415314,'p3':_0xfd9d17},{'p0':_0xfd9d17,'p1':_0x106d17,'p2':_0x150a57,'p3':_0x100c25}];}}return _0x13ea52[_0x465bb7(0xc9)](..._0xf881ec),_0x13ea52;}catch(_0x4a9978){return console[_0x465bb7(0x186)](_0x465bb7(0xf7)+_0x52447e?.['id']+':',_0x4a9978),[];}}window[_0x1d45a4(0x185)]=generateAttackPathInternal;function resetAllMessagesInternal(){showReadyMessage=![],isShowingIntro=![],showCsHitsMessage=![],showPerfectMessage=![],showCsBonusScoreMessage=![],showCSClearMessage=![],showCsHitsForClearMessage=![],showCsScoreForClearMessage=![],showExtraLifeMessage=![],isShowingCaptureMessage=![],isShowingPlayerGameOverMessage=![],isShowingCoopPlayersReady=![],csHitsMessageStartTime=0x0,perfectMessageStartTime=0x0,csBonusScoreMessageStartTime=0x0,csClearMessageStartTime=0x0,extraLifeMessageStartTime=0x0,readyMessageStartTime=0x0,captureMessageStartTime=0x0,playerGameOverMessageStartTime=0x0,csCompletionDelayStartTime=0x0,introDisplayStartTime=0x0,coopPlayersReadyStartTime=0x0;}window[_0x1d45a4(0x145)]=resetAllMessagesInternal;function stopAllGameSoundsInternal(){const _0x1fb46b=_0x1d45a4;if(typeof soundPaths==='object'&&soundPaths!==null&&typeof stopSound===_0x1fb46b(0x78))for(const _0x38891d in soundPaths){stopSound(_0x38891d);}isGridSoundPlaying=![];}window[_0x1d45a4(0x19e)]=stopAllGameSoundsInternal;function resetGameInternal(){const _0x252c16=_0x1d45a4;score=0x0,level=0x1,playerLives=0x3;if(isTwoPlayerMode){player1Lives=0x3,player2Lives=0x3,player1Score=0x0,player2Score=0x0,currentPlayer=0x1,player1CompletedLevel=-0x1,player1MaxLevelReached=0x1,player2MaxLevelReached=0x1;if(player1LifeThresholdsMet instanceof Set)player1LifeThresholdsMet[_0x252c16(0xca)]();else player1LifeThresholdsMet=new Set();if(player2LifeThresholdsMet instanceof Set)player2LifeThresholdsMet[_0x252c16(0xca)]();else player2LifeThresholdsMet=new Set();player1IsDualShipActive=![],player2IsDualShipActive=![],isPlayer1ShipCaptured=![],isPlayer2ShipCaptured=![],isPlayer1WaitingForRespawn=![],isPlayer2WaitingForRespawn=![],isPlayer1Invincible=![],isPlayer2Invincible=![],player1RespawnTime=0x0,player2RespawnTime=0x0,player1InvincibilityEndTime=0x0,player2InvincibilityEndTime=0x0,player1CaptureRespawnX=0x0,player2CaptureRespawnX=0x0,player1NeedsRespawnAfterCapture=![],player2NeedsRespawnAfterCapture=![];if(selectedGameMode===_0x252c16(0xed)){playerLives=0x0;if(gameCanvas&&gameCanvas[_0x252c16(0xaa)]>0x0&&gameCanvas['height']>0x0){const _0x5a017d=gameCanvas['width']/0x2-gameCanvas[_0x252c16(0xaa)]*COOP_SHIP_HORIZONTAL_OFFSET_FACTOR-SHIP_WIDTH/0x2,_0x263158=gameCanvas[_0x252c16(0xaa)]/0x2+gameCanvas[_0x252c16(0xaa)]*COOP_SHIP_HORIZONTAL_OFFSET_FACTOR-SHIP_WIDTH/0x2,_0x141809=gameCanvas[_0x252c16(0x74)]-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN;ship1={'x':_0x5a017d,'y':_0x141809,'width':SHIP_WIDTH,'height':SHIP_HEIGHT,'speed':SHIP_MOVE_SPEED,'targetX':_0x5a017d,'id':'p1'},ship2={'x':_0x263158,'y':_0x141809,'width':SHIP_WIDTH,'height':SHIP_HEIGHT,'speed':SHIP_MOVE_SPEED,'targetX':_0x263158,'id':'p2'},(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x252c16(0xa7))&&(smoothedShip1X=_0x5a017d,smoothedShip2X=_0x263158,aiShip1TargetEnemy=null,aiShip2TargetEnemy=null,aiShip1CanShootTime=0x0,aiShip2CanShootTime=0x0,aiShip1LastShotTime=0x0,aiShip2LastShotTime=0x0,aiPlayerActivelySeekingCaptureById=null,coopAICaptureDiveAnticipationActive=![],coopAICaptureDiveAnticipationEndTime=0x0);}ship=null;}else{if(!ship&&gameCanvas&&gameCanvas[_0x252c16(0xaa)]>0x0&&gameCanvas['height']>0x0)ship={'x':Math[_0x252c16(0x11d)](gameCanvas[_0x252c16(0xaa)]/0x2-SHIP_WIDTH/0x2),'y':gameCanvas[_0x252c16(0x74)]-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN,'width':SHIP_WIDTH,'height':SHIP_HEIGHT,'speed':SHIP_MOVE_SPEED,'targetX':0x0,'id':_0x252c16(0xda)},ship[_0x252c16(0xa3)]=ship['x'];else ship&&gameCanvas&&gameCanvas['width']>0x0&&gameCanvas[_0x252c16(0x74)]>0x0&&(ship['x']=Math[_0x252c16(0x11d)](gameCanvas[_0x252c16(0xaa)]/0x2-SHIP_WIDTH/0x2),ship[_0x252c16(0xa3)]=ship['x'],ship['y']=gameCanvas['height']-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN);ship1=null,ship2=null;}}else{player1Lives=0x3,player1Score=0x0,player1MaxLevelReached=0x1;if(player1LifeThresholdsMet instanceof Set)player1LifeThresholdsMet['clear']();else player1LifeThresholdsMet=new Set();if(!ship&&gameCanvas&&gameCanvas[_0x252c16(0xaa)]>0x0&&gameCanvas[_0x252c16(0x74)]>0x0)ship={'x':Math[_0x252c16(0x11d)](gameCanvas[_0x252c16(0xaa)]/0x2-SHIP_WIDTH/0x2),'y':gameCanvas['height']-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN,'width':SHIP_WIDTH,'height':SHIP_HEIGHT,'speed':SHIP_MOVE_SPEED,'targetX':0x0,'id':_0x252c16(0xda)},ship[_0x252c16(0xa3)]=ship['x'];else ship&&gameCanvas&&gameCanvas[_0x252c16(0xaa)]>0x0&&gameCanvas['height']>0x0&&(ship['x']=Math[_0x252c16(0x11d)](gameCanvas['width']/0x2-SHIP_WIDTH/0x2),ship[_0x252c16(0xa3)]=ship['x'],ship['y']=gameCanvas[_0x252c16(0x74)]-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN);ship1=null,ship2=null;}isShipCaptured=![],isWaitingForRespawn=![],respawnTime=0x0,isInvincible=![],invincibilityEndTime=0x0,isDualShipActive=![];if(!isTwoPlayerMode)player1IsDualShipActive=![];fallingShips=[],visualOffsetX=-0x14,gameOverSequenceStartTime=0x0,isShowingResultsScreen=![],gameStartTime=Date[_0x252c16(0x12f)](),gameJustStarted=!![],gameJustStartedAndWaveLaunched=![],currentGridOffsetX=0x0,gridMoveDirection=0x1,gridJustCompleted=![],isGridBreathingActive=![],gridBreathStartTime=0x0,currentGridBreathFactor=0x0,lastGridFireCheckTime=0x0,player1ShotsFired=0x0,player2ShotsFired=0x0,player1EnemiesHit=0x0,player2EnemiesHit=0x0,scoreEarnedThisCS=0x0,challengingStageEnemiesHit=0x0,aiNeedsStabilization=!![],aiStabilizationEndTime=0x0,smoothedShipX=undefined,aiCanShootTime=0x0,aiLastShotTime=0x0,!(selectedGameMode==='coop'&&(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x252c16(0xa7)))&&(aiPlayerActivelySeekingCaptureById=null,coopAICaptureDiveAnticipationActive=![],coopAICaptureDiveAnticipationEndTime=0x0),playerLastShotTime=0x0,player1LastShotTime=0x0,player2LastShotTime=0x0,p1FireInputWasDown=![],p2FireInputWasDown=![],p1JustFiredSingle=![],p2JustFiredSingle=![],player1TriggeredHighScoreSound=![],player2TriggeredHighScoreSound=![],isShowingCoopPlayersReady=![],coopPlayersReadyStartTime=0x0,resetWaveInternal();}window[_0x1d45a4(0xf9)]=resetGameInternal;function resetWaveInternal(){const _0x3d955b=_0x1d45a4;isWaveTransitioning=![],readyForNextWave=![],readyForNextWaveReset=![],isEntrancePhaseActive=!![],firstEnemyLanded=![],captureAttemptMadeThisLevel=![],gameJustStartedAndWaveLaunched=![],aiPlayerActivelySeekingCaptureById=null,coopAICaptureDiveAnticipationActive=![],coopAICaptureDiveAnticipationEndTime=0x0,player1CaptureRespawnX=0x0,player2CaptureRespawnX=0x0,player1NeedsRespawnAfterCapture=![],player2NeedsRespawnAfterCapture=![],enemies=[],bullets=[],enemyBullets=[],explosions=[],floatingScores=[],hitSparks=[];Array[_0x3d955b(0x81)](enemySpawnTimeouts)&&enemySpawnTimeouts[_0x3d955b(0x10c)](clearTimeout);enemySpawnTimeouts=[],squadronCompletionStatus={},squadronEntranceFiringStatus={},totalEnemiesScheduledForWave=0x0,enemiesSpawnedThisWave=0x0;const _0x56dc47=getWaveTypeInternal(level);isChallengingStage=_0x56dc47===_0x3d955b(0x86),isFullGridWave=_0x56dc47===_0x3d955b(0x149),challengingStageEnemiesHit=0x0,scoreEarnedThisCS=0x0,csCurrentChainHits=0x0,csCurrentChainScore=0x0,csLastHitTime=0x0,csLastChainHitPosition=null;(isFullGridWave||isChallengingStage)&&(isEntrancePhaseActive=![]);const _0x114cde=isShowingDemoText;resetAllMessagesInternal();_0x114cde&&(isShowingDemoText=!![]);if(selectedGameMode===_0x3d955b(0xed)&&level===0x1)isShowingIntro=![],introStep=0x2;else{if(isTwoPlayerMode&&selectedGameMode===_0x3d955b(0x14b)||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3d955b(0x134)){introStep=0x1,isShowingIntro=!![];if(!isManualControl)isShowingDemoText=!![];}else{if(isChallengingStage){introStep=0x3,isShowingIntro=!![];if(!isManualControl)isShowingDemoText=!![];}else{if(level===0x1&&!isTwoPlayerMode){introStep=0x1,isShowingIntro=!![];if(!isManualControl)isShowingDemoText=!![];}else{introStep=0x2,isShowingIntro=!![];if(!isManualControl)isShowingDemoText=!![];}}}}isShowingIntro&&!(selectedGameMode===_0x3d955b(0xed)&&level===0x1)&&(introDisplayStartTime=Date[_0x3d955b(0x12f)]());playerIntroSoundPlayed=![],stageIntroSoundPlayed=![],csIntroSoundPlayed=![],currentWaveDefinition=generateWaveDefinitionInternal(level);if(selectedGameMode===_0x3d955b(0xed)){if(gameCanvas&&gameCanvas['width']>0x0&&gameCanvas[_0x3d955b(0x74)]>0x0){const _0x5a4969=ship1&&player1Lives>0x0,_0x27a8b0=ship2&&player2Lives>0x0,_0x30dad3=gameCanvas[_0x3d955b(0x74)]-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN;if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3d955b(0xa7)){if(_0x5a4969&&_0x27a8b0){const _0x40dfb0=gameCanvas[_0x3d955b(0xaa)]/0x2-gameCanvas[_0x3d955b(0xaa)]*COOP_SHIP_HORIZONTAL_OFFSET_FACTOR-SHIP_WIDTH/0x2;ship1&&(ship1[_0x3d955b(0xa3)]=_0x40dfb0,ship1['x']=_0x40dfb0,smoothedShip1X=_0x40dfb0,ship1['y']=_0x30dad3);const _0x2c39e9=gameCanvas[_0x3d955b(0xaa)]/0x2+gameCanvas[_0x3d955b(0xaa)]*COOP_SHIP_HORIZONTAL_OFFSET_FACTOR-SHIP_WIDTH/0x2;ship2&&(ship2[_0x3d955b(0xa3)]=_0x2c39e9,ship2['x']=_0x2c39e9,smoothedShip2X=_0x2c39e9,ship2['y']=_0x30dad3);}else{if(_0x5a4969&&ship1){const _0x3c4eea=player1IsDualShipActive?SHIP_WIDTH+DUAL_SHIP_OFFSET_X:SHIP_WIDTH,_0x1a56c0=Math[_0x3d955b(0x11d)](gameCanvas[_0x3d955b(0xaa)]/0x2-_0x3c4eea/0x2);ship1[_0x3d955b(0xa3)]=_0x1a56c0,ship1['x']=_0x1a56c0,smoothedShip1X=_0x1a56c0,ship1['y']=_0x30dad3;}else{if(_0x27a8b0&&ship2){const _0x3b8cbd=player2IsDualShipActive?SHIP_WIDTH+DUAL_SHIP_OFFSET_X:SHIP_WIDTH,_0x355b6e=Math[_0x3d955b(0x11d)](gameCanvas[_0x3d955b(0xaa)]/0x2-_0x3b8cbd/0x2);ship2[_0x3d955b(0xa3)]=_0x355b6e,ship2['x']=_0x355b6e,smoothedShip2X=_0x355b6e,ship2['y']=_0x30dad3;}}}}else{if(_0x5a4969&&ship1)ship1['y']=_0x30dad3;if(_0x27a8b0&&ship2)ship2['y']=_0x30dad3;}}}else{if(ship&&gameCanvas&&gameCanvas[_0x3d955b(0xaa)]>0x0&&gameCanvas[_0x3d955b(0x74)]>0x0&&(forceCenterShipNextReset||!isManualControl||isPlayerTwoAI&&selectedGameMode===_0x3d955b(0x14b)&&currentPlayer===0x2)){let _0x2ce875=ship[_0x3d955b(0xaa)];if(isDualShipActive)_0x2ce875=DUAL_SHIP_OFFSET_X+SHIP_WIDTH;ship['x']=Math[_0x3d955b(0x11d)](gameCanvas[_0x3d955b(0xaa)]/0x2-_0x2ce875/0x2),ship[_0x3d955b(0xa3)]=ship['x'],ship['y']=gameCanvas[_0x3d955b(0x74)]-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN;if(isPlayerTwoAI&&selectedGameMode===_0x3d955b(0x14b)&&currentPlayer===0x2)smoothedShipX=ship['x'];}else ship&&gameCanvas&&gameCanvas['width']>0x0&&(ship['y']=gameCanvas[_0x3d955b(0x74)]-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN);}forceCenterShipNextReset=![];if(!isManualControl&&aiNeedsStabilization&&selectedGameMode!==_0x3d955b(0xed)&&!isCoopAIDemoActive&&!(isPlayerTwoAI&&selectedGameMode===_0x3d955b(0x14b)&&currentPlayer===0x2)){aiStabilizationEndTime=Date[_0x3d955b(0x12f)]()+AI_STABILIZATION_DURATION;if(ship)smoothedShipX=ship['x'];}else{if(isPlayerTwoAI&&selectedGameMode==='normal'&&currentPlayer===0x2&&aiNeedsStabilization){aiStabilizationEndTime=Date[_0x3d955b(0x12f)]()+AI_STABILIZATION_DURATION;if(ship)smoothedShipX=ship['x'];}}}window['resetWave']=resetWaveInternal;function getWaveTypeInternal(_0x3dff36){const _0x4de158=_0x1d45a4,_0x404729=(_0x3dff36-0x1)%0x4;switch(_0x404729){case 0x0:return'full_grid';case 0x1:return _0x4de158(0x91);case 0x2:return _0x4de158(0x86);case 0x3:return _0x4de158(0xe7);default:return _0x4de158(0xe8);}}window[_0x1d45a4(0x170)]=getWaveTypeInternal;function generateWaveDefinitionInternal(_0x3e02e4){const _0x3a7afe=_0x1d45a4;let _0x38ce33=[];currentWavePatternIndex=-0x1;const _0x419c6e=getWaveTypeInternal(_0x3e02e4);if(typeof waveEntrancePatterns===_0x3a7afe(0x8f)||!Array[_0x3a7afe(0x81)](waveEntrancePatterns)||waveEntrancePatterns[_0x3a7afe(0xbb)]<0x2)return[];if(_0x419c6e==='challenging_stage')_0x38ce33=[];else{if(_0x419c6e===_0x3a7afe(0x149)){currentWavePatternIndex=0x0;const _0x11229c=waveEntrancePatterns[0x0];if(!_0x11229c||_0x11229c['length']===0x0)_0x38ce33=[];else try{_0x38ce33=JSON[_0x3a7afe(0x16d)](JSON[_0x3a7afe(0x82)](_0x11229c),(_0x16a46d,_0xc0bd04)=>{const _0x21c062=_0x3a7afe;return _0xc0bd04&&typeof _0xc0bd04==='object'&&_0xc0bd04['type']===ENEMY3_TYPE&&typeof _0xc0bd04[_0x21c062(0x19f)]===_0x21c062(0x8f)&&(_0xc0bd04['hasCapturedShip']=![]),_0xc0bd04;});}catch(_0x2fcd29){_0x38ce33=[];}}else{if(_0x419c6e===_0x3a7afe(0x91)){currentWavePatternIndex=0x0;const _0x4a3be0=waveEntrancePatterns[0x0];if(!_0x4a3be0||_0x4a3be0[_0x3a7afe(0xbb)]===0x0)_0x38ce33=[];else try{_0x38ce33=JSON[_0x3a7afe(0x16d)](JSON[_0x3a7afe(0x82)](_0x4a3be0),(_0x5a36b1,_0x5f4d74)=>{const _0x45ecd1=_0x3a7afe;return _0x5f4d74&&typeof _0x5f4d74===_0x45ecd1(0x140)&&_0x5f4d74['type']===ENEMY3_TYPE&&typeof _0x5f4d74[_0x45ecd1(0x19f)]===_0x45ecd1(0x8f)&&(_0x5f4d74[_0x45ecd1(0x19f)]=![]),_0x5f4d74;});}catch(_0x46e795){_0x38ce33=[];}}else{if(_0x419c6e===_0x3a7afe(0xe7)){currentWavePatternIndex=0x1;const _0x584eb2=waveEntrancePatterns[0x1];if(!_0x584eb2||_0x584eb2[_0x3a7afe(0xbb)]===0x0)_0x38ce33=[];else try{_0x38ce33=JSON[_0x3a7afe(0x16d)](JSON[_0x3a7afe(0x82)](_0x584eb2),(_0x118e6b,_0x476212)=>{const _0x234354=_0x3a7afe;return _0x476212&&typeof _0x476212==='object'&&_0x476212[_0x234354(0x19d)]===ENEMY3_TYPE&&typeof _0x476212[_0x234354(0x19f)]==='undefined'&&(_0x476212[_0x234354(0x19f)]=![]),_0x476212;});}catch(_0x150275){_0x38ce33=[];}}else _0x38ce33=[];}}}if(_0x419c6e!==_0x3a7afe(0x86)){if(typeof normalWaveEntrancePaths===_0x3a7afe(0x8f)||Object[_0x3a7afe(0x105)](normalWaveEntrancePaths)[_0x3a7afe(0xbb)]===0x0)return _0x38ce33;for(let _0x2220a0=_0x38ce33[_0x3a7afe(0xbb)]-0x1;_0x2220a0>=0x0;_0x2220a0--){const _0x1d2f96=_0x38ce33[_0x2220a0];if(!normalWaveEntrancePaths?.[_0x1d2f96[_0x3a7afe(0x93)]]){_0x38ce33[_0x3a7afe(0xa1)](_0x2220a0,0x1);continue;}if(_0x1d2f96[_0x3a7afe(0xc4)]&&Array['isArray'](_0x1d2f96[_0x3a7afe(0xc4)])){for(let _0x27300b=_0x1d2f96[_0x3a7afe(0xc4)][_0x3a7afe(0xbb)]-0x1;_0x27300b>=0x0;_0x27300b--){const _0x29ee75=_0x1d2f96['enemies'][_0x27300b];(!_0x29ee75||!normalWaveEntrancePaths?.[_0x29ee75[_0x3a7afe(0xcd)]])&&_0x1d2f96[_0x3a7afe(0xc4)]['splice'](_0x27300b,0x1),_0x29ee75&&_0x29ee75[_0x3a7afe(0x19d)]===ENEMY3_TYPE&&typeof _0x29ee75[_0x3a7afe(0x19f)]==='undefined'&&(_0x29ee75[_0x3a7afe(0x19f)]=![]);}_0x1d2f96[_0x3a7afe(0xc4)]['length']===0x0&&_0x38ce33[_0x3a7afe(0xa1)](_0x2220a0,0x1);}else _0x38ce33[_0x3a7afe(0xa1)](_0x2220a0,0x1);}}return _0x38ce33;}window[_0x1d45a4(0xc5)]=generateWaveDefinitionInternal;const createBulletSimple=(_0x573663,_0x56ba64=null)=>{const _0x7ab4f9=_0x1d45a4;let _0x20df46=null,_0x30222e=![];if(isTwoPlayerMode&&selectedGameMode===_0x7ab4f9(0xed)){const _0x11b7b5=ship1&&player1Lives>0x0&&!isPlayer1WaitingForRespawn&&!isPlayer1ShipCaptured,_0x22c6ae=ship2&&player2Lives>0x0&&!isPlayer2WaitingForRespawn&&!isPlayer2ShipCaptured;if(_0x11b7b5&&_0x22c6ae)_0x20df46=Math[_0x7ab4f9(0x107)]()<0.5?ship1:ship2,_0x30222e=!![];else{if(_0x11b7b5)_0x20df46=ship1,_0x30222e=!![];else _0x22c6ae&&(_0x20df46=ship2,_0x30222e=!![]);}}else ship&&playerLives>0x0&&!isShipCaptured&&!isWaitingForRespawn&&(_0x20df46=ship,_0x30222e=!![]);if(!_0x573663||!isInGameState||!_0x30222e||!_0x20df46)return![];const _0xde811c=scaleValue(level,BASE_ENEMY_BULLET_SPEED,MAX_ENEMY_BULLET_SPEED),_0x139205=_0x56ba64?_0x56ba64['x']:_0x573663['x']+_0x573663['width']/0x2,_0x67f92a=_0x56ba64?_0x56ba64['y']:_0x573663['y']+_0x573663['height']/0x2;let _0xeaa087=0x0,_0x2279fd=_0xde811c;const _0x1cb4dd=_0x20df46['x']+_0x20df46[_0x7ab4f9(0xaa)]/0x2-_0x139205,_0x3c7e85=_0x20df46['y']+_0x20df46[_0x7ab4f9(0x74)]/0x2-_0x67f92a,_0x4c5cb8=Math[_0x7ab4f9(0x160)](_0x1cb4dd*_0x1cb4dd+_0x3c7e85*_0x3c7e85);if(_0x4c5cb8>0x0){let _0x2328d6=0x0;!isChallengingStage&&(_0x2328d6=scaleValue(level,BASE_ENEMY_AIM_FACTOR,MAX_ENEMY_AIM_FACTOR));let _0x49e441=Math[_0x7ab4f9(0xc3)](_0x3c7e85,_0x1cb4dd);_0xeaa087=Math[_0x7ab4f9(0x10e)](_0x49e441)*_0xde811c*_0x2328d6,_0x2279fd=Math['sqrt'](_0xde811c**0x2-_0xeaa087**0x2),_0x2279fd=Math[_0x7ab4f9(0x12c)](_0xde811c*(0x1-_0x2328d6)*0.5,_0x2279fd);if(_0x3c7e85<0x0&&_0x2279fd>0x0){}if(_0x3c7e85<0x0)_0x2279fd=Math[_0x7ab4f9(0x9e)](_0x2279fd);return enemyBullets[_0x7ab4f9(0xc9)]({'x':_0x139205-ENEMY_BULLET_WIDTH/0x2,'y':_0x67f92a,'width':ENEMY_BULLET_WIDTH,'height':ENEMY_BULLET_HEIGHT,'vx':_0xeaa087,'vy':_0x2279fd,'type':_0x573663[_0x7ab4f9(0x19d)]}),!![];}return![];};function scheduleSingleEntranceSquadron(_0x44ed7a,_0x27dadb,_0x57dd50){const _0x58b85c=_0x1d45a4;if(isFullGridWave||isChallengingStage)return console[_0x58b85c(0x197)]('[scheduleSingleEntranceSquadron]\x20Called\x20inappropriately\x20for\x20non-entrance\x20wave\x20type\x20(Level\x20'+level+_0x58b85c(0x70)+isFullGridWave+_0x58b85c(0x19b)+isChallengingStage+_0x58b85c(0xb4)),_0x44ed7a?.[_0x58b85c(0xc4)]?.['length']>0x0&&(enemiesSpawnedThisWave+=_0x44ed7a[_0x58b85c(0xc4)][_0x58b85c(0xbb)],squadronCompletionStatus[_0x27dadb]&&(squadronCompletionStatus[_0x27dadb][_0x58b85c(0x7e)]=squadronCompletionStatus[_0x27dadb][_0x58b85c(0x12b)])),![];const _0x360697=normalWaveEntrancePaths,_0x2544d2=_0x44ed7a[_0x58b85c(0x93)],_0x4f56c8=_0x360697[_0x2544d2];if(!_0x4f56c8||_0x4f56c8[_0x58b85c(0xbb)]===0x0)return console['error'](_0x58b85c(0x1a7)+_0x2544d2+_0x58b85c(0x1a0)+_0x27dadb+_0x58b85c(0x195)),_0x44ed7a?.[_0x58b85c(0xc4)]?.['length']>0x0&&(enemiesSpawnedThisWave+=_0x44ed7a['enemies']['length'],squadronCompletionStatus[_0x27dadb]&&(squadronCompletionStatus[_0x27dadb][_0x58b85c(0x7e)]=squadronCompletionStatus[_0x27dadb][_0x58b85c(0x12b)])),![];const _0x6f9110=setTimeout(()=>{const _0xf33ec0=_0x58b85c,_0x37b582=enemySpawnTimeouts[_0xf33ec0(0x11e)](_0x6f9110);if(_0x37b582>-0x1)enemySpawnTimeouts[_0xf33ec0(0xa1)](_0x37b582,0x1);let _0x186e42=![];isTwoPlayerMode&&selectedGameMode==='coop'?_0x186e42=player1Lives>0x0&&!isPlayer1ShipCaptured||player2Lives>0x0&&!isPlayer2ShipCaptured:_0x186e42=playerLives>0x0&&!isShipCaptured;if(isPaused||!isInGameState||!isEntrancePhaseActive||isChallengingStage||isWaveTransitioning||!_0x186e42||isFullGridWave){_0x44ed7a?.[_0xf33ec0(0xc4)]?.['length']>0x0&&(enemiesSpawnedThisWave+=_0x44ed7a['enemies'][_0xf33ec0(0xbb)],squadronCompletionStatus[_0x27dadb]&&(squadronCompletionStatus[_0x27dadb][_0xf33ec0(0x7e)]=squadronCompletionStatus[_0x27dadb][_0xf33ec0(0x12b)]));return;}try{squadronEntranceFiringStatus[_0x27dadb]?(squadronEntranceFiringStatus[_0x27dadb][_0xf33ec0(0xee)]=Date[_0xf33ec0(0x12f)]()+_0x57dd50,squadronEntranceFiringStatus[_0x27dadb][_0xf33ec0(0x17a)]=![]):(console[_0xf33ec0(0x197)](_0xf33ec0(0x155)+_0x27dadb+_0xf33ec0(0x118)),squadronEntranceFiringStatus[_0x27dadb]={'hasFired':![],'scheduledStartTime':Date['now']()+_0x57dd50});const _0x5e449a=ENEMY_SPAWN_DELAY_IN_SQUADRON,_0x21ee6d=_0x5e449a*0x2,_0x28353a=0x1;_0x44ed7a[_0xf33ec0(0xc4)][_0xf33ec0(0x10c)]((_0x313264,_0x5df45d)=>{const _0x5af29a=_0xf33ec0;if(!_0x313264||!_0x313264['type']||typeof _0x313264[_0x5af29a(0x138)]==='undefined'||typeof _0x313264[_0x5af29a(0xf4)]===_0x5af29a(0x8f)||!_0x313264[_0x5af29a(0xcd)]){console[_0x5af29a(0x186)](_0x5af29a(0x1ae)+_0x27dadb+'\x20(Path\x20'+_0x2544d2+'),\x20index\x20'+_0x5df45d+_0x5af29a(0xce)),enemiesSpawnedThisWave++;squadronCompletionStatus[_0x27dadb]&&squadronCompletionStatus[_0x27dadb][_0x5af29a(0x7e)]++;return;}const _0xe11473=_0x360697[_0x313264[_0x5af29a(0xcd)]];(!_0xe11473||_0xe11473[_0x5af29a(0xbb)]===0x0)&&console[_0x5af29a(0x197)](_0x5af29a(0xb2)+_0x313264[_0x5af29a(0xcd)]+_0x5af29a(0x157)+_0x27dadb+',\x20index\x20'+_0x5df45d+'\x20not\x20found.\x20Enemy\x20will\x20follow\x20squadron\x20path\x20\x22'+_0x2544d2+'\x22.');let _0x18c114=0x0;const _0x1e7d9e=getWaveType(level),_0x501908=_0x1e7d9e===_0x5af29a(0xe7)&&(_0x27dadb===0x2||_0x27dadb===0x3);if(_0x501908){const _0x3a7ec1=Math[_0x5af29a(0x119)](_0x5df45d/0x2);_0x5df45d%0x2===0x0?_0x18c114=_0x3a7ec1*_0x21ee6d:_0x18c114=_0x3a7ec1*_0x21ee6d+_0x28353a;}else _0x18c114=_0x5df45d*ENEMY_SPAWN_DELAY_IN_SQUADRON;const _0x3d19ff=setTimeout(()=>{const _0x397387=_0x5af29a,_0x16f210=enemySpawnTimeouts[_0x397387(0x11e)](_0x3d19ff);if(_0x16f210>-0x1)enemySpawnTimeouts['splice'](_0x16f210,0x1);let _0x50975e=![];isTwoPlayerMode&&selectedGameMode===_0x397387(0xed)?_0x50975e=player1Lives>0x0&&!isPlayer1ShipCaptured||player2Lives>0x0&&!isPlayer2ShipCaptured:_0x50975e=playerLives>0x0&&!isShipCaptured;if(isPaused||!isInGameState||!isEntrancePhaseActive||isChallengingStage||isWaveTransitioning||!_0x50975e||isFullGridWave){enemiesSpawnedThisWave++;squadronCompletionStatus[_0x27dadb]&&squadronCompletionStatus[_0x27dadb][_0x397387(0x7e)]++;return;}try{let _0x57335d=_0x313264[_0x397387(0x19d)],_0x3400b8=_0x57335d===ENEMY3_TYPE?ENEMY3_MAX_HITS:0x1,_0x20326e,_0x5d22d9;if(_0x57335d===ENEMY1_TYPE)_0x20326e=ENEMY1_WIDTH,_0x5d22d9=ENEMY1_HEIGHT;else _0x57335d===ENEMY3_TYPE?(_0x20326e=BOSS_WIDTH,_0x5d22d9=BOSS_HEIGHT):(_0x20326e=ENEMY_WIDTH,_0x5d22d9=ENEMY_HEIGHT);let _0x5b4fca=0x0,_0x3cfe0d=0x0;if(_0x4f56c8&&_0x4f56c8[0x0]?.['p0'])_0x5b4fca=_0x4f56c8[0x0]['p0']['x'],_0x3cfe0d=_0x4f56c8[0x0]['p0']['y'];else throw new Error(_0x397387(0x144)+_0x2544d2);let _0x488759,_0x1b15e3;try{const {x:_0x37bcb0,y:_0x1831f4}=getCurrentGridSlotPosition(_0x313264['gridRow'],_0x313264[_0x397387(0xf4)],_0x20326e);_0x488759=_0x37bcb0,_0x1b15e3=_0x1831f4;}catch(_0x1b04b9){console[_0x397387(0x186)](_0x397387(0xc6)+_0x313264[_0x397387(0x19d)]+_0x397387(0xfc)+_0x313264[_0x397387(0x138)]+','+_0x313264[_0x397387(0xf4)]+']',_0x1b04b9),_0x488759=gameCanvas?.[_0x397387(0xaa)]/0x2||0xc8,_0x1b15e3=ENEMY_TOP_MARGIN+_0x313264['gridRow']*(ENEMY_HEIGHT+ENEMY_V_SPACING);}let _0x3b16a4=0x0;const _0x2cb960=_0x501908,_0x4aa32c=_0x2cb960&&_0x5df45d%0x2!==0x0;_0x4aa32c?_0x3b16a4=-ENTRANCE_PAIR_PATH_T_OFFSET:_0x3b16a4=-_0x5df45d*PATH_T_OFFSET_PER_ENEMY;const _0x5ed40a={'x':_0x5b4fca,'y':_0x3cfe0d,'width':_0x20326e,'height':_0x5d22d9,'targetGridX':_0x488759,'targetGridY':_0x1b15e3,'speed':0x0,'state':_0x397387(0x1a2),'gridRow':_0x313264['gridRow'],'gridCol':_0x313264[_0x397387(0xf4)],'type':_0x57335d,'health':_0x3400b8,'isDamaged':![],'velocityX':0x0,'velocityY':0x0,'attackPathStep':0x0,'initialY':0x0,'initialX':0x0,'diveDirection':0x1,'lastFiredTime':0x0,'targetX1':0x0,'targetY1':0x0,'targetX2':0x0,'targetY2':0x0,'targetX3':0x0,'targetY3':0x0,'attackPathSegments':[],'attackPathSegmentIndex':0x0,'attackPathT':0x0,'attackStartTime':0x0,'attackFormationOffsetX':0x0,'attackGroupId':null,'entrancePathId':_0x2544d2,'pathSegmentIndex':0x0,'pathT':_0x3b16a4,'squadronId':_0x27dadb,'squadronEnemyIndex':_0x5df45d,'id':'enemy-entr-'+_0x27dadb+'-'+_0x5df45d+'-'+Date['now']()+'-'+Math[_0x397387(0x107)]()[_0x397387(0xb3)](0x24)[_0x397387(0x11c)](0x2,0x7),'justReturned':![],'canFireThisDive':![],'attackType':_0x397387(0x14b),'hasCapturedShip':_0x57335d===ENEMY3_TYPE?![]:undefined,'capturedShipX':undefined,'capturedShipY':undefined,'capturedShipLastFiredTime':_0x57335d===ENEMY3_TYPE?0x0:undefined,'captureStartTime':0x0,'capturePrepareTimeout':null,'pathSpeedMultiplier':0x1};enemies[_0x397387(0xc9)](_0x5ed40a),enemiesSpawnedThisWave++;squadronCompletionStatus[_0x27dadb]&&squadronCompletionStatus[_0x27dadb]['completed']++;if(_0x5df45d===0x0){let _0x56b125=0x5dc;(_0x27dadb===0x0||_0x27dadb===0x1)&&(_0x56b125=0xfa);const _0x5ea5d8=_0x5ed40a['id'],_0xf65244=setTimeout(()=>{const _0x2b8696=_0x397387,_0xfc5c1=enemySpawnTimeouts[_0x2b8696(0x11e)](_0xf65244);if(_0xfc5c1>-0x1)enemySpawnTimeouts[_0x2b8696(0xa1)](_0xfc5c1,0x1);let _0x464d48=![];isTwoPlayerMode&&selectedGameMode===_0x2b8696(0xed)?_0x464d48=player1Lives>0x0&&!isPlayer1ShipCaptured||player2Lives>0x0&&!isPlayer2ShipCaptured:_0x464d48=playerLives>0x0&&!isShipCaptured;if(isPaused||!isInGameState||!_0x464d48||isChallengingStage||isWaveTransitioning||isFullGridWave)return;fireFixedEnemyBurst(_0x5ea5d8,null,0x0,0x3);},_0x56b125);enemySpawnTimeouts[_0x397387(0xc9)](_0xf65244);}}catch(_0x5d0fd2){console[_0x397387(0x186)](_0x397387(0x72)+_0x27dadb+_0x397387(0x17e)+_0x5df45d+_0x397387(0xc1)+_0x2544d2+'):',_0x5d0fd2),enemiesSpawnedThisWave++,squadronCompletionStatus[_0x27dadb]&&squadronCompletionStatus[_0x27dadb]['completed']++;}},_0x18c114);enemySpawnTimeouts['push'](_0x3d19ff);});}catch(_0x33d706){console[_0xf33ec0(0x186)](_0xf33ec0(0xbf)+_0x27dadb+_0xf33ec0(0x9f)+_0x2544d2+'):',_0x33d706),_0x44ed7a?.[_0xf33ec0(0xc4)]?.[_0xf33ec0(0xbb)]>0x0&&(enemiesSpawnedThisWave+=_0x44ed7a[_0xf33ec0(0xc4)][_0xf33ec0(0xbb)],squadronCompletionStatus[_0x27dadb]&&(squadronCompletionStatus[_0x27dadb][_0xf33ec0(0x7e)]=squadronCompletionStatus[_0x27dadb]['total']));}},_0x57dd50);return enemySpawnTimeouts[_0x58b85c(0xc9)](_0x6f9110),!![];};function scheduleEntranceFlightWave(){const _0xa3715b=_0x1d45a4;if(isFullGridWave||isChallengingStage||!currentWaveDefinition||currentWaveDefinition[_0xa3715b(0xbb)]===0x0){console[_0xa3715b(0x197)]('[scheduleEntranceFlightWave]\x20Called\x20inappropriately\x20or\x20with\x20no\x20definition.\x20Level\x20'+level+_0xa3715b(0x70)+isFullGridWave+',\x20isCS:\x20'+isChallengingStage+_0xa3715b(0xdc)+currentWaveDefinition?.['length']),isEntrancePhaseActive=![],isWaveTransitioning=!![],readyForNextWaveReset=!![];return;}enemySpawnTimeouts[_0xa3715b(0x10c)](clearTimeout),enemySpawnTimeouts=[],totalEnemiesScheduledForWave=0x0,enemiesSpawnedThisWave=0x0,squadronCompletionStatus={},squadronEntranceFiringStatus={};let _0x112a77=0x0,_0x3e8c7a=0x0;currentWaveDefinition[_0xa3715b(0x10c)]((_0x24398e,_0x6960ad)=>{const _0x58df8a=_0xa3715b;_0x24398e&&_0x24398e['enemies']&&Array['isArray'](_0x24398e[_0x58df8a(0xc4)])&&_0x24398e[_0x58df8a(0xc4)][_0x58df8a(0xbb)]>0x0?(totalEnemiesScheduledForWave+=_0x24398e[_0x58df8a(0xc4)]['length'],squadronCompletionStatus[_0x6960ad]={'completed':0x0,'total':_0x24398e[_0x58df8a(0xc4)][_0x58df8a(0xbb)],'hasFiredPostLanding':![]},squadronEntranceFiringStatus[_0x6960ad]={'hasFired':![],'scheduledStartTime':0x0},scheduleSingleEntranceSquadron(_0x24398e,_0x6960ad,_0x112a77)&&_0x3e8c7a++,_0x112a77+=NORMAL_WAVE_SQUADRON_INTERVAL):console[_0x58df8a(0x197)]('Entrance\x20Wave:\x20Squadron\x20'+_0x6960ad+_0x58df8a(0xfe));}),_0x3e8c7a===0x0&&totalEnemiesScheduledForWave===0x0?(console[_0xa3715b(0x197)](_0xa3715b(0x1a4)+level+_0xa3715b(0x9b)),isEntrancePhaseActive=![],isWaveTransitioning=!![],readyForNextWaveReset=!![]):isEntrancePhaseActive=!![];}function startChallengingStageSequence(){const _0xb736d=_0x1d45a4;currentWaveDefinition=[],isEntrancePhaseActive=![],enemySpawnTimeouts[_0xb736d(0x10c)](clearTimeout),enemySpawnTimeouts=[],totalEnemiesScheduledForWave=0x0,enemiesSpawnedThisWave=0x0,squadronEntranceFiringStatus={};Object[_0xb736d(0x105)](challengingStagePaths)['length']===0x0&&defineChallengingStagePaths();if(Object[_0xb736d(0x105)](challengingStagePaths)[_0xb736d(0xbb)]===0x0){console['error'](_0xb736d(0x7a)),isWaveTransitioning=!![],setTimeout(()=>{const _0x2158ac=_0xb736d;(isInGameState||!isInGameState&&(isTwoPlayerMode&&selectedGameMode===_0x2158ac(0xed)&&(player1Lives>0x0||player2Lives>0x0)||!isTwoPlayerMode&&playerLives>0x0))&&typeof resetWave==='function'&&resetWave();},NEXT_WAVE_DELAY_AFTER_MESSAGE);return;}const _0x13c930=[_0xb736d(0x147),_0xb736d(0x18f),_0xb736d(0x101),_0xb736d(0x113)],_0x1c93ec=['CS_LoopAttack_TL',_0xb736d(0x188),_0xb736d(0x168),_0xb736d(0x85)],_0x5d6a40=[..._0x13c930,..._0x1c93ec];for(const _0xbb4cf8 of _0x5d6a40){if(!challengingStagePaths[_0xb736d(0x16f)](_0xbb4cf8)){console['error'](_0xb736d(0x131)+_0xbb4cf8+_0xb736d(0x19a)),isWaveTransitioning=!![],setTimeout(()=>{const _0x4fb715=_0xb736d;(isInGameState||!isInGameState&&(isTwoPlayerMode&&selectedGameMode===_0x4fb715(0xed)&&(player1Lives>0x0||player2Lives>0x0)||!isTwoPlayerMode&&playerLives>0x0))&&typeof resetWave===_0x4fb715(0x78)&&resetWave();},NEXT_WAVE_DELAY_AFTER_MESSAGE);return;}}let _0x4ea0a5=[..._0x13c930],_0x1dbbad=[..._0x1c93ec]['sort'](()=>Math[_0xb736d(0x107)]()-0.5);_0x4ea0a5[_0xb736d(0xc9)](..._0x1dbbad),currentWaveDefinition=[];for(let _0x2a7c2b=0x0;_0x2a7c2b<CHALLENGING_STAGE_SQUADRON_COUNT;_0x2a7c2b++){const _0x155f8c=_0x4ea0a5[_0x2a7c2b],_0x2b143f={'pathId':_0x155f8c,'enemies':[]};for(let _0x44f0ec=0x0;_0x44f0ec<CHALLENGING_STAGE_SQUADRON_SIZE;_0x44f0ec++){let _0x52f037=_0x44f0ec<Math[_0xb736d(0x119)](CHALLENGING_STAGE_SQUADRON_SIZE/0x2)?ENEMY1_TYPE:ENEMY2_TYPE;_0x2b143f[_0xb736d(0xc4)]['push']({'type':_0x52f037,'entrancePathId':_0x155f8c});}currentWaveDefinition[_0xb736d(0xc9)](_0x2b143f);}challengingStageTotalEnemies=CHALLENGING_STAGE_ENEMY_COUNT,totalEnemiesScheduledForWave=challengingStageTotalEnemies,enemiesSpawnedThisWave=0x0;if(currentWaveDefinition['length']>0x0){isEntrancePhaseActive=!![],enemySpawnTimeouts=[];let _0x315a0e=0x0;const _0x3bb2f1=-0x1c,_0x5cca62=Math[_0xb736d(0x119)](Math[_0xb736d(0x12c)](0x0,level-0x3)/0x4)+0x1,_0x19d129=scaleValue(_0x5cca62,BASE_CS_SPEED_MULTIPLIER,MAX_CS_SPEED_MULTIPLIER);currentWaveDefinition[_0xb736d(0x10c)]((_0x4f3a9f,_0xd8c2e6)=>{const _0x3f52fc=_0xb736d;let _0x203a8a=0x0;if(_0xd8c2e6<=0x1)_0x203a8a=0x0;else _0xd8c2e6<=0x3?_0x203a8a=CHALLENGING_STAGE_SQUADRON_INTERVAL:_0x203a8a=(_0xd8c2e6-0x2)*CHALLENGING_STAGE_SQUADRON_INTERVAL;let _0x49d4da=_0x19d129;(_0xd8c2e6===0x2||_0xd8c2e6===0x3)&&(_0x49d4da*=CS_HORIZONTAL_FLYBY_SPEED_FACTOR);const _0x543e27=setTimeout(()=>{const _0x4c7d47=_0x5b67,_0x3122f1=enemySpawnTimeouts[_0x4c7d47(0x11e)](_0x543e27);if(_0x3122f1>-0x1)enemySpawnTimeouts[_0x4c7d47(0xa1)](_0x3122f1,0x1);let _0xb93ec8=![];isTwoPlayerMode&&selectedGameMode===_0x4c7d47(0xed)?_0xb93ec8=player1Lives>0x0||player2Lives>0x0:_0xb93ec8=playerLives>0x0;if(!isPaused&&isInGameState&&isEntrancePhaseActive&&isChallengingStage&&!isWaveTransitioning&&_0xb93ec8)try{const _0x1ea46c=_0x4f3a9f[_0x4c7d47(0x93)],_0x273ba7=challengingStagePaths,_0x4a3ffb=_0x273ba7[_0x1ea46c];if(!_0x4a3ffb||_0x4a3ffb[_0x4c7d47(0xbb)]===0x0){console[_0x4c7d47(0x186)](_0x4c7d47(0xc2)+_0x1ea46c+_0x4c7d47(0x1a0)+_0xd8c2e6+_0x4c7d47(0xbd)),enemiesSpawnedThisWave+=_0x4f3a9f[_0x4c7d47(0xc4)][_0x4c7d47(0xbb)];return;}let _0x44d3af=CS_ENEMY_SPAWN_DELAY_IN_SQUADRON;if(_0xd8c2e6>=0x2&&_0xd8c2e6<=0x3)_0x44d3af=CS_HORIZONTAL_FLYBY_SPAWN_DELAY;else _0xd8c2e6>=0x4&&(_0x44d3af=CS_LOOP_ATTACK_SPAWN_DELAY);_0x4f3a9f[_0x4c7d47(0xc4)]['forEach']((_0x2cd9c1,_0x510c75)=>{const _0x40872b=_0x4c7d47;if(!_0x2cd9c1||!_0x2cd9c1[_0x40872b(0x19d)]){console[_0x40872b(0x186)](_0x40872b(0x128)+_0xd8c2e6+',\x20index\x20'+_0x510c75+_0x40872b(0xce)),enemiesSpawnedThisWave++;return;}const _0x3c9447=_0x510c75*_0x44d3af,_0x5dffc4=setTimeout(()=>{const _0x6cc384=_0x40872b,_0x57867e=enemySpawnTimeouts[_0x6cc384(0x11e)](_0x5dffc4);if(_0x57867e>-0x1)enemySpawnTimeouts[_0x6cc384(0xa1)](_0x57867e,0x1);let _0x358d2c=![];isTwoPlayerMode&&selectedGameMode===_0x6cc384(0xed)?_0x358d2c=player1Lives>0x0||player2Lives>0x0:_0x358d2c=playerLives>0x0;if(isPaused||!isInGameState||!isEntrancePhaseActive||!isChallengingStage||isWaveTransitioning||!_0x358d2c){enemiesSpawnedThisWave++;return;}try{let _0x1719b3=_0x2cd9c1[_0x6cc384(0x19d)],_0x52f808=_0x1719b3===ENEMY3_TYPE?ENEMY3_MAX_HITS:0x1,_0x3bb3ee,_0x14f97b;if(_0x1719b3===ENEMY1_TYPE)_0x3bb3ee=ENEMY1_WIDTH,_0x14f97b=ENEMY1_HEIGHT;else _0x1719b3===ENEMY3_TYPE?(_0x3bb3ee=BOSS_WIDTH,_0x14f97b=BOSS_HEIGHT):(_0x3bb3ee=ENEMY_WIDTH,_0x14f97b=ENEMY_HEIGHT);let _0x561e33=0x0,_0xc224ef=0x0;if(_0x4a3ffb[0x0]?.['p0'])_0x561e33=_0x4a3ffb[0x0]['p0']['x'],_0xc224ef=_0x4a3ffb[0x0]['p0']['y'];else throw new Error(_0x6cc384(0x169)+_0x1ea46c);(_0xd8c2e6===0x0||_0xd8c2e6===0x1)&&(_0x561e33+=_0x3bb2f1);const _0x16f0b4=-_0x510c75*PATH_T_OFFSET_PER_ENEMY,_0x4a3a39={'x':_0x561e33,'y':_0xc224ef,'width':_0x3bb3ee,'height':_0x14f97b,'targetGridX':0x0,'targetGridY':0x0,'speed':0x0,'state':'following_bezier_path','gridRow':-0x1,'gridCol':-0x1,'type':_0x1719b3,'health':_0x52f808,'isDamaged':![],'velocityX':0x0,'velocityY':0x0,'attackPathStep':0x0,'initialY':0x0,'initialX':0x0,'diveDirection':0x1,'lastFiredTime':0x0,'targetX1':0x0,'targetY1':0x0,'targetX2':0x0,'targetY2':0x0,'targetX3':0x0,'targetY3':0x0,'attackPathSegments':[],'attackPathSegmentIndex':0x0,'attackPathT':0x0,'attackStartTime':0x0,'attackFormationOffsetX':0x0,'attackGroupId':null,'entrancePathId':_0x1ea46c,'pathSegmentIndex':0x0,'pathT':_0x16f0b4,'squadronId':_0xd8c2e6,'id':_0x6cc384(0x16a)+_0xd8c2e6+'-'+_0x510c75+'-'+Date[_0x6cc384(0x12f)]()+'-'+Math[_0x6cc384(0x107)]()[_0x6cc384(0xb3)](0x24)[_0x6cc384(0x11c)](0x2,0x7),'justReturned':![],'canFireThisDive':![],'attackType':'normal','hasCapturedShip':_0x1719b3===ENEMY3_TYPE?![]:undefined,'capturedShipX':undefined,'capturedShipY':undefined,'capturedShipLastFiredTime':_0x1719b3===ENEMY3_TYPE?0x0:undefined,'captureStartTime':0x0,'capturePrepareTimeout':null,'pathSpeedMultiplier':_0x49d4da};enemies[_0x6cc384(0xc9)](_0x4a3a39),enemiesSpawnedThisWave++;}catch(_0x389007){console['error'](_0x6cc384(0x102)+_0xd8c2e6+',\x20Idx\x20'+_0x510c75+_0x6cc384(0xc1)+_0x1ea46c+'):',_0x389007),enemiesSpawnedThisWave++;}},_0x3c9447);enemySpawnTimeouts[_0x40872b(0xc9)](_0x5dffc4),_0x315a0e++;});}catch(_0x20384b){console['error']('CS:\x20Error\x20setting\x20up\x20spawns\x20for\x20squadron\x20'+_0xd8c2e6+':',_0x20384b),enemiesSpawnedThisWave+=_0x4f3a9f[_0x4c7d47(0xc4)][_0x4c7d47(0xbb)];}else _0x4f3a9f?.['enemies']?.[_0x4c7d47(0xbb)]>0x0&&(enemiesSpawnedThisWave+=_0x4f3a9f[_0x4c7d47(0xc4)][_0x4c7d47(0xbb)]);},_0x203a8a);enemySpawnTimeouts[_0x3f52fc(0xc9)](_0x543e27);});}else console[_0xb736d(0x197)]('CS:\x20No\x20squadrons\x20generated.\x20Skipping\x20CS\x20sequence.'),isWaveTransitioning=!![],setTimeout(()=>{const _0x3de2ac=_0xb736d;(isInGameState||!isInGameState&&(isTwoPlayerMode&&selectedGameMode===_0x3de2ac(0xed)&&(player1Lives>0x0||player2Lives>0x0)||!isTwoPlayerMode&&playerLives>0x0))&&typeof resetWave===_0x3de2ac(0x78)&&resetWave();},NEXT_WAVE_DELAY_AFTER_MESSAGE);}function fireEnemyBurst(_0x111fbb,_0x3de347,_0x1d048d){const _0x2548b6=_0x1d45a4;let _0x205dcd=![];isTwoPlayerMode&&selectedGameMode===_0x2548b6(0xed)?_0x205dcd=player1Lives>0x0&&!isPlayer1ShipCaptured||player2Lives>0x0&&!isPlayer2ShipCaptured:_0x205dcd=playerLives>0x0&&!isShipCaptured;if(!_0x111fbb||isPaused||!isInGameState||!_0x205dcd||isChallengingStage||isWaveTransitioning)return;const _0x549519=Math[_0x2548b6(0x11d)](scaleValue(level,BASE_ENEMY_BULLET_BURST_COUNT,MAX_ENEMY_BULLET_BURST_COUNT));for(let _0x3e1538=0x0;_0x3e1538<_0x549519;_0x3e1538++){const _0x26d1c6=_0x1d048d+_0x3e1538*ENTRANCE_FIRE_BURST_DELAY_MS,_0x1d2af1=setTimeout(()=>{const _0x111406=_0x2548b6;try{const _0x5d0a94=enemySpawnTimeouts[_0x111406(0x11e)](_0x1d2af1);_0x5d0a94>-0x1&&enemySpawnTimeouts[_0x111406(0xa1)](_0x5d0a94,0x1);let _0x3d7a60=![];isTwoPlayerMode&&selectedGameMode===_0x111406(0xed)?_0x3d7a60=player1Lives>0x0&&!isPlayer1ShipCaptured||player2Lives>0x0&&!isPlayer2ShipCaptured:_0x3d7a60=playerLives>0x0&&!isShipCaptured;if(isPaused||!isInGameState||!_0x3d7a60||isChallengingStage||isWaveTransitioning)return;const _0x516e63=enemies['find'](_0x311235=>_0x311235&&_0x311235['id']===_0x111fbb);_0x516e63&&_0x516e63[_0x111406(0x14f)]===_0x3de347&&(createBulletSimple(_0x516e63)&&(_0x3e1538===0x0&&playSound('enemyShootSound',![],0.4),_0x516e63[_0x111406(0x148)]=Date[_0x111406(0x12f)]()));}catch(_0x3dc4ac){console[_0x111406(0x186)](_0x111406(0xff)+(_0x3e1538+0x1)+'/'+_0x549519+_0x111406(0x89)+_0x111fbb+':',_0x3dc4ac);}},_0x26d1c6);enemySpawnTimeouts[_0x2548b6(0xc9)](_0x1d2af1);}}function fireFixedEnemyBurst(_0x2bc89d,_0x55cb50,_0x516bdc,_0x262b8e){const _0x54329e=_0x1d45a4;let _0x23eada=![];isTwoPlayerMode&&selectedGameMode===_0x54329e(0xed)?_0x23eada=player1Lives>0x0&&!isPlayer1ShipCaptured||player2Lives>0x0&&!isPlayer2ShipCaptured:_0x23eada=playerLives>0x0&&!isShipCaptured;if(!_0x2bc89d||isPaused||!isInGameState||!_0x23eada||isChallengingStage||isWaveTransitioning||_0x262b8e<=0x0)return;for(let _0x68439=0x0;_0x68439<_0x262b8e;_0x68439++){const _0x3a6bc2=_0x516bdc+_0x68439*ENTRANCE_FIRE_BURST_DELAY_MS,_0x534894=setTimeout(()=>{const _0x3dd84a=_0x54329e;try{const _0xb3fab6=enemySpawnTimeouts[_0x3dd84a(0x11e)](_0x534894);_0xb3fab6>-0x1&&enemySpawnTimeouts[_0x3dd84a(0xa1)](_0xb3fab6,0x1);let _0x2ddfdf=![];isTwoPlayerMode&&selectedGameMode==='coop'?_0x2ddfdf=player1Lives>0x0&&!isPlayer1ShipCaptured||player2Lives>0x0&&!isPlayer2ShipCaptured:_0x2ddfdf=playerLives>0x0&&!isShipCaptured;if(isPaused||!isInGameState||!_0x2ddfdf||isChallengingStage||isWaveTransitioning)return;const _0x5c356f=enemies[_0x3dd84a(0x152)](_0x43d256=>_0x43d256&&_0x43d256['id']===_0x2bc89d);if(_0x5c356f)createBulletSimple(_0x5c356f)&&(_0x68439===0x0&&playSound(_0x3dd84a(0xd7),![],0.4),_0x5c356f['lastFiredTime']=Date[_0x3dd84a(0x12f)]());else{}}catch(_0x571da4){console[_0x3dd84a(0x186)](_0x3dd84a(0xe0)+(_0x68439+0x1)+'/'+_0x262b8e+_0x3dd84a(0x89)+_0x2bc89d+':',_0x571da4);}},_0x3a6bc2);enemySpawnTimeouts[_0x54329e(0xc9)](_0x534894);}}function startFullGridWave(){const _0xe9bb4f=_0x1d45a4;if(!currentWaveDefinition||currentWaveDefinition[_0xe9bb4f(0xbb)]===0x0||!isFullGridWave){console[_0xe9bb4f(0x186)](_0xe9bb4f(0x159)),isWaveTransitioning=!![],readyForNextWaveReset=!![];return;}playSound(_0xe9bb4f(0x84),![],0.4),enemySpawnTimeouts['forEach'](clearTimeout),enemySpawnTimeouts=[],totalEnemiesScheduledForWave=0x0,enemiesSpawnedThisWave=0x0,squadronCompletionStatus={},squadronEntranceFiringStatus={};let _0x1a922b=0x0;currentWaveDefinition[_0xe9bb4f(0x10c)]((_0x34fda3,_0x15225c)=>{const _0x2ac07a=_0xe9bb4f;let _0x3fcaa6=0x0;_0x34fda3&&_0x34fda3[_0x2ac07a(0xc4)]&&Array[_0x2ac07a(0x81)](_0x34fda3[_0x2ac07a(0xc4)])?(_0x3fcaa6=_0x34fda3[_0x2ac07a(0xc4)]['length'],_0x34fda3['enemies']['forEach']((_0x3e84a1,_0xa58947)=>{const _0x1a9390=_0x2ac07a;try{if(!_0x3e84a1||!_0x3e84a1[_0x1a9390(0x19d)]||typeof _0x3e84a1[_0x1a9390(0x138)]===_0x1a9390(0x8f)||typeof _0x3e84a1[_0x1a9390(0xf4)]===_0x1a9390(0x8f)){console[_0x1a9390(0x186)](_0x1a9390(0x7f)+_0x15225c+',\x20index\x20'+_0xa58947+_0x1a9390(0xce));return;}let _0x333556=_0x3e84a1[_0x1a9390(0x19d)],_0x512451=_0x333556===ENEMY3_TYPE?ENEMY3_MAX_HITS:0x1,_0x3307b4,_0x23b54f;if(_0x333556===ENEMY1_TYPE)_0x3307b4=ENEMY1_WIDTH,_0x23b54f=ENEMY1_HEIGHT;else _0x333556===ENEMY3_TYPE?(_0x3307b4=BOSS_WIDTH,_0x23b54f=BOSS_HEIGHT):(_0x3307b4=ENEMY_WIDTH,_0x23b54f=ENEMY_HEIGHT);let _0x2cf190,_0x3648a9;try{const {x:_0x2bfaa3,y:_0x839aa7}=getCurrentGridSlotPosition(_0x3e84a1[_0x1a9390(0x138)],_0x3e84a1[_0x1a9390(0xf4)],_0x3307b4);_0x2cf190=_0x2bfaa3,_0x3648a9=_0x839aa7;}catch(_0x397184){console[_0x1a9390(0x186)](_0x1a9390(0x14a)+_0x3e84a1['type']+'\x20at\x20['+_0x3e84a1['gridRow']+','+_0x3e84a1[_0x1a9390(0xf4)]+']',_0x397184),_0x2cf190=gameCanvas?.[_0x1a9390(0xaa)]/0x2||0xc8,_0x3648a9=ENEMY_TOP_MARGIN+_0x3e84a1[_0x1a9390(0x138)]*(ENEMY_HEIGHT+ENEMY_V_SPACING);}const _0x32475f={'x':_0x2cf190,'y':_0x3648a9,'width':_0x3307b4,'height':_0x23b54f,'targetGridX':_0x2cf190,'targetGridY':_0x3648a9,'speed':0x0,'state':'in_grid','gridRow':_0x3e84a1[_0x1a9390(0x138)],'gridCol':_0x3e84a1[_0x1a9390(0xf4)],'type':_0x333556,'health':_0x512451,'isDamaged':![],'velocityX':0x0,'velocityY':0x0,'attackPathStep':0x0,'initialY':0x0,'initialX':0x0,'diveDirection':0x1,'lastFiredTime':0x0,'targetX1':0x0,'targetY1':0x0,'targetX2':0x0,'targetY2':0x0,'targetX3':0x0,'targetY3':0x0,'attackPathSegments':[],'attackPathSegmentIndex':0x0,'attackPathT':0x0,'attackStartTime':0x0,'attackFormationOffsetX':0x0,'attackGroupId':null,'entrancePathId':null,'pathSegmentIndex':0x0,'pathT':0x0,'squadronId':_0x15225c,'squadronEnemyIndex':_0xa58947,'id':_0x1a9390(0x125)+_0x15225c+'-'+_0xa58947+'-'+Date[_0x1a9390(0x12f)]()+'-'+Math[_0x1a9390(0x107)]()[_0x1a9390(0xb3)](0x24)[_0x1a9390(0x11c)](0x2,0x7),'justReturned':![],'canFireThisDive':![],'attackType':_0x1a9390(0x14b),'hasCapturedShip':_0x333556===ENEMY3_TYPE?![]:undefined,'capturedShipX':undefined,'capturedShipY':undefined,'capturedShipLastFiredTime':_0x333556===ENEMY3_TYPE?0x0:undefined,'captureStartTime':0x0,'capturePrepareTimeout':null,'pathSpeedMultiplier':0x1};enemies['push'](_0x32475f),_0x1a922b++;}catch(_0x31f453){console[_0x1a9390(0x186)](_0x1a9390(0x10b)+_0x15225c+',\x20Idx\x20'+_0xa58947+'):',_0x31f453);}})):console[_0x2ac07a(0x197)](_0x2ac07a(0x16b)+_0x15225c+_0x2ac07a(0x156)),squadronCompletionStatus[_0x15225c]={'completed':_0x3fcaa6,'total':_0x3fcaa6};}),totalEnemiesScheduledForWave=_0x1a922b,enemiesSpawnedThisWave=_0x1a922b,isEntrancePhaseActive=![],gridJustCompleted=!![],!isGridSoundPlaying&&(isGridSoundPlaying=!![],playSound(_0xe9bb4f(0x191),!![],0.1)),GRID_BREATH_ENABLED&&!isGridBreathingActive&&(isGridBreathingActive=!![],gridBreathStartTime=Date['now'](),currentGridBreathFactor=0x0),lastGridFireCheckTime=Date[_0xe9bb4f(0x12f)](),firstEnemyLanded=!![];}function renderGame(){const _0x1a9b7a=_0x1d45a4;try{if(!gameCtx||!gameCanvas){if(mainLoopId)cancelAnimationFrame(mainLoopId);mainLoopId=null;return;}gameCtx[_0x1a9b7a(0x98)](0x0,0x0,gameCanvas['width'],gameCanvas['height']);const _0x436042=Date['now']();gameCtx[_0x1a9b7a(0x95)]();const _0x37c180=_0x1a9b7a(0xd8),_0x573088=_0x1a9b7a(0x124),_0x133efe=_0x1a9b7a(0xbc);let _0x30beb7,_0x369071,_0x8176b5,_0x5a2276,_0x5dc85b=![],_0x46394e=![],_0x216eac=![];if(isShowingResultsScreen){}else{if(gameOverSequenceStartTime>0x0&&!isShowingPlayerGameOverMessage){}else{if(isShowingPlayerGameOverMessage){}else{if(!isInGameState){}else{_0x8176b5=highScore||0x0;if(!isManualControl){}else{if(isTwoPlayerMode&&selectedGameMode===_0x1a9b7a(0xed)){_0x30beb7=player1Score,_0x369071=player2Score,_0x8176b5=Math[_0x1a9b7a(0x12c)](highScore,player1Score,player2Score),_0x5a2276='1UP',_0x5dc85b=!isShowingIntro&&!isPaused&&player1Lives>0x0&&ship1&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn,_0x46394e=!isShowingIntro&&!isPaused&&player2Lives>0x0&&ship2&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn;if(player1Score>=_0x8176b5&&player1Score>0x0)_0x216eac=_0x5dc85b;if(player2Score>=_0x8176b5&&player2Score>0x0&&player2Score>player1Score)_0x216eac=_0x46394e;}else isTwoPlayerMode&&selectedGameMode===_0x1a9b7a(0x14b)?(_0x30beb7=currentPlayer===0x1?score:player1Score,_0x369071=currentPlayer===0x2?score:player2Score,_0x8176b5=Math['max'](highScore,player1Score,player2Score,score),_0x5a2276='1UP',_0x5dc85b=!isShowingIntro&&!isPaused&&currentPlayer===0x1&&playerLives>0x0&&!isShipCaptured&&!isWaitingForRespawn,_0x46394e=!isShowingIntro&&!isPaused&&currentPlayer===0x2&&playerLives>0x0&&!isShipCaptured&&!isWaitingForRespawn,_0x216eac=!isPaused&&!isShowingIntro&&score>0x0&&_0x8176b5>0x0&&score>=_0x8176b5):(_0x30beb7=score,_0x369071=0x0,_0x5a2276='1UP');}}}}}let _0x2919aa=![];if(_0x216eac){}typeof MARGIN_SIDE!==_0x1a9b7a(0x8f)&&typeof MARGIN_TOP!==_0x1a9b7a(0x8f)&&typeof SCORE_OFFSET_Y!==_0x1a9b7a(0x8f)&&(drawTopUiElement(_0x5a2276,_0x30beb7,_0x1a9b7a(0xef),MARGIN_SIDE,_0x5dc85b),drawTopUiElement(_0x1a9b7a(0x9a),_0x8176b5,_0x1a9b7a(0x9c),gameCanvas[_0x1a9b7a(0xaa)]/0x2,_0x2919aa),drawTopUiElement(_0x1a9b7a(0x121),_0x369071,_0x1a9b7a(0xf2),gameCanvas[_0x1a9b7a(0xaa)]-MARGIN_SIDE,_0x46394e));if(typeof shipImage!==_0x1a9b7a(0x8f)&&typeof LIFE_ICON_MARGIN_BOTTOM!=='undefined'&&typeof LIFE_ICON_SIZE!==_0x1a9b7a(0x8f)&&typeof LIFE_ICON_MARGIN_LEFT!==_0x1a9b7a(0x8f)&&typeof LIFE_ICON_SPACING!==_0x1a9b7a(0x8f)){if(shipImage[_0x1a9b7a(0x136)]&&shipImage[_0x1a9b7a(0x15c)]!==0x0){const _0x6e9a8c=gameCanvas[_0x1a9b7a(0x74)]-LIFE_ICON_MARGIN_BOTTOM-LIFE_ICON_SIZE;let _0x27dbeb=0x0,_0x2230a9=0x0;if(isTwoPlayerMode&&selectedGameMode===_0x1a9b7a(0xed)){if(player1Lives>0x0)_0x27dbeb=Math[_0x1a9b7a(0x12c)](0x0,player1Lives-0x1);if(player2Lives>0x0)_0x2230a9=Math[_0x1a9b7a(0x12c)](0x0,player2Lives-0x1);}else{if(playerLives>0x0)_0x27dbeb=Math[_0x1a9b7a(0x12c)](0x0,playerLives-0x1);}const _0x4bfe1b=0x5;for(let _0x1eb1df=0x0;_0x1eb1df<Math[_0x1a9b7a(0x99)](_0x27dbeb,_0x4bfe1b);_0x1eb1df++){const _0x491efd=LIFE_ICON_MARGIN_LEFT+_0x1eb1df*(LIFE_ICON_SIZE+LIFE_ICON_SPACING);gameCtx['drawImage'](shipImage,Math[_0x1a9b7a(0x11d)](_0x491efd),Math[_0x1a9b7a(0x11d)](_0x6e9a8c),LIFE_ICON_SIZE,LIFE_ICON_SIZE);}if(isTwoPlayerMode&&selectedGameMode===_0x1a9b7a(0xed)){const _0x263439=gameCanvas[_0x1a9b7a(0xaa)]-LIFE_ICON_MARGIN_RIGHT-Math[_0x1a9b7a(0x99)](_0x2230a9,_0x4bfe1b)*(LIFE_ICON_SIZE+LIFE_ICON_SPACING)+LIFE_ICON_SPACING;for(let _0x27de47=0x0;_0x27de47<Math[_0x1a9b7a(0x99)](_0x2230a9,_0x4bfe1b);_0x27de47++){const _0x4d533c=_0x263439+_0x27de47*(LIFE_ICON_SIZE+LIFE_ICON_SPACING);gameCtx['drawImage'](shipImage,Math[_0x1a9b7a(0x11d)](_0x4d533c),Math[_0x1a9b7a(0x11d)](_0x6e9a8c),LIFE_ICON_SIZE,LIFE_ICON_SIZE);}}}}gameCtx['restore'](),gameCtx[_0x1a9b7a(0x95)]();if(isTwoPlayerMode&&selectedGameMode===_0x1a9b7a(0xed)){if(ship1&&player1Lives>0x0&&!isPlayer1WaitingForRespawn&&!isPlayer1ShipCaptured){let _0x272423=!![];if(isPlayer1Invincible){const _0x193f16=INVINCIBILITY_BLINK_ON_MS+INVINCIBILITY_BLINK_OFF_MS;if(_0x436042%_0x193f16>=INVINCIBILITY_BLINK_ON_MS)_0x272423=![];}if(_0x272423){const _0x431370=ship1['x'],_0x531f02=ship1['y'];typeof shipImage!=='undefined'&&shipImage[_0x1a9b7a(0x136)]?(gameCtx['drawImage'](shipImage,Math[_0x1a9b7a(0x11d)](_0x431370),Math[_0x1a9b7a(0x11d)](_0x531f02),ship1['width'],ship1[_0x1a9b7a(0x74)]),player1IsDualShipActive&&gameCtx['drawImage'](shipImage,Math[_0x1a9b7a(0x11d)](_0x431370+DUAL_SHIP_OFFSET_X),Math[_0x1a9b7a(0x11d)](_0x531f02),ship1['width'],ship1[_0x1a9b7a(0x74)])):(gameCtx[_0x1a9b7a(0x77)]=_0x1a9b7a(0xb0),gameCtx[_0x1a9b7a(0x13c)](Math[_0x1a9b7a(0x11d)](_0x431370),Math['round'](_0x531f02),ship1['width'],ship1[_0x1a9b7a(0x74)]));}}if(ship2&&player2Lives>0x0&&!isPlayer2WaitingForRespawn&&!isPlayer2ShipCaptured){let _0x411d88=!![];if(isPlayer2Invincible){const _0x490ded=INVINCIBILITY_BLINK_ON_MS+INVINCIBILITY_BLINK_OFF_MS;if(_0x436042%_0x490ded>=INVINCIBILITY_BLINK_ON_MS)_0x411d88=![];}if(_0x411d88){const _0x65484e=ship2['x'],_0x46bb05=ship2['y'];typeof shipImage!=='undefined'&&shipImage[_0x1a9b7a(0x136)]?(gameCtx[_0x1a9b7a(0x130)](shipImage,Math['round'](_0x65484e),Math[_0x1a9b7a(0x11d)](_0x46bb05),ship2[_0x1a9b7a(0xaa)],ship2[_0x1a9b7a(0x74)]),player2IsDualShipActive&&gameCtx['drawImage'](shipImage,Math[_0x1a9b7a(0x11d)](_0x65484e+DUAL_SHIP_OFFSET_X),Math[_0x1a9b7a(0x11d)](_0x46bb05),ship2[_0x1a9b7a(0xaa)],ship2[_0x1a9b7a(0x74)])):(gameCtx['fillStyle']=_0x1a9b7a(0xd0),gameCtx['fillRect'](Math[_0x1a9b7a(0x11d)](_0x65484e),Math[_0x1a9b7a(0x11d)](_0x46bb05),ship2[_0x1a9b7a(0xaa)],ship2['height']));}}}else{if(ship&&!isShowingCaptureMessage){let _0x120da8=!![];if(isInGameState&&!gameOverSequenceStartTime&&!isShowingPlayerGameOverMessage&&isInvincible){const _0x34449c=INVINCIBILITY_BLINK_ON_MS+INVINCIBILITY_BLINK_OFF_MS;if(_0x436042%_0x34449c>=INVINCIBILITY_BLINK_ON_MS)_0x120da8=![];}if(_0x120da8){let _0x2ab5fa=ship['x'],_0x4443ef=(isShowingPlayerGameOverMessage||gameOverSequenceStartTime>0x0||!isInGameState||isShowingScoreScreen||isInGameState&&isShowingIntro&&!isManualControl&&(introStep===0x1||introStep===0x2||introStep===0x3))&&!isDualShipActive;_0x4443ef&&(_0x2ab5fa=Math[_0x1a9b7a(0x11d)](gameCanvas[_0x1a9b7a(0xaa)]/0x2-ship[_0x1a9b7a(0xaa)]/0x2));const _0x10c713=ship['y'];typeof shipImage!==_0x1a9b7a(0x8f)&&shipImage[_0x1a9b7a(0x136)]?(gameCtx[_0x1a9b7a(0x130)](shipImage,Math[_0x1a9b7a(0x11d)](_0x2ab5fa),Math[_0x1a9b7a(0x11d)](_0x10c713),ship[_0x1a9b7a(0xaa)],ship[_0x1a9b7a(0x74)]),isInGameState&&!gameOverSequenceStartTime&&!isShowingPlayerGameOverMessage&&isDualShipActive&&!isShipCaptured&&gameCtx[_0x1a9b7a(0x130)](shipImage,Math[_0x1a9b7a(0x11d)](_0x2ab5fa+DUAL_SHIP_OFFSET_X),Math[_0x1a9b7a(0x11d)](_0x10c713),ship[_0x1a9b7a(0xaa)],ship[_0x1a9b7a(0x74)])):(gameCtx[_0x1a9b7a(0x77)]=_0x1a9b7a(0xb0),gameCtx['fillRect'](Math[_0x1a9b7a(0x11d)](_0x2ab5fa),Math['round'](_0x10c713),ship[_0x1a9b7a(0xaa)],ship[_0x1a9b7a(0x74)]));}}}if(fallingShips['length']>0x0&&typeof shipImage!=='undefined'&&shipImage[_0x1a9b7a(0x136)]){}gameCtx[_0x1a9b7a(0x187)]();if(!isInGameState){if(isShowingScoreScreen){}else{gameCtx['save']();const _0x38656a=gameCanvas[_0x1a9b7a(0xaa)],_0xf92f15=gameCanvas[_0x1a9b7a(0x74)],_0x4e495c=_0x38656a/0x2;selectedButtonIndex===-0x1&&(isPlayerSelectMode||isFiringModeSelectMode||isGameModeSelectMode||!isPlayerSelectMode&&!isFiringModeSelectMode&&!isGameModeSelectMode)&&(selectedButtonIndex=0x0);let _0xc8e9d7=MENU_LOGO_APPROX_HEIGHT,_0x2b1f89=_0xc8e9d7*(logoImage[_0x1a9b7a(0x108)]/logoImage[_0x1a9b7a(0x15c)]||0x1);typeof logoImage!==_0x1a9b7a(0x8f)&&logoImage[_0x1a9b7a(0x136)]&&logoImage[_0x1a9b7a(0x15c)]!==0x0&&(_0xc8e9d7=logoImage['naturalHeight']*LOGO_SCALE_FACTOR,_0x2b1f89=logoImage[_0x1a9b7a(0x108)]*LOGO_SCALE_FACTOR);const _0x44ebd1=getSubtitleApproxHeight(MENU_SUBTITLE_FONT),_0x5ade55=_0xc8e9d7+MENU_LOGO_BOTTOM_TO_START_GAP+0x2*MENU_BUTTON_HEIGHT+MENU_BUTTON_V_GAP+MENU_BUTTON_SUBTITLE_V_GAP+_0x44ebd1;let _0x30db2b=(_0xf92f15-_0x5ade55)/0x2-0x46;_0x30db2b+=MENU_GENERAL_Y_OFFSET;const _0x50b357=_0x4e495c-_0x2b1f89/0x2,_0x4e174d=_0x30db2b+MENU_LOGO_EXTRA_Y_OFFSET;typeof logoImage!==_0x1a9b7a(0x8f)&&logoImage[_0x1a9b7a(0x136)]&&logoImage[_0x1a9b7a(0x15c)]!==0x0?gameCtx[_0x1a9b7a(0x130)](logoImage,Math[_0x1a9b7a(0x11d)](_0x50b357),Math['round'](_0x4e174d),_0x2b1f89,_0xc8e9d7):drawCanvasText(_0x1a9b7a(0x135),_0x4e495c,_0x4e174d+_0xc8e9d7/0x2,'30px\x20Arial',_0x1a9b7a(0x1a9));if(isGameModeSelectMode)drawCanvasButton(_0x1a9b7a(0x123),0x0,selectedButtonIndex===0x0),drawCanvasButton(_0x1a9b7a(0x88),0x1,selectedButtonIndex===0x1);else{if(isFiringModeSelectMode)drawCanvasButton('EASY',0x0,selectedButtonIndex===0x0),drawCanvasButton(_0x1a9b7a(0x122),0x1,selectedButtonIndex===0x1);else isPlayerSelectMode?(drawCanvasButton('1\x20PLAYER',0x0,selectedButtonIndex===0x0),drawCanvasButton('2\x20PLAYER',0x1,selectedButtonIndex===0x1)):(drawCanvasButton(_0x1a9b7a(0x18b),0x0,selectedButtonIndex===0x0),drawCanvasButton(_0x1a9b7a(0xf6),0x1,selectedButtonIndex===0x1));}const _0x420402=getMenuButtonRect(0x1);let _0x3735f2;_0x420402?_0x3735f2=_0x420402['y']+_0x420402[_0x1a9b7a(0x74)]+MENU_BUTTON_SUBTITLE_V_GAP+_0x44ebd1/0x2:_0x3735f2=_0x30db2b+_0xc8e9d7+MENU_LOGO_BOTTOM_TO_START_GAP+0x2*MENU_BUTTON_HEIGHT+MENU_BUTTON_V_GAP+MENU_BUTTON_SUBTITLE_V_GAP+_0x44ebd1/0x2,drawCanvasText(MENU_SUBTITLE_TEXT,_0x4e495c-0x1,Math[_0x1a9b7a(0x11d)](_0x3735f2),MENU_SUBTITLE_FONT,MENU_SUBTITLE_COLOR,_0x1a9b7a(0x9c),'middle',!![]),gameCtx[_0x1a9b7a(0x187)]();}}else{if(gameOverSequenceStartTime===0x0&&!isShowingPlayerGameOverMessage){gameCtx[_0x1a9b7a(0x95)]();let _0x322992=!showReadyMessage&&!showCsHitsMessage&&!showPerfectMessage&&!showCsBonusScoreMessage&&!showCSClearMessage&&!isCsCompletionDelayActive&&!isShowingIntro&&!isShowingCaptureMessage;_0x322992&&(bullets[_0x1a9b7a(0x10c)](_0x479a6f=>{}),enemyBullets['forEach'](_0x48f340=>{}));enemies[_0x1a9b7a(0x10c)](_0x11c4e5=>{});if(captureBeamActive&&capturingBossId&&captureBeamProgress>0x0){}renderExplosions(),renderFloatingScores(),renderHitSparks();let _0x314a8d=![];const _0x4f37c9=gameCanvas[_0x1a9b7a(0x74)]/0x2;if(isPaused){}else{if(isShowingCaptureMessage){}}gameCtx[_0x1a9b7a(0x187)]();}else{if(isShowingPlayerGameOverMessage){}else{if(gameOverSequenceStartTime>0x0){}}}}}catch(_0x7222ec){console[_0x1a9b7a(0x186)](_0x1a9b7a(0x17d),_0x7222ec,_0x7222ec[_0x1a9b7a(0x13f)]);}}function _0x5b67(_0x28c012,_0x138c72){const _0x1298f0=_0x1298();return _0x5b67=function(_0x5b6765,_0x16095e){_0x5b6765=_0x5b6765-0x6f;let _0x12b0a7=_0x1298f0[_0x5b6765];return _0x12b0a7;},_0x5b67(_0x28c012,_0x138c72);}function handleEnemyHit(_0x2b7be9,_0x147530=null){const _0x4555d0=_0x1d45a4;if(!_0x2b7be9)return{'destroyed':![],'pointsAwarded':0x0};const _0x1993c3=Date[_0x4555d0(0x12f)]();let _0x15f5cf=0x0,_0x21d773=![],_0x3160a1=_0x2b7be9[_0x4555d0(0x194)],_0x28ae3b=null,_0x515e2b=0x1;const _0x2cdb9a=_0x2b7be9[_0x4555d0(0x19d)]===ENEMY3_TYPE?BOSS_WIDTH:_0x2b7be9[_0x4555d0(0x19d)]===ENEMY1_TYPE?ENEMY1_WIDTH:ENEMY_WIDTH,_0x4b84dd=_0x2b7be9[_0x4555d0(0x19d)]===ENEMY3_TYPE?BOSS_HEIGHT:_0x2b7be9[_0x4555d0(0x19d)]===ENEMY1_TYPE?ENEMY1_HEIGHT:ENEMY_HEIGHT,_0x1b8d7d=_0x2b7be9[_0x4555d0(0x19d)]===ENEMY3_TYPE&&_0x2b7be9[_0x4555d0(0x19f)],_0x20ea12=_0x2b7be9[_0x4555d0(0x19d)]===ENEMY3_TYPE&&_0x2b7be9[_0x4555d0(0x179)];let _0x3e20b4=![],_0x4b81dd=null;if(_0x1b8d7d){if(isTwoPlayerMode&&selectedGameMode===_0x4555d0(0xed)){if(isPlayer1ShipCaptured&&capturedBossIdWithMessage===_0x2b7be9['id'])_0x3e20b4=!![],_0x4b81dd=_0x4555d0(0xde);else isPlayer2ShipCaptured&&capturedBossIdWithMessage===_0x2b7be9['id']&&(_0x3e20b4=!![],_0x4b81dd=_0x4555d0(0x158));}else!isTwoPlayerMode&&isShipCaptured&&capturedBossIdWithMessage===_0x2b7be9['id']&&(_0x3e20b4=!![]);}const _0x125d79=_0x2b7be9['x']+_0x2cdb9a/0x2,_0x5bd285=_0x2b7be9['y']+_0x4b84dd*0.2;createHitSparks(_0x125d79,_0x5bd285),_0x2b7be9[_0x4555d0(0x127)]--;_0x2b7be9[_0x4555d0(0x19d)]===ENEMY3_TYPE&&(_0x2b7be9[_0x4555d0(0x194)]=_0x2b7be9[_0x4555d0(0x127)]<ENEMY3_MAX_HITS);if(_0x2b7be9[_0x4555d0(0x127)]<=0x0){_0x21d773=!![];isChallengingStage&&challengingStageEnemiesHit++;if(_0x1b8d7d&&_0x20ea12){let _0x4460ff=null;if(_0x3e20b4&&_0x4b81dd)_0x4460ff=_0x4b81dd;else{let _0xb9cabd=![];if(isCoopAIDemoActive){if(_0x147530==='player1'&&player1IsDualShipActive)_0x4460ff=_0x4555d0(0x158),_0xb9cabd=!![];else _0x147530==='player2'&&player2IsDualShipActive&&(_0x4460ff='player1',_0xb9cabd=!![]);}else{if(isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x4555d0(0xa7)){if(_0x147530==='ai_p2'&&player2IsDualShipActive)_0x4460ff=_0x4555d0(0xde),_0xb9cabd=!![];else _0x147530==='player1'&&player1IsDualShipActive&&(_0x4460ff=_0x4555d0(0x75),_0xb9cabd=!![]);}}!_0xb9cabd&&(_0x4460ff=_0x147530);}_0x4460ff===null&&_0x147530&&(_0x4460ff=_0x147530);if(_0x2b7be9['capturedShipDimensions']){const _0x4502e6=_0x2b7be9['capturedShipDimensions'][_0x4555d0(0xaa)],_0x4eb6e0=_0x2b7be9[_0x4555d0(0x179)][_0x4555d0(0x74)],_0x2c7e37=_0x2b7be9['x']+(_0x2cdb9a-_0x4502e6)/0x2+CAPTURED_SHIP_OFFSET_X,_0x418dd2=_0x2b7be9['y']+CAPTURED_SHIP_OFFSET_Y,_0x2f1e97=fallingShips[_0x4555d0(0x181)](_0x3f8edb=>Math[_0x4555d0(0x9e)](_0x3f8edb['x']-_0x2c7e37)<0x1&&Math[_0x4555d0(0x9e)](_0x3f8edb['y']-_0x418dd2)<0x1);!_0x2f1e97&&fallingShips[_0x4555d0(0xc9)]({'x':_0x2c7e37,'y':_0x418dd2,'width':_0x4502e6,'height':_0x4eb6e0,'creationTime':_0x1993c3,'tintProgress':0x1,'rotation':0x0,'rotationDirection':Math['random']()<0.5?-0x1:0x1,'totalRotation':0x0,'rotationCompleted':![],'targetPlayerId':_0x4460ff});}else console['error']('[handleEnemyHit]\x20CRITICAL:\x20Boss\x20destroyed,\x20had\x20ship\x20initially\x20but\x20dimensions\x20missing!');_0x2b7be9[_0x4555d0(0x19f)]=![],_0x2b7be9[_0x4555d0(0x179)]=null;}else _0x1b8d7d&&!_0x20ea12&&(console[_0x4555d0(0x186)](_0x4555d0(0x120)+_0x2b7be9['id']+'\x20destroyed,\x20had\x20ship\x20initially\x20but\x20dimensions\x20missing!\x20Resetting\x20state\x20anyway.'),_0x2b7be9[_0x4555d0(0x19f)]=![],_0x2b7be9[_0x4555d0(0x179)]=null);if(isChallengingStage){let _0x3184f7=0x64;const _0x145325=csLastHitTime;csLastHitTime=_0x1993c3,csLastChainHitPosition={'x':_0x2b7be9['x'],'y':_0x2b7be9['y']},csCurrentChainHits>0x0&&_0x1993c3-_0x145325<CS_CHAIN_BREAK_TIME_MS?csCurrentChainHits++:(csCurrentChainHits=0x1,csCurrentChainScore=0x0),csCurrentChainHits>=CS_CHAIN_SCORE_THRESHOLD&&(_0x3184f7*=0x2),_0x15f5cf=_0x3184f7,csCurrentChainScore+=_0x15f5cf,scoreEarnedThisCS+=_0x15f5cf,_0x28ae3b=_0x4555d0(0xb8),_0x515e2b=0.4;}else{if(_0x2b7be9[_0x4555d0(0x14f)]===_0x4555d0(0x80))_0x15f5cf=_0x2b7be9[_0x4555d0(0x19d)]===ENEMY1_TYPE?0x32:_0x2b7be9[_0x4555d0(0x19d)]===ENEMY2_TYPE?0x50:0x0,_0x2b7be9[_0x4555d0(0x19d)]===ENEMY3_TYPE&&(_0x15f5cf=0x96),_0x28ae3b=_0x4555d0(0xb8),_0x515e2b=0.4;else{_0x15f5cf=_0x2b7be9[_0x4555d0(0x19d)]===ENEMY1_TYPE?0x64:_0x2b7be9[_0x4555d0(0x19d)]===ENEMY2_TYPE?0xa0:0x0;if(_0x2b7be9[_0x4555d0(0x19d)]===ENEMY3_TYPE){if(_0x1b8d7d){const _0x115409=[0x3e8,0x5dc,0x7d0,0xbb8];_0x15f5cf=_0x115409[Math[_0x4555d0(0x119)](Math[_0x4555d0(0x107)]()*_0x115409[_0x4555d0(0xbb)])],_0x28ae3b=_0x4555d0(0x15e),_0x515e2b=0.4;}else _0x3160a1?(_0x15f5cf=0x190,_0x28ae3b='bossHit2Sound',_0x515e2b=0.4):(_0x15f5cf=0x0,console[_0x4555d0(0x197)]('[Destroyed\x20Boss\x20Score\x20-\x20Attack]\x20Boss\x20destroyed\x20on\x20first\x20hit?\x20Awarding\x20'+_0x15f5cf+'\x20points.\x20Health\x20was:\x20'+(_0x2b7be9[_0x4555d0(0x127)]+0x1)),_0x28ae3b=_0x4555d0(0xb8),_0x515e2b=0.4);}else _0x28ae3b='explosionSound',_0x515e2b=0.4;if(_0x21d773&&_0x15f5cf>0x0){const _0x358520=normalWaveLastHitTime;normalWaveLastHitTime=_0x1993c3,normalWaveLastChainHitPosition={'x':_0x2b7be9['x'],'y':_0x2b7be9['y']};normalWaveLastChainHitPosition&&_0x1993c3-_0x358520<NORMAL_WAVE_CHAIN_BREAK_TIME_MS?normalWaveCurrentChainHits++:(normalWaveCurrentChainHits=0x1,normalWaveCurrentChainScore=0x0);if(NORMAL_WAVE_CHAIN_BONUS_ENABLED&&normalWaveCurrentChainHits>=NORMAL_WAVE_CHAIN_SCORE_THRESHOLD){const _0x5d87b2=[0x12c,0x258,0x3e8,0x5dc,0x7d0,0xbb8],_0x3e0ffa=Math[_0x4555d0(0x99)](_0x5d87b2['length']-0x1,normalWaveCurrentChainHits-NORMAL_WAVE_CHAIN_SCORE_THRESHOLD),_0x1f0fe9=_0x5d87b2[_0x3e0ffa];_0x15f5cf+=_0x1f0fe9,normalWaveCurrentChainScore+=_0x1f0fe9;}}}}if(_0x15f5cf>0x0){let _0x358474=null;if(isCoopAIDemoActive){if(_0x147530===_0x4555d0(0xde))player1Score+=_0x15f5cf,_0x358474=()=>player1EnemiesHit++,player1Score>highScore&&(highScore=player1Score,!player1TriggeredHighScoreSound&&(player1TriggeredHighScoreSound=!![],playSound('hiScoreSound',![],0.2))),checkAndAwardExtraLife(0x1);else{if(_0x147530===_0x4555d0(0x158))player2Score+=_0x15f5cf,_0x358474=()=>player2EnemiesHit++,player2Score>highScore&&(highScore=player2Score,!player2TriggeredHighScoreSound&&(player2TriggeredHighScoreSound=!![],playSound('hiScoreSound',![],0.2))),checkAndAwardExtraLife(0x2);else{player1Score+=_0x15f5cf,_0x358474=()=>player1EnemiesHit++;if(player1Score>highScore)highScore=player1Score;checkAndAwardExtraLife(0x1);}}}else{if(!isManualControl)score+=_0x15f5cf,player1Score=score,_0x358474=()=>player1EnemiesHit++,score>highScore&&(highScore=score,!player1TriggeredHighScoreSound&&(player1TriggeredHighScoreSound=!![],playSound(_0x4555d0(0xa6),![],0.2))),checkAndAwardExtraLife(0x1);else{if(isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x4555d0(0xa7)){if(_0x147530==='player1')player1Score+=_0x15f5cf,_0x358474=()=>player1EnemiesHit++,player1Score>highScore&&(highScore=player1Score,!player1TriggeredHighScoreSound&&(player1TriggeredHighScoreSound=!![],playSound(_0x4555d0(0xa6),![],0.2))),checkAndAwardExtraLife(0x1);else{if(_0x147530===_0x4555d0(0x75))player2Score+=_0x15f5cf,_0x358474=()=>player2EnemiesHit++,player2Score>highScore&&(highScore=player2Score,!player2TriggeredHighScoreSound&&(player2TriggeredHighScoreSound=!![],playSound(_0x4555d0(0xa6),![],0.2))),checkAndAwardExtraLife(0x2);else{player1Score+=_0x15f5cf,_0x358474=()=>player1EnemiesHit++;if(player1Score>highScore)highScore=player1Score;checkAndAwardExtraLife(0x1);}}}else{if(isTwoPlayerMode&&selectedGameMode===_0x4555d0(0xed)){if(_0x147530===_0x4555d0(0xde))player1Score+=_0x15f5cf,_0x358474=()=>player1EnemiesHit++,player1Score>highScore&&(highScore=player1Score,!player1TriggeredHighScoreSound&&(player1TriggeredHighScoreSound=!![],playSound('hiScoreSound',![],0.2))),checkAndAwardExtraLife(0x1);else _0x147530===_0x4555d0(0x158)?(player2Score+=_0x15f5cf,_0x358474=()=>player2EnemiesHit++,player2Score>highScore&&(highScore=player2Score,!player2TriggeredHighScoreSound&&(player2TriggeredHighScoreSound=!![],playSound(_0x4555d0(0xa6),![],0.2))),checkAndAwardExtraLife(0x2)):(player1Score+=_0x15f5cf,_0x358474=()=>player1EnemiesHit++,player1Score>highScore&&(highScore=player1Score,!player1TriggeredHighScoreSound&&(player1TriggeredHighScoreSound=!![],playSound(_0x4555d0(0xa6),![],0.2))),checkAndAwardExtraLife(0x1));}else{score+=_0x15f5cf;let _0x4f2666=score,_0x311706=null,_0xef40c5=currentPlayer;currentPlayer===0x1||!isTwoPlayerMode?(player1Score=score,_0x358474=()=>player1EnemiesHit++,_0x311706=()=>{player1TriggeredHighScoreSound=!![];}):(player2Score=score,_0x358474=()=>player2EnemiesHit++,_0x311706=()=>{player2TriggeredHighScoreSound=!![];});if(_0x4f2666>highScore){highScore=_0x4f2666;const _0x501427=currentPlayer===0x1||!isTwoPlayerMode?player1TriggeredHighScoreSound:player2TriggeredHighScoreSound;!_0x501427&&_0x311706&&(_0x311706(),playSound('hiScoreSound',![],0.2));}checkAndAwardExtraLife(_0xef40c5);}}}}_0x358474&&!isChallengingStage&&_0x358474();const _0x413dce=_0x2b7be9[_0x4555d0(0x14f)]===_0x4555d0(0x80)||isChallengingStage?FLOATING_SCORE_COLOR_GRID:FLOATING_SCORE_COLOR_ACTIVE;floatingScores[_0x4555d0(0xc9)]({'text':_0x15f5cf[_0x4555d0(0xb3)](),'x':_0x2b7be9['x']+_0x2cdb9a/0x2,'y':_0x2b7be9['y'],'color':_0x413dce,'creationTime':_0x1993c3,'displayStartTime':_0x1993c3+FLOATING_SCORE_APPEAR_DELAY});}createExplosion(_0x2b7be9['x']+_0x2cdb9a/0x2,_0x2b7be9['y']+_0x4b84dd/0x2);_0x2b7be9['id']===capturingBossId&&stopSound(_0x4555d0(0x193));if(_0x2b7be9['state']==='attacking'||_0x2b7be9['state']==='following_entrance_path'||_0x2b7be9['state']===_0x4555d0(0x7b)||_0x2b7be9['state']===_0x4555d0(0x100)||_0x2b7be9[_0x4555d0(0x14f)]===_0x4555d0(0x18d)||_0x2b7be9[_0x4555d0(0x14f)]===_0x4555d0(0xb5)){if(_0x2b7be9['type']===ENEMY3_TYPE)stopSound(_0x4555d0(0x11b));else stopSound('butterflyDiveSound');}}else{_0x21d773=![];if(_0x2b7be9[_0x4555d0(0x19d)]===ENEMY3_TYPE)_0x28ae3b=_0x4555d0(0x16e),_0x515e2b=0.6,_0x15f5cf=0x0;else{_0x15f5cf=0x0;if(_0x2b7be9[_0x4555d0(0x19d)]===ENEMY1_TYPE)_0x28ae3b='beeHitSound',_0x515e2b=0.3;else _0x2b7be9[_0x4555d0(0x19d)]===ENEMY2_TYPE&&(_0x28ae3b='butterflyHitSound',_0x515e2b=0.3);}}return _0x28ae3b&&playSound(_0x28ae3b,![],_0x515e2b),{'destroyed':_0x21d773,'pointsAwarded':_0x15f5cf};}function createHitSparks(_0x4b713a,_0x5921c4){const _0x5de614=_0x1d45a4;if(!gameCtx)return;const _0x4563db=Date[_0x5de614(0x12f)]();for(let _0x4134b1=0x0;_0x4134b1<HIT_SPARK_COUNT;_0x4134b1++){const _0x3f37ba=Math[_0x5de614(0x107)]()*Math['PI']*0x2,_0x48ab44=HIT_SPARK_SPEED*(0.7+Math[_0x5de614(0x107)]()*0.6),_0xb59999=HIT_SPARK_LIFETIME*(0.8+Math['random']()*0.4);hitSparks['push']({'x':_0x4b713a,'y':_0x5921c4,'vx':Math['cos'](_0x3f37ba)*_0x48ab44,'vy':Math[_0x5de614(0xd1)](_0x3f37ba)*_0x48ab44,'creationTime':_0x4563db,'lifetime':_0xb59999,'size':HIT_SPARK_SIZE,'color':HIT_SPARK_COLOR});}}function updateHitSparks(){const _0x3fa036=_0x1d45a4,_0x2c1d63=Date['now']();for(let _0x504d84=hitSparks[_0x3fa036(0xbb)]-0x1;_0x504d84>=0x0;_0x504d84--){const _0x339ab3=hitSparks[_0x504d84],_0x3d2d84=_0x2c1d63-_0x339ab3[_0x3fa036(0x1a8)];_0x3d2d84>=_0x339ab3[_0x3fa036(0x7c)]?hitSparks[_0x3fa036(0xa1)](_0x504d84,0x1):(_0x339ab3['vy']+=HIT_SPARK_GRAVITY,_0x339ab3['x']+=_0x339ab3['vx'],_0x339ab3['y']+=_0x339ab3['vy'],_0x339ab3[_0x3fa036(0xb1)]=Math[_0x3fa036(0x12c)](0x0,0x1-_0x3d2d84*HIT_SPARK_FADE_SPEED));}}function moveEntities(){const _0x323e99=_0x1d45a4;try{if(isPaused)return;const _0x1d97e4=Date[_0x323e99(0x12f)]();}catch(_0x1d76a1){console['error'](_0x323e99(0x16c),_0x1d76a1,_0x1d76a1['stack']),isGridSoundPlaying=![],stopSound('gridBackgroundSound'),isEntrancePhaseActive=![],stopSound(_0x323e99(0x84)),isShowingPlayerGameOverMessage=![],playerGameOverMessageStartTime=0x0,playerWhoIsGameOver=0x0,nextActionAfterPlayerGameOver='',isShipCaptured=![],captureBeamActive=![],capturingBossId=null,stopSound(_0x323e99(0x193)),stopSound(_0x323e99(0x15f)),isWaitingForRespawn=![],fallingShips=[],isDualShipActive=![],player1IsDualShipActive=![],player2IsDualShipActive=![],isInvincible=![],invincibilityEndTime=0x0,hitSparks=[];if(typeof showMenuState===_0x323e99(0x78))showMenuState();if(mainLoopId)cancelAnimationFrame(mainLoopId);mainLoopId=null,alert(_0x323e99(0x153));}}function switchPlayerTurn(){const _0x3ec01e=_0x1d45a4;if(!isTwoPlayerMode||selectedGameMode==='coop')return![];stopSound(_0x3ec01e(0xa6));if(currentPlayer===0x1){player1Score=score,player1IsDualShipActive=isDualShipActive,player1MaxLevelReached=Math['max'](player1MaxLevelReached,level);if(player1Score>highScore)highScore=player1Score;}else{player2Score=score,player2IsDualShipActive=isDualShipActive,player2MaxLevelReached=Math[_0x3ec01e(0x12c)](player2MaxLevelReached,level);if(player2Score>highScore)highScore=player2Score;}const _0x2eaaa2=currentPlayer===0x1?0x2:0x1,_0x115cae=_0x2eaaa2===0x1?player1Lives:player2Lives;if(_0x115cae<=0x0){const _0xd8497f=currentPlayer===0x1?player1Lives:player2Lives;return _0xd8497f<=0x0?(triggerFinalGameOverSequence(),![]):(forceCenterShipNextReset=![],![]);}return currentPlayer=_0x2eaaa2,score=currentPlayer===0x1?player1Score:player2Score,playerLives=currentPlayer===0x1?player1Lives:player2Lives,isDualShipActive=currentPlayer===0x1?player1IsDualShipActive:player2IsDualShipActive,forceCenterShipNextReset=!![],scoreEarnedThisCS=0x0,csCurrentChainHits=0x0,csCurrentChainScore=0x0,csLastHitTime=0x0,csLastChainHitPosition=null,normalWaveCurrentChainHits=0x0,normalWaveCurrentChainScore=0x0,normalWaveLastHitTime=0x0,normalWaveLastHitPosition=null,leftPressed=![],rightPressed=![],shootPressed=![],p2LeftPressed=![],p2RightPressed=![],p2ShootPressed=![],keyboardP1LeftDown=![],keyboardP1RightDown=![],keyboardP1ShootDown=![],keyboardP2LeftDown=![],keyboardP2RightDown=![],keyboardP2ShootDown=![],p1JustFiredSingle=![],p2JustFiredSingle=![],p1FireInputWasDown=![],p2FireInputWasDown=![],isShipCaptured=![],isWaitingForRespawn=![],respawnTime=0x0,isInvincible=![],invincibilityEndTime=0x0,fallingShips=[],hitSparks=[],showExtraLifeMessage=![],extraLifeMessageStartTime=0x0,!![];}function firePlayerBullet(_0x461fd9=null,_0x536901=![]){const _0x5a6530=_0x1d45a4,_0xd4c6e1=Date[_0x5a6530(0x12f)](),_0x111dbf=isTwoPlayerMode&&selectedGameMode===_0x5a6530(0xed)&&level===0x1&&coopPlayersReadyStartTime>0x0&&_0xd4c6e1<coopPlayersReadyStartTime+0x1f40;if(_0x111dbf)return![];let _0x5b26c0=![],_0x1f6c65=null,_0xc435f1=![],_0x387548=0x0,_0x35f430=_0x2cb50c=>{},_0x49e062=_0x2c745d=>{},_0x50e17b=![],_0x68e74f=()=>![],_0x5292b7=_0x103070=>{},_0x740bf7=_0x461fd9;const _0x493ed3=!isPaused&&isInGameState&&gameOverSequenceStartTime===0x0&&!isShowingPlayerGameOverMessage&&!isShowingIntro&&!showReadyMessage&&!isCsCompletionDelayActive&&!showCsHitsMessage&&!showPerfectMessage&&!showCsBonusScoreMessage&&!showCSClearMessage&&!(isTwoPlayerMode&&selectedGameMode==='coop'&&(_0x461fd9==='player1'&&isPlayer1ShowingGameOverMessage||_0x461fd9==='player2'&&isPlayer2ShowingGameOverMessage));if(!_0x493ed3)return![];if(_0x740bf7){let _0x174cfa=![];if(_0x740bf7==='ai'&&isShipCaptured)_0x174cfa=!![];else{if(_0x740bf7==='ai_p2'&&isTwoPlayerMode&&selectedGameMode===_0x5a6530(0x14b)&&isShipCaptured)_0x174cfa=!![];else{if(_0x740bf7===_0x5a6530(0xde)&&isCoopAIDemoActive&&isPlayer1ShipCaptured)_0x174cfa=!![];else{if(_0x740bf7===_0x5a6530(0x158)&&isCoopAIDemoActive&&isPlayer2ShipCaptured)_0x174cfa=!![];else{if(_0x740bf7===_0x5a6530(0x75)&&isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP'&&isPlayer2ShipCaptured)_0x174cfa=!![];}}}}if(_0x174cfa)return![];}if(isTwoPlayerMode&&selectedGameMode===_0x5a6530(0xed)){if(_0x461fd9==='player1'&&ship1&&player1Lives>0x0&&!isPlayer1ShipCaptured&&!player1NeedsRespawnAfterCapture)(!isShowingCaptureMessage||isShowingCaptureMessage&&!isPlayer1ShipCaptured)&&(_0x1f6c65=ship1,_0xc435f1=player1IsDualShipActive,_0x387548=player1LastShotTime,_0x35f430=_0x2f7f3c=>{player1LastShotTime=_0x2f7f3c;},_0x49e062=_0x13e8b9=>{player1ShotsFired+=_0x13e8b9;},_0x50e17b=selectedFiringMode===_0x5a6530(0x184),_0x68e74f=()=>p1JustFiredSingle,_0x5292b7=_0x4b907e=>{p1JustFiredSingle=_0x4b907e;},_0x5b26c0=!![]);else _0x461fd9===_0x5a6530(0x158)&&ship2&&player2Lives>0x0&&!isPlayer2ShipCaptured&&!player2NeedsRespawnAfterCapture&&((!isShowingCaptureMessage||isShowingCaptureMessage&&!isPlayer2ShipCaptured)&&(_0x1f6c65=ship2,_0xc435f1=player2IsDualShipActive,_0x387548=player2LastShotTime,_0x35f430=_0x3d5654=>{player2LastShotTime=_0x3d5654;},_0x49e062=_0x4b27b0=>{player2ShotsFired+=_0x4b27b0;},isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP'?_0x50e17b=![]:(_0x50e17b=selectedFiringMode===_0x5a6530(0x184),_0x68e74f=()=>p2JustFiredSingle,_0x5292b7=_0x21ef10=>{p2JustFiredSingle=_0x21ef10;}),_0x5b26c0=!![]));}else{if(ship&&playerLives>0x0&&!isShipCaptured){_0x1f6c65=ship,_0xc435f1=isDualShipActive;if(isTwoPlayerMode&&selectedGameMode===_0x5a6530(0x14b)){if(currentPlayer===0x1){_0x387548=player1LastShotTime,_0x35f430=_0x568eba=>{player1LastShotTime=_0x568eba;},_0x49e062=_0x4685c1=>{player1ShotsFired+=_0x4685c1;},_0x50e17b=selectedFiringMode===_0x5a6530(0x184),_0x68e74f=()=>p1JustFiredSingle,_0x5292b7=_0x16dd8e=>{p1JustFiredSingle=_0x16dd8e;};if(!_0x740bf7)_0x740bf7=_0x5a6530(0xde);}else{_0x387548=player2LastShotTime,_0x35f430=_0x5b2a29=>{player2LastShotTime=_0x5b2a29;},_0x49e062=_0xdc6cc2=>{player2ShotsFired+=_0xdc6cc2;};if(isPlayerTwoAI){_0x50e17b=![];if(!_0x740bf7)_0x740bf7='ai_p2';}else{_0x50e17b=selectedFiringMode===_0x5a6530(0x184);connectedGamepadIndexP2===null&&connectedGamepadIndex!==null?(_0x68e74f=()=>p1JustFiredSingle,_0x5292b7=_0x42eef6=>{p1JustFiredSingle=_0x42eef6;}):(_0x68e74f=()=>p2JustFiredSingle,_0x5292b7=_0x6117a4=>{p2JustFiredSingle=_0x6117a4;});if(!_0x740bf7)_0x740bf7=_0x5a6530(0x158);}}}else{_0x387548=player1LastShotTime,_0x35f430=_0x233468=>{player1LastShotTime=_0x233468;},_0x49e062=_0x5eda1e=>{player1ShotsFired+=_0x5eda1e;},_0x50e17b=selectedFiringMode===_0x5a6530(0x184),_0x68e74f=()=>p1JustFiredSingle,_0x5292b7=_0x77649c=>{p1JustFiredSingle=_0x77649c;};if(!_0x740bf7)_0x740bf7='player1';}_0x5b26c0=!![];}}_0x461fd9===null&&!isManualControl&&!isCoopAIDemoActive&&ship&&playerLives>0x0&&!isShipCaptured&&!isShowingCaptureMessage&&(_0x1f6c65=ship,_0xc435f1=isDualShipActive,_0x387548=aiLastShotTime,_0x35f430=_0x45f936=>{aiLastShotTime=_0x45f936;},_0x49e062=_0x4c5845=>{player1ShotsFired+=_0x4c5845;},_0x50e17b=![],_0x5b26c0=!![],_0x740bf7='ai');if(!_0x5b26c0||!_0x1f6c65)return![];if(_0x50e17b){if(_0x536901){if(_0xd4c6e1-_0x387548<SHOOT_COOLDOWN)return![];}else{let _0x1cc2d8=![];if(_0x740bf7==='player1'||!isTwoPlayerMode&&_0x740bf7==='player1')_0x1cc2d8=keyboardP1ShootDown||connectedGamepadIndex!==null&&navigator[_0x5a6530(0x142)]()?.[connectedGamepadIndex]?.[_0x5a6530(0x178)][PS5_BUTTON_CROSS]?.[_0x5a6530(0xc8)];else{if(_0x740bf7===_0x5a6530(0x158)&&!isPlayerTwoAI){if(connectedGamepadIndexP2!==null)_0x1cc2d8=keyboardP2ShootDown||connectedGamepadIndexP2!==null&&navigator[_0x5a6530(0x142)]()?.[connectedGamepadIndexP2]?.[_0x5a6530(0x178)][PS5_BUTTON_CROSS]?.[_0x5a6530(0xc8)];else connectedGamepadIndex!==null?_0x1cc2d8=keyboardP2ShootDown||connectedGamepadIndex!==null&&navigator[_0x5a6530(0x142)]()?.[connectedGamepadIndex]?.[_0x5a6530(0x178)][PS5_BUTTON_CROSS]?.[_0x5a6530(0xc8)]:_0x1cc2d8=keyboardP2ShootDown;}}if(_0x68e74f()){if(_0x1cc2d8)return![];else _0x5292b7(![]);}if(_0xd4c6e1-_0x387548<SHOOT_COOLDOWN)return![];}}else{if(_0xd4c6e1-_0x387548<SHOOT_COOLDOWN)return![];}try{const _0x1c83dd=_0x1f6c65['y'];let _0x27cfa4=0x0;if(_0xc435f1){const _0x211033=_0x1f6c65['x']+_0x1f6c65[_0x5a6530(0xaa)]/0x2,_0x4c0113=_0x1f6c65['x']+DUAL_SHIP_OFFSET_X+_0x1f6c65[_0x5a6530(0xaa)]/0x2,_0x110f82=_0x211033-PLAYER_BULLET_WIDTH/0x2,_0x44b0d9=_0x4c0113-PLAYER_BULLET_WIDTH/0x2;bullets['push']({'x':_0x110f82,'y':_0x1c83dd,'width':PLAYER_BULLET_WIDTH,'height':PLAYER_BULLET_HEIGHT,'speed':PLAYER_BULLET_SPEED,'playerId':_0x740bf7}),bullets[_0x5a6530(0xc9)]({'x':_0x44b0d9,'y':_0x1c83dd,'width':PLAYER_BULLET_WIDTH,'height':PLAYER_BULLET_HEIGHT,'speed':PLAYER_BULLET_SPEED,'playerId':_0x740bf7}),_0x27cfa4=0x2;}else{const _0x44f2a5=_0x1f6c65['x']+_0x1f6c65[_0x5a6530(0xaa)]/0x2-PLAYER_BULLET_WIDTH/0x2;bullets['push']({'x':_0x44f2a5,'y':_0x1c83dd,'width':PLAYER_BULLET_WIDTH,'height':PLAYER_BULLET_HEIGHT,'speed':PLAYER_BULLET_SPEED,'playerId':_0x740bf7}),_0x27cfa4=0x1;}if(_0x50e17b&&!_0x536901)_0x5292b7(!![]);return playSound(_0x5a6530(0x174),![],0.4),_0x49e062(_0x27cfa4),_0x35f430(_0xd4c6e1),!![];}catch(_0xb82e35){return console[_0x5a6530(0x186)](_0x5a6530(0x182),_0xb82e35),![];}}function handlePlayerInput(){const _0x5d5fa1=_0x1d45a4;try{const _0x126b43=Date['now'](),_0x4daae0=isTwoPlayerMode&&selectedGameMode==='coop'&&level===0x1&&coopPlayersReadyStartTime>0x0&&_0x126b43<coopPlayersReadyStartTime+0x1f40;if(isCoopAIDemoActive||isPlayerTwoAI&&selectedGameMode===_0x5d5fa1(0x14b)&&currentPlayer===0x2&&!isManualControl){isCoopAIDemoActive&&(leftPressed=![],rightPressed=![],shootPressed=![],p2LeftPressed=![],p2RightPressed=![],p2ShootPressed=![]);return;}let _0x1a31fe=isPaused||!isManualControl||!gameCanvas||!isInGameState||gameOverSequenceStartTime>0x0||isShowingPlayerGameOverMessage||isTwoPlayerMode&&selectedGameMode===_0x5d5fa1(0xed)&&(isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage);if(_0x1a31fe){keyboardP1LeftDown=![],keyboardP1RightDown=![],keyboardP1ShootDown=![],keyboardP2LeftDown=![],keyboardP2RightDown=![],keyboardP2ShootDown=![],leftPressed=![],rightPressed=![],shootPressed=![],p2LeftPressed=![],p2RightPressed=![],p2ShootPressed=![],p1FireInputWasDown=![],p2FireInputWasDown=![];return;}let _0x3c9c16=0x0;if(isTouchActiveGame&&gameCanvas&&gameCanvas['width']>0x0){const _0x102a8c=gameCanvas['getBoundingClientRect'](),_0x1886e4=gameCanvas[_0x5d5fa1(0xaa)]/_0x102a8c[_0x5d5fa1(0xaa)];_0x3c9c16=(touchCurrentX-_0x102a8c['left'])*_0x1886e4;}let _0x416c2d=![],_0x3b8d18=![],_0x50cfe9=![],_0x16b002=![],_0x25db2c=![],_0x8f305b=![];if(connectedGamepadIndex!==null){const _0x2d5931=navigator[_0x5d5fa1(0x142)]();if(_0x2d5931?.[connectedGamepadIndex]){const _0x16ab82=_0x2d5931[connectedGamepadIndex],_0x860725=processSingleController(_0x16ab82,previousGameButtonStates);_0x416c2d=_0x860725[_0x5d5fa1(0xef)],_0x3b8d18=_0x860725[_0x5d5fa1(0xf2)],_0x50cfe9=_0x860725['shoot'],previousGameButtonStates=_0x860725[_0x5d5fa1(0x112)][_0x5d5fa1(0xfa)]();if(_0x860725[_0x5d5fa1(0xaf)]&&!isShowingCaptureMessage){togglePause();return;}if(_0x860725[_0x5d5fa1(0xf3)]&&!isShowingCaptureMessage){stopGameAndShowMenu();return;}}else{if(previousGameButtonStates[_0x5d5fa1(0xbb)]>0x0)previousGameButtonStates=[];}}else{if(previousGameButtonStates[_0x5d5fa1(0xbb)]>0x0)previousGameButtonStates=[];}if(!(isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x5d5fa1(0xa7))){if(isTwoPlayerMode&&connectedGamepadIndexP2!==null&&connectedGamepadIndexP2!==connectedGamepadIndex){const _0x22756f=navigator['getGamepads']();if(_0x22756f?.[connectedGamepadIndexP2]){const _0x113c02=_0x22756f[connectedGamepadIndexP2],_0xdf2881=processSingleController(_0x113c02,previousGameButtonStatesP2);_0x16b002=_0xdf2881['left'],_0x25db2c=_0xdf2881[_0x5d5fa1(0xf2)],_0x8f305b=_0xdf2881[_0x5d5fa1(0x1ab)],previousGameButtonStatesP2=_0xdf2881['newButtonStates'][_0x5d5fa1(0xfa)]();}else{if(previousGameButtonStatesP2['length']>0x0)previousGameButtonStatesP2=[];}}else{if(previousGameButtonStatesP2[_0x5d5fa1(0xbb)]>0x0)previousGameButtonStatesP2=[];}}const _0x59a25b=p1FireInputWasDown;p1FireInputWasDown=keyboardP1ShootDown||_0x50cfe9;let _0x2010bd=![];if(!(isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP')){_0x2010bd=p2FireInputWasDown;if(isTwoPlayerMode&&selectedGameMode===_0x5d5fa1(0x14b)&&currentPlayer===0x2&&!isPlayerTwoAI){if(connectedGamepadIndexP2!==null)p2FireInputWasDown=keyboardP2ShootDown||_0x8f305b;else connectedGamepadIndex!==null?p2FireInputWasDown=keyboardP2ShootDown||_0x50cfe9:p2FireInputWasDown=keyboardP2ShootDown;}else p2FireInputWasDown=keyboardP2ShootDown||_0x8f305b;}else p2FireInputWasDown=![];if(selectedFiringMode===_0x5d5fa1(0x184)){if(isTwoPlayerMode&&selectedGameMode==='coop'){if(!isTouchActiveGame){if(_0x59a25b&&!p1FireInputWasDown)p1JustFiredSingle=![];if(!isPlayerTwoAI&&_0x2010bd&&!p2FireInputWasDown)p2JustFiredSingle=![];}}else{if(isTwoPlayerMode&&selectedGameMode===_0x5d5fa1(0x14b)){if(!isTouchActiveGame){if(currentPlayer===0x1&&_0x59a25b&&!p1FireInputWasDown)p1JustFiredSingle=![];else{if(currentPlayer===0x2&&!isPlayerTwoAI){let _0x538c30=connectedGamepadIndexP2===null&&connectedGamepadIndex!==null,_0x2ea121=connectedGamepadIndexP2===null&&connectedGamepadIndex!==null;_0x538c30&&_0x2ea121?_0x59a25b&&!p1FireInputWasDown&&(p1JustFiredSingle=![]):_0x2010bd&&!p2FireInputWasDown&&(p2JustFiredSingle=![]);}}}}else{if(!isTouchActiveGame){if(_0x59a25b&&!p1FireInputWasDown)p1JustFiredSingle=![];}}}}leftPressed=![],rightPressed=![],shootPressed=![],p2LeftPressed=![],p2RightPressed=![],p2ShootPressed=![];let _0x481f80=![];if(isTouchActiveGame&&gameCanvas){if(isTwoPlayerMode&&selectedGameMode==='coop'){if(ship1&&player1Lives>0x0&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn&&!isPlayer1ShowingGameOverMessage&&!player1NeedsRespawnAfterCapture){const _0x232307=ship1[_0x5d5fa1(0xaa)]+(player1IsDualShipActive?DUAL_SHIP_OFFSET_X:0x0);let _0x253337=_0x3c9c16-_0x232307/0x2;_0x253337=Math['max'](0x0,Math[_0x5d5fa1(0x99)](gameCanvas[_0x5d5fa1(0xaa)]-_0x232307,_0x253337)),ship1['x']=_0x253337,ship1[_0x5d5fa1(0xa3)]=_0x253337,_0x481f80=!![];}}else{if(ship&&playerLives>0x0&&!isShipCaptured&&!isShowingPlayerGameOverMessage&&gameOverSequenceStartTime===0x0&&(!isPlayerTwoAI||isPlayerTwoAI&&currentPlayer===0x1)){const _0x1c11fd=ship[_0x5d5fa1(0xaa)]+(isDualShipActive?DUAL_SHIP_OFFSET_X:0x0);let _0x52c32a=_0x3c9c16-_0x1c11fd/0x2;_0x52c32a=Math[_0x5d5fa1(0x12c)](0x0,Math['min'](gameCanvas[_0x5d5fa1(0xaa)]-_0x1c11fd,_0x52c32a)),ship['x']=_0x52c32a,ship[_0x5d5fa1(0xa3)]=_0x52c32a,_0x481f80=!![];}}}if(isTwoPlayerMode&&selectedGameMode===_0x5d5fa1(0xed)){if(!_0x481f80){const _0x1bdc4b=ship1&&player1Lives>0x0&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn&&!isPlayer1ShowingGameOverMessage&&!player1NeedsRespawnAfterCapture;_0x1bdc4b&&(leftPressed=keyboardP1LeftDown||_0x416c2d,rightPressed=keyboardP1RightDown||_0x3b8d18);}if(!isPlayerTwoAI){const _0x33d22e=ship2&&player2Lives>0x0&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn&&!isPlayer2ShowingGameOverMessage&&!player2NeedsRespawnAfterCapture;_0x33d22e&&(p2LeftPressed=keyboardP2LeftDown||_0x16b002,p2RightPressed=keyboardP2RightDown||_0x25db2c);}}else{if(!_0x481f80){const _0x39b086=ship&&playerLives>0x0&&!isShipCaptured&&!isShowingPlayerGameOverMessage;if(_0x39b086){if(currentPlayer===0x1||!isTwoPlayerMode)leftPressed=keyboardP1LeftDown||_0x416c2d,rightPressed=keyboardP1RightDown||_0x3b8d18;else{if(currentPlayer===0x2&&!isPlayerTwoAI&&selectedGameMode==='normal'){if(connectedGamepadIndexP2!==null)leftPressed=keyboardP2LeftDown||_0x16b002,rightPressed=keyboardP2RightDown||_0x25db2c;else connectedGamepadIndex!==null?(leftPressed=keyboardP2LeftDown||_0x416c2d,rightPressed=keyboardP2RightDown||_0x3b8d18):(leftPressed=keyboardP2LeftDown,rightPressed=keyboardP2RightDown);}}}}}if(isTwoPlayerMode&&selectedGameMode==='coop'){const _0x48524b=ship1&&player1Lives>0x0&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn&&!isPlayer1ShowingGameOverMessage&&!player1NeedsRespawnAfterCapture&&!_0x4daae0;if(_0x48524b){let _0x4f7144=![];if(isTouchActiveGame&&selectedFiringMode===_0x5d5fa1(0x163)){if(selectedOnePlayerGameVariant===_0x5d5fa1(0xa7))_0x4f7144=!![];else!isPlayerTwoAI&&(_0x4f7144=!![]);}shootPressed=_0x4f7144||p1FireInputWasDown;if(isShowingCaptureMessage&&isPlayer1ShipCaptured)shootPressed=![];}if(!isPlayerTwoAI){const _0x169877=ship2&&player2Lives>0x0&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn&&!isPlayer2ShowingGameOverMessage&&!player2NeedsRespawnAfterCapture&&!_0x4daae0;if(_0x169877){p2ShootPressed=isTouchActiveGame&&selectedFiringMode===_0x5d5fa1(0x163)&&_0x3c9c16>gameCanvas[_0x5d5fa1(0xaa)]/0x2||p2FireInputWasDown;if(isShowingCaptureMessage&&isPlayer2ShipCaptured)p2ShootPressed=![];}}}else{const _0x3d32ed=ship&&playerLives>0x0&&!isShipCaptured&&!isShowingPlayerGameOverMessage&&!isShowingIntro&&!_0x4daae0;if(_0x3d32ed){let _0x51032d=![];if(currentPlayer===0x1||!isTwoPlayerMode)_0x51032d=p1FireInputWasDown;else currentPlayer===0x2&&!isPlayerTwoAI&&selectedGameMode===_0x5d5fa1(0x14b)&&(_0x51032d=p2FireInputWasDown);shootPressed=isTouchActiveGame&&selectedFiringMode===_0x5d5fa1(0x163)||_0x51032d;if(isShowingCaptureMessage&&isShipCaptured)shootPressed=![];}}if(isManualControl){if(isTwoPlayerMode&&selectedGameMode===_0x5d5fa1(0xed))shootPressed&&firePlayerBullet(_0x5d5fa1(0xde),![]),!isPlayerTwoAI&&p2ShootPressed&&firePlayerBullet('player2',![]);else{if(shootPressed){if(isPlayerTwoAI&&selectedGameMode==='normal'&&currentPlayer===0x2){}else firePlayerBullet(currentPlayer===0x1||!isTwoPlayerMode?_0x5d5fa1(0xde):_0x5d5fa1(0x158),![]);}}}}catch(_0x5a944e){console[_0x5d5fa1(0x186)]('Error\x20handling\x20player\x20input:',_0x5a944e),leftPressed=![],rightPressed=![],shootPressed=![],p2LeftPressed=![],p2RightPressed=![],p2ShootPressed=![],p1FireInputWasDown=![],p2FireInputWasDown=![],p1JustFiredSingle=![],p2JustFiredSingle=![];}}let aiIsCurrentlyTargetingCaptureBoss=![];function aiControl(){const _0x18879f=_0x1d45a4;try{if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x18879f(0xa7))return;let _0x4fa85b=null,_0x5b9ffe=null,_0x2cdfcb=![],_0x102151=![],_0xfb29f1=![],_0x52bad4=0x0,_0x341472='ai',_0x2ccfcc=![],_0x18e73b=![];if(isPlayerTwoAI&&selectedGameMode===_0x18879f(0x14b)&&currentPlayer===0x2){if(!ship||playerLives<=0x0||isShipCaptured||isShowingPlayerGameOverMessage){if(ship)ship[_0x18879f(0xa3)]=ship['x'];aiNeedsStabilization=!![],smoothedShipX=ship?ship['x']:gameCanvas?gameCanvas[_0x18879f(0xaa)]/0x2:0x0;return;}_0x4fa85b=ship,_0x5b9ffe=smoothedShipX,_0x2cdfcb=isDualShipActive,_0x102151=isShipCaptured,_0xfb29f1=isInvincible,_0x52bad4=playerLives,_0x341472='ai_p2',_0x2ccfcc=!![],_0x18e73b=playerLives>0x1&&!_0x2cdfcb&&!isShipCaptured;}else{if(!isManualControl&&!isPlayerTwoAI){if(playerLives<=0x0||!ship||!gameCanvas||!isInGameState||gameOverSequenceStartTime>0x0||isShowingPlayerGameOverMessage){if(ship)ship[_0x18879f(0xa3)]=ship['x'];aiNeedsStabilization=!![],smoothedShipX=ship?ship['x']:gameCanvas?gameCanvas[_0x18879f(0xaa)]/0x2:0x0;if(aiIsCurrentlyTargetingCaptureBoss)aiIsCurrentlyTargetingCaptureBoss=![];return;}if(isShipCaptured||isShowingCaptureMessage){if(ship)ship[_0x18879f(0xa3)]=ship['x'];else{if(_0x4fa85b)_0x4fa85b[_0x18879f(0xa3)]=_0x4fa85b['x'];}if(smoothedShipX!==undefined&&ship)smoothedShipX=ship['x'];else{if(smoothedShipX!==undefined&&_0x4fa85b)smoothedShipX=_0x4fa85b['x'];}aiIsCurrentlyTargetingCaptureBoss=![];return;}_0x4fa85b=ship,_0x5b9ffe=smoothedShipX,_0x2cdfcb=isDualShipActive,_0x102151=isShipCaptured,_0xfb29f1=isInvincible,_0x52bad4=playerLives,_0x18e73b=playerLives>0x1&&!_0x2cdfcb&&!isShipCaptured;}else{if(aiIsCurrentlyTargetingCaptureBoss)aiIsCurrentlyTargetingCaptureBoss=![];return;}}if(_0x5b9ffe===undefined&&_0x4fa85b)_0x5b9ffe=_0x4fa85b['x'],(_0x2ccfcc||!isManualControl&&!isPlayerTwoAI)&&(smoothedShipX=_0x5b9ffe);else{if(_0x5b9ffe===undefined&&!_0x4fa85b){_0x5b9ffe=gameCanvas?gameCanvas[_0x18879f(0xaa)]/0x2:0x0;(_0x2ccfcc||!isManualControl&&!isPlayerTwoAI)&&(smoothedShipX=_0x5b9ffe);if(aiIsCurrentlyTargetingCaptureBoss)aiIsCurrentlyTargetingCaptureBoss=![];return;}}const _0x1583d7=Date[_0x18879f(0x12f)](),_0x266e99=gameCanvas[_0x18879f(0xaa)],_0x52d162=gameCanvas[_0x18879f(0x74)];let _0x55abb0=_0x4fa85b[_0x18879f(0xaa)];_0x2cdfcb&&(_0x55abb0=DUAL_SHIP_OFFSET_X+_0x4fa85b['width']);const _0x24d042=_0x4fa85b['x']+_0x55abb0/0x2,_0x2eb6db=_0x4fa85b['y'],_0x191562=_0x266e99/0x2,_0xbb7aac=_0x191562-_0x55abb0/0x2,_0x464d5d=showReadyMessage||showCSClearMessage||showCsHitsMessage||showPerfectMessage||showCsBonusScoreMessage||showExtraLifeMessage||isCsCompletionDelayActive||isShowingCaptureMessage||isShowingIntro;let _0x24f036=_0x5b9ffe,_0x27927d=![],_0x4574cc=![],_0x46ea50=_0x5b9ffe,_0x2160da=null,_0x59ddb3=![],_0xbd31ca=![];aiNeedsStabilization&&!_0x464d5d&&(aiStabilizationEndTime=_0x1583d7+AI_STABILIZATION_DURATION,aiNeedsStabilization=![],_0x5b9ffe=_0x4fa85b['x'],(_0x2ccfcc||!isManualControl&&!isPlayerTwoAI)&&(smoothedShipX=_0x5b9ffe));const _0x5995dc=enemies[_0x18879f(0x152)](_0x4659cd=>_0x4659cd['id']===capturingBossId&&_0x4659cd[_0x18879f(0x19d)]===ENEMY3_TYPE);if(_0x18e73b&&captureBeamActive&&_0x5995dc&&_0x5995dc['state']===_0x18879f(0x133)&&!_0x102151&&!isWaitingForRespawn){if(!isManualControl&&!isPlayerTwoAI)aiIsCurrentlyTargetingCaptureBoss=!![];else _0x2ccfcc&&(_0xbd31ca=!![],aiIsCurrentlyTargetingCaptureBoss=!![]);if(aiIsCurrentlyTargetingCaptureBoss){_0x27927d=![],_0x2160da=null;const _0x37cff5=_0x5995dc['x']+_0x5995dc[_0x18879f(0xaa)]/0x2;_0x1583d7-(_0x5995dc[_0x18879f(0x183)]||0x0)>=AI_CAPTURE_BEAM_APPROACH_DELAY_MS?(_0x24f036=_0x37cff5-_0x55abb0/0x2,_0x59ddb3=!![]):(_0x24f036=_0xbb7aac,_0x59ddb3=![]);}}else aiIsCurrentlyTargetingCaptureBoss&&(!captureBeamActive||!_0x5995dc||_0x5995dc[_0x18879f(0x14f)]!==_0x18879f(0x133)||!_0x18e73b)&&(aiIsCurrentlyTargetingCaptureBoss=![],_0xbd31ca=![]);if(_0x1583d7<aiStabilizationEndTime&&!_0x464d5d&&!aiIsCurrentlyTargetingCaptureBoss)_0x24f036=_0xbb7aac;else{if(!_0x464d5d&&!aiIsCurrentlyTargetingCaptureBoss){_0x4574cc=![],_0x46ea50=_0x5b9ffe;if(!isChallengingStage&&!_0xfb29f1){let _0x5b368f=[];const _0x318f6a=isEntrancePhaseActive?ENTRANCE_BULLET_DODGE_LOOKAHEAD*1.1:FINAL_DODGE_LOOKAHEAD*1.2,_0x266153=isEntrancePhaseActive?ENTRANCE_BULLET_DODGE_BUFFER*1.1:FINAL_DODGE_BUFFER_BASE*1.2,_0x5ab37d=_0x2cdfcb?_0x318f6a*1.25:_0x318f6a,_0x277d4c=_0x2cdfcb?_0x266153*1.35:_0x266153,_0x21c11f={'x':_0x4fa85b['x']-_0x277d4c,'y':_0x4fa85b['y']-_0x5ab37d,'width':_0x55abb0+_0x277d4c*0x2,'height':_0x5ab37d+_0x4fa85b[_0x18879f(0x74)]};for(const _0x3f7d71 of enemyBullets){if(_0x3f7d71&&_0x3f7d71['y']+_0x3f7d71[_0x18879f(0x74)]>_0x4fa85b['y']-_0x4fa85b['height']*0x2&&_0x3f7d71['y']<_0x52d162){const _0x568ea2={'x':_0x3f7d71['x'],'y':_0x3f7d71['y'],'width':_0x3f7d71[_0x18879f(0xaa)],'height':_0x3f7d71[_0x18879f(0x74)]};checkCollision(_0x21c11f,_0x568ea2)&&_0x5b368f['push'](_0x3f7d71);}}if(_0x5b368f[_0x18879f(0xbb)]>0x0){_0x4574cc=!![];let _0x315f08=_0x5b9ffe,_0xf21b80=-Infinity;for(let _0x49e097=-0x1;_0x49e097<=0x1;_0x49e097+=0x2){const _0x438a9b=_0x55abb0*(_0x2cdfcb?2.6:0x2)+Math['random']()*(_0x55abb0*0.5)+(_0x5b368f['length']>0x1?_0x55abb0*0.5:0x0);let _0xc20fd1=_0x5b9ffe+_0x49e097*_0x438a9b;_0xc20fd1=Math['max'](AI_ANTI_CORNER_BUFFER,Math[_0x18879f(0x99)](_0x266e99-_0x55abb0-AI_ANTI_CORNER_BUFFER,_0xc20fd1));let _0x46c2be=0x0;const _0xc4fb33={'x':_0xc20fd1-_0x277d4c/0x2,'y':_0x4fa85b['y']-_0x5ab37d,'width':_0x55abb0+_0x277d4c,'height':_0x5ab37d+_0x4fa85b[_0x18879f(0x74)]};for(const _0xc3ac43 of _0x5b368f){checkCollision(_0xc4fb33,{'x':_0xc3ac43['x'],'y':_0xc3ac43['y'],'width':_0xc3ac43[_0x18879f(0xaa)],'height':_0xc3ac43[_0x18879f(0x74)]})&&_0x46c2be++;}let _0x7e4842=-_0x46c2be;if(Math[_0x18879f(0x9e)](_0xc20fd1-_0x5b9ffe)<_0x55abb0*0.5)_0x7e4842-=0xa;_0x7e4842>_0xf21b80&&(_0xf21b80=_0x7e4842,_0x315f08=_0xc20fd1);}_0x46ea50=_0x315f08;}if(!_0x4574cc){const _0x2e7b9d=AI_COLLISION_LOOKAHEAD*(_0x2cdfcb?1.85:1.5),_0x14f4ab=FINAL_DODGE_BUFFER_BASE*(_0x2cdfcb?1.85:1.5);for(const _0x31d4d2 of enemies){if(_0x31d4d2&&(_0x31d4d2[_0x18879f(0x14f)]===_0x18879f(0x177)||_0x31d4d2[_0x18879f(0x14f)]===_0x18879f(0x7b)||_0x31d4d2[_0x18879f(0x14f)]===_0x18879f(0x1a2)||_0x31d4d2['state']===_0x18879f(0x100))&&_0x31d4d2['y']+_0x31d4d2[_0x18879f(0x74)]>_0x4fa85b['y']-_0x2e7b9d/0x2&&_0x31d4d2['y']<_0x4fa85b['y']+_0x4fa85b[_0x18879f(0x74)]){const _0x2cce26={'x':_0x4fa85b['x']-_0x14f4ab,'y':_0x4fa85b['y']-_0x2e7b9d,'width':_0x55abb0+_0x14f4ab*0x2,'height':_0x2e7b9d+_0x4fa85b[_0x18879f(0x74)]},_0x343f86={'x':_0x31d4d2['x'],'y':_0x31d4d2['y'],'width':_0x31d4d2[_0x18879f(0xaa)],'height':_0x31d4d2['height']};if(checkCollision(_0x2cce26,_0x343f86)){_0x4574cc=!![];const _0x4e22c9=_0x31d4d2['x']+_0x31d4d2[_0x18879f(0xaa)]/0x2,_0x1a6682=_0x24d042<_0x4e22c9?-0x1:0x1,_0x8d3005=_0x55abb0*(_0x2cdfcb?2.9:2.2)+Math[_0x18879f(0x107)]()*(_0x55abb0*0.6);_0x46ea50=_0x5b9ffe+_0x1a6682*_0x8d3005;break;}}}}}if(_0x4574cc)_0x24f036=Math['max'](AI_ANTI_CORNER_BUFFER,Math[_0x18879f(0x99)](_0x266e99-_0x55abb0-AI_ANTI_CORNER_BUFFER,_0x46ea50)),_0x2160da=null,_0x27927d=![];else{if(fallingShips[_0x18879f(0xbb)]>0x0&&!_0x102151&&!isWaitingForRespawn&&!_0x2cdfcb){let _0x3acd43=null,_0x252b76=Infinity;for(const _0x3ee755 of fallingShips){let _0x22e843=![];if(!isManualControl&&!isPlayerTwoAI||isPlayerTwoAI&&selectedGameMode===_0x18879f(0x14b)&&currentPlayer===0x2){if(_0x2ccfcc&&_0x3ee755[_0x18879f(0x161)]===_0x18879f(0xde))_0x22e843=!![];else!isManualControl&&!isPlayerTwoAI&&_0x3ee755[_0x18879f(0x161)]===_0x18879f(0xde)&&(_0x22e843=!![]);if(!_0x3acd43&&!_0x22e843)_0x22e843=!![];}if(_0x3ee755&&!_0x3ee755[_0x18879f(0xa8)]&&_0x22e843){const _0xc8f1a9=Math[_0x18879f(0x9e)](_0x3ee755['x']+_0x3ee755[_0x18879f(0xaa)]/0x2-_0x24d042)+Math[_0x18879f(0x9e)](_0x3ee755['y']-_0x4fa85b['y']);_0xc8f1a9<_0x252b76&&(_0x252b76=_0xc8f1a9,_0x3acd43=_0x3ee755);}}_0x3acd43&&(_0x24f036=_0x3acd43['x']+_0x3acd43[_0x18879f(0xaa)]/0x2-_0x55abb0/0x2,_0x27927d=![],_0x2160da=null);}else{if(!_0x59ddb3){_0x2160da=null;let _0xb5ab8d=-Infinity;for(const _0x27cf86 of enemies){if(!_0x27cf86)continue;let _0x3d728b=![];aiIsCurrentlyTargetingCaptureBoss&&_0x27cf86['id']===capturingBossId&&(_0x3d728b=!![]);let _0x4f5336=0x0;const _0x239c92=_0x27cf86['x']+_0x27cf86[_0x18879f(0xaa)]/0x2,_0x258528=_0x239c92-_0x24d042,_0x3b2350=_0x2eb6db-(_0x27cf86['y']+_0x27cf86[_0x18879f(0x74)]);if(_0x3b2350<0x0&&_0x27cf86['state']!=='attacking'&&_0x27cf86[_0x18879f(0x14f)]!==_0x18879f(0x7b)&&_0x27cf86['state']!==_0x18879f(0x100))continue;_0x4f5336=(_0x52d162-_0x27cf86['y'])*0x2-Math[_0x18879f(0x9e)](_0x258528)*0x3-_0x3b2350;if(_0x27cf86['state']===_0x18879f(0x177)||_0x27cf86['state']===_0x18879f(0x7b))_0x4f5336+=0xbb8;if(_0x27cf86['type']===ENEMY3_TYPE&&!_0x27cf86['isDamaged'])_0x4f5336+=0x7d0;if(_0x27cf86[_0x18879f(0x19d)]===ENEMY3_TYPE&&_0x27cf86[_0x18879f(0x194)])_0x4f5336+=0xfa0;if(_0x27cf86['type']===ENEMY3_TYPE&&_0x27cf86[_0x18879f(0x19f)])_0x4f5336+=0x1388;_0x4f5336>_0xb5ab8d&&(_0xb5ab8d=_0x4f5336,_0x2160da=_0x27cf86);}if(_0x2160da){const _0x547231=_0x2160da['x']+_0x2160da[_0x18879f(0xaa)]/0x2;_0x24f036=_0x547231-_0x55abb0/0x2;const _0x41fa03=1.8;let _0x2e634a;if(isChallengingStage)_0x2e634a=_0x55abb0*2.5;else _0x2160da[_0x18879f(0x14f)]===_0x18879f(0x80)||_0x2160da['state']===_0x18879f(0x13d)?_0x2e634a=_0x55abb0*(GRID_SHOOT_ALIGNMENT_FACTOR*_0x41fa03):_0x2e634a=_0x55abb0*(FINAL_SHOOT_ALIGNMENT_THRESHOLD*_0x41fa03);const _0x4d6ca5=Math['abs'](_0x24d042-_0x547231);let _0x583de0=![];if(aiIsCurrentlyTargetingCaptureBoss&&_0x2160da['id']===capturingBossId)_0x583de0=!![];else _0x18e73b&&_0x2160da[_0x18879f(0x19d)]===ENEMY3_TYPE&&!_0x2160da[_0x18879f(0x19f)]&&!captureAttemptMadeThisLevel&&!isFullGridWave&&(_0x2160da[_0x18879f(0x14f)]===_0x18879f(0x80)||_0x2160da[_0x18879f(0x14f)]==='preparing_capture'||_0x2160da[_0x18879f(0x14f)]===_0x18879f(0x7b)||_0x2160da[_0x18879f(0x14f)]===_0x18879f(0x133)&&_0x2160da['id']===capturingBossId)&&(_0x583de0=!![]);_0x4d6ca5<_0x2e634a&&!_0x583de0&&(_0x27927d=!![]);}else _0x24f036=_0xbb7aac,_0x27927d=![];}}}}else aiIsCurrentlyTargetingCaptureBoss&&_0x464d5d&&(_0x27927d=![],_0x2160da=null);}if(_0x4fa85b){_0x5b9ffe+=(_0x24f036-_0x5b9ffe)*AI_SMOOTHING_FACTOR_MOVE,_0x4fa85b[_0x18879f(0xa3)]=_0x5b9ffe;if(_0x2ccfcc)smoothedShipX=_0x5b9ffe;else!isManualControl&&!isPlayerTwoAI&&(smoothedShipX=_0x5b9ffe);}aiIsCurrentlyTargetingCaptureBoss&&(_0x27927d=![]);if(_0x27927d&&!_0x4574cc&&!_0x59ddb3&&!_0x464d5d){let _0xc72509=![];_0x2ccfcc?_0xc72509=!![]:_0x1583d7>=aiCanShootTime&&(_0xc72509=!![]),_0xc72509&&!isShowingIntro&&(firePlayerBullet(_0x341472,![])&&(!_0x2ccfcc&&(aiCanShootTime=_0x1583d7+SHOOT_COOLDOWN)));}}catch(_0x287a69){console[_0x18879f(0x186)](_0x18879f(0x132),_0x287a69,_0x287a69[_0x18879f(0x13f)]);ship&&(ship[_0x18879f(0xa3)]=ship['x']);aiNeedsStabilization=!![],smoothedShipX=ship?ship['x']:gameCanvas?gameCanvas[_0x18879f(0xaa)]/0x2:0x0;if(aiIsCurrentlyTargetingCaptureBoss)aiIsCurrentlyTargetingCaptureBoss=![];}}function aiControlCoop(){const _0x4c210a=_0x1d45a4;if(!(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP')||isPaused||!gameCanvas||!isInGameState||gameOverSequenceStartTime>0x0){if(ship1)ship1[_0x4c210a(0xa3)]=ship1['x'];if(ship2)ship2[_0x4c210a(0xa3)]=ship2['x'];return;}const _0x2b85d2=Date[_0x4c210a(0x12f)](),_0x59db2e=gameCanvas[_0x4c210a(0xaa)],_0x18a99c=isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP',_0x392f59=ship1&&player1Lives>0x0&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn&&!isPlayer1ShowingGameOverMessage&&!player1NeedsRespawnAfterCapture,_0x4488bd=ship2&&player2Lives>0x0&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn&&!isPlayer2ShowingGameOverMessage&&!player2NeedsRespawnAfterCapture,_0xb0af70=_0x20defc=>{const _0x46012e=_0x20defc==='p1'&&isPlayer1ShowingGameOverMessage||_0x20defc==='p2'&&isPlayer2ShowingGameOverMessage;return _0x46012e||showReadyMessage||isCsCompletionDelayActive||isShowingIntro&&!(level===0x1&&coopPlayersReadyStartTime>0x0&&(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP'));};let _0x56bb54=!![],_0xdc837d=!![];if(coopAICaptureDiveAnticipationActive&&_0x2b85d2<coopAICaptureDiveAnticipationEndTime){if(!_0x18a99c)_0x56bb54=![];_0xdc837d=![];}else coopAICaptureDiveAnticipationActive&&(coopAICaptureDiveAnticipationActive=![],coopAICaptureDiveAnticipationEndTime=0x0);if(_0x392f59&&ship1&&!_0x18a99c){if(smoothedShip1X===undefined)smoothedShip1X=ship1['x'];const _0x5f490c=_0xb0af70('p1');let {desiredTargetX:_0x2b169d,shouldTryShoot:_0x45178e,targetEnemyForAI:_0x1480ae}=calculateAIDesiredState(ship1,smoothedShip1X,player1IsDualShipActive,enemies,enemyBullets,fallingShips,isPlayer1Invincible,isPlayer1ShipCaptured,isPlayer1WaitingForRespawn,_0x2b85d2,_0x59db2e,_0x5f490c,'p1');aiShip1TargetEnemy=_0x1480ae,smoothedShip1X+=(_0x2b169d-smoothedShip1X)*AI_SMOOTHING_FACTOR_MOVE,ship1['targetX']=smoothedShip1X;const _0x5c4e98=_0x1480ae&&_0x1480ae[_0x4c210a(0x19d)]===ENEMY3_TYPE&&_0x1480ae[_0x4c210a(0x19f)]&&_0x1480ae['id']===capturedBossIdWithMessage&&isPlayer2ShipCaptured;if(_0x45178e&&_0x56bb54&&!(isShowingCaptureMessage&&isPlayer1ShipCaptured)){if(_0x5c4e98||_0x2b85d2>=aiShip1CanShootTime){fireCoopAIBullet(ship1,player1IsDualShipActive,_0x4c210a(0xde));if(!_0x5c4e98)aiShip1CanShootTime=_0x2b85d2+SHOOT_COOLDOWN;else aiShip1CanShootTime=_0x2b85d2+SHOOT_COOLDOWN/0x2;}}}if(_0x4488bd&&ship2){if(smoothedShip2X===undefined)smoothedShip2X=ship2['x'];const _0x1a6393=_0xb0af70('p2');let {desiredTargetX:_0x12c146,shouldTryShoot:_0x534dbb,targetEnemyForAI:_0x157e2e}=calculateAIDesiredState(ship2,smoothedShip2X,player2IsDualShipActive,enemies,enemyBullets,fallingShips,isPlayer2Invincible,isPlayer2ShipCaptured,isPlayer2WaitingForRespawn,_0x2b85d2,_0x59db2e,_0x1a6393,_0x4c210a(0x75));aiShip2TargetEnemy=_0x157e2e,smoothedShip2X+=(_0x12c146-smoothedShip2X)*AI_SMOOTHING_FACTOR_MOVE,ship2[_0x4c210a(0xa3)]=smoothedShip2X;const _0x5923e3=_0x157e2e&&_0x157e2e[_0x4c210a(0x19d)]===ENEMY3_TYPE&&_0x157e2e[_0x4c210a(0x19f)]&&_0x157e2e['id']===capturedBossIdWithMessage&&isPlayer1ShipCaptured;if(_0x534dbb&&_0xdc837d&&!(isShowingCaptureMessage&&isPlayer2ShipCaptured)){if(_0x5923e3||_0x2b85d2>=aiShip2CanShootTime){fireCoopAIBullet(ship2,player2IsDualShipActive,isCoopAIDemoActive?_0x4c210a(0x158):_0x4c210a(0x75));if(!_0x5923e3)aiShip2CanShootTime=_0x2b85d2+SHOOT_COOLDOWN;else aiShip2CanShootTime=_0x2b85d2+SHOOT_COOLDOWN/0x2;}}}}function fireCoopAIBullet(_0x96dd24,_0x5bb3e5,_0x1a54cd){const _0x3dd5c3=_0x1d45a4;if(!_0x96dd24)return![];const _0x4e297d=Date['now']();let _0x5b15bd=![];if(_0x1a54cd===_0x3dd5c3(0xde)&&isPlayer1ShowingGameOverMessage)_0x5b15bd=!![];if((_0x1a54cd==='player2'||_0x1a54cd===_0x3dd5c3(0x75))&&isPlayer2ShowingGameOverMessage)_0x5b15bd=!![];let _0x2f9fbe=isPaused||!isInGameState||gameOverSequenceStartTime>0x0||_0x5b15bd;if(_0x2f9fbe)return![];if(_0x1a54cd===_0x3dd5c3(0xde)&&isPlayer1ShipCaptured)return![];if((_0x1a54cd===_0x3dd5c3(0x158)||_0x1a54cd===_0x3dd5c3(0x75))&&isPlayer2ShipCaptured)return![];try{const _0x9b9d11=_0x96dd24['y'];let _0x1c719a=0x0;const _0x12c5a1=_0x1a54cd;if(_0x5bb3e5){const _0x10b5fe=_0x96dd24['x']+_0x96dd24['width']/0x2,_0x34230e=_0x96dd24['x']+DUAL_SHIP_OFFSET_X+_0x96dd24[_0x3dd5c3(0xaa)]/0x2,_0xc51820=_0x10b5fe-PLAYER_BULLET_WIDTH/0x2,_0x3133b1=_0x34230e-PLAYER_BULLET_WIDTH/0x2;bullets[_0x3dd5c3(0xc9)]({'x':_0xc51820,'y':_0x9b9d11,'width':PLAYER_BULLET_WIDTH,'height':PLAYER_BULLET_HEIGHT,'speed':PLAYER_BULLET_SPEED,'playerId':_0x12c5a1}),bullets[_0x3dd5c3(0xc9)]({'x':_0x3133b1,'y':_0x9b9d11,'width':PLAYER_BULLET_WIDTH,'height':PLAYER_BULLET_HEIGHT,'speed':PLAYER_BULLET_SPEED,'playerId':_0x12c5a1}),_0x1c719a=0x2;}else{const _0x28be34=_0x96dd24['x']+_0x96dd24[_0x3dd5c3(0xaa)]/0x2-PLAYER_BULLET_WIDTH/0x2;bullets['push']({'x':_0x28be34,'y':_0x9b9d11,'width':PLAYER_BULLET_WIDTH,'height':PLAYER_BULLET_HEIGHT,'speed':PLAYER_BULLET_SPEED,'playerId':_0x12c5a1}),_0x1c719a=0x1;}playSound(_0x3dd5c3(0x174),![],0.4);if(_0x1a54cd==='player1')player1ShotsFired+=_0x1c719a,player1LastShotTime=_0x4e297d,aiShip1LastShotTime=_0x4e297d;else(_0x1a54cd===_0x3dd5c3(0x158)||_0x1a54cd===_0x3dd5c3(0x75))&&(player2ShotsFired+=_0x1c719a,player2LastShotTime=_0x4e297d,aiShip2LastShotTime=_0x4e297d);return!![];}catch(_0x5f5629){return console[_0x3dd5c3(0x186)]('Error\x20creating\x20CO-OP\x20AI\x20bullet\x20for\x20'+_0x1a54cd+':',_0x5f5629),![];}}function calculateAIDesiredState(_0x18cff4,_0x4c4237,_0x43f4f6,_0x264865,_0x4b991a,_0x307032,_0xa55bba,_0x5851a3,_0x4f33b0,_0x777928,_0x13c495,_0x88800e,_0x282631){const _0x347a8d=_0x1d45a4;let _0x23c202=_0x4c4237,_0x4924d6=![],_0x522185=null,_0x3b79be=![],_0x23e7f1=![],_0x2c3aa3=![],_0x432d9d=![];const _0x2293d6=gameCanvas['height'],_0x5c5c39=_0x18cff4[_0x347a8d(0xaa)]+(_0x43f4f6?DUAL_SHIP_OFFSET_X:0x0),_0x30a712=_0x18cff4['x']+_0x5c5c39/0x2,_0x363fae=_0x18cff4['y'],_0x826d31=_0x282631==='p1'?player1Lives:_0x282631===_0x347a8d(0x75)||_0x282631==='p2'?player2Lives:0x0,_0x1052e9=_0x826d31>0x1&&!_0x43f4f6&&!_0x5851a3;let _0x33ecc4=_0x13c495/0x2;const _0xf67c4e=isShowingIntro||isShowingCoopPlayersReady,_0x4a05f4=isCoopAIDemoActive&&_0xf67c4e&&!(isChallengingStage&&isEntrancePhaseActive),_0x3df8ef=isCoopAIDemoActive&&(_0x282631==='p1'&&player1Lives>0x0&&player2Lives<=0x0||(_0x282631===_0x347a8d(0x75)||_0x282631==='p2')&&player2Lives>0x0&&player1Lives<=0x0);if(_0x4a05f4&&_0x3df8ef)_0x33ecc4=_0x13c495/0x2;else{if(_0x282631==='p1')_0x33ecc4=_0x13c495*0.25+Math['sin'](_0x777928/(AI_WIGGLE_PERIOD*1.1))*(AI_WIGGLE_AMPLITUDE*0.8);else(_0x282631===_0x347a8d(0x75)||_0x282631==='p2')&&(_0x33ecc4=_0x13c495*0.75+Math['cos'](_0x777928/(AI_WIGGLE_PERIOD*0.9))*(AI_WIGGLE_AMPLITUDE*0.8));}let _0x339239=_0x33ecc4-_0x5c5c39/0x2;if(_0x88800e||_0x5851a3||_0x4f33b0||_0x282631==='p1'&&player1NeedsRespawnAfterCapture||(_0x282631==='ai_p2'||_0x282631==='p2')&&player2NeedsRespawnAfterCapture)return _0x4a05f4&&_0x3df8ef?_0x23c202=_0x339239:_0x23c202=_0x339239,(_0x5851a3||_0x4f33b0||_0x282631==='p1'&&player1NeedsRespawnAfterCapture||(_0x282631===_0x347a8d(0x75)||_0x282631==='p2')&&player2NeedsRespawnAfterCapture)&&(_0x23c202=_0x18cff4['x']),{'desiredTargetX':_0x23c202,'shouldTryShoot':![],'targetEnemyForAI':null};const _0x49ad41=_0x282631==='p1'?_0x347a8d(0x75):'p1',_0x3a97af=_0x49ad41==='p1'&&isPlayer1ShipCaptured||_0x49ad41===_0x347a8d(0x75)&&isPlayer2ShipCaptured,_0x4240bc=_0x49ad41==='p1'&&isPlayer1ShowingGameOverMessage||_0x49ad41===_0x347a8d(0x75)&&isPlayer2ShowingGameOverMessage;let _0x3dc16e=null,_0x1f5b7a=!![];if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x347a8d(0xa7)){if(_0x3a97af&&!_0x4240bc&&capturedBossIdWithMessage){const _0x2d1875=_0x49ad41==='p1'?coopPartner1CapturedTime:coopPartner2CapturedTime;_0x2d1875>0x0&&_0x777928-_0x2d1875<COOP_AI_SAVE_PARTNER_DELAY_MS&&(_0x1f5b7a=![]),_0x3dc16e=_0x264865[_0x347a8d(0x152)](_0x24dd0a=>_0x24dd0a['id']===capturedBossIdWithMessage&&_0x24dd0a['type']===ENEMY3_TYPE&&_0x24dd0a['hasCapturedShip']);}}if(_0x3dc16e&&!_0x43f4f6&&_0x1f5b7a){_0x2c3aa3=!![],_0x522185=_0x3dc16e;const _0x5a9876=_0x3dc16e['x']+_0x3dc16e[_0x347a8d(0xaa)]/0x2;_0x23c202=_0x5a9876-_0x5c5c39/0x2,_0x4924d6=!![],_0x3b79be=![];if(!_0xa55bba){let _0x3b488e=[];const _0x4d4d15=FINAL_DODGE_LOOKAHEAD*0.4,_0x3c4242=FINAL_DODGE_BUFFER_BASE*0.3,_0x104737={'x':Math[_0x347a8d(0x99)](_0x30a712,_0x5a9876)-_0x3c4242,'y':_0x18cff4['y']-_0x4d4d15,'width':Math[_0x347a8d(0x9e)](_0x30a712-_0x5a9876)+_0x5c5c39+_0x3c4242*0x2,'height':_0x4d4d15+_0x18cff4[_0x347a8d(0x74)]};for(const _0x7a495 of _0x4b991a){if(_0x7a495&&_0x7a495['y']+_0x7a495[_0x347a8d(0x74)]>_0x18cff4['y']-_0x18cff4[_0x347a8d(0x74)]&&_0x7a495['y']<_0x2293d6){const _0x182b9e={'x':_0x7a495['x'],'y':_0x7a495['y'],'width':_0x7a495[_0x347a8d(0xaa)],'height':_0x7a495[_0x347a8d(0x74)]};checkCollision(_0x104737,_0x182b9e)&&_0x3b488e[_0x347a8d(0xc9)](_0x7a495);}}if(_0x3b488e['length']>0x0){_0x3b79be=!![];const _0x1aca2d=_0x4c4237<_0x13c495/0x2?-0x1:0x1;_0x23c202=_0x4c4237+_0x1aca2d*(_0x5c5c39*0.6),_0x4924d6=![];}}return _0x23c202=Math[_0x347a8d(0x12c)](AI_EDGE_BUFFER,Math[_0x347a8d(0x99)](_0x13c495-_0x5c5c39-AI_EDGE_BUFFER,_0x23c202)),{'desiredTargetX':_0x23c202,'shouldTryShoot':_0x4924d6,'targetEnemyForAI':_0x522185};}if(!isChallengingStage&&!_0xa55bba){let _0x3932b5=[];const _0x43acb0=isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP'?1.6:0.8,_0x5a49f6=isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x347a8d(0xa7)?1.7:0.8,_0x5c619b=FINAL_DODGE_LOOKAHEAD*_0x43acb0*(_0x43f4f6?1.25:0x1),_0x2b9032=FINAL_DODGE_BUFFER_BASE*_0x5a49f6*(_0x43f4f6?1.35:0x1),_0x44729b={'x':_0x18cff4['x']-_0x2b9032,'y':_0x18cff4['y']-_0x5c619b,'width':_0x5c5c39+_0x2b9032*0x2,'height':_0x5c619b+_0x18cff4['height']};for(const _0xdf6010 of _0x4b991a){if(_0xdf6010&&_0xdf6010['y']+_0xdf6010[_0x347a8d(0x74)]>_0x18cff4['y']-_0x18cff4['height']*1.5&&_0xdf6010['y']<_0x2293d6){const _0x16e29d={'x':_0xdf6010['x'],'y':_0xdf6010['y'],'width':_0xdf6010['width'],'height':_0xdf6010[_0x347a8d(0x74)]};checkCollision(_0x44729b,_0x16e29d)&&_0x3932b5[_0x347a8d(0xc9)](_0xdf6010);}}if(_0x3932b5[_0x347a8d(0xbb)]>0x0){_0x3b79be=!![];let _0x54a683=_0x4c4237;const _0x2186f0=isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x347a8d(0xa7)?0x3:0x2,_0x1c79cc=_0x5c5c39*_0x2186f0*(_0x43f4f6?1.3:0x1);let _0x32d159=0x0,_0x256e12=0x0,_0xb95fa7=0x0;const _0x4362d5=_0x18cff4['x']+_0x5c5c39/0x2;for(const _0x4acaac of _0x3932b5){if(_0x4acaac['x']<_0x4362d5-_0x5c5c39*0.5)_0x256e12++;else{if(_0x4acaac['x']>_0x4362d5+_0x5c5c39*0.5)_0xb95fa7++;else _0x32d159++;}}if(_0x256e12<=_0xb95fa7&&_0x256e12<=_0x32d159)_0x54a683=_0x4c4237-_0x1c79cc-Math['random']()*_0x5c5c39*0.4;else{if(_0xb95fa7<=_0x256e12&&_0xb95fa7<=_0x32d159)_0x54a683=_0x4c4237+_0x1c79cc+Math['random']()*_0x5c5c39*0.4;else{if(_0x4c4237<_0x33ecc4)_0x54a683=_0x33ecc4+_0x1c79cc+Math[_0x347a8d(0x107)]()*_0x5c5c39*0.7;else _0x54a683=_0x33ecc4-_0x1c79cc-Math[_0x347a8d(0x107)]()*_0x5c5c39*0.7;}}_0x23c202=_0x54a683;}if(!_0x3b79be){const _0x4ac732=isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x347a8d(0xa7)?0x1:0.75,_0xf0ce9e=isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x347a8d(0xa7)?0x1:0.8,_0x2f828f=AI_COLLISION_LOOKAHEAD*_0x4ac732*(_0x43f4f6?1.3:0x1),_0x28ff08=AI_COLLISION_BUFFER*_0xf0ce9e*(_0x43f4f6?1.4:0x1);for(const _0x1d4d89 of _0x264865){if(!_0x1d4d89)continue;if(!_0x1f5b7a&&_0x3dc16e&&_0x1d4d89['id']===_0x3dc16e['id'])continue;if((_0x1d4d89['state']==='attacking'||_0x1d4d89[_0x347a8d(0x14f)]===_0x347a8d(0x7b))&&_0x1d4d89['y']+_0x1d4d89[_0x347a8d(0x74)]>_0x363fae-_0x2f828f&&_0x1d4d89['y']<_0x363fae+_0x18cff4[_0x347a8d(0x74)]*1.5){const _0x2c862a={'x':_0x18cff4['x']-_0x28ff08,'y':_0x18cff4['y']-_0x2f828f,'width':_0x5c5c39+_0x28ff08*0x2,'height':_0x2f828f+_0x18cff4[_0x347a8d(0x74)]},_0x22a223={'x':_0x1d4d89['x'],'y':_0x1d4d89['y'],'width':_0x1d4d89[_0x347a8d(0xaa)],'height':_0x1d4d89['height']};if(checkCollision(_0x2c862a,_0x22a223)){_0x3b79be=!![],_0x522185=null,_0x4924d6=![];const _0xcc80ea=_0x1d4d89['x']+_0x1d4d89[_0x347a8d(0xaa)]/0x2,_0x17ac4e=isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x347a8d(0xa7)?2.2:1.9;_0x23c202=_0x4c4237+(_0x30a712<_0xcc80ea?-0x1:0x1)*(_0x5c5c39*_0x17ac4e*(_0x43f4f6?1.35:0x1));break;}}}}}if(!_0x3b79be&&_0x1052e9&&captureBeamActive&&capturingBossId&&!_0x5851a3){if(aiPlayerActivelySeekingCaptureById===null||aiPlayerActivelySeekingCaptureById===_0x282631){const _0x4f80b8=_0x264865[_0x347a8d(0x152)](_0x455c87=>_0x455c87['id']===capturingBossId);if(_0x4f80b8&&_0x4f80b8[_0x347a8d(0x14f)]==='capturing'){aiPlayerActivelySeekingCaptureById===null&&(aiPlayerActivelySeekingCaptureById=_0x282631);if(aiPlayerActivelySeekingCaptureById===_0x282631){if(_0x777928-(_0x4f80b8[_0x347a8d(0x183)]||0x0)>=AI_CAPTURE_BEAM_APPROACH_DELAY_MS){_0x432d9d=!![];const _0x2c0363=_0x4f80b8['x']+(_0x4f80b8['type']===ENEMY3_TYPE?BOSS_WIDTH:ENEMY_WIDTH)/0x2;_0x23c202=_0x2c0363-_0x5c5c39/0x2,_0x4924d6=![],_0x522185=null;}else _0x23c202=_0x339239,_0x4924d6=![],_0x522185=null;}}else aiPlayerActivelySeekingCaptureById===_0x282631&&(aiPlayerActivelySeekingCaptureById=null);}}else aiPlayerActivelySeekingCaptureById===_0x282631&&!(_0x1052e9&&captureBeamActive&&capturingBossId&&!_0x5851a3)&&(aiPlayerActivelySeekingCaptureById=null);if(!_0x3b79be&&!_0x432d9d&&!_0x43f4f6){const _0x5e2a22=_0x307032[_0x347a8d(0x152)](_0x443af9=>_0x443af9[_0x347a8d(0x161)]===_0x282631&&!_0x443af9[_0x347a8d(0xa8)]);_0x5e2a22&&(_0x23e7f1=!![],_0x23c202=_0x5e2a22['x']+_0x5e2a22[_0x347a8d(0xaa)]/0x2-_0x5c5c39/0x2,_0x4924d6=![],_0x522185=null);}if(!_0x3b79be&&!_0x432d9d&&!_0x23e7f1&&!_0x2c3aa3){let _0x1607c3=-Infinity,_0x39a33d=![],_0x47c987=null;for(const _0x49ad26 of _0x264865){if(!_0x49ad26)continue;if(!_0x1f5b7a&&_0x3dc16e&&_0x49ad26['id']===_0x3dc16e['id'])continue;if(_0x432d9d&&_0x49ad26['id']===capturingBossId&&aiPlayerActivelySeekingCaptureById===_0x282631)continue;let _0x359c76=![];if(_0x49ad26[_0x347a8d(0x19d)]===ENEMY3_TYPE&&_0x49ad26[_0x347a8d(0x19f)]&&_0x826d31<=0x1){const _0x4b7035=(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x347a8d(0xa7))&&_0x49ad26['id']===capturedBossIdWithMessage&&_0x3a97af;!_0x4b7035&&(_0x359c76=!![]);}let _0x27eb21=0x0;const _0x3ec7aa=_0x49ad26['x']+_0x49ad26[_0x347a8d(0xaa)]/0x2,_0x4c0d88=_0x3ec7aa-_0x30a712,_0x10ec91=_0x363fae-(_0x49ad26['y']+_0x49ad26[_0x347a8d(0x74)]);if(_0x10ec91<0x0&&_0x49ad26['state']!==_0x347a8d(0x177)&&_0x49ad26[_0x347a8d(0x14f)]!=='diving_to_capture_position'&&_0x49ad26['state']!==_0x347a8d(0x100))continue;let _0x5331d9=0x0;if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x347a8d(0xa7)){if(_0x282631==='p1'&&_0x3ec7aa<_0x13c495/0x2)_0x5331d9=0x1388;else{if((_0x282631===_0x347a8d(0x75)||_0x282631==='p2')&&_0x3ec7aa>=_0x13c495/0x2)_0x5331d9=0x1388;}}_0x27eb21=_0x5331d9+(_0x2293d6-_0x49ad26['y'])*0x2-Math[_0x347a8d(0x9e)](_0x4c0d88)*0x3-_0x10ec91;if(_0x49ad26['state']===_0x347a8d(0x177)||_0x49ad26[_0x347a8d(0x14f)]===_0x347a8d(0x7b))_0x27eb21+=0xbb8;if(_0x49ad26[_0x347a8d(0x19d)]===ENEMY3_TYPE&&!_0x49ad26['isDamaged'])_0x27eb21+=0x7d0;if(_0x49ad26[_0x347a8d(0x19d)]===ENEMY3_TYPE&&_0x49ad26[_0x347a8d(0x194)])_0x27eb21+=0xfa0;_0x49ad26[_0x347a8d(0x19d)]===ENEMY3_TYPE&&_0x49ad26[_0x347a8d(0x19f)]&&(!_0x359c76?_0x27eb21+=0x1388:_0x27eb21-=0x2710);if(_0x27eb21>_0x1607c3){_0x1607c3=_0x27eb21,_0x47c987=_0x49ad26;let _0x30bdde=![];if(_0x47c987[_0x347a8d(0x19d)]===ENEMY3_TYPE&&!_0x47c987[_0x347a8d(0x19f)]&&!isFullGridWave){if(_0x1052e9&&!captureAttemptMadeThisLevel&&(_0x47c987[_0x347a8d(0x14f)]===_0x347a8d(0x80)||_0x47c987[_0x347a8d(0x14f)]===_0x347a8d(0x13d)||_0x47c987['state']===_0x347a8d(0x7b)||_0x47c987[_0x347a8d(0x14f)]===_0x347a8d(0x133))){if(_0x432d9d&&_0x47c987['id']===capturingBossId&&aiPlayerActivelySeekingCaptureById===_0x282631)_0x30bdde=!![];else!_0x432d9d&&aiPlayerActivelySeekingCaptureById!==_0x282631&&(_0x30bdde=!![]);}if(_0x43f4f6){const _0x2923e5=_0x282631==='p1'?_0x347a8d(0x75):'p1';let _0x2caf72=![];_0x2923e5==='p1'?ship1&&player1Lives>0x0&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn&&!isPlayer1ShowingGameOverMessage&&!player1NeedsRespawnAfterCapture&&!player1IsDualShipActive&&(_0x2caf72=!![]):ship2&&player2Lives>0x0&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn&&!isPlayer2ShowingGameOverMessage&&!player2NeedsRespawnAfterCapture&&!player2IsDualShipActive&&(_0x2caf72=!![]),_0x2caf72&&(_0x30bdde=!![]);}}if(_0x359c76&&_0x47c987===_0x49ad26)Math['abs'](_0x30a712-(_0x47c987['x']+_0x47c987['width']/0x2))<_0x5c5c39*1.1?_0x39a33d=!![]:_0x39a33d=![];else{if(_0x30bdde)_0x39a33d=![];else Math[_0x347a8d(0x9e)](_0x30a712-(_0x47c987['x']+_0x47c987[_0x347a8d(0xaa)]/0x2))<_0x5c5c39*0.9?_0x39a33d=!![]:_0x39a33d=![];}}}_0x522185=_0x47c987,_0x4924d6=_0x39a33d;if(_0x522185){let _0x4e8ba7=![];if(_0x522185[_0x347a8d(0x19d)]===ENEMY3_TYPE&&_0x522185['hasCapturedShip']&&_0x826d31<=0x1){const _0x52067d=(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x347a8d(0xa7))&&_0x522185['id']===capturedBossIdWithMessage&&_0x3a97af;!_0x52067d&&(_0x4e8ba7=!![]);}if(_0x4e8ba7)_0x23c202=_0x339239;else{const _0x3cede3=_0x522185['x']+_0x522185[_0x347a8d(0xaa)]/0x2;_0x23c202=_0x3cede3-_0x5c5c39/0x2;}}else _0x23c202=_0x339239,_0x4924d6=![];}return _0x432d9d&&aiPlayerActivelySeekingCaptureById===_0x282631&&(_0x4924d6=![],_0x522185=null),_0x23c202=Math[_0x347a8d(0x12c)](AI_EDGE_BUFFER,Math[_0x347a8d(0x99)](_0x13c495-_0x5c5c39-AI_EDGE_BUFFER,_0x23c202)),{'desiredTargetX':_0x23c202,'shouldTryShoot':_0x4924d6,'targetEnemyForAI':_0x522185};}function findAndDetachEnemy(){const _0x3bf3ff=_0x1d45a4;try{let _0x399a42=![];isTwoPlayerMode&&selectedGameMode===_0x3bf3ff(0xed)?_0x399a42=isPlayer1ShipCaptured||isPlayer2ShipCaptured:_0x399a42=isShipCaptured;if(!isFullGridWave&&_0x399a42){const _0x156564=enemies[_0x3bf3ff(0x152)](_0x5a6997=>_0x5a6997&&_0x5a6997[_0x3bf3ff(0x19d)]===ENEMY3_TYPE&&_0x5a6997[_0x3bf3ff(0x19f)]&&_0x5a6997[_0x3bf3ff(0x14f)]===_0x3bf3ff(0x80));if(_0x156564){_0x156564[_0x3bf3ff(0x71)]=!![],_0x156564[_0x3bf3ff(0x106)]=_0x3bf3ff(0x14b);const _0x369cf4=new Set([_0x156564['id']]);return resetJustReturnedFlags(_0x369cf4),[_0x156564];}}if(isEntrancePhaseActive)return null;let _0x2076e2=enemies[_0x3bf3ff(0xd2)](_0x207a3e=>_0x207a3e&&_0x207a3e[_0x3bf3ff(0x14f)]===_0x3bf3ff(0x80)&&!_0x207a3e[_0x3bf3ff(0x71)]);if(_0x2076e2['length']===0x0){_0x2076e2=enemies[_0x3bf3ff(0xd2)](_0x4097b6=>_0x4097b6&&_0x4097b6[_0x3bf3ff(0x14f)]===_0x3bf3ff(0x80));if(_0x2076e2[_0x3bf3ff(0xbb)]===0x0)return null;}if(_0x2076e2['length']===0x0)return null;_0x2076e2[_0x3bf3ff(0xa9)]((_0x3a3496,_0x2444e8)=>(_0x2444e8['gridRow']||0x0)-(_0x3a3496[_0x3bf3ff(0x138)]||0x0));const _0x42cf7e=_0x2076e2[_0x3bf3ff(0xbb)]<=0x3;let _0x3b7a95=[];const _0xaf494f=_0x3bf3ff(0x14b);gridJustCompleted&&(gridJustCompleted=![]);let _0x11908c=![];if(level>0x1&&!_0x42cf7e&&_0x2076e2[_0x3bf3ff(0xbb)]>=0x3){const _0x26b3b1=_0x2076e2[_0x3bf3ff(0xd2)](_0x51ab06=>_0x51ab06[_0x3bf3ff(0x19d)]===ENEMY3_TYPE&&!_0x51ab06[_0x3bf3ff(0x19f)]);for(const _0xc945bf of _0x26b3b1){const _0x301ca7=_0x2076e2['find'](_0x5abbc3=>_0x5abbc3[_0x3bf3ff(0x19d)]===ENEMY2_TYPE&&_0x5abbc3[_0x3bf3ff(0x138)]===_0xc945bf[_0x3bf3ff(0x138)]&&_0x5abbc3[_0x3bf3ff(0xf4)]===_0xc945bf['gridCol']-0x1),_0x3b7381=_0x2076e2[_0x3bf3ff(0x152)](_0x3aaf17=>_0x3aaf17[_0x3bf3ff(0x19d)]===ENEMY2_TYPE&&_0x3aaf17['gridRow']===_0xc945bf[_0x3bf3ff(0x138)]&&_0x3aaf17[_0x3bf3ff(0xf4)]===_0xc945bf['gridCol']+0x1);if(_0x301ca7&&_0x3b7381){_0x3b7a95=[_0xc945bf,_0x301ca7,_0x3b7381],_0x11908c=!![];break;}}}if(!_0x11908c&&!_0x42cf7e){const _0x238f70=_0x2076e2['filter'](_0x2e97fe=>_0x2e97fe[_0x3bf3ff(0x19d)]===ENEMY1_TYPE),_0x57dde6=scaleValue(level,BASE_BEE_GROUP_ATTACK_PROBABILITY,MAX_BEE_GROUP_ATTACK_PROBABILITY)*1.2;if(_0x238f70['length']>=0x2&&Math[_0x3bf3ff(0x107)]()<_0x57dde6){const _0x1824dd=scaleValue(level,BASE_BEE_TRIPLE_ATTACK_PROBABILITY,MAX_BEE_TRIPLE_ATTACK_PROBABILITY)*1.1,_0xc2594b=_0x238f70['length']>=0x3&&Math[_0x3bf3ff(0x107)]()<_0x1824dd?0x3:0x2;let _0x48c3d5=![];_0x238f70[_0x3bf3ff(0xa9)](()=>Math[_0x3bf3ff(0x107)]()-0.5);for(let _0x59f8a1=0x0;_0x59f8a1<_0x238f70['length'];_0x59f8a1++){const _0x30aad5=_0x238f70[_0x59f8a1];let _0x3111d8=[_0x30aad5];const _0x51332b=_0x238f70[_0x3bf3ff(0xd2)](_0x392ab0=>_0x392ab0['id']!==_0x30aad5['id']&&_0x392ab0[_0x3bf3ff(0x138)]===_0x30aad5[_0x3bf3ff(0x138)]);_0x51332b['sort']((_0x3a2eaa,_0x5617b0)=>Math['abs'](_0x3a2eaa[_0x3bf3ff(0xf4)]-_0x30aad5[_0x3bf3ff(0xf4)])-Math[_0x3bf3ff(0x9e)](_0x5617b0[_0x3bf3ff(0xf4)]-_0x30aad5[_0x3bf3ff(0xf4)]));for(let _0x4f5579=0x0;_0x4f5579<_0x51332b[_0x3bf3ff(0xbb)]&&_0x3111d8[_0x3bf3ff(0xbb)]<_0xc2594b;_0x4f5579++){_0x3111d8[_0x3bf3ff(0xc9)](_0x51332b[_0x4f5579]);}if(_0x3111d8[_0x3bf3ff(0xbb)]===_0xc2594b){_0x3b7a95=_0x3111d8,_0x11908c=!![],_0x48c3d5=!![];break;}}!_0x48c3d5&&_0x238f70[_0x3bf3ff(0xbb)]>=_0xc2594b&&(_0x3b7a95=_0x238f70['slice'](0x0,_0xc2594b),_0x11908c=!![]);}}if(!_0x11908c&&!_0x42cf7e){const _0x29af38=_0x2076e2['filter'](_0x378b2e=>_0x378b2e['type']===ENEMY2_TYPE),_0x20b7e7=0.2;if(_0x29af38[_0x3bf3ff(0xbb)]>=0x2&&Math['random']()<_0x20b7e7){const _0x286ef2=0x2;let _0x175b57=![];_0x29af38[_0x3bf3ff(0xa9)](()=>Math[_0x3bf3ff(0x107)]()-0.5);for(let _0x454ad6=0x0;_0x454ad6<_0x29af38[_0x3bf3ff(0xbb)];_0x454ad6++){const _0x26d02a=_0x29af38[_0x454ad6];let _0x432e1e=[_0x26d02a];const _0x4df680=_0x29af38['filter'](_0x16c36e=>_0x16c36e['id']!==_0x26d02a['id']&&_0x16c36e[_0x3bf3ff(0x138)]===_0x26d02a['gridRow']);_0x4df680[_0x3bf3ff(0xa9)]((_0x38e5bb,_0x3d788a)=>Math['abs'](_0x38e5bb[_0x3bf3ff(0xf4)]-_0x26d02a[_0x3bf3ff(0xf4)])-Math[_0x3bf3ff(0x9e)](_0x3d788a[_0x3bf3ff(0xf4)]-_0x26d02a[_0x3bf3ff(0xf4)]));for(let _0x40c357=0x0;_0x40c357<_0x4df680['length']&&_0x432e1e[_0x3bf3ff(0xbb)]<_0x286ef2;_0x40c357++){_0x432e1e[_0x3bf3ff(0xc9)](_0x4df680[_0x40c357]);}if(_0x432e1e['length']===_0x286ef2){_0x3b7a95=_0x432e1e,_0x11908c=!![],_0x175b57=!![];break;}}!_0x175b57&&_0x29af38[_0x3bf3ff(0xbb)]>=_0x286ef2&&(_0x3b7a95=_0x29af38[_0x3bf3ff(0xfa)](0x0,_0x286ef2),_0x11908c=!![]);}}if(!_0x11908c&&_0x2076e2[_0x3bf3ff(0xbb)]>0x0){const _0x547852=_0x2076e2[0x0];_0x3b7a95['push'](_0x547852);if(_0x2076e2[_0x3bf3ff(0xbb)]>0x1&&!_0x42cf7e&&Math[_0x3bf3ff(0x107)]()<0.2){const _0x20441c=_0x2076e2[_0x3bf3ff(0x152)](_0x3ed2da=>_0x3ed2da['id']!==_0x547852['id']&&_0x3ed2da[_0x3bf3ff(0x138)]===_0x547852[_0x3bf3ff(0x138)]&&_0x3ed2da[_0x3bf3ff(0xf4)]===_0x547852[_0x3bf3ff(0xf4)]-0x1),_0x4cfe61=_0x2076e2[_0x3bf3ff(0x152)](_0x117441=>_0x117441['id']!==_0x547852['id']&&_0x117441['gridRow']===_0x547852['gridRow']&&_0x117441[_0x3bf3ff(0xf4)]===_0x547852[_0x3bf3ff(0xf4)]+0x1),_0x3d5071=_0x20441c||_0x4cfe61;if(_0x3d5071){const _0x372a39=_0x547852['type']===ENEMY3_TYPE&&_0x3d5071[_0x3bf3ff(0x19d)]===ENEMY3_TYPE;!_0x372a39&&_0x3b7a95[_0x3bf3ff(0xc9)](_0x3d5071);}}_0x11908c=!![];}if(_0x3b7a95[_0x3bf3ff(0xbb)]>0x0){_0x3b7a95=_0x3b7a95[_0x3bf3ff(0xd2)](_0x2e100e=>_0x2e100e);if(_0x3b7a95['length']===0x0)return null;_0x3b7a95['forEach'](_0xe861a9=>{const _0x2deaa9=_0x3bf3ff;_0xe861a9&&(_0xe861a9[_0x2deaa9(0x71)]=!![],_0xe861a9[_0x2deaa9(0x106)]=_0xaf494f);});const _0x371568=new Set(_0x3b7a95[_0x3bf3ff(0x141)](_0x4c5353=>_0x4c5353['id']));return resetJustReturnedFlags(_0x371568),_0x3b7a95;}return null;}catch(_0x4f2c9c){return console[_0x3bf3ff(0x186)](_0x3bf3ff(0x165),_0x4f2c9c),null;}}function triggerImmediateCaptureDive(){const _0x55a27e=_0x1d45a4;try{let _0xdeb48b=![],_0x5651df=null;if(isTwoPlayerMode&&selectedGameMode==='coop'){const _0x59062c=ship1&&player1Lives>0x1&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn,_0x571748=ship2&&player2Lives>0x1&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn;if((_0x59062c||_0x571748)&&!captureAttemptMadeThisLevel){_0xdeb48b=!![];if(_0x59062c&&_0x571748)_0x5651df=Math[_0x55a27e(0x107)]()<0.5?ship1:ship2;else{if(_0x59062c)_0x5651df=ship1;else _0x571748&&(_0x5651df=ship2);}}}else playerLives>0x1&&ship&&!isShipCaptured&&!isWaitingForRespawn&&!captureAttemptMadeThisLevel&&(_0xdeb48b=!![],_0x5651df=ship);if(isChallengingStage||!_0xdeb48b||!_0x5651df)return;const _0x1c15f6=enemies[_0x55a27e(0xd2)](_0x3e9517=>_0x3e9517&&_0x3e9517['state']==='in_grid'&&_0x3e9517[_0x55a27e(0x19d)]===ENEMY3_TYPE&&!_0x3e9517[_0x55a27e(0x19f)]&&!_0x3e9517['isPreparingForImmediateCapture']);if(_0x1c15f6[_0x55a27e(0xbb)]>0x0){const _0x111abb=_0x1c15f6[Math['floor'](Math[_0x55a27e(0x107)]()*_0x1c15f6['length'])],_0x430cb8=Date[_0x55a27e(0x12f)]();_0x111abb[_0x55a27e(0x79)]=!![],_0x111abb[_0x55a27e(0x71)]=!![];const _0x28ddcc=new Set([_0x111abb['id']]);resetJustReturnedFlags(_0x28ddcc);const _0xaaf6d3=_0x5651df['x']+_0x5651df[_0x55a27e(0xaa)]/0x2,_0x2b60ad=_0xaaf6d3<gameCanvas['width']/0x2?'right':_0x55a27e(0xef),_0x42e365=_0x2b60ad==='left'?gameCanvas[_0x55a27e(0xaa)]*CAPTURE_DIVE_SIDE_MARGIN_FACTOR:gameCanvas[_0x55a27e(0xaa)]*(0x1-CAPTURE_DIVE_SIDE_MARGIN_FACTOR)-BOSS_WIDTH,_0x3f15fd=gameCanvas['height']*CAPTURE_DIVE_BOTTOM_HOVER_Y_FACTOR;_0x111abb[_0x55a27e(0x14f)]=_0x55a27e(0x13d),_0x111abb[_0x55a27e(0xa3)]=_0x42e365,_0x111abb[_0x55a27e(0x90)]=_0x3f15fd,_0x111abb['diveStartTime']=_0x430cb8,playSound(_0x55a27e(0x11b),![],0.2);const _0xcb771=_0x111abb['id'];_0x111abb[_0x55a27e(0xd9)]=setTimeout(()=>{const _0x5aa437=_0x55a27e,_0x2d7f62=enemies[_0x5aa437(0x152)](_0x46183c=>_0x46183c?.['id']===_0xcb771);_0x2d7f62&&_0x2d7f62['state']===_0x5aa437(0x13d)&&(_0x2d7f62[_0x5aa437(0x14f)]=_0x5aa437(0x7b));if(_0x2d7f62)_0x2d7f62[_0x5aa437(0xd9)]=null;const _0x1b5553=enemySpawnTimeouts[_0x5aa437(0x97)](_0x40c3a2=>_0x40c3a2===_0x111abb[_0x5aa437(0xd9)]);if(_0x1b5553>-0x1)enemySpawnTimeouts[_0x5aa437(0xa1)](_0x1b5553,0x1);},0x12c),enemySpawnTimeouts[_0x55a27e(0xc9)](_0x111abb[_0x55a27e(0xd9)]);}}catch(_0x2e6e74){console[_0x55a27e(0x186)](_0x55a27e(0xe2),_0x2e6e74);}}function resetJustReturnedFlags(_0x1295ec){const _0x40787b=_0x1d45a4;enemies[_0x40787b(0x10c)](_0x518ba1=>{const _0x497f99=_0x40787b;let _0x3e49a8=![];if(_0x1295ec instanceof Set)_0x3e49a8=_0x1295ec[_0x497f99(0x8b)](_0x518ba1['id']);else typeof _0x1295ec===_0x497f99(0xf0)&&(_0x3e49a8=_0x518ba1['id']===_0x1295ec);_0x518ba1&&_0x518ba1['state']==='in_grid'&&_0x518ba1[_0x497f99(0x71)]&&!_0x3e49a8&&(_0x518ba1[_0x497f99(0x71)]=![]);});}function updateFloatingScores(){const _0xb06a14=_0x1d45a4;if(isPaused)return;try{const _0x13a2db=Date[_0xb06a14(0x12f)]();floatingScores=floatingScores[_0xb06a14(0xd2)](_0x171652=>_0x13a2db-_0x171652[_0xb06a14(0x1a8)]<FLOATING_SCORE_DURATION+FLOATING_SCORE_APPEAR_DELAY);}catch(_0x568eb4){console['error'](_0xb06a14(0x8a),_0x568eb4),floatingScores=[];}}function updateExplosions(){const _0x18550d=_0x1d45a4;if(isPaused)return;try{const _0x3168ca=Date[_0x18550d(0x12f)]();for(let _0x2282fa=explosions[_0x18550d(0xbb)]-0x1;_0x2282fa>=0x0;_0x2282fa--){const _0x514e1b=explosions[_0x2282fa],_0x54be22=_0x3168ca-_0x514e1b[_0x18550d(0x1a8)];if(_0x54be22>_0x514e1b[_0x18550d(0x9d)]){explosions['splice'](_0x2282fa,0x1);continue;}_0x514e1b[_0x18550d(0x8c)]['forEach'](_0x4d7772=>{const _0x2126b0=_0x18550d;_0x4d7772['x']+=_0x4d7772['vx'],_0x4d7772['y']+=_0x4d7772['vy'],_0x4d7772[_0x2126b0(0xb1)]=Math[_0x2126b0(0x12c)](0x0,0x1-_0x54be22/_0x514e1b[_0x2126b0(0x9d)]*EXPLOSION_FADE_SPEED);});}}catch(_0x35dc22){console['error'](_0x18550d(0x12a),_0x35dc22),explosions=[];}}function _0x1298(){const _0x21d133=['function','isPreparingForImmediateCapture','CRITICAL:\x20Failed\x20to\x20define\x20CS\x20paths!','diving_to_capture_position','lifetime','playerNum','completed','Full\x20Grid:\x20Invalid\x20enemy\x20def\x20in\x20squadron\x20','in_grid','isArray','stringify','lostLifeSound','entranceSound','CS_LoopAttack_BR','challenging_stage','hasFiredPostLanding','CO-OP\x20GAME',')\x20for\x20','Error\x20updating\x20floating\x20scores:','has','particles','squadronId','pathSegmentIndex','undefined','targetY','entrance_flight_1','canFireThisDive','pathId','landedTime','save','velocityX','findIndex','clearRect','min','HIGH\x20SCORE','.\x20Transitioning.','center','duration','abs','\x20(Path\x20','Error\x20updating\x20target\x20grid\x20pos\x20for\x20enemy\x20','splice','\x20off\x20screen:','targetX','FATAL\x20Error\x20in\x20moveEntities:','attack-','hiScoreSound','1P_VS_AI_COOP','landed','sort','width','7844925pYHMud','\x20path\x20index\x20','returnLogDone','Error\x20calculating\x20Normal\x20Bezier\x20point\x20for\x20enemy\x20','pause','blue','alpha','Entrance\x20Wave:\x20Assigned\x20entrance\x20path\x20\x22','toString',').\x20Skipping.','showing_capture_message','Invalid\x20CS\x20Bezier\x20segment\x20','Error\x20getting\x20grid\x20pos\x20for\x20','explosionSound','6775972rwFoRs','1309680NSxTYe','length','white','\x20invalid!\x20Skipping.','Error\x20calculating\x20FINAL\x20bezier\x20point\x20for\x20attack\x20','Entrance\x20Wave:\x20Error\x20processing\x20enemies\x20for\x20squadron\x20','Invalid\x20next\x20CS\x20Bezier\x20segment\x20',',\x20Path\x20','CS:\x20Path\x20','atan2','enemies','generateWaveDefinition','Error\x20getting\x20target\x20grid\x20pos\x20for\x20new\x20enemy\x20','resultsMusicSound','pressed','push','clear','extraLifeSound','targetGridX','entrancePathId','.\x20Skipping.','number','green','sin','filter','levelUpSound','2689872YQiXSL','Error\x20getting\x20grid\x20pos\x20for\x20returning\x20boss\x20',')!\x20Returning.','enemyShootSound','20px\x20\x27Press\x20Start\x202P\x27','capturePrepareTimeout','main','\x20out\x20of\x20bounds\x20for\x20SHARED\x20path\x20',',\x20def\x20length:\x20','moving_to_grid','player1','Enemy\x20','Error\x20during\x20FIXED\x20enemy\x20burst\x20firing\x20(bullet\x20','.\x20Switching\x20to\x20moving_to_grid.','Error\x20in\x20triggerImmediateCaptureDive:','startSound','.\x20Removing.','currentLives','add','entrance_flight_2','unknown','switch_player','\x20after\x20attack:','targetGridY','\x20attacking,\x20index\x20','coop','scheduledStartTime','left','string','velocityY','right','back','gridCol','\x20in\x20moving_to_grid','GAME\x20EXIT','[DEBUG]\x20Error\x20generating\x20attack\x20path\x20for\x20enemy\x20','dualShipSound','resetGame','slice','\x20after\x20NaN','\x20at\x20[','[Capture\x20Message\x20End]\x20Error\x20getting\x20grid\x20pos\x20for\x20returning\x20boss\x20','\x20is\x20empty\x20or\x20invalid.','Error\x20during\x20enemy\x20burst\x20firing\x20(bullet\x20','following_bezier_path','CS_HorizontalFlyByL','CS:\x20Error\x20during\x20enemy\x20spawn\x20execution\x20(Sq\x20','boss_loop_left','\x20after\x20invalid\x20path\x20index','keys','attackType','random','naturalWidth','preparing_attack','!\x20Returning.','Full\x20Grid:\x20Error\x20placing\x20enemy\x20(Sq\x20','forEach','\x20after\x20missing\x20path','cos','destroyed','Error\x20calculating\x20bezier\x20point\x20during\x20attack\x20for\x20','num','newButtonStates','CS_HorizontalFlyByR','attackPathSegments','\x20(invalid\x20attack\x20index):','initialCaptureAnimationY','attackPathT','\x20not\x20found.','floor','squadronEnemyIndex','bossGalagaDiveSound','substring','round','indexOf','Error\x20getting\x20grid\x20pos\x20for\x20returning\x20enemy\x20','[handleEnemyHit]\x20CRITICAL:\x20Boss\x20','2UP','NORMAL','NORMAL\x20GAME','red','enemy-grid-','\x20for\x20SHARED\x20path\x20','health','CS:\x20Invalid\x20enemy\x20def\x20in\x20squadron\x20','!!!\x20CRITICAL\x20ERROR\x20IN\x20runSingleGameUpdate\x20!!!','Error\x20updating\x20explosions:','total','max','\x20attacking,\x20invalid\x20NEXT\x20segment\x20','\x20for\x20path\x20','now','drawImage','CRITICAL:\x20Required\x20CS\x20path\x20\x22','Error\x20in\x20aiControl:','capturing','1P_VS_AI_NORMAL','LOGO','complete','\x20after\x20bad\x20next\x20segment','gridRow','show_results','Error\x20calculating\x20final\x20bezier\x20point\x20for\x20','tintProgress','fillRect','preparing_capture','1504134kualAk','stack','object','map','getGamepads','Error\x20starting\x20attack\x20for\x20','Invalid\x20start\x20segment\x20for\x20squadron\x20path\x20','resetAllMessages','capturedShipLastFiredTime','CS3_DiveLoopL_Sharp','lastFiredTime','full_grid','Full\x20Grid:\x20Error\x20getting\x20target\x20grid\x20pos\x20for\x20enemy\x20','normal','NaN\x20detected\x20in\x20CS\x20path\x20calculation\x20for\x20enemy\x20','shipObj','Error\x20getting\x20grid\x20pos\x20after\x20invalid\x20NEXT\x20attack\x20segment\x20for\x20','state','speed','\x20out\x20of\x20bounds\x20(','find','Critical\x20error\x20during\x20entity\x20movement/collision.\x20Returning\x20to\x20menu.','dual','[scheduleSingleEntranceSquadron]\x20Firing\x20status\x20for\x20squadron\x20','\x20has\x20invalid\x20enemy\x20data.','\x22\x20for\x20enemy\x20in\x20squadron\x20','player2','Attempted\x20to\x20start\x20Full\x20Grid\x20wave\x20without\x20valid\x20definition\x20or\x20when\x20not\x20in\x20Full\x20Grid\x20mode.','\x20at\x20end\x20of\x20normal\x20path\x20','attackPathSegmentIndex','naturalHeight','playerId','bossHit2Sound','shipCapturedSound','sqrt','targetPlayerId','gameOverSound','rapid','Error\x20getting\x20grid\x20pos\x20within\x20\x27in_grid\x27\x20for\x20','Error\x20in\x20findAndDetachEnemy:','totalRotation','.\x20Enemy\x20','CS_LoopAttack_BL','Invalid\x20start\x20segment\x20for\x20path\x20','enemy-cs-','Full\x20Grid:\x20Squadron\x20','FATAL\x20Error\x20in\x20moveEntities\x20(Restored\x20Conditions):','parse','bossHit1Sound','hasOwnProperty','getWaveType','\x20(no\x20attack\x20path):','capturedShipY','\x20diving\x20to\x20capture\x20without\x20targetX/Y!\x20Aborting.','playerShootSound','\x20after\x20bezier\x20error','thresholdsMet','attacking','buttons','capturedShipDimensions','hasFired','captureAnimationRotation','\x20after\x20bad\x20segment','Error\x20in\x20renderGame:',',\x20Idx\x20','Error\x20checking/awarding\x20extra\x20life:','size','some','Error\x20creating\x20player\x20bullet(s):','captureStartTime','single','generateAttackPath','error','restore','CS_LoopAttack_TR','boss_loop_right','rotationDirection','START\x20GAME','\x20attacking,\x20invalid\x20segment\x20','returning','rotation','CS3_DiveLoopR_Sharp','sign','gridBackgroundSound','\x20in\x20moving_to_grid\x20state\x20without\x20target.\x20Recalculating.','captureSound','isDamaged','\x20invalid!\x20Skipping\x20squadron.','993974OFpthL','warn','\x20(state:\x20','3571389iEVpXI','\x22\x20not\x20found!\x20Aborting\x20CS.',',\x20isCS:\x20','pathT','type','stopAllGameSounds','hasCapturedShip','\x20for\x20squadron\x20','attackFormationOffsetX','following_entrance_path','\x20attacking\x20without\x20path!\x20Returning.','Entrance\x20Wave:\x20No\x20squadrons\x20or\x20enemies\x20scheduled\x20for\x20level\x20','Error\x20getting\x20grid\x20pos\x20after\x20FINAL\x20bezier\x20error\x20for\x20','capturedShipX','Entrance\x20Wave:\x20Path\x20','creationTime','grey','rotationCompleted','shoot',')\x20during\x20shift:','waveUpSound','Entrance\x20Wave:\x20Invalid\x20enemy\x20def\x20in\x20squadron\x20','csPerfectSound',',\x20isFullGrid:\x20','justReturned','Entrance\x20Wave:\x20Error\x20during\x20enemy\x20spawn\x20execution\x20(Sq\x20','NaN\x20detected\x20in\x20Normal\x20path\x20calculation\x20for\x20enemy\x20','height','ai_p2','attackGroupId','fillStyle'];_0x1298=function(){return _0x21d133;};return _0x1298();}function moveEntities(_0x3393a6=null,_0x47e0e8=null){const _0x51802b=_0x1d45a4;if(isPaused)return;try{const _0x78ef09=Date['now'](),_0x1c57d2=gameCanvas?gameCanvas[_0x51802b(0x74)]-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN:0x1f4;if(gameCanvas&&!isTouchActiveGame){if(isManualControl){if(isTwoPlayerMode&&selectedGameMode===_0x51802b(0xed)){if(ship1&&player1Lives>0x0&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn&&!isPlayer1ShowingGameOverMessage&&!player1NeedsRespawnAfterCapture){const _0x4221cd=ship1[_0x51802b(0xaa)]+(player1IsDualShipActive?DUAL_SHIP_OFFSET_X:0x0);if(leftPressed)ship1['x']-=ship1[_0x51802b(0x150)];if(rightPressed)ship1['x']+=ship1['speed'];ship1['x']=Math[_0x51802b(0x12c)](0x0,Math[_0x51802b(0x99)](gameCanvas[_0x51802b(0xaa)]-_0x4221cd,ship1['x'])),ship1['targetX']=ship1['x'];}if(!isPlayerTwoAI&&ship2&&player2Lives>0x0&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn&&!isPlayer2ShowingGameOverMessage&&!player2NeedsRespawnAfterCapture){const _0x428e60=ship2['width']+(player2IsDualShipActive?DUAL_SHIP_OFFSET_X:0x0);if(p2LeftPressed)ship2['x']-=ship2[_0x51802b(0x150)];if(p2RightPressed)ship2['x']+=ship2[_0x51802b(0x150)];ship2['x']=Math['max'](0x0,Math[_0x51802b(0x99)](gameCanvas['width']-_0x428e60,ship2['x'])),ship2['targetX']=ship2['x'];}}else{if(ship&&playerLives>0x0&&!isShipCaptured&&!isShowingPlayerGameOverMessage&&gameOverSequenceStartTime===0x0){if(!isPlayerTwoAI||isPlayerTwoAI&&currentPlayer===0x1){const _0x5b10b=ship[_0x51802b(0xaa)]+(isDualShipActive?DUAL_SHIP_OFFSET_X:0x0);let _0x463679=![],_0x425b96=![];if(isManualControl&&isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x51802b(0x134)&&currentPlayer===0x1&&isShowingIntro){if(_0x3393a6!==null)_0x463679=_0x3393a6;if(_0x47e0e8!==null)_0x425b96=_0x47e0e8;}if(_0x463679||leftPressed)ship['x']-=ship[_0x51802b(0x150)];if(_0x425b96||rightPressed)ship['x']+=ship[_0x51802b(0x150)];ship['x']=Math[_0x51802b(0x12c)](0x0,Math[_0x51802b(0x99)](gameCanvas[_0x51802b(0xaa)]-_0x5b10b,ship['x'])),ship[_0x51802b(0xa3)]=ship['x'];}}}}}if(!isManualControl||isPlayerTwoAI&&selectedGameMode===_0x51802b(0x14b)&&currentPlayer===0x2||isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x51802b(0xa7)){if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x51802b(0xa7)){if(ship1&&player1Lives>0x0&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn&&!isPlayer1ShowingGameOverMessage&&!player1NeedsRespawnAfterCapture){const _0x574c70=ship1['targetX']-ship1['x'];let _0x346cff=ship1[_0x51802b(0x150)]*AI_POSITION_MOVE_SPEED_FACTOR;if(Math[_0x51802b(0x9e)](_0x574c70)>AI_MOVEMENT_DEADZONE)ship1['x']+=Math[_0x51802b(0x190)](_0x574c70)*Math[_0x51802b(0x99)](Math[_0x51802b(0x9e)](_0x574c70),_0x346cff);const _0x36fb0e=ship1[_0x51802b(0xaa)]+(player1IsDualShipActive?DUAL_SHIP_OFFSET_X:0x0);ship1['x']=Math['max'](0x0,Math[_0x51802b(0x99)](gameCanvas[_0x51802b(0xaa)]-_0x36fb0e,ship1['x']));}if(ship2&&player2Lives>0x0&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn&&!isPlayer2ShowingGameOverMessage&&!player2NeedsRespawnAfterCapture){const _0x15aa10=ship2['targetX']-ship2['x'];let _0x592ac0=ship2['speed']*AI_POSITION_MOVE_SPEED_FACTOR;if(Math[_0x51802b(0x9e)](_0x15aa10)>AI_MOVEMENT_DEADZONE)ship2['x']+=Math['sign'](_0x15aa10)*Math[_0x51802b(0x99)](Math[_0x51802b(0x9e)](_0x15aa10),_0x592ac0);const _0x3eaa31=ship2[_0x51802b(0xaa)]+(player2IsDualShipActive?DUAL_SHIP_OFFSET_X:0x0);ship2['x']=Math[_0x51802b(0x12c)](0x0,Math[_0x51802b(0x99)](gameCanvas[_0x51802b(0xaa)]-_0x3eaa31,ship2['x']));}}else{if(ship){if(playerLives>0x0&&!isShipCaptured&&!isShowingPlayerGameOverMessage&&gameOverSequenceStartTime===0x0){const _0x3d096b=ship[_0x51802b(0xa3)]-ship['x'];let _0x247656=ship[_0x51802b(0x150)]*AI_POSITION_MOVE_SPEED_FACTOR;isPlayerTwoAI&&selectedGameMode===_0x51802b(0x14b)&&currentPlayer===0x2&&(_0x247656=ship[_0x51802b(0x150)]*(AI_POSITION_MOVE_SPEED_FACTOR*1.15));Math[_0x51802b(0x9e)](_0x3d096b)>AI_MOVEMENT_DEADZONE&&(ship['x']+=Math['sign'](_0x3d096b)*Math[_0x51802b(0x99)](Math['abs'](_0x3d096b),_0x247656));const _0x3735b1=ship[_0x51802b(0xaa)]+(isDualShipActive?DUAL_SHIP_OFFSET_X:0x0);ship['x']=Math[_0x51802b(0x12c)](0x0,Math['min'](gameCanvas[_0x51802b(0xaa)]-_0x3735b1,ship['x']));}}}}if(isTwoPlayerMode&&selectedGameMode===_0x51802b(0xed)){if(isPlayer1WaitingForRespawn&&_0x78ef09>=player1RespawnTime)isPlayer1WaitingForRespawn=![];if(isPlayer1Invincible&&_0x78ef09>=player1InvincibilityEndTime)isPlayer1Invincible=![];if(isPlayer2WaitingForRespawn&&_0x78ef09>=player2RespawnTime)isPlayer2WaitingForRespawn=![];if(isPlayer2Invincible&&_0x78ef09>=player2InvincibilityEndTime)isPlayer2Invincible=![];}else{if(isWaitingForRespawn&&_0x78ef09>=respawnTime)isWaitingForRespawn=![];if(isInvincible&&_0x78ef09>=invincibilityEndTime)isInvincible=![];}for(let _0x29fb96=bullets[_0x51802b(0xbb)]-0x1;_0x29fb96>=0x0;_0x29fb96--){const _0x15776c=bullets[_0x29fb96];if(!_0x15776c){bullets[_0x51802b(0xa1)](_0x29fb96,0x1);continue;}_0x15776c['y']-=_0x15776c[_0x51802b(0x150)];if(_0x15776c['y']+PLAYER_BULLET_HEIGHT<0x0){bullets['splice'](_0x29fb96,0x1);continue;}for(let _0x3df60c=enemies['length']-0x1;_0x3df60c>=0x0;_0x3df60c--){const _0x192430=enemies[_0x3df60c];if(!_0x192430){enemies['splice'](_0x3df60c,0x1);continue;}const _0x32b1ab={'x':_0x192430['x'],'y':_0x192430['y'],'width':_0x192430[_0x51802b(0x19d)]===ENEMY3_TYPE?BOSS_WIDTH:_0x192430[_0x51802b(0x19d)]===ENEMY1_TYPE?ENEMY1_WIDTH:ENEMY_WIDTH,'height':_0x192430[_0x51802b(0x19d)]===ENEMY3_TYPE?BOSS_HEIGHT:_0x192430[_0x51802b(0x19d)]===ENEMY1_TYPE?ENEMY1_HEIGHT:ENEMY_HEIGHT},_0x387629={'x':_0x15776c['x'],'y':_0x15776c['y'],'width':_0x15776c['width'],'height':_0x15776c[_0x51802b(0x74)]};if(checkCollision(_0x387629,_0x32b1ab)){bullets[_0x51802b(0xa1)](_0x29fb96,0x1);const _0x14e6ad=handleEnemyHit(_0x192430,_0x15776c[_0x51802b(0x15d)]);if(_0x14e6ad[_0x51802b(0x10f)])enemies['splice'](_0x3df60c,0x1);break;}}}for(let _0x115e0d=enemyBullets[_0x51802b(0xbb)]-0x1;_0x115e0d>=0x0;_0x115e0d--){const _0x273b30=enemyBullets[_0x115e0d];if(!_0x273b30){enemyBullets[_0x51802b(0xa1)](_0x115e0d,0x1);continue;}_0x273b30['x']+=_0x273b30['vx'],_0x273b30['y']+=_0x273b30['vy'],(_0x273b30['y']>gameCanvas[_0x51802b(0x74)]||_0x273b30['y']<-ENEMY_BULLET_HEIGHT||_0x273b30['x']<-ENEMY_BULLET_WIDTH||_0x273b30['x']>gameCanvas[_0x51802b(0xaa)])&&enemyBullets[_0x51802b(0xa1)](_0x115e0d,0x1);}const _0x2e18d1=gameCanvas?gameCanvas[_0x51802b(0x74)]-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN:0x1f4,_0x2e7ade=0x2;for(let _0x4a57e9=fallingShips[_0x51802b(0xbb)]-0x1;_0x4a57e9>=0x0;_0x4a57e9--){const _0x3e50b2=fallingShips[_0x4a57e9];if(!_0x3e50b2){fallingShips[_0x51802b(0xa1)](_0x4a57e9,0x1);continue;}let _0x69d624=![];if(!_0x3e50b2[_0x51802b(0xa8)]){_0x3e50b2['y']+=FALLING_SHIP_SPEED;if(_0x3e50b2['y']>=_0x2e18d1){_0x3e50b2['y']=_0x2e18d1,_0x3e50b2[_0x51802b(0xa8)]=!![],_0x3e50b2[_0x51802b(0x94)]=_0x78ef09;!_0x3e50b2[_0x51802b(0x1aa)]&&(_0x3e50b2['rotation']=0x0,_0x3e50b2[_0x51802b(0x1aa)]=!![]);let _0x1aa87f=null,_0x342e2e=()=>{},_0x30d3b6=![],_0x3e9c88=![],_0x42d0cc=![],_0x476ed8=null;if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x51802b(0xa7)){if(_0x3e50b2['targetPlayerId']==='player1'&&ship1&&player1Lives>0x0)_0x1aa87f=ship1,_0x30d3b6=player1IsDualShipActive,_0x342e2e=()=>{player1IsDualShipActive=!![];},_0x42d0cc=!![],_0x476ed8=_0x51802b(0xde);else(_0x3e50b2[_0x51802b(0x161)]==='player2'||_0x3e50b2[_0x51802b(0x161)]===_0x51802b(0x75))&&ship2&&player2Lives>0x0&&(_0x1aa87f=ship2,_0x30d3b6=player2IsDualShipActive,_0x342e2e=()=>{player2IsDualShipActive=!![];},_0x42d0cc=!![],_0x476ed8=isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x51802b(0xa7)?_0x51802b(0x75):_0x51802b(0x158));}else{if(isTwoPlayerMode&&selectedGameMode==='coop'){if(_0x3e50b2[_0x51802b(0x161)]===_0x51802b(0xde)&&ship1&&player1Lives>0x0)_0x1aa87f=ship1,_0x30d3b6=player1IsDualShipActive,_0x3e9c88=isPlayer1ShipCaptured,_0x342e2e=()=>{player1IsDualShipActive=!![],isPlayer1ShipCaptured=![];},_0x42d0cc=!![],_0x476ed8='player1';else _0x3e50b2[_0x51802b(0x161)]==='player2'&&ship2&&player2Lives>0x0&&(_0x1aa87f=ship2,_0x30d3b6=player2IsDualShipActive,_0x3e9c88=isPlayer2ShipCaptured,_0x342e2e=()=>{player2IsDualShipActive=!![],isPlayer2ShipCaptured=![];},_0x42d0cc=!![],_0x476ed8=_0x51802b(0x158));}else ship&&playerLives>0x0&&(_0x1aa87f=ship,_0x30d3b6=isDualShipActive,_0x3e9c88=isShipCaptured,_0x342e2e=()=>{const _0x38a3b2=_0x51802b;isDualShipActive=!![];if(isTwoPlayerMode&&selectedGameMode===_0x38a3b2(0x14b)){if(currentPlayer===0x1)player1IsDualShipActive=!![];else player2IsDualShipActive=!![];}else{if(!isTwoPlayerMode)player1IsDualShipActive=!![];}isShipCaptured=![];},_0x42d0cc=!![],_0x476ed8=isTwoPlayerMode&&selectedGameMode===_0x51802b(0x14b)?String(currentPlayer):'player1');}if(_0x42d0cc&&!_0x30d3b6){_0x342e2e(),playSound('dualShipSound',![],0.4);if(_0x3e9c88&&!(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x51802b(0xa7))){if(_0x476ed8===_0x51802b(0xde)&&ship1)isPlayer1Invincible=!![],player1InvincibilityEndTime=_0x78ef09+INVINCIBILITY_DURATION_MS;else{if(_0x476ed8===_0x51802b(0x158)&&ship2)isPlayer2Invincible=!![],player2InvincibilityEndTime=_0x78ef09+INVINCIBILITY_DURATION_MS;else ship&&(isInvincible=!![],invincibilityEndTime=_0x78ef09+INVINCIBILITY_DURATION_MS);}}fallingShips['splice'](_0x4a57e9,0x1),_0x69d624=!![];continue;}else{if(_0x42d0cc&&_0x30d3b6){fallingShips[_0x51802b(0xa1)](_0x4a57e9,0x1),_0x69d624=!![];continue;}else{fallingShips[_0x51802b(0xa1)](_0x4a57e9,0x1),_0x69d624=!![];continue;}}}}if(_0x69d624)continue;const _0x28f8a3=_0x78ef09-_0x3e50b2[_0x51802b(0x1a8)];if(_0x28f8a3<FALLING_SHIP_FADE_DURATION_MS)_0x3e50b2[_0x51802b(0x13b)]=Math[_0x51802b(0x12c)](0x0,0x1-_0x28f8a3/FALLING_SHIP_FADE_DURATION_MS);else _0x3e50b2[_0x51802b(0x13b)]=0x0;if(_0x3e50b2[_0x51802b(0x1aa)])_0x3e50b2[_0x51802b(0x18e)]=0x0;else{if(!_0x3e50b2[_0x51802b(0xa8)]&&typeof _0x3e50b2[_0x51802b(0x18a)]===_0x51802b(0xcf)&&typeof FALLING_SHIP_ROTATION_SPEED===_0x51802b(0xcf)&&FALLING_SHIP_ROTATION_SPEED>0x0){const _0x3b9add=FALLING_SHIP_ROTATION_SPEED*_0x3e50b2[_0x51802b(0x18a)];_0x3e50b2['rotation']+=_0x3b9add,_0x3e50b2[_0x51802b(0x166)]+=Math[_0x51802b(0x9e)](_0x3b9add);if(_0x3e50b2['totalRotation']>=_0x2e7ade*0x2*Math['PI'])_0x3e50b2['rotation']=0x0,_0x3e50b2[_0x51802b(0x1aa)]=!![];else{if(_0x3e50b2[_0x51802b(0x18e)]>Math['PI']*0x2)_0x3e50b2[_0x51802b(0x18e)]-=Math['PI']*0x2;if(_0x3e50b2[_0x51802b(0x18e)]<0x0)_0x3e50b2['rotation']+=Math['PI']*0x2;}}else _0x3e50b2['rotation']=_0x3e50b2['rotation']||0x0;}if(!_0x3e50b2[_0x51802b(0xa8)]){let _0xab968b=null,_0x37e42b=()=>{},_0x175676=0x0,_0x26ab0f=![],_0x452d67=![];if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x51802b(0xa7)){if(_0x3e50b2[_0x51802b(0x161)]===_0x51802b(0xde)&&ship1&&player1Lives>0x0)_0xab968b=ship1,_0x452d67=player1IsDualShipActive,_0x37e42b=()=>{if(!_0x452d67)player1IsDualShipActive=!![];},_0x175676=0x1;else(_0x3e50b2[_0x51802b(0x161)]===_0x51802b(0x158)||_0x3e50b2[_0x51802b(0x161)]===_0x51802b(0x75))&&ship2&&player2Lives>0x0&&(_0xab968b=ship2,_0x452d67=player2IsDualShipActive,_0x37e42b=()=>{if(!_0x452d67)player2IsDualShipActive=!![];},_0x175676=0x2);}else{if(isTwoPlayerMode&&selectedGameMode==='coop'){if(_0x3e50b2[_0x51802b(0x161)]===_0x51802b(0xde)&&ship1&&player1Lives>0x0)_0xab968b=ship1,_0x26ab0f=isPlayer1ShipCaptured,_0x452d67=player1IsDualShipActive,_0x37e42b=()=>{if(!_0x452d67)player1IsDualShipActive=!![];isPlayer1ShipCaptured=![];},_0x175676=0x1;else _0x3e50b2[_0x51802b(0x161)]===_0x51802b(0x158)&&ship2&&player2Lives>0x0&&(_0xab968b=ship2,_0x26ab0f=isPlayer2ShipCaptured,_0x452d67=player2IsDualShipActive,_0x37e42b=()=>{if(!_0x452d67)player2IsDualShipActive=!![];isPlayer2ShipCaptured=![];},_0x175676=0x2);}else ship&&playerLives>0x0&&(_0xab968b=ship,_0x26ab0f=isShipCaptured,_0x452d67=isDualShipActive,_0x37e42b=()=>{const _0x507f5a=_0x51802b;if(!_0x452d67){isDualShipActive=!![];if(isTwoPlayerMode&&selectedGameMode===_0x507f5a(0x14b)){if(currentPlayer===0x1)player1IsDualShipActive=!![];else player2IsDualShipActive=!![];}else{if(!isTwoPlayerMode)player1IsDualShipActive=!![];}}isShipCaptured=![];},_0x175676=isTwoPlayerMode&&selectedGameMode===_0x51802b(0x14b)?currentPlayer:0x1);}if(_0xab968b&&!_0x452d67){const _0x29550f={'x':_0x3e50b2['x'],'y':_0x3e50b2['y'],'width':_0x3e50b2[_0x51802b(0xaa)],'height':_0x3e50b2['height']},_0xaabd2d={'x':_0xab968b['x'],'y':_0xab968b['y'],'width':_0xab968b[_0x51802b(0xaa)],'height':_0xab968b[_0x51802b(0x74)]};if(checkCollision(_0x29550f,_0xaabd2d)){_0x37e42b();if(_0x26ab0f&&!(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x51802b(0xa7))){playSound(_0x51802b(0xf8),![],0.4);if(_0x175676===0x1&&ship1)isPlayer1Invincible=!![],player1InvincibilityEndTime=_0x78ef09+INVINCIBILITY_DURATION_MS;else{if(_0x175676===0x2&&ship2)isPlayer2Invincible=!![],player2InvincibilityEndTime=_0x78ef09+INVINCIBILITY_DURATION_MS;else _0x175676!==0x0&&ship&&(isInvincible=!![],invincibilityEndTime=_0x78ef09+INVINCIBILITY_DURATION_MS);}}else playSound(_0x51802b(0xf8),![],0.4);fallingShips[_0x51802b(0xa1)](_0x4a57e9,0x1);continue;}}}if(!_0x3e50b2[_0x51802b(0xa8)]&&_0x3e50b2['y']>=gameCanvas[_0x51802b(0x74)])fallingShips[_0x51802b(0xa1)](_0x4a57e9,0x1);}let _0x16451f=0x0;const _0x51fbe1=enemies[_0x51802b(0x181)](_0x20129a=>_0x20129a?.['state']==='in_grid'),_0x13b92d=!isChallengingStage&&!isWaveTransitioning&&_0x51fbe1&&!isShowingPlayerGameOverMessage&&!(isTwoPlayerMode&&selectedGameMode===_0x51802b(0xed)&&(isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage));if(_0x13b92d){!isGridSoundPlaying&&(isGridSoundPlaying=!![],playSound('gridBackgroundSound',!![],0.1));const _0x265dc4=enemies[_0x51802b(0xd2)](_0xf73034=>_0xf73034?.[_0x51802b(0x14f)]===_0x51802b(0x80));if(_0x265dc4[_0x51802b(0xbb)]>0x0){let _0x638bac=gameCanvas[_0x51802b(0xaa)],_0x394491=0x0;_0x265dc4[_0x51802b(0x10c)](_0x954efd=>{const _0xc96af1=_0x51802b;_0x954efd&&(_0x638bac=Math[_0xc96af1(0x99)](_0x638bac,_0x954efd['x']),_0x394491=Math[_0xc96af1(0x12c)](_0x394491,_0x954efd['x']+_0x954efd[_0xc96af1(0xaa)]));});const _0x60dd24=gameCanvas[_0x51802b(0xaa)]*GRID_HORIZONTAL_MARGIN_PERCENT,_0x5d8ae3=gameCanvas[_0x51802b(0xaa)]*(0x1-GRID_HORIZONTAL_MARGIN_PERCENT);if(gridMoveDirection===0x1&&_0x394491>=_0x5d8ae3)gridMoveDirection=-0x1;else{if(gridMoveDirection===-0x1&&_0x638bac<=_0x60dd24)gridMoveDirection=0x1;}const _0x411bc2=scaleValue(level,BASE_GRID_MOVE_SPEED,MAX_GRID_MOVE_SPEED);_0x16451f=_0x411bc2*gridMoveDirection,currentGridOffsetX+=_0x16451f,enemies[_0x51802b(0x10c)](_0x53f35d=>{const _0x144dbe=_0x51802b;if(_0x53f35d&&(_0x53f35d[_0x144dbe(0x14f)]===_0x144dbe(0x18d)||_0x53f35d[_0x144dbe(0x14f)]===_0x144dbe(0x80)||_0x53f35d[_0x144dbe(0x14f)]===_0x144dbe(0xdd)))try{const _0x974285=_0x53f35d[_0x144dbe(0x19d)]===ENEMY3_TYPE?BOSS_WIDTH:_0x53f35d['type']===ENEMY1_TYPE?ENEMY1_WIDTH:ENEMY_WIDTH,{x:_0x4c00ab,y:_0x54bc46}=getCurrentGridSlotPosition(_0x53f35d[_0x144dbe(0x138)],_0x53f35d[_0x144dbe(0xf4)],_0x974285);_0x53f35d[_0x144dbe(0xcc)]=_0x4c00ab,_0x53f35d[_0x144dbe(0xeb)]=_0x54bc46;}catch(_0x196ea0){console[_0x144dbe(0x186)](_0x144dbe(0xa0)+_0x53f35d?.['id']+_0x144dbe(0x198)+_0x53f35d?.['state']+_0x144dbe(0x1ac),_0x196ea0);}});}}else isGridSoundPlaying&&(stopSound(_0x51802b(0x191)),isGridSoundPlaying=![]),_0x16451f=0x0;for(let _0x14050c=enemies[_0x51802b(0xbb)]-0x1;_0x14050c>=0x0;_0x14050c--){let _0x69e750=enemies[_0x14050c];if(!_0x69e750){enemies[_0x51802b(0xa1)](_0x14050c,0x1);continue;}const _0xe4de82=_0x69e750['id'];if(_0x69e750[_0x51802b(0xd9)]&&_0x69e750[_0x51802b(0x14f)]!==_0x51802b(0x13d)){clearTimeout(_0x69e750[_0x51802b(0xd9)]);const _0x5b9062=enemySpawnTimeouts['indexOf'](_0x69e750[_0x51802b(0xd9)]);if(_0x5b9062>-0x1)enemySpawnTimeouts['splice'](_0x5b9062,0x1);_0x69e750[_0x51802b(0xd9)]=null;}const _0x29670f=_0x69e750[_0x51802b(0x19d)]===ENEMY3_TYPE?BOSS_WIDTH:_0x69e750['type']===ENEMY1_TYPE?ENEMY1_WIDTH:ENEMY_WIDTH,_0x467e3a=_0x69e750[_0x51802b(0x19d)]===ENEMY3_TYPE?BOSS_HEIGHT:_0x69e750[_0x51802b(0x19d)]===ENEMY1_TYPE?ENEMY1_HEIGHT:ENEMY_HEIGHT;switch(_0x69e750['state']){case _0x51802b(0x100):{let _0x187efe=CS_ENTRANCE_PATH_SPEED;const _0x230767=_0x69e750['pathSpeedMultiplier']||0x1;_0x187efe*=_0x230767;if(!isChallengingStage){enemies[_0x51802b(0xa1)](_0x14050c,0x1),_0x69e750=null;break;}let _0x45ab59=challengingStagePaths,_0x3071db=_0x45ab59[_0x69e750['entrancePathId']];if(!_0x3071db||_0x69e750['pathSegmentIndex']>=_0x3071db['length']){enemies[_0x51802b(0xa1)](_0x14050c,0x1),_0x69e750=null;break;}const _0x4d0872=_0x3071db[_0x69e750[_0x51802b(0x8e)]];if(!_0x4d0872||!_0x4d0872['p0']||!_0x4d0872['p1']||!_0x4d0872['p2']||!_0x4d0872['p3']){console[_0x51802b(0x186)](_0x51802b(0xb6)+_0x69e750[_0x51802b(0x8e)]+_0x51802b(0x12e)+_0x69e750['entrancePathId']+_0x51802b(0x167)+_0x69e750['id']),enemies[_0x51802b(0xa1)](_0x14050c,0x1),_0x69e750=null;break;}_0x69e750['pathT']+=_0x187efe;let _0x5535e9,_0x9f9d17,_0x378695=_0x69e750['x'],_0x10e29b=_0x69e750['y'];if(_0x69e750['pathT']>=0x1){_0x69e750[_0x51802b(0x19c)]=0x0,_0x69e750[_0x51802b(0x8e)]++;if(_0x69e750[_0x51802b(0x8e)]>=_0x3071db[_0x51802b(0xbb)])enemies[_0x51802b(0xa1)](_0x14050c,0x1),_0x69e750=null;else{const _0x2eb503=_0x3071db[_0x69e750[_0x51802b(0x8e)]];_0x2eb503?.['p0']?(_0x5535e9=_0x2eb503['p0']['x'],_0x9f9d17=_0x2eb503['p0']['y']):(console[_0x51802b(0x186)](_0x51802b(0xc0)+_0x69e750[_0x51802b(0x8e)]+_0x51802b(0x12e)+_0x69e750[_0x51802b(0xcd)]+'.\x20Enemy\x20'+_0xe4de82),enemies[_0x51802b(0xa1)](_0x14050c,0x1),_0x69e750=null);}}else try{_0x5535e9=calculateBezierPoint(_0x69e750['pathT'],_0x4d0872['p0']['x'],_0x4d0872['p1']['x'],_0x4d0872['p2']['x'],_0x4d0872['p3']['x']),_0x9f9d17=calculateBezierPoint(_0x69e750[_0x51802b(0x19c)],_0x4d0872['p0']['y'],_0x4d0872['p1']['y'],_0x4d0872['p2']['y'],_0x4d0872['p3']['y']);}catch(_0x19e51e){console[_0x51802b(0x186)]('Error\x20calculating\x20CS\x20Bezier\x20point\x20for\x20enemy\x20'+_0xe4de82+':',_0x19e51e),enemies[_0x51802b(0xa1)](_0x14050c,0x1),_0x69e750=null;}_0x69e750&&(isNaN(_0x5535e9)||isNaN(_0x9f9d17)?(console[_0x51802b(0x186)](_0x51802b(0x14c)+_0xe4de82+_0x51802b(0xe4)),enemies[_0x51802b(0xa1)](_0x14050c,0x1),_0x69e750=null):(_0x69e750[_0x51802b(0x96)]=_0x5535e9-_0x378695,_0x69e750['velocityY']=_0x9f9d17-_0x10e29b,_0x69e750['x']=_0x5535e9,_0x69e750['y']=_0x9f9d17));break;}case _0x51802b(0x1a2):{if(isChallengingStage){enemies[_0x51802b(0xa1)](_0x14050c,0x1),_0x69e750=null;break;}let _0x383952=normalWaveEntrancePaths,_0x3b0ad1=_0x383952[_0x69e750[_0x51802b(0xcd)]],_0x227826;_0x69e750[_0x51802b(0xcd)]===_0x51802b(0x103)||_0x69e750['entrancePathId']===_0x51802b(0x189)?_0x227826=BOSS_LOOP_ENTRANCE_PATH_SPEED:_0x227826=NORMAL_ENTRANCE_PATH_SPEED;if(!_0x3b0ad1){console['warn']('Enemy\x20'+_0xe4de82+'\x20missing\x20SHARED\x20path\x20'+_0x69e750[_0x51802b(0xcd)]+_0x51802b(0xe1));try{_0x69e750[_0x51802b(0xcc)]=_0x69e750[_0x51802b(0xcc)]??gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750['targetGridY']=_0x69e750['targetGridY']??ENEMY_TOP_MARGIN;}catch(_0x46386f){console['error']('Error\x20getting\x20grid\x20pos\x20for\x20'+_0xe4de82+_0x51802b(0x10d),_0x46386f),_0x69e750[_0x51802b(0xcc)]=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750[_0x51802b(0xeb)]=ENEMY_TOP_MARGIN;}_0x69e750[_0x51802b(0x14f)]=_0x51802b(0xdd),_0x69e750[_0x51802b(0x19c)]=0x0,_0x69e750[_0x51802b(0x8e)]=0x0,_0x69e750[_0x51802b(0x96)]=0x0,_0x69e750[_0x51802b(0xf1)]=0x0;_0x69e750['squadronId']!==undefined&&squadronCompletionStatus[_0x69e750[_0x51802b(0x8d)]]&&squadronCompletionStatus[_0x69e750[_0x51802b(0x8d)]][_0x51802b(0x7e)]++;break;}if(_0x69e750['pathSegmentIndex']>=_0x3b0ad1[_0x51802b(0xbb)]){console[_0x51802b(0x197)](_0x51802b(0xdf)+_0xe4de82+_0x51802b(0xac)+_0x69e750[_0x51802b(0x8e)]+_0x51802b(0xdb)+_0x69e750[_0x51802b(0xcd)]+_0x51802b(0xe1));try{_0x69e750[_0x51802b(0xcc)]=_0x69e750[_0x51802b(0xcc)]??gameCanvas['width']/0x2,_0x69e750[_0x51802b(0xeb)]=_0x69e750[_0x51802b(0xeb)]??ENEMY_TOP_MARGIN;}catch(_0x5e3eeb){console[_0x51802b(0x186)](_0x51802b(0xb7)+_0xe4de82+_0x51802b(0x104),_0x5e3eeb),_0x69e750['targetGridX']=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750['targetGridY']=ENEMY_TOP_MARGIN;}_0x69e750[_0x51802b(0x14f)]=_0x51802b(0xdd),_0x69e750[_0x51802b(0x19c)]=0x0,_0x69e750[_0x51802b(0x8e)]=0x0,_0x69e750[_0x51802b(0x96)]=0x0,_0x69e750[_0x51802b(0xf1)]=0x0;_0x69e750['squadronId']!==undefined&&squadronCompletionStatus[_0x69e750['squadronId']]&&squadronCompletionStatus[_0x69e750[_0x51802b(0x8d)]][_0x51802b(0x7e)]++;break;}const _0x13ccab=_0x3b0ad1[_0x69e750[_0x51802b(0x8e)]];if(!_0x13ccab||!_0x13ccab['p0']||!_0x13ccab['p1']||!_0x13ccab['p2']||!_0x13ccab['p3']){console[_0x51802b(0x186)]('Invalid\x20Normal\x20Bezier\x20segment\x20'+_0x69e750['pathSegmentIndex']+_0x51802b(0x126)+_0x69e750['entrancePathId']+_0x51802b(0x167)+_0xe4de82+_0x51802b(0xe1));try{_0x69e750[_0x51802b(0xcc)]=_0x69e750[_0x51802b(0xcc)]??gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750[_0x51802b(0xeb)]=_0x69e750[_0x51802b(0xeb)]??ENEMY_TOP_MARGIN+_0x69e750['gridRow']*(ENEMY_HEIGHT+ENEMY_V_SPACING);}catch(_0x178b92){console[_0x51802b(0x186)](_0x51802b(0xb7)+_0xe4de82+_0x51802b(0x17c),_0x178b92),_0x69e750[_0x51802b(0xcc)]=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750['targetGridY']=ENEMY_TOP_MARGIN;}_0x69e750['state']=_0x51802b(0xdd),_0x69e750[_0x51802b(0x19c)]=0x0,_0x69e750[_0x51802b(0x8e)]=0x0,_0x69e750['velocityX']=0x0,_0x69e750['velocityY']=0x0;_0x69e750[_0x51802b(0x8d)]!==undefined&&squadronCompletionStatus[_0x69e750[_0x51802b(0x8d)]]&&squadronCompletionStatus[_0x69e750[_0x51802b(0x8d)]][_0x51802b(0x7e)]++;break;}_0x69e750[_0x51802b(0x19c)]+=_0x227826;let _0x5e41d5,_0xea96ef,_0x2b6212=_0x69e750['x'],_0x8a9641=_0x69e750['y'];if(_0x69e750[_0x51802b(0x19c)]>=0x1){_0x69e750['pathT']=0x0,_0x69e750[_0x51802b(0x8e)]++;if(_0x69e750['pathSegmentIndex']>=_0x3b0ad1['length']){let _0x23e110,_0x3cd29f;try{_0x23e110=calculateBezierPoint(0x1,_0x13ccab['p0']['x'],_0x13ccab['p1']['x'],_0x13ccab['p2']['x'],_0x13ccab['p3']['x']),_0x3cd29f=calculateBezierPoint(0x1,_0x13ccab['p0']['y'],_0x13ccab['p1']['y'],_0x13ccab['p2']['y'],_0x13ccab['p3']['y']);}catch(_0x509763){console[_0x51802b(0x186)](_0x51802b(0x13a)+_0xe4de82+_0x51802b(0x15a)+_0x69e750['entrancePathId'],_0x509763),_0x23e110=_0x13ccab['p3']['x'],_0x3cd29f=_0x13ccab['p3']['y'];}_0x69e750['x']=_0x23e110,_0x69e750['y']=_0x3cd29f;try{_0x69e750[_0x51802b(0xcc)]=_0x69e750[_0x51802b(0xcc)]??gameCanvas['width']/0x2,_0x69e750[_0x51802b(0xeb)]=_0x69e750[_0x51802b(0xeb)]??ENEMY_TOP_MARGIN;}catch(_0x21ae30){console['error']('Error\x20getting\x20target\x20grid\x20pos\x20for\x20'+_0xe4de82+_0x51802b(0x15a)+_0x69e750[_0x51802b(0xcd)],_0x21ae30),_0x69e750[_0x51802b(0xcc)]=_0x69e750['x'],_0x69e750[_0x51802b(0xeb)]=ENEMY_TOP_MARGIN+_0x69e750['gridRow']*(ENEMY_HEIGHT+ENEMY_V_SPACING);}const _0x3c76e6=_0x69e750[_0x51802b(0x14f)];_0x69e750[_0x51802b(0x14f)]=_0x51802b(0xdd),_0x69e750[_0x51802b(0x96)]=0x0,_0x69e750['velocityY']=0x0,_0x69e750['pathSegmentIndex']=0x0;_0x3c76e6===_0x51802b(0x1a2)&&_0x69e750[_0x51802b(0x8d)]!==undefined&&squadronCompletionStatus[_0x69e750[_0x51802b(0x8d)]]&&squadronCompletionStatus[_0x69e750[_0x51802b(0x8d)]][_0x51802b(0x7e)]++;break;}else{const _0x1ffe97=_0x3b0ad1[_0x69e750[_0x51802b(0x8e)]];if(_0x1ffe97?.['p0'])_0x5e41d5=_0x1ffe97['p0']['x'],_0xea96ef=_0x1ffe97['p0']['y'];else{console['error']('Invalid\x20next\x20Normal\x20Bezier\x20segment\x20'+_0x69e750[_0x51802b(0x8e)]+_0x51802b(0x126)+_0x69e750['entrancePathId']+'.\x20Enemy\x20'+_0xe4de82+_0x51802b(0xe1));try{_0x69e750[_0x51802b(0xcc)]=_0x69e750['targetGridX']??gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750[_0x51802b(0xeb)]=_0x69e750[_0x51802b(0xeb)]??ENEMY_TOP_MARGIN;}catch(_0x4f7bab){console[_0x51802b(0x186)](_0x51802b(0xb7)+_0xe4de82+_0x51802b(0x137),_0x4f7bab),_0x69e750[_0x51802b(0xcc)]=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750[_0x51802b(0xeb)]=ENEMY_TOP_MARGIN;}_0x69e750[_0x51802b(0x14f)]=_0x51802b(0xdd),_0x69e750[_0x51802b(0x19c)]=0x0,_0x69e750['pathSegmentIndex']=0x0,_0x69e750[_0x51802b(0x96)]=0x0,_0x69e750['velocityY']=0x0;_0x69e750[_0x51802b(0x8d)]!==undefined&&squadronCompletionStatus[_0x69e750[_0x51802b(0x8d)]]&&squadronCompletionStatus[_0x69e750[_0x51802b(0x8d)]][_0x51802b(0x7e)]++;break;}}}else try{_0x5e41d5=calculateBezierPoint(_0x69e750['pathT'],_0x13ccab['p0']['x'],_0x13ccab['p1']['x'],_0x13ccab['p2']['x'],_0x13ccab['p3']['x']),_0xea96ef=calculateBezierPoint(_0x69e750[_0x51802b(0x19c)],_0x13ccab['p0']['y'],_0x13ccab['p1']['y'],_0x13ccab['p2']['y'],_0x13ccab['p3']['y']);}catch(_0x5f1646){console[_0x51802b(0x186)](_0x51802b(0xae)+_0xe4de82+':',_0x5f1646);try{_0x69e750[_0x51802b(0xcc)]=_0x69e750[_0x51802b(0xcc)]??gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750[_0x51802b(0xeb)]=_0x69e750[_0x51802b(0xeb)]??ENEMY_TOP_MARGIN;}catch(_0x3e281e){console['error'](_0x51802b(0xb7)+_0xe4de82+_0x51802b(0x175),_0x3e281e),_0x69e750['targetGridX']=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750[_0x51802b(0xeb)]=ENEMY_TOP_MARGIN;}_0x69e750['state']=_0x51802b(0xdd),_0x69e750[_0x51802b(0x19c)]=0x0,_0x69e750[_0x51802b(0x8e)]=0x0,_0x69e750[_0x51802b(0x96)]=0x0,_0x69e750[_0x51802b(0xf1)]=0x0;_0x69e750[_0x51802b(0x8d)]!==undefined&&squadronCompletionStatus[_0x69e750[_0x51802b(0x8d)]]&&squadronCompletionStatus[_0x69e750[_0x51802b(0x8d)]][_0x51802b(0x7e)]++;break;}if(_0x69e750&&_0x69e750[_0x51802b(0x14f)]===_0x51802b(0x1a2)){if(isNaN(_0x5e41d5)||isNaN(_0xea96ef)){console[_0x51802b(0x186)](_0x51802b(0x73)+_0xe4de82+_0x51802b(0xe1));try{_0x69e750[_0x51802b(0xcc)]=_0x69e750[_0x51802b(0xcc)]??gameCanvas['width']/0x2,_0x69e750[_0x51802b(0xeb)]=_0x69e750['targetGridY']??ENEMY_TOP_MARGIN;}catch(_0x454ec3){console['error'](_0x51802b(0xb7)+_0xe4de82+_0x51802b(0xfb),_0x454ec3),_0x69e750[_0x51802b(0xcc)]=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750['targetGridY']=ENEMY_TOP_MARGIN;}_0x69e750[_0x51802b(0x14f)]='moving_to_grid',_0x69e750[_0x51802b(0x19c)]=0x0,_0x69e750['pathSegmentIndex']=0x0,_0x69e750[_0x51802b(0x96)]=0x0,_0x69e750[_0x51802b(0xf1)]=0x0,_0x69e750[_0x51802b(0x8d)]!==undefined&&squadronCompletionStatus[_0x69e750[_0x51802b(0x8d)]]&&squadronCompletionStatus[_0x69e750['squadronId']][_0x51802b(0x7e)]++;}else{let _0x2d6600=_0x5e41d5;const _0x848d17=currentWavePatternIndex===0x1&&(_0x69e750[_0x51802b(0x8d)]===0x2||_0x69e750[_0x51802b(0x8d)]===0x3),_0x1c4257=typeof _0x69e750['squadronEnemyIndex']===_0x51802b(0xcf)&&_0x69e750[_0x51802b(0x11a)]%0x2!==0x0;if(_0x848d17&&_0x1c4257){const _0x5b72ae=_0x29670f+ENTRANCE_PAIR_HORIZONTAL_GAP;_0x2d6600=_0x5e41d5+_0x5b72ae;}_0x69e750[_0x51802b(0x96)]=_0x2d6600-_0x2b6212,_0x69e750['velocityY']=_0xea96ef-_0x8a9641,_0x69e750['x']=_0x2d6600,_0x69e750['y']=_0xea96ef;}}break;}case _0x51802b(0xdd):{if(_0x69e750[_0x51802b(0xcc)]==null||_0x69e750[_0x51802b(0xeb)]==null){console['warn'](_0x51802b(0xdf)+_0xe4de82+_0x51802b(0x192));try{const {x:_0x3481e2,y:_0x343a22}=getCurrentGridSlotPosition(_0x69e750[_0x51802b(0x138)],_0x69e750[_0x51802b(0xf4)],_0x29670f);_0x69e750[_0x51802b(0xcc)]=_0x3481e2,_0x69e750[_0x51802b(0xeb)]=_0x343a22;}catch(_0x9d2936){console[_0x51802b(0x186)]('Error\x20getting\x20grid\x20pos\x20for\x20'+_0xe4de82+_0x51802b(0xf5),_0x9d2936),_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x80),_0x69e750['x']=gameCanvas['width']/0x2,_0x69e750['y']=ENEMY_TOP_MARGIN;break;}}const _0x25d4c5=_0x69e750['targetGridX'],_0x22ed60=_0x69e750[_0x51802b(0xeb)],_0x3349cf=_0x25d4c5-_0x69e750['x'],_0x43b694=_0x22ed60-_0x69e750['y'],_0x10ee6c=Math[_0x51802b(0x160)](_0x3349cf*_0x3349cf+_0x43b694*_0x43b694),_0x498bf0=ENTRANCE_SPEED*1.2,_0x4aec1d=_0x498bf0*0.5;if(_0x10ee6c>_0x4aec1d)_0x69e750[_0x51802b(0x96)]=_0x3349cf/_0x10ee6c*_0x498bf0,_0x69e750[_0x51802b(0xf1)]=_0x43b694/_0x10ee6c*_0x498bf0,_0x69e750['x']+=_0x69e750[_0x51802b(0x96)],_0x69e750['y']+=_0x69e750[_0x51802b(0xf1)];else{_0x69e750['x']=_0x25d4c5,_0x69e750['y']=_0x22ed60,_0x69e750['velocityX']=0x0,_0x69e750['velocityY']=0x0;const _0x270bc6=_0x69e750[_0x51802b(0x14f)];_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x80),_0x69e750['justReturned']=![];!isGridSoundPlaying&&!isChallengingStage&&(isGridSoundPlaying=!![],playSound(_0x51802b(0x191),!![],0.1));GRID_BREATH_ENABLED&&!isGridBreathingActive&&!isChallengingStage&&(isGridBreathingActive=!![],gridBreathStartTime=_0x78ef09,currentGridBreathFactor=0x0);!firstEnemyLanded&&!isFullGridWave&&!isChallengingStage&&(lastGridFireCheckTime=Date['now'](),firstEnemyLanded=!![]);if(_0x270bc6===_0x51802b(0xdd)&&!isChallengingStage&&!isFullGridWave&&_0x69e750[_0x51802b(0x8d)]!==undefined){const _0x236a2c=_0x69e750['squadronId'],_0xe12d6d=squadronCompletionStatus[_0x236a2c];if(_0xe12d6d&&!_0xe12d6d[_0x51802b(0x87)]){const _0x38d35b=enemies['every'](_0x51b26=>{const _0x2691ba=_0x51802b;if(_0x51b26&&_0x51b26['squadronId']===_0x236a2c)return _0x51b26[_0x2691ba(0x14f)]===_0x2691ba(0x80)||!enemies[_0x2691ba(0x181)](_0x2d50b4=>_0x2d50b4['id']===_0x51b26['id']);return!![];});if(_0x38d35b){_0xe12d6d['hasFiredPostLanding']=!![];const _0x3984fa=enemies[_0x51802b(0xd2)](_0x584abf=>_0x584abf&&_0x584abf[_0x51802b(0x8d)]===_0x236a2c&&_0x584abf[_0x51802b(0x14f)]===_0x51802b(0x80)&&(_0x584abf[_0x51802b(0x19d)]===ENEMY2_TYPE||_0x584abf[_0x51802b(0x19d)]===ENEMY3_TYPE)&&!(_0x584abf[_0x51802b(0x19d)]===ENEMY3_TYPE&&_0x584abf[_0x51802b(0x19f)]));if(_0x3984fa['length']>0x0){const _0x41af9a=_0x3984fa[Math[_0x51802b(0x119)](Math[_0x51802b(0x107)]()*_0x3984fa[_0x51802b(0xbb)])],_0x50607e=_0x41af9a['id'],_0xd76918=0xc8+Math['random']()*0x190,_0x1d243f=setTimeout(()=>{const _0x285f48=_0x51802b;try{const _0x517105=enemySpawnTimeouts[_0x285f48(0x11e)](_0x1d243f);if(_0x517105>-0x1)enemySpawnTimeouts['splice'](_0x517105,0x1);if(isPaused||!isInGameState||playerLives<=0x0&&(!isTwoPlayerMode||player1Lives<=0x0&&player2Lives<=0x0)||isChallengingStage||isWaveTransitioning||isShipCaptured)return;const _0x77a171=enemies[_0x285f48(0x152)](_0x8f8fc8=>_0x8f8fc8&&_0x8f8fc8['id']===_0x50607e);_0x77a171&&_0x77a171['state']==='in_grid'&&(createBulletSimple(_0x77a171)&&(playSound('enemyShootSound',![],0.4),_0x77a171[_0x285f48(0x148)]=Date['now']()));}catch(_0x473b00){console[_0x285f48(0x186)]('Error\x20during\x20post-landing\x20fire\x20for\x20'+_0x50607e+':',_0x473b00);}},_0xd76918);enemySpawnTimeouts[_0x51802b(0xc9)](_0x1d243f);}}}}}break;}case _0x51802b(0x80):{try{const _0x49a5be=_0x69e750['type']===ENEMY3_TYPE?BOSS_WIDTH:_0x69e750[_0x51802b(0x19d)]===ENEMY1_TYPE?ENEMY1_WIDTH:ENEMY_WIDTH,{x:_0x424e91,y:_0xb5b0d2}=getCurrentGridSlotPosition(_0x69e750['gridRow'],_0x69e750['gridCol'],_0x49a5be);typeof _0x424e91===_0x51802b(0xcf)&&!isNaN(_0x424e91)&&(_0x69e750['x']=_0x424e91),typeof _0xb5b0d2===_0x51802b(0xcf)&&!isNaN(_0xb5b0d2)&&(_0x69e750['y']=_0xb5b0d2),_0x69e750[_0x51802b(0xcc)]=_0x424e91,_0x69e750[_0x51802b(0xeb)]=_0xb5b0d2;}catch(_0x1867ea){console[_0x51802b(0x186)](_0x51802b(0x164)+_0x69e750['id']+':',_0x1867ea);}_0x69e750[_0x51802b(0x96)]=_0x13b92d?_0x16451f:0x0,_0x69e750['velocityY']=0x0;_0x69e750[_0x51802b(0x19d)]===ENEMY3_TYPE&&_0x69e750[_0x51802b(0x19f)]&&_0x69e750['capturedShipDimensions']&&(_0x69e750[_0x51802b(0x1a6)]=_0x69e750['x']+CAPTURED_SHIP_OFFSET_X,_0x69e750[_0x51802b(0x172)]=_0x69e750['y']+CAPTURED_SHIP_OFFSET_Y);break;}case _0x51802b(0x109):{_0x69e750[_0x51802b(0x96)]=0x0,_0x69e750[_0x51802b(0xf1)]=0x0;break;}case'preparing_capture':{_0x69e750[_0x51802b(0x96)]=0x0,_0x69e750['velocityY']=0x0;break;}case'diving_to_capture_position':{let _0x549121=isTwoPlayerMode&&selectedGameMode===_0x51802b(0xed)?isPlayer1ShipCaptured||isPlayer2ShipCaptured:isShipCaptured;if(_0x549121){_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x18d);try{const {x:_0x41dd76,y:_0x47b2da}=getCurrentGridSlotPosition(_0x69e750[_0x51802b(0x138)],_0x69e750['gridCol'],_0x29670f);_0x69e750[_0x51802b(0xcc)]=_0x41dd76,_0x69e750[_0x51802b(0xeb)]=_0x47b2da;}catch(_0x16938c){console[_0x51802b(0x186)](_0x51802b(0xd5)+_0x69e750['id']+':',_0x16938c),_0x69e750[_0x51802b(0xcc)]=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750['targetGridY']=ENEMY_TOP_MARGIN;}break;}const _0x2cd1fa=_0x69e750[_0x51802b(0xa3)],_0x37b0de=_0x69e750[_0x51802b(0x90)];if(_0x2cd1fa==null||_0x37b0de==null){console[_0x51802b(0x186)]('Boss\x20'+_0x69e750['id']+_0x51802b(0x173)),_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x18d);try{const {x:_0x11b74a,y:_0x1baf98}=getCurrentGridSlotPosition(_0x69e750[_0x51802b(0x138)],_0x69e750[_0x51802b(0xf4)],_0x29670f);_0x69e750[_0x51802b(0xcc)]=_0x11b74a,_0x69e750['targetGridY']=_0x1baf98;}catch(_0xc7a12e){console[_0x51802b(0x186)]('Error\x20getting\x20grid\x20pos\x20for\x20returning\x20boss\x20'+_0x69e750['id']+':',_0xc7a12e),_0x69e750[_0x51802b(0xcc)]=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750[_0x51802b(0xeb)]=ENEMY_TOP_MARGIN;}break;}const _0x1597d8=_0x2cd1fa-_0x69e750['x'],_0x2df662=_0x37b0de-_0x69e750['y'],_0x5c2579=Math[_0x51802b(0x160)](_0x1597d8*_0x1597d8+_0x2df662*_0x2df662),_0x1e48e6=BOSS_CAPTURE_DIVE_SPEED_FACTOR*BASE_ENEMY_ATTACK_SPEED,_0x4c592d=_0x1e48e6*0.6;_0x5c2579>_0x4c592d?(_0x69e750[_0x51802b(0x96)]=_0x1597d8/_0x5c2579*_0x1e48e6,_0x69e750[_0x51802b(0xf1)]=_0x2df662/_0x5c2579*_0x1e48e6,_0x69e750['x']+=_0x69e750[_0x51802b(0x96)],_0x69e750['y']+=_0x69e750['velocityY']):(_0x69e750['x']=_0x2cd1fa,_0x69e750['y']=_0x37b0de,_0x69e750[_0x51802b(0x96)]=0x0,_0x69e750[_0x51802b(0xf1)]=0x0,_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x133),_0x69e750[_0x51802b(0x183)]=_0x78ef09,capturingBossId=_0x69e750['id'],captureBeamActive=!![],captureBeamSource={'x':_0x69e750['x']+_0x29670f/0x2,'y':_0x69e750['y']+_0x467e3a},captureBeamTargetY=_0x69e750['y'],captureBeamProgress=0x0,playSound(_0x51802b(0x193),![],0.6),_0x69e750[_0x51802b(0x79)]&&(captureAttemptMadeThisLevel=!![],delete _0x69e750[_0x51802b(0x79)]));break;}case _0x51802b(0x133):{_0x69e750[_0x51802b(0x96)]=0x0,_0x69e750[_0x51802b(0xf1)]=0x0;_0x69e750['isPreparingForImmediateCapture']&&!captureAttemptMadeThisLevel&&(captureAttemptMadeThisLevel=!![],delete _0x69e750['isPreparingForImmediateCapture']);let _0x53d6ce=![];isTwoPlayerMode&&selectedGameMode===_0x51802b(0xed)?_0x53d6ce=isPlayer1ShipCaptured&&capturedBossIdWithMessage===_0x69e750['id']||isPlayer2ShipCaptured&&capturedBossIdWithMessage===_0x69e750['id']:_0x53d6ce=isShipCaptured&&capturedBossIdWithMessage===_0x69e750['id'];if(_0x53d6ce){captureBeamActive=![];if(capturingBossId===_0x69e750['id'])capturingBossId=null;_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x18d),stopSound(_0x51802b(0x193));break;}const _0x31d7ad=_0x78ef09-_0x69e750['captureStartTime'],_0x28e1de=CAPTURE_BEAM_ANIMATION_DURATION_MS/0x2,_0x21fbdc=CAPTURE_BEAM_DURATION_MS;if(_0x31d7ad<_0x28e1de)captureBeamProgress=_0x31d7ad/_0x28e1de;else{if(_0x31d7ad<_0x21fbdc-_0x28e1de)captureBeamProgress=0x1;else{if(_0x31d7ad<_0x21fbdc)captureBeamProgress=0x1-(_0x31d7ad-(_0x21fbdc-_0x28e1de))/_0x28e1de;else{captureBeamProgress=0x0,captureBeamActive=![],capturingBossId=null,stopSound('captureSound'),_0x69e750['state']=_0x51802b(0x177),_0x69e750[_0x51802b(0x114)]=generateAttackPathInternal(_0x69e750),_0x69e750[_0x51802b(0x15b)]=0x0,_0x69e750['attackPathT']=0x0,_0x69e750['speed']=BASE_ENEMY_ATTACK_SPEED*ENEMY3_ATTACK_SPEED_FACTOR,_0x69e750[_0x51802b(0x148)]=0x0,_0x69e750[_0x51802b(0x92)]=!![],_0x69e750[_0x51802b(0x1a1)]=0x0,_0x69e750[_0x51802b(0x76)]=null;break;}}}captureBeamProgress=Math[_0x51802b(0x12c)](0x0,Math[_0x51802b(0x99)](0x1,captureBeamProgress));if(captureBeamActive&&captureBeamProgress>=0.95){const _0x527373=BOSS_WIDTH*CAPTURE_BEAM_WIDTH_TOP_FACTOR,_0x34d326=SHIP_WIDTH*CAPTURE_BEAM_WIDTH_BOTTOM_FACTOR,_0x31bdb1=_0x69e750['x']+_0x29670f/0x2,_0x3dc2b7=_0x69e750['y']+_0x467e3a,_0x4caeec=gameCanvas[_0x51802b(0x74)]-LIFE_ICON_MARGIN_BOTTOM-LIFE_ICON_SIZE-0xa,_0x57d715=Math[_0x51802b(0x12c)](_0x527373,_0x34d326),_0x470dd0=_0x31bdb1-_0x57d715/0x2,_0x3f7ba3=_0x3dc2b7,_0x1a2be=_0x4caeec-_0x3dc2b7;if(_0x1a2be>0x0){const _0x299b2c={'x':_0x470dd0,'y':_0x3f7ba3,'width':_0x57d715,'height':_0x1a2be};let _0x2b17c9=null,_0x27c181=0x0;if(isTwoPlayerMode&&selectedGameMode==='coop'){if(ship1&&player1Lives>0x0&&!isPlayer1ShipCaptured&&checkCollision(ship1,_0x299b2c))_0x2b17c9=ship1,_0x27c181=0x1;else ship2&&player2Lives>0x0&&!isPlayer2ShipCaptured&&checkCollision(ship2,_0x299b2c)&&(_0x2b17c9=ship2,_0x27c181=0x2);}else ship&&playerLives>0x0&&!isShipCaptured&&checkCollision(ship,_0x299b2c)&&(_0x2b17c9=ship,_0x27c181=currentPlayer);if(_0x2b17c9){_0x69e750['capturedShipDimensions']={'width':_0x2b17c9[_0x51802b(0xaa)],'height':_0x2b17c9[_0x51802b(0x74)]},_0x69e750['hasCapturedShip']=!![],stopSound('captureSound'),_0x69e750[_0x51802b(0x14f)]='showing_capture_message',_0x69e750['targetGridX']=null,_0x69e750[_0x51802b(0xeb)]=null,_0x69e750['initialCaptureAnimationY']=_0x2b17c9['y'],_0x69e750[_0x51802b(0x17b)]=0x0,isShowingCaptureMessage=!![],captureMessageStartTime=_0x78ef09,capturedBossIdWithMessage=_0x69e750['id'],playSound(_0x51802b(0x15f),![],0.3),csCurrentChainHits=0x0,csCurrentChainScore=0x0,csLastHitTime=0x0,csLastChainHitPosition=null,normalWaveCurrentChainHits=0x0,normalWaveCurrentChainScore=0x0,normalWaveLastHitTime=0x0,normalWaveLastHitPosition=null,handlePlayerShipCollision(_0x27c181,![],_0x78ef09,!![]);if((isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x51802b(0xa7))&&aiPlayerActivelySeekingCaptureById)aiPlayerActivelySeekingCaptureById=null;break;}}}break;}case _0x51802b(0xb5):{_0x69e750['velocityX']=0x0,_0x69e750[_0x51802b(0xf1)]=0x0;if(_0x69e750[_0x51802b(0x19f)]&&_0x69e750[_0x51802b(0x179)]&&typeof _0x69e750[_0x51802b(0x116)]===_0x51802b(0xcf)){const _0x13eaca=_0x78ef09-captureMessageStartTime,_0x4d77c7=Math[_0x51802b(0x99)](0x1,_0x13eaca/CAPTURE_MESSAGE_DURATION),_0x4f9167=_0x69e750['y']+CAPTURED_SHIP_OFFSET_Y,_0x546903=_0x69e750[_0x51802b(0x116)];_0x69e750[_0x51802b(0x172)]=_0x546903+(_0x4f9167-_0x546903)*_0x4d77c7,_0x69e750['capturedShipX']=_0x69e750['x']+CAPTURED_SHIP_OFFSET_X;}else _0x69e750[_0x51802b(0x1a6)]=_0x69e750['x']+CAPTURED_SHIP_OFFSET_X,_0x69e750['capturedShipY']=_0x69e750['y']+CAPTURED_SHIP_OFFSET_Y;break;}case _0x51802b(0x177):{if(isEntrancePhaseActive)break;const _0x3ef09a=_0x69e750[_0x51802b(0x114)],_0x762aa8=3.8;if(!_0x3ef09a||_0x3ef09a[_0x51802b(0xbb)]===0x0){console[_0x51802b(0x186)](_0x51802b(0xdf)+_0xe4de82+_0x51802b(0x1a3)),_0x69e750[_0x51802b(0x14f)]='returning';try{const {x:_0x1e74ad,y:_0x51794d}=getCurrentGridSlotPosition(_0x69e750['gridRow'],_0x69e750[_0x51802b(0xf4)],_0x29670f);_0x69e750[_0x51802b(0xcc)]=_0x1e74ad,_0x69e750['targetGridY']=_0x51794d;}catch(_0x3d64a7){console[_0x51802b(0x186)](_0x51802b(0x11f)+_0xe4de82+_0x51802b(0x171),_0x3d64a7),_0x69e750[_0x51802b(0xcc)]=gameCanvas['width']/0x2,_0x69e750[_0x51802b(0xeb)]=ENEMY_TOP_MARGIN;}break;}if(_0x69e750['attackPathSegmentIndex']>=_0x3ef09a[_0x51802b(0xbb)]){console[_0x51802b(0x197)](_0x51802b(0xdf)+_0xe4de82+_0x51802b(0xec)+_0x69e750[_0x51802b(0x15b)]+_0x51802b(0x151)+_0x3ef09a[_0x51802b(0xbb)]+_0x51802b(0xd6)),_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x18d);try{const {x:_0x39be75,y:_0x40c84a}=getCurrentGridSlotPosition(_0x69e750[_0x51802b(0x138)],_0x69e750[_0x51802b(0xf4)],_0x29670f);_0x69e750[_0x51802b(0xcc)]=_0x39be75,_0x69e750[_0x51802b(0xeb)]=_0x40c84a;}catch(_0x3a99f2){console[_0x51802b(0x186)]('Error\x20getting\x20grid\x20pos\x20for\x20returning\x20enemy\x20'+_0xe4de82+_0x51802b(0x115),_0x3a99f2),_0x69e750[_0x51802b(0xcc)]=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750['targetGridY']=ENEMY_TOP_MARGIN;}break;}const _0x545757=_0x3ef09a[_0x69e750[_0x51802b(0x15b)]];if(!_0x545757||!_0x545757['p0']||!_0x545757['p1']||!_0x545757['p2']||!_0x545757['p3']){console[_0x51802b(0x186)](_0x51802b(0xdf)+_0xe4de82+_0x51802b(0x18c)+_0x69e750[_0x51802b(0x15b)]+_0x51802b(0x10a)),_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x18d);try{const {x:_0x4a5007,y:_0x5f25dd}=getCurrentGridSlotPosition(_0x69e750[_0x51802b(0x138)],_0x69e750[_0x51802b(0xf4)],_0x29670f);_0x69e750[_0x51802b(0xcc)]=_0x4a5007,_0x69e750['targetGridY']=_0x5f25dd;}catch(_0x335c3f){console[_0x51802b(0x186)]('Error\x20getting\x20grid\x20pos\x20for\x20returning\x20enemy\x20'+_0xe4de82+'\x20(invalid\x20attack\x20segment):',_0x335c3f),_0x69e750[_0x51802b(0xcc)]=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750[_0x51802b(0xeb)]=ENEMY_TOP_MARGIN;}break;}const _0xfa3382=_0x69e750['speed']/0x3e8*_0x762aa8;_0x69e750[_0x51802b(0x117)]+=_0xfa3382;let _0x1b9e40,_0x349750;const _0x405ed9=_0x69e750['x'],_0x4c67e0=_0x69e750['y'];if(_0x69e750[_0x51802b(0x117)]>=0x1){try{_0x1b9e40=calculateBezierPoint(0x1,_0x545757['p0']['x'],_0x545757['p1']['x'],_0x545757['p2']['x'],_0x545757['p3']['x']),_0x349750=calculateBezierPoint(0x1,_0x545757['p0']['y'],_0x545757['p1']['y'],_0x545757['p2']['y'],_0x545757['p3']['y']);}catch(_0x398b0a){console[_0x51802b(0x186)](_0x51802b(0xbe)+_0x69e750['id']+':',_0x398b0a),_0x1b9e40=_0x69e750['x'],_0x349750=_0x69e750['y'],_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x18d);try{const {x:_0xbd1caf,y:_0x13666b}=getCurrentGridSlotPosition(_0x69e750[_0x51802b(0x138)],_0x69e750[_0x51802b(0xf4)],_0x29670f);_0x69e750[_0x51802b(0xcc)]=_0xbd1caf,_0x69e750[_0x51802b(0xeb)]=_0x13666b;}catch(_0x7dd612){console[_0x51802b(0x186)](_0x51802b(0x1a5)+_0x69e750['id']+':',_0x7dd612),_0x69e750[_0x51802b(0xcc)]=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750[_0x51802b(0xeb)]=ENEMY_TOP_MARGIN;}break;}_0x69e750[_0x51802b(0x117)]=0x0,_0x69e750[_0x51802b(0x15b)]++;if(_0x69e750[_0x51802b(0x15b)]>=_0x3ef09a[_0x51802b(0xbb)]){_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x18d),_0x69e750[_0x51802b(0x148)]=0x0,_0x69e750[_0x51802b(0x1a1)]=0x0,_0x69e750['attackGroupId']=null;try{const {x:_0x6fb77a,y:_0x826eac}=getCurrentGridSlotPosition(_0x69e750[_0x51802b(0x138)],_0x69e750['gridCol'],_0x29670f);_0x69e750[_0x51802b(0xcc)]=_0x6fb77a,_0x69e750['targetGridY']=_0x826eac;}catch(_0x4999f1){console[_0x51802b(0x186)](_0x51802b(0x11f)+_0xe4de82+_0x51802b(0xea),_0x4999f1),_0x69e750[_0x51802b(0xcc)]=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750[_0x51802b(0xeb)]=ENEMY_TOP_MARGIN;}}else{const _0x5cdb0e=_0x3ef09a[_0x69e750[_0x51802b(0x15b)]];if(!_0x5cdb0e?.['p0']){console[_0x51802b(0x186)](_0x51802b(0xdf)+_0xe4de82+_0x51802b(0x12d)+_0x69e750[_0x51802b(0x15b)]+_0x51802b(0x10a)),_0x1b9e40=_0x69e750['x'],_0x349750=_0x69e750['y'],_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x18d);try{const {x:_0x5b56d6,y:_0x304a79}=getCurrentGridSlotPosition(_0x69e750[_0x51802b(0x138)],_0x69e750['gridCol'],_0x29670f);_0x69e750[_0x51802b(0xcc)]=_0x5b56d6,_0x69e750['targetGridY']=_0x304a79;}catch(_0x296ffb){console['error'](_0x51802b(0x14e)+_0x69e750['id']+':',_0x296ffb),_0x69e750[_0x51802b(0xcc)]=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750[_0x51802b(0xeb)]=ENEMY_TOP_MARGIN;}break;}}}else try{_0x1b9e40=calculateBezierPoint(_0x69e750['attackPathT'],_0x545757['p0']['x'],_0x545757['p1']['x'],_0x545757['p2']['x'],_0x545757['p3']['x']),_0x349750=calculateBezierPoint(_0x69e750[_0x51802b(0x117)],_0x545757['p0']['y'],_0x545757['p1']['y'],_0x545757['p2']['y'],_0x545757['p3']['y']);}catch(_0xfd5641){console[_0x51802b(0x186)](_0x51802b(0x110)+_0x69e750['id']+':',_0xfd5641),_0x1b9e40=_0x69e750['x'],_0x349750=_0x69e750['y'],_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x18d);try{const {x:_0x4eaf25,y:_0xf4d61}=getCurrentGridSlotPosition(_0x69e750[_0x51802b(0x138)],_0x69e750[_0x51802b(0xf4)],_0x29670f);_0x69e750['targetGridX']=_0x4eaf25,_0x69e750[_0x51802b(0xeb)]=_0xf4d61;}catch(_0x1d8447){console[_0x51802b(0x186)]('Error\x20getting\x20grid\x20pos\x20after\x20bezier\x20error\x20for\x20'+_0x69e750['id']+':',_0x1d8447),_0x69e750[_0x51802b(0xcc)]=gameCanvas['width']/0x2,_0x69e750[_0x51802b(0xeb)]=ENEMY_TOP_MARGIN;}break;}if(_0x69e750&&_0x69e750[_0x51802b(0x14f)]===_0x51802b(0x177)){const _0x67f2dd=_0x69e750['attackFormationOffsetX']||0x0,_0x7f17e5=_0x1b9e40+_0x67f2dd,_0x4467b8=_0x349750;_0x69e750[_0x51802b(0x96)]=_0x7f17e5-_0x405ed9,_0x69e750[_0x51802b(0xf1)]=_0x4467b8-_0x4c67e0,_0x69e750['x']=_0x7f17e5,_0x69e750['y']=_0x4467b8;if(_0x69e750['y']>gameCanvas[_0x51802b(0x74)]+_0x467e3a*1.5){_0x69e750['state']='returning',_0x69e750[_0x51802b(0x15b)]=0x0,_0x69e750[_0x51802b(0x117)]=0x0,_0x69e750['lastFiredTime']=0x0,_0x69e750[_0x51802b(0x1a1)]=0x0,_0x69e750[_0x51802b(0x76)]=null,_0x69e750['y']=-_0x467e3a*(1.1+Math[_0x51802b(0x107)]()*0.4),_0x69e750['x']=Math[_0x51802b(0x107)]()*(gameCanvas[_0x51802b(0xaa)]-_0x29670f),_0x69e750['velocityX']=0x0,_0x69e750['velocityY']=0x0;try{const {x:_0x28b10c,y:_0x322694}=getCurrentGridSlotPosition(_0x69e750['gridRow'],_0x69e750[_0x51802b(0xf4)],_0x29670f);_0x69e750[_0x51802b(0xcc)]=_0x28b10c,_0x69e750[_0x51802b(0xeb)]=_0x322694;}catch(_0x4c23a5){console[_0x51802b(0x186)](_0x51802b(0x11f)+_0xe4de82+_0x51802b(0xa2),_0x4c23a5),_0x69e750['targetGridX']=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750[_0x51802b(0xeb)]=ENEMY_TOP_MARGIN;}}}break;}case _0x51802b(0x18d):{if(isEntrancePhaseActive)break;if(_0x69e750[_0x51802b(0xcc)]==null||_0x69e750[_0x51802b(0xeb)]==null){console['warn'](_0x51802b(0xdf)+_0xe4de82+'\x20returning\x20without\x20target\x20coords.\x20Recalculating.');try{const {x:_0x489031,y:_0xb1a58}=getCurrentGridSlotPosition(_0x69e750['gridRow'],_0x69e750[_0x51802b(0xf4)],_0x29670f);_0x69e750[_0x51802b(0xcc)]=_0x489031,_0x69e750['targetGridY']=_0xb1a58;}catch(_0x5df318){console['error'](_0x51802b(0xb7)+_0xe4de82+'\x20in\x20returning',_0x5df318),_0x69e750['state']=_0x51802b(0x80),_0x69e750['x']=gameCanvas[_0x51802b(0xaa)]/0x2,_0x69e750['y']=ENEMY_TOP_MARGIN;break;}}const _0x146b59=_0x69e750[_0x51802b(0xcc)],_0x436107=_0x69e750[_0x51802b(0xeb)],_0x4889a7=_0x146b59-_0x69e750['x'],_0x464ae3=_0x436107-_0x69e750['y'],_0x3f3e1d=Math[_0x51802b(0x160)](_0x4889a7*_0x4889a7+_0x464ae3*_0x464ae3),_0x166e92=scaleValue(level,BASE_RETURN_SPEED_FACTOR,MAX_RETURN_SPEED_FACTOR),_0x28f0ec=BASE_RETURN_SPEED*_0x166e92,_0x1cc468=_0x28f0ec*0.5;_0x3f3e1d>_0x1cc468?(_0x69e750[_0x51802b(0x96)]=_0x4889a7/_0x3f3e1d*_0x28f0ec,_0x69e750[_0x51802b(0xf1)]=_0x464ae3/_0x3f3e1d*_0x28f0ec,_0x69e750['x']+=_0x69e750[_0x51802b(0x96)],_0x69e750['y']+=_0x69e750[_0x51802b(0xf1)]):(_0x69e750['x']=_0x146b59,_0x69e750['y']=_0x436107,_0x69e750['velocityX']=0x0,_0x69e750['velocityY']=0x0,_0x69e750[_0x51802b(0x14f)]=_0x51802b(0x80),_0x69e750[_0x51802b(0x71)]=!![],_0x69e750[_0x51802b(0x1a1)]=0x0,_0x69e750[_0x51802b(0x76)]=null,_0x69e750[_0x51802b(0x16f)](_0x51802b(0xad))&&delete _0x69e750[_0x51802b(0xad)],!isGridSoundPlaying&&!isChallengingStage&&(isGridSoundPlaying=!![],playSound('gridBackgroundSound',!![],0.1)));break;}}if(_0x69e750&&!isShowingPlayerGameOverMessage&&!(isTwoPlayerMode&&selectedGameMode==='coop'&&(isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage))&&gameOverSequenceStartTime===0x0){const _0x1d8772=[_0x51802b(0x177),_0x51802b(0x1a2),_0x51802b(0x100),'diving_to_capture_position'];if(_0x1d8772['includes'](_0x69e750['state'])){let _0x1aab2f=[];if(isTwoPlayerMode&&selectedGameMode===_0x51802b(0xed)){if(ship1&&player1Lives>0x0&&!isPlayer1ShipCaptured&&!isPlayer1Invincible&&!isPlayer1ShowingGameOverMessage&&!player1NeedsRespawnAfterCapture)_0x1aab2f['push']({'shipObj':ship1,'playerNum':0x1,'dual':player1IsDualShipActive});if(ship2&&player2Lives>0x0&&!isPlayer2ShipCaptured&&!isPlayer2Invincible&&!isPlayer2ShowingGameOverMessage&&!player2NeedsRespawnAfterCapture)_0x1aab2f[_0x51802b(0xc9)]({'shipObj':ship2,'playerNum':0x2,'dual':player2IsDualShipActive});}else ship&&playerLives>0x0&&!isShipCaptured&&!isShowingPlayerGameOverMessage&&!isInvincible&&_0x1aab2f[_0x51802b(0xc9)]({'shipObj':ship,'playerNum':currentPlayer,'dual':isDualShipActive});for(const _0x5068f9 of _0x1aab2f){const _0x9f44f7=_0x5068f9[_0x51802b(0x14d)],_0x24348b={'x':_0x69e750['x'],'y':_0x69e750['y'],'width':_0x29670f,'height':_0x467e3a},_0x330012={'x':_0x9f44f7['x'],'y':_0x9f44f7['y'],'width':_0x9f44f7[_0x51802b(0xaa)],'height':_0x9f44f7['height']},_0x26b58e=_0x5068f9[_0x51802b(0x154)]?{'x':_0x9f44f7['x']+DUAL_SHIP_OFFSET_X,'y':_0x9f44f7['y'],'width':_0x9f44f7[_0x51802b(0xaa)],'height':_0x9f44f7[_0x51802b(0x74)]}:null;let _0x23e4e0=![],_0x22677b=![];if(checkCollision(_0x24348b,_0x330012))_0x23e4e0=!![];else _0x5068f9[_0x51802b(0x154)]&&_0x26b58e&&checkCollision(_0x24348b,_0x26b58e)&&(_0x23e4e0=!![],_0x22677b=!![]);if(_0x23e4e0){createExplosion(_0x69e750['x']+_0x29670f/0x2,_0x69e750['y']+_0x467e3a/0x2),playSound('lostLifeSound',![],0.6),enemies[_0x51802b(0xa1)](_0x14050c,0x1),_0x69e750=null,handlePlayerShipCollision(_0x5068f9['playerNum'],_0x22677b,_0x78ef09,![]);if(_0x69e750===null)break;}}}}if(!_0x69e750)continue;}if(!isShowingPlayerGameOverMessage&&!(isTwoPlayerMode&&selectedGameMode===_0x51802b(0xed)&&(isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage))&&gameOverSequenceStartTime===0x0){let _0x40db6f=[];if(isTwoPlayerMode&&selectedGameMode===_0x51802b(0xed)){if(ship1&&player1Lives>0x0&&!isPlayer1ShipCaptured&&!isPlayer1Invincible&&!isPlayer1ShowingGameOverMessage&&!player1NeedsRespawnAfterCapture)_0x40db6f[_0x51802b(0xc9)]({'shipObj':ship1,'playerNum':0x1,'dual':player1IsDualShipActive});if(ship2&&player2Lives>0x0&&!isPlayer2ShipCaptured&&!isPlayer2Invincible&&!isPlayer2ShowingGameOverMessage&&!player2NeedsRespawnAfterCapture)_0x40db6f[_0x51802b(0xc9)]({'shipObj':ship2,'playerNum':0x2,'dual':player2IsDualShipActive});}else ship&&playerLives>0x0&&!isShipCaptured&&!isShowingPlayerGameOverMessage&&!isInvincible&&_0x40db6f[_0x51802b(0xc9)]({'shipObj':ship,'playerNum':currentPlayer,'dual':isDualShipActive});for(let _0x1a41d9=enemyBullets[_0x51802b(0xbb)]-0x1;_0x1a41d9>=0x0;_0x1a41d9--){const _0x5b78c3=enemyBullets[_0x1a41d9];if(!_0x5b78c3){enemyBullets['splice'](_0x1a41d9,0x1);continue;}const _0xe57f6c={'x':_0x5b78c3['x'],'y':_0x5b78c3['y'],'width':_0x5b78c3[_0x51802b(0xaa)],'height':_0x5b78c3['height']};let _0x3b00d5=![];for(const _0x453295 of _0x40db6f){const _0x4637c4=_0x453295['shipObj'],_0x12d997={'x':_0x4637c4['x'],'y':_0x4637c4['y'],'width':_0x4637c4[_0x51802b(0xaa)],'height':_0x4637c4[_0x51802b(0x74)]},_0x1e41f4=_0x453295[_0x51802b(0x154)]?{'x':_0x4637c4['x']+DUAL_SHIP_OFFSET_X,'y':_0x4637c4['y'],'width':_0x4637c4['width'],'height':_0x4637c4['height']}:null;let _0x4d355f=![],_0x3dc59d=![];if(checkCollision(_0xe57f6c,_0x12d997))_0x4d355f=!![];else _0x453295['dual']&&_0x1e41f4&&checkCollision(_0xe57f6c,_0x1e41f4)&&(_0x4d355f=!![],_0x3dc59d=!![]);if(_0x4d355f){playSound(_0x51802b(0x83),![],0.6),handlePlayerShipCollision(_0x453295[_0x51802b(0x7d)],_0x3dc59d,_0x78ef09,![]),enemyBullets[_0x51802b(0xa1)](_0x1a41d9,0x1),_0x3b00d5=!![];break;}}if(_0x3b00d5)continue;}}updateHitSparks();}catch(_0x3ecadf){console['error'](_0x51802b(0xa4),_0x3ecadf,_0x3ecadf[_0x51802b(0x13f)]),isGridSoundPlaying=![],stopSound(_0x51802b(0x191)),isEntrancePhaseActive=![],stopSound(_0x51802b(0x84)),isShowingPlayerGameOverMessage=![],playerGameOverMessageStartTime=0x0,playerWhoIsGameOver=0x0,nextActionAfterPlayerGameOver='',isPlayer1ShowingGameOverMessage=![],player1GameOverMessageStartTime=0x0,isPlayer2ShowingGameOverMessage=![],player2GameOverMessageStartTime=0x0,isShipCaptured=![],captureBeamActive=![],capturingBossId=null,stopSound(_0x51802b(0x193)),stopSound('shipCapturedSound'),isWaitingForRespawn=![],fallingShips=[],isDualShipActive=![],player1IsDualShipActive=![],player2IsDualShipActive=![],isInvincible=![],invincibilityEndTime=0x0,hitSparks=[];if(typeof showMenuState===_0x51802b(0x78))showMenuState();if(mainLoopId)cancelAnimationFrame(mainLoopId);mainLoopId=null,alert('Critical\x20error\x20during\x20entity\x20movement/collision.\x20Returning\x20to\x20menu.');}}function handlePlayerShipCollision(_0x12d111,_0x5dc91e,_0x3ca105,_0x53e98b=![]){const _0x1cf756=_0x1d45a4,_0x4048f4=_0x3ca105,_0x1d0141=gameCanvas?gameCanvas[_0x1cf756(0x74)]-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN:0x1f4;let _0x49f0df=0x0,_0x526c02=null;if(isTwoPlayerMode&&selectedGameMode===_0x1cf756(0xed)){_0x526c02=_0x12d111===0x1?ship1:ship2;if(_0x526c02){_0x49f0df=_0x526c02['x'];if(_0x53e98b){if(_0x12d111===0x1)player1CaptureRespawnX=_0x526c02['x'];else{if(_0x12d111===0x2)player2CaptureRespawnX=_0x526c02['x'];}}}else{if(_0x12d111===0x1&&typeof player1CaptureRespawnX===_0x1cf756(0xcf)&&player1CaptureRespawnX!==0x0)_0x49f0df=player1CaptureRespawnX;else{if(_0x12d111===0x2&&typeof player2CaptureRespawnX===_0x1cf756(0xcf)&&player2CaptureRespawnX!==0x0)_0x49f0df=player2CaptureRespawnX;else{if((isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP')&&gameCanvas)_0x49f0df=_0x12d111===0x1?gameCanvas[_0x1cf756(0xaa)]/0x2-gameCanvas[_0x1cf756(0xaa)]*COOP_SHIP_HORIZONTAL_OFFSET_FACTOR-SHIP_WIDTH/0x2:gameCanvas[_0x1cf756(0xaa)]/0x2+gameCanvas[_0x1cf756(0xaa)]*COOP_SHIP_HORIZONTAL_OFFSET_FACTOR-SHIP_WIDTH/0x2;else gameCanvas?_0x49f0df=gameCanvas[_0x1cf756(0xaa)]/0x2-SHIP_WIDTH/0x2:_0x49f0df=0xc8;}}}}else{_0x526c02=ship;if(_0x526c02)_0x49f0df=_0x526c02['x'],_0x53e98b&&(capturedShipRespawnX_NormalMode=ship['x']);else _0x53e98b&&capturedShipRespawnX_NormalMode!==0x0?_0x49f0df=capturedShipRespawnX_NormalMode:_0x49f0df=gameCanvas?gameCanvas[_0x1cf756(0xaa)]/0x2-SHIP_WIDTH/0x2:0xc8;}if(isTwoPlayerMode&&selectedGameMode==='coop'){if(_0x12d111===0x1){if(_0x53e98b){isPlayer1ShipCaptured=!![],player1IsDualShipActive=![],player1Lives--;if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x1cf756(0xa7))coopPartner1CapturedTime=_0x4048f4;if(player1Lives<=0x0){player1Lives=0x0,isPlayer1ShowingGameOverMessage=!![],player1GameOverMessageStartTime=_0x4048f4,playSound('gameOverSound',![],0.4),ship1=null,player1NeedsRespawnAfterCapture=![];if(aiPlayerActivelySeekingCaptureById==='p1')aiPlayerActivelySeekingCaptureById=null;if(capturedBossIdWithMessage&&enemies[_0x1cf756(0x152)](_0x394bc2=>_0x394bc2['id']===capturedBossIdWithMessage)){const _0x3f52b9=enemies[_0x1cf756(0x152)](_0x2fe859=>_0x2fe859['id']===capturedBossIdWithMessage);_0x3f52b9&&(_0x3f52b9[_0x1cf756(0x19f)]=![],_0x3f52b9[_0x1cf756(0x179)]=null);}}else player1NeedsRespawnAfterCapture=!![],ship1=null;}else{if(player1IsDualShipActive&&ship1){player1IsDualShipActive=![];const _0x4044ff=_0x5dc91e?ship1['x']+DUAL_SHIP_OFFSET_X+ship1[_0x1cf756(0xaa)]/0x2:ship1['x']+ship1[_0x1cf756(0xaa)]/0x2;createExplosion(_0x4044ff,ship1['y']+ship1[_0x1cf756(0x74)]/0x2),ship1['x']=_0x49f0df,ship1['y']=_0x1d0141,ship1[_0x1cf756(0xa3)]=ship1['x'],isPlayer1Invincible=!![],player1InvincibilityEndTime=_0x4048f4+INVINCIBILITY_DURATION_MS,isPlayer1WaitingForRespawn=!![],player1RespawnTime=_0x4048f4+RESPAWN_DELAY_MS;}else{if(ship1)createExplosion(ship1['x']+ship1['width']/0x2,ship1['y']+ship1[_0x1cf756(0x74)]/0x2);player1Lives--;if(player1Lives<=0x0){player1Lives=0x0,isPlayer1ShowingGameOverMessage=!![],player1GameOverMessageStartTime=_0x4048f4,playSound(_0x1cf756(0x162),![],0.4),ship1=null;if(aiPlayerActivelySeekingCaptureById==='p1')aiPlayerActivelySeekingCaptureById=null;}else isPlayer1Invincible=!![],player1InvincibilityEndTime=_0x4048f4+INVINCIBILITY_DURATION_MS,isPlayer1WaitingForRespawn=!![],player1RespawnTime=_0x4048f4+RESPAWN_DELAY_MS,ship1?(ship1['x']=_0x49f0df,ship1['y']=_0x1d0141,ship1['targetX']=ship1['x']):ship1={'x':_0x49f0df,'y':_0x1d0141,'width':SHIP_WIDTH,'height':SHIP_HEIGHT,'speed':SHIP_MOVE_SPEED,'targetX':_0x49f0df,'id':'p1'};}}}else{if(_0x12d111===0x2){if(_0x53e98b){isPlayer2ShipCaptured=!![],player2IsDualShipActive=![],player2Lives--;if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x1cf756(0xa7))coopPartner2CapturedTime=_0x4048f4;if(player2Lives<=0x0){player2Lives=0x0,isPlayer2ShowingGameOverMessage=!![],player2GameOverMessageStartTime=_0x4048f4,playSound(_0x1cf756(0x162),![],0.4),ship2=null,player2NeedsRespawnAfterCapture=![];if(aiPlayerActivelySeekingCaptureById==='p2'||aiPlayerActivelySeekingCaptureById===_0x1cf756(0x75))aiPlayerActivelySeekingCaptureById=null;if(capturedBossIdWithMessage&&enemies['find'](_0x5ebbe9=>_0x5ebbe9['id']===capturedBossIdWithMessage)){const _0xd77604=enemies[_0x1cf756(0x152)](_0x508729=>_0x508729['id']===capturedBossIdWithMessage);_0xd77604&&(_0xd77604['hasCapturedShip']=![],_0xd77604[_0x1cf756(0x179)]=null);}}else player2NeedsRespawnAfterCapture=!![],ship2=null;}else{if(player2IsDualShipActive&&ship2){player2IsDualShipActive=![];const _0x442867=_0x5dc91e?ship2['x']+DUAL_SHIP_OFFSET_X+ship2[_0x1cf756(0xaa)]/0x2:ship2['x']+ship2[_0x1cf756(0xaa)]/0x2;createExplosion(_0x442867,ship2['y']+ship2[_0x1cf756(0x74)]/0x2),ship2['x']=_0x49f0df,ship2['y']=_0x1d0141,ship2[_0x1cf756(0xa3)]=ship2['x'],isPlayer2Invincible=!![],player2InvincibilityEndTime=_0x4048f4+INVINCIBILITY_DURATION_MS,isPlayer2WaitingForRespawn=!![],player2RespawnTime=_0x4048f4+RESPAWN_DELAY_MS;}else{if(ship2)createExplosion(ship2['x']+ship2[_0x1cf756(0xaa)]/0x2,ship2['y']+ship2['height']/0x2);player2Lives--;if(player2Lives<=0x0){player2Lives=0x0,isPlayer2ShowingGameOverMessage=!![],player2GameOverMessageStartTime=_0x4048f4,playSound(_0x1cf756(0x162),![],0.4),ship2=null;if(aiPlayerActivelySeekingCaptureById==='p2'||aiPlayerActivelySeekingCaptureById==='ai_p2')aiPlayerActivelySeekingCaptureById=null;}else isPlayer2Invincible=!![],player2InvincibilityEndTime=_0x4048f4+INVINCIBILITY_DURATION_MS,isPlayer2WaitingForRespawn=!![],player2RespawnTime=_0x4048f4+RESPAWN_DELAY_MS,ship2?(ship2['x']=_0x49f0df,ship2['y']=_0x1d0141,ship2['targetX']=_0x49f0df):ship2={'x':_0x49f0df,'y':_0x1d0141,'width':SHIP_WIDTH,'height':SHIP_HEIGHT,'speed':SHIP_MOVE_SPEED,'targetX':_0x49f0df,'id':'p2'};}}}}player1Lives<=0x0&&player2Lives<=0x0&&gameOverSequenceStartTime===0x0&&triggerFinalGameOverSequence();}else{if(isDualShipActive&&!_0x53e98b&&_0x526c02){isDualShipActive=![];if(isTwoPlayerMode&&selectedGameMode===_0x1cf756(0x14b)){if(_0x12d111===0x1)player1IsDualShipActive=![];else{if(_0x12d111===0x2)player2IsDualShipActive=![];}}else{if(!isTwoPlayerMode)player1IsDualShipActive=![];}const _0x458a51=_0x5dc91e?_0x49f0df+DUAL_SHIP_OFFSET_X+SHIP_WIDTH/0x2:_0x49f0df+SHIP_WIDTH/0x2;createExplosion(_0x458a51,_0x1d0141+SHIP_HEIGHT/0x2);ship&&(ship['x']=_0x49f0df,ship['y']=_0x1d0141,ship[_0x1cf756(0xa3)]=ship['x']);isInvincible=!![],invincibilityEndTime=_0x4048f4+INVINCIBILITY_DURATION_MS,isWaitingForRespawn=!![],respawnTime=_0x4048f4+RESPAWN_DELAY_MS;if(!isManualControl&&!isPlayerTwoAI)aiNeedsStabilization=!![];else{if(isPlayerTwoAI&&selectedGameMode===_0x1cf756(0x14b)&&currentPlayer===0x2)aiNeedsStabilization=!![];}}else{if(!_0x53e98b&&_0x526c02)createExplosion(_0x49f0df+SHIP_WIDTH/0x2,_0x1d0141+SHIP_HEIGHT/0x2);if(_0x53e98b){isShipCaptured=!![];if(ship)ship=null;}playerLives--;if(playerLives<=0x0){playerLives=0x0;if(isTwoPlayerMode&&selectedGameMode==='normal'){if(_0x12d111===0x1)player1Lives=0x0;else{if(_0x12d111===0x2)player2Lives=0x0;}isShowingPlayerGameOverMessage=!![],playerGameOverMessageStartTime=_0x4048f4,playerWhoIsGameOver=_0x12d111,playSound('gameOverSound',![],0.4);const _0x54b613=_0x12d111===0x1?0x2:0x1,_0x4b5c71=_0x54b613===0x1?player1Lives:player2Lives;_0x4b5c71>0x0?nextActionAfterPlayerGameOver=_0x1cf756(0xe9):nextActionAfterPlayerGameOver=_0x1cf756(0x139);bullets=[],enemyBullets=[],explosions=[];if(!(_0x4b5c71>0x0))ship=null;}else player1Lives=0x0,ship=null,playSound(_0x1cf756(0x162),![],0.4),triggerFinalGameOverSequence();}else{if(isTwoPlayerMode&&selectedGameMode===_0x1cf756(0x14b)){if(_0x12d111===0x1)player1Lives=playerLives;else player2Lives=playerLives;}if(!_0x53e98b){isInvincible=!![],invincibilityEndTime=_0x4048f4+INVINCIBILITY_DURATION_MS,isWaitingForRespawn=!![],respawnTime=_0x4048f4+RESPAWN_DELAY_MS;if(ship&&gameCanvas){ship['x']=_0x49f0df,ship['y']=_0x1d0141,ship[_0x1cf756(0xa3)]=ship['x'];if(!isManualControl&&!isPlayerTwoAI)aiNeedsStabilization=!![];else{if(isPlayerTwoAI&&selectedGameMode===_0x1cf756(0x14b)&&currentPlayer===0x2)aiNeedsStabilization=!![];}}}if(_0x53e98b)isDualShipActive=![];}}}if(!_0x53e98b)fallingShips=[];}function switchPlayerTurn(){const _0x52ed91=_0x1d45a4;if(!isTwoPlayerMode||selectedGameMode==='coop')return![];stopSound(_0x52ed91(0xa6));if(currentPlayer===0x1){player1Score=score,player1IsDualShipActive=isDualShipActive;if(player1Score>highScore)highScore=player1Score;}else{player2Score=score,player2IsDualShipActive=isDualShipActive;if(player2Score>highScore)highScore=player2Score;}const _0x452c9c=currentPlayer===0x1?0x2:0x1,_0x43186b=_0x452c9c===0x1?player1Lives:player2Lives;if(_0x43186b<=0x0){const _0x3ac23a=currentPlayer===0x1?player1Lives:player2Lives;return _0x3ac23a<=0x0?(triggerFinalGameOverSequence(),![]):(forceCenterShipNextReset=![],![]);}return currentPlayer=_0x452c9c,score=currentPlayer===0x1?player1Score:player2Score,playerLives=currentPlayer===0x1?player1Lives:player2Lives,isDualShipActive=currentPlayer===0x1?player1IsDualShipActive:player2IsDualShipActive,forceCenterShipNextReset=!![],scoreEarnedThisCS=0x0,csCurrentChainHits=0x0,csCurrentChainScore=0x0,csLastHitTime=0x0,csLastChainHitPosition=null,normalWaveCurrentChainHits=0x0,normalWaveCurrentChainScore=0x0,normalWaveLastHitTime=0x0,normalWaveLastHitPosition=null,leftPressed=![],rightPressed=![],shootPressed=![],p2LeftPressed=![],p2RightPressed=![],p2ShootPressed=![],keyboardP1LeftDown=![],keyboardP1RightDown=![],keyboardP1ShootDown=![],keyboardP2LeftDown=![],keyboardP2RightDown=![],keyboardP2ShootDown=![],p1JustFiredSingle=![],p2JustFiredSingle=![],p1FireInputWasDown=![],p2FireInputWasDown=![],isShipCaptured=![],isWaitingForRespawn=![],respawnTime=0x0,isInvincible=![],invincibilityEndTime=0x0,fallingShips=[],hitSparks=[],showExtraLifeMessage=![],extraLifeMessageStartTime=0x0,!![];}function triggerGridFiring(){const _0x3cfacc=_0x1d45a4;if(isPaused||!isInGameState||isChallengingStage||isWaveTransitioning)return;let _0x2b79dd=![];isTwoPlayerMode&&selectedGameMode===_0x3cfacc(0xed)?(player1Lives>0x0&&ship1&&!isPlayer1ShipCaptured&&!isPlayer1ShowingGameOverMessage&&!player1NeedsRespawnAfterCapture||player2Lives>0x0&&ship2&&!isPlayer2ShipCaptured&&!isPlayer2ShowingGameOverMessage&&!player2NeedsRespawnAfterCapture)&&(_0x2b79dd=!![]):playerLives>0x0&&ship&&!isShipCaptured&&!isShowingPlayerGameOverMessage&&(_0x2b79dd=!![]);if(!_0x2b79dd)return;const _0x5d9f98=enemies[_0x3cfacc(0xd2)](_0x5238d4=>_0x5238d4&&_0x5238d4[_0x3cfacc(0x14f)]===_0x3cfacc(0x80));if(_0x5d9f98[_0x3cfacc(0xbb)]===0x0)return;const _0x3fbac7=Date[_0x3cfacc(0x12f)](),_0x13c983=scaleValue(level,BASE_GRID_FIRE_INTERVAL,MIN_GRID_FIRE_INTERVAL);if(_0x3fbac7-lastGridFireCheckTime<_0x13c983)return;lastGridFireCheckTime=_0x3fbac7;const _0x45ebbb=scaleValue(level,BASE_GRID_FIRE_PROBABILITY,MAX_GRID_FIRE_PROBABILITY),_0x5c3e30=Math[_0x3cfacc(0x11d)](scaleValue(level,BASE_GRID_MAX_FIRING_ENEMIES,MAX_GRID_MAX_FIRING_ENEMIES));let _0x54dd99=0x0;_0x5d9f98[_0x3cfacc(0xa9)](()=>Math[_0x3cfacc(0x107)]()-0.5);for(const _0x236bfc of _0x5d9f98){if(_0x54dd99>=_0x5c3e30)break;if(_0x236bfc[_0x3cfacc(0x19d)]===ENEMY2_TYPE||_0x236bfc[_0x3cfacc(0x19d)]===ENEMY3_TYPE){if(_0x236bfc['type']===ENEMY3_TYPE&&_0x236bfc[_0x3cfacc(0x19f)])continue;Math[_0x3cfacc(0x107)]()<_0x45ebbb&&(createBulletSimple(_0x236bfc)&&(playSound(_0x3cfacc(0xd7),![],0.4),_0x236bfc['lastFiredTime']=_0x3fbac7,_0x54dd99++));}}}function runSingleGameUpdate(_0x1c3e0d){const _0x3e004f=_0x1d45a4;try{const _0x628a77=Date['now']();let _0x36be0f=![];isTwoPlayerMode&&selectedGameMode==='coop'?_0x36be0f=player1Lives>0x0&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn&&!isPlayer1ShowingGameOverMessage&&!player1NeedsRespawnAfterCapture||player2Lives>0x0&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn&&!isPlayer2ShowingGameOverMessage&&!player2NeedsRespawnAfterCapture:_0x36be0f=playerLives>0x0&&!isShipCaptured&&!isShowingPlayerGameOverMessage;let _0x1ec3f1=![];if(isManualControl&&connectedGamepadIndex!==null){if(isTwoPlayerMode&&selectedGameMode===_0x3e004f(0xed)){if(player1Lives>0x0&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn&&!isPlayer1ShowingGameOverMessage)_0x1ec3f1=!![];}else{if(playerLives>0x0&&!isShipCaptured&&!isShowingPlayerGameOverMessage&&(!isPlayerTwoAI||isPlayerTwoAI&&currentPlayer===0x1))_0x1ec3f1=!![];}}if(_0x1ec3f1&&gameOverSequenceStartTime===0x0&&!isPaused){const _0x22b928=navigator[_0x3e004f(0x142)]();if(_0x22b928?.[connectedGamepadIndex]){const _0x5b2564=_0x22b928[connectedGamepadIndex],_0x26a171=processSingleController(_0x5b2564,previousGameButtonStates);previousGameButtonStates=_0x26a171[_0x3e004f(0x112)][_0x3e004f(0xfa)]();if(_0x26a171['back']){stopGameAndShowMenu();return;}}else{if(previousGameButtonStates['length']>0x0)previousGameButtonStates=[];}}else connectedGamepadIndex===null&&previousGameButtonStates[_0x3e004f(0xbb)]>0x0&&(previousGameButtonStates=[]);let _0x2ec50b=![];if(isManualControl&&isTwoPlayerMode&&selectedGameMode==='coop'&&!isPlayerTwoAI&&connectedGamepadIndexP2!==null){if(player2Lives>0x0&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn&&!isPlayer2ShowingGameOverMessage)_0x2ec50b=!![];}else{if(isManualControl&&isTwoPlayerMode&&selectedGameMode===_0x3e004f(0x14b)&&!isPlayerTwoAI&&connectedGamepadIndexP2!==null){if(playerLives>0x0&&!isShipCaptured&&!isShowingPlayerGameOverMessage&&currentPlayer===0x2)_0x2ec50b=!![];}}if(_0x2ec50b&&gameOverSequenceStartTime===0x0&&!isPaused){const _0x1304ab=navigator[_0x3e004f(0x142)]();if(_0x1304ab?.[connectedGamepadIndexP2]){const _0x47a95e=_0x1304ab[connectedGamepadIndexP2],_0x54495a=processSingleController(_0x47a95e,previousGameButtonStatesP2);previousGameButtonStatesP2=_0x54495a[_0x3e004f(0x112)][_0x3e004f(0xfa)]();if(_0x54495a['back']){stopGameAndShowMenu();return;}}else{if(previousGameButtonStatesP2[_0x3e004f(0xbb)]>0x0)previousGameButtonStatesP2=[];}}else connectedGamepadIndexP2===null&&previousGameButtonStatesP2[_0x3e004f(0xbb)]>0x0&&(previousGameButtonStatesP2=[]);if(isPaused){renderGame();return;}const _0x25ba54=showCsBonusScoreMessage||showPerfectMessage;if(isCoopAIDemoActive&&_0x25ba54&&gameCanvas?.[_0x3e004f(0xaa)]>0x0){const _0x21fe4f=ship1&&player1Lives>0x0&&player2Lives<=0x0,_0x554fb0=ship2&&player2Lives>0x0&&player1Lives<=0x0;if(_0x21fe4f){const _0x566b5e=player1IsDualShipActive?SHIP_WIDTH+DUAL_SHIP_OFFSET_X:SHIP_WIDTH,_0x193236=Math[_0x3e004f(0x11d)](gameCanvas[_0x3e004f(0xaa)]/0x2-_0x566b5e/0x2);ship1['x']=_0x193236,ship1[_0x3e004f(0xa3)]=_0x193236,smoothedShip1X=_0x193236,ship2&&(ship2['targetX']=ship2['x'],smoothedShip2X=ship2['x']);}else{if(_0x554fb0){const _0x4f6844=player2IsDualShipActive?SHIP_WIDTH+DUAL_SHIP_OFFSET_X:SHIP_WIDTH,_0x127e86=Math[_0x3e004f(0x11d)](gameCanvas[_0x3e004f(0xaa)]/0x2-_0x4f6844/0x2);ship2['x']=_0x127e86,ship2[_0x3e004f(0xa3)]=_0x127e86,smoothedShip2X=_0x127e86,ship1&&(ship1[_0x3e004f(0xa3)]=ship1['x'],smoothedShip1X=ship1['x']);}else{if(ship1&&player1Lives>0x0&&ship2&&player2Lives>0x0){const _0x173b58=gameCanvas[_0x3e004f(0xaa)]/0x2-gameCanvas['width']*COOP_SHIP_HORIZONTAL_OFFSET_FACTOR-SHIP_WIDTH/0x2;ship1['x']=_0x173b58,ship1['targetX']=_0x173b58,smoothedShip1X=_0x173b58;const _0x1d121d=gameCanvas[_0x3e004f(0xaa)]/0x2+gameCanvas['width']*COOP_SHIP_HORIZONTAL_OFFSET_FACTOR-SHIP_WIDTH/0x2;ship2['x']=_0x1d121d,ship2[_0x3e004f(0xa3)]=_0x1d121d,smoothedShip2X=_0x1d121d;}}}}else{if(_0x25ba54&&gameCanvas?.[_0x3e004f(0xaa)]>0x0){if(isTwoPlayerMode&&selectedGameMode===_0x3e004f(0xed)){const _0x526e25=ship1&&player1Lives>0x0,_0x4440e3=ship2&&player2Lives>0x0;if(_0x526e25&&_0x4440e3){if(isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP'){const _0x2f9bd0=gameCanvas[_0x3e004f(0xaa)]/0x2-gameCanvas[_0x3e004f(0xaa)]*COOP_SHIP_HORIZONTAL_OFFSET_FACTOR-SHIP_WIDTH/0x2,_0x3679fd=gameCanvas['width']/0x2+gameCanvas[_0x3e004f(0xaa)]*COOP_SHIP_HORIZONTAL_OFFSET_FACTOR-SHIP_WIDTH/0x2;ship2&&(ship2['x']=_0x3679fd,ship2[_0x3e004f(0xa3)]=_0x3679fd,smoothedShip2X=_0x3679fd);}}else{if(_0x526e25&&ship1){const _0x57bc77=player1IsDualShipActive?SHIP_WIDTH+DUAL_SHIP_OFFSET_X:SHIP_WIDTH,_0x513b9e=Math[_0x3e004f(0x11d)](gameCanvas[_0x3e004f(0xaa)]/0x2-_0x57bc77/0x2);ship1['x']=_0x513b9e,ship1[_0x3e004f(0xa3)]=_0x513b9e,ship2&&isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7)&&(ship2[_0x3e004f(0xa3)]=ship2['x'],smoothedShip2X=ship2['x']);}else{if(_0x4440e3&&ship2){const _0x3cbb78=player2IsDualShipActive?SHIP_WIDTH+DUAL_SHIP_OFFSET_X:SHIP_WIDTH,_0x1d6426=Math[_0x3e004f(0x11d)](gameCanvas['width']/0x2-_0x3cbb78/0x2);ship2['x']=_0x1d6426,ship2[_0x3e004f(0xa3)]=_0x1d6426;if(isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))smoothedShip2X=_0x1d6426;ship1&&isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7)&&(ship1[_0x3e004f(0xa3)]=ship1['x']);}}}}else{if((!isManualControl||isPlayerTwoAI&&selectedGameMode===_0x3e004f(0x14b)&&currentPlayer===0x2)&&ship){const _0x5dc56c=isDualShipActive?SHIP_WIDTH+DUAL_SHIP_OFFSET_X:SHIP_WIDTH;ship['x']=Math['round'](gameCanvas[_0x3e004f(0xaa)]/0x2-_0x5dc56c/0x2),ship[_0x3e004f(0xa3)]=ship['x'];if(isPlayerTwoAI&&selectedGameMode===_0x3e004f(0x14b)&&currentPlayer===0x2)smoothedShipX=ship['x'];else{if(!isManualControl)smoothedShipX=ship['x'];}}}}}let _0x483794=![];if(selectedGameMode===_0x3e004f(0xed)&&level===0x1&&coopPlayersReadyStartTime>0x0){_0x483794=!![];if(isShowingCoopPlayersReady){if(_0x628a77-coopPlayersReadyStartTime<0x64){explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}if(_0x628a77>=coopPlayersReadyStartTime+0xbb8){isShowingCoopPlayersReady=![],explosions=[];if(typeof updateExplosions==='function')updateExplosions();isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7)?(isShowingIntro=!![],introStep=0x2,introDisplayStartTime=_0x628a77):(isShowingIntro=!![],introStep=0x1,introDisplayStartTime=_0x628a77);}}else{if(isShowingIntro){if(_0x628a77-introDisplayStartTime<0x64){explosions=[];if(typeof updateExplosions==='function')updateExplosions();}let _0x302424=INTRO_DURATION_PER_STEP;introStep===0x1&&!isCoopAIDemoActive&&!(isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))&&(_0x302424=TWO_PLAYER_STAGE_INTRO_DURATION);if(_0x628a77>=introDisplayStartTime+_0x302424){if(introStep===0x1&&!isCoopAIDemoActive&&!(isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))){introStep=0x2,introDisplayStartTime=_0x628a77,explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}else{isShowingIntro=![],introStep=0x0,playerIntroSoundPlayed=![],stageIntroSoundPlayed=![],csIntroSoundPlayed=![],explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();_0x483794=![],coopPlayersReadyStartTime=0x0;}}}else _0x483794=![],coopPlayersReadyStartTime=0x0;}if(isManualControl||isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))handlePlayerInput();if(typeof moveEntities===_0x3e004f(0x78))moveEntities();renderGame();if(_0x483794)return;}if(selectedGameMode===_0x3e004f(0xed)&&level===0x1&&!gameJustStartedAndWaveLaunched&&coopPlayersReadyStartTime===0x0&&gameJustStarted){if(isFullGridWave)startFullGridWave();else{if(isChallengingStage)startChallengingStageSequence();else{if(currentWaveDefinition&&currentWaveDefinition['length']>0x0)scheduleEntranceFlightWave();else isWaveTransitioning=!![],readyForNextWaveReset=!![];}}gameJustStartedAndWaveLaunched=!![],gameJustStarted=![];}if(isShowingPlayerGameOverMessage&&isTwoPlayerMode&&selectedGameMode===_0x3e004f(0x14b)){if(_0x628a77-playerGameOverMessageStartTime<0x64){explosions=[];if(typeof updateExplosions==='function')updateExplosions();}if(_0x628a77-playerGameOverMessageStartTime>=PLAYER_GAME_OVER_MESSAGE_DURATION){isShowingPlayerGameOverMessage=![],explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();const _0x17a433=playerWhoIsGameOver;playerWhoIsGameOver=0x0;if(nextActionAfterPlayerGameOver==='switch_player')switchPlayerTurn()?(_0x17a433===0x2&&currentPlayer===0x1&&player1CompletedLevel===level&&(level++,player1CompletedLevel=-0x1,player1MaxLevelReached=Math[_0x3e004f(0x12c)](player1MaxLevelReached,level)),resetWaveInternal(),gameJustStartedAndWaveLaunched=![],gameJustStarted=!![]):triggerFinalGameOverSequence();else nextActionAfterPlayerGameOver===_0x3e004f(0x139)?triggerFinalGameOverSequence():triggerFinalGameOverSequence();renderGame();return;}else{renderGame();return;}}if(isTwoPlayerMode&&selectedGameMode===_0x3e004f(0xed)){let _0x9d0dd7=![],_0x1c89ee=![];if(isPlayer1ShowingGameOverMessage){if(_0x628a77-player1GameOverMessageStartTime<0x64){explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}if(_0x628a77-player1GameOverMessageStartTime>=PLAYER_GAME_OVER_MESSAGE_DURATION_COOP){isPlayer1ShowingGameOverMessage=![],_0x9d0dd7=!![],explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}}if(isPlayer2ShowingGameOverMessage){if(_0x628a77-player2GameOverMessageStartTime<0x64){explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}if(_0x628a77-player2GameOverMessageStartTime>=PLAYER_GAME_OVER_MESSAGE_DURATION_COOP){isPlayer2ShowingGameOverMessage=![],_0x1c89ee=!![],explosions=[];if(typeof updateExplosions==='function')updateExplosions();}}if(_0x9d0dd7||_0x1c89ee){player1Lives<=0x0&&player2Lives<=0x0&&gameOverSequenceStartTime===0x0&&triggerFinalGameOverSequence();if(isManualControl||isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))handlePlayerInput();if(typeof moveEntities===_0x3e004f(0x78))moveEntities();renderGame();if(gameOverSequenceStartTime>0x0||player1Lives>0x0||player2Lives>0x0)return;}else{if(isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage){if(isManualControl||isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))handlePlayerInput();if(typeof moveEntities===_0x3e004f(0x78))moveEntities();renderGame();return;}}}if(isShowingCaptureMessage){if(_0x628a77-captureMessageStartTime<0x64){explosions=[];if(typeof updateExplosions==='function')updateExplosions();}const _0x49d339=enemies['find'](_0xbbb47c=>_0xbbb47c['id']===capturedBossIdWithMessage);if(_0x49d339&&_0x49d339[_0x3e004f(0x14f)]==='showing_capture_message'){const _0x580389=_0x628a77-captureMessageStartTime,_0x46dfc8=Math[_0x3e004f(0x99)](0x1,_0x580389/CAPTURE_MESSAGE_DURATION);_0x49d339[_0x3e004f(0x17b)]=_0x46dfc8*0x2*(0x2*Math['PI']);}else _0x49d339&&(_0x49d339['captureAnimationRotation']=0x0);if(isInGameState&&!isShowingPlayerGameOverMessage&&!isPlayer1ShowingGameOverMessage&&!isPlayer2ShowingGameOverMessage&&gameOverSequenceStartTime===0x0){if(isManualControl||isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))handlePlayerInput();if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP')aiControlCoop();else isPlayerTwoAI&&selectedGameMode===_0x3e004f(0x14b)&&currentPlayer===0x2&&aiControl();if(typeof moveEntities===_0x3e004f(0x78))moveEntities();updateExplosions(),updateFloatingScores();}if(_0x628a77-captureMessageStartTime>=CAPTURE_MESSAGE_DURATION){isShowingCaptureMessage=![],explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();stopSound(_0x3e004f(0x15f)),captureBeamActive=![];if(_0x49d339&&_0x49d339['state']==='showing_capture_message'){_0x49d339[_0x3e004f(0x14f)]='returning',_0x49d339[_0x3e004f(0x17b)]=0x0;try{const _0x15781c=_0x49d339[_0x3e004f(0x19d)]===ENEMY3_TYPE?BOSS_WIDTH:ENEMY_WIDTH,{x:_0x5bb352,y:_0x5c781d}=getCurrentGridSlotPosition(_0x49d339[_0x3e004f(0x138)],_0x49d339[_0x3e004f(0xf4)],_0x15781c);_0x49d339[_0x3e004f(0xcc)]=_0x5bb352,_0x49d339[_0x3e004f(0xeb)]=_0x5c781d;}catch(_0x4ae6b4){console[_0x3e004f(0x186)](_0x3e004f(0xfd)+_0x49d339['id']+':',_0x4ae6b4),_0x49d339['targetGridX']=gameCanvas[_0x3e004f(0xaa)]/0x2,_0x49d339[_0x3e004f(0xeb)]=ENEMY_TOP_MARGIN;}}else _0x49d339&&(_0x49d339[_0x3e004f(0x17b)]=0x0);capturedBossIdWithMessage=null;const _0x134ae9=gameCanvas?gameCanvas['height']-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN:0x1f4;if(isTwoPlayerMode&&selectedGameMode===_0x3e004f(0xed)){if(player1NeedsRespawnAfterCapture&&player1Lives>0x0){ship1={'x':player1CaptureRespawnX,'y':_0x134ae9,'width':SHIP_WIDTH,'height':SHIP_HEIGHT,'speed':SHIP_MOVE_SPEED,'targetX':player1CaptureRespawnX,'id':'p1'},isPlayer1ShipCaptured=![],isPlayer1Invincible=!![],player1InvincibilityEndTime=_0x628a77+INVINCIBILITY_DURATION_MS,isPlayer1WaitingForRespawn=![],player1NeedsRespawnAfterCapture=![],player1CaptureRespawnX=0x0;if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))smoothedShip1X=ship1['x'];}if(player2NeedsRespawnAfterCapture&&player2Lives>0x0){ship2={'x':player2CaptureRespawnX,'y':_0x134ae9,'width':SHIP_WIDTH,'height':SHIP_HEIGHT,'speed':SHIP_MOVE_SPEED,'targetX':player2CaptureRespawnX,'id':'p2'},isPlayer2ShipCaptured=![],isPlayer2Invincible=!![],player2InvincibilityEndTime=_0x628a77+INVINCIBILITY_DURATION_MS,isPlayer2WaitingForRespawn=![],player2NeedsRespawnAfterCapture=![],player2CaptureRespawnX=0x0;if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))smoothedShip2X=ship2['x'];}if(player1Lives<=0x0&&player2Lives<=0x0){if(gameOverSequenceStartTime===0x0)triggerFinalGameOverSequence();}}else{if(!isManualControl&&!isPlayerTwoAI){if(isShipCaptured&&playerLives>0x0){let _0x715cb7=gameCanvas?gameCanvas[_0x3e004f(0xaa)]/0x2-SHIP_WIDTH/0x2:0xc8;if(typeof smoothedShipX===_0x3e004f(0xcf))_0x715cb7=smoothedShipX;ship={'x':_0x715cb7,'y':_0x134ae9,'width':SHIP_WIDTH,'height':SHIP_HEIGHT,'speed':SHIP_MOVE_SPEED,'targetX':_0x715cb7,'id':'main'},isShipCaptured=![],isInvincible=!![],invincibilityEndTime=_0x628a77+INVINCIBILITY_DURATION_MS,isWaitingForRespawn=![],aiNeedsStabilization=!![];if(smoothedShipX===undefined&&ship)smoothedShipX=ship['x'];}else playerLives<=0x0&&gameOverSequenceStartTime===0x0&&triggerFinalGameOverSequence();}else{if(isManualControl){if(isShipCaptured&&playerLives>0x0){let _0x5ab0f9=capturedShipRespawnX_NormalMode!==0x0?capturedShipRespawnX_NormalMode:gameCanvas?gameCanvas[_0x3e004f(0xaa)]/0x2-SHIP_WIDTH/0x2:0xc8;ship={'x':_0x5ab0f9,'y':_0x134ae9,'width':SHIP_WIDTH,'height':SHIP_HEIGHT,'speed':SHIP_MOVE_SPEED,'targetX':_0x5ab0f9,'id':_0x3e004f(0xda)},isShipCaptured=![],capturedShipRespawnX_NormalMode=0x0,isInvincible=!![],invincibilityEndTime=_0x628a77+INVINCIBILITY_DURATION_MS,isWaitingForRespawn=!![],respawnTime=_0x628a77+RESPAWN_DELAY_MS;if(isPlayerTwoAI&&selectedGameMode===_0x3e004f(0x14b)&&currentPlayer===0x2)aiNeedsStabilization=!![];}else playerLives<=0x0&&gameOverSequenceStartTime===0x0&&((!isTwoPlayerMode||isTwoPlayerMode&&selectedGameMode===_0x3e004f(0x14b)&&(currentPlayer===0x1&&player2Lives<=0x0||currentPlayer===0x2&&player1Lives<=0x0))&&triggerFinalGameOverSequence());}}}}renderGame();return;}const _0x1d6721=!(isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage||isShowingPlayerGameOverMessage),_0x132221=isShowingIntro&&!_0x483794&&!(selectedGameMode===_0x3e004f(0xed)&&level===0x1);if(!_0x483794&&gameOverSequenceStartTime===0x0&&_0x36be0f&&!isShowingCaptureMessage&&_0x1d6721){if(isInGameState&&!_0x132221){if(!(_0x25ba54&&!isManualControl)){if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP')aiControlCoop();else{if(isPlayerTwoAI&&selectedGameMode===_0x3e004f(0x14b)&&currentPlayer===0x2)aiControl();else!isManualControl&&!isPlayerTwoAI&&aiControl();}}isManualControl&&handlePlayerInput();}}isTwoPlayerMode&&selectedGameMode===_0x3e004f(0xed)?(isPlayer1Invincible&&_0x628a77>=player1InvincibilityEndTime&&(isPlayer1Invincible=![],player1InvincibilityEndTime=0x0),isPlayer2Invincible&&_0x628a77>=player2InvincibilityEndTime&&(isPlayer2Invincible=![],player2InvincibilityEndTime=0x0)):(isInvincible&&_0x628a77>=invincibilityEndTime&&(isInvincible=![],invincibilityEndTime=0x0),isWaitingForRespawn&&_0x628a77>=respawnTime&&(isWaitingForRespawn=![]));const _0x119768=showExtraLifeMessage&&_0x628a77-extraLifeMessageStartTime<0x64;if(_0x119768&&(isWaveTransitioning||isChallengingStage&&enemies[_0x3e004f(0xbb)]===0x0)){}if((isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP')&&isChallengingStage&&enemies[_0x3e004f(0xbb)]===0x0&&!isCsCompletionDelayActive&&!showCsBonusScoreMessage&&!showPerfectMessage&&gameCanvas&&gameCanvas['width']>0x0){const _0x1ffe59=ship1&&player1Lives>0x0&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn&&!isPlayer1ShowingGameOverMessage,_0x463f5d=ship2&&player2Lives>0x0&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn&&!isPlayer2ShowingGameOverMessage;if(_0x1ffe59&&!_0x463f5d){const _0x4d5cde=player1IsDualShipActive?SHIP_WIDTH+DUAL_SHIP_OFFSET_X:SHIP_WIDTH,_0x15ee73=Math[_0x3e004f(0x11d)](gameCanvas[_0x3e004f(0xaa)]/0x2-_0x4d5cde/0x2);ship1['x']=_0x15ee73,ship1[_0x3e004f(0xa3)]=_0x15ee73,smoothedShip1X=_0x15ee73;}else{if(_0x463f5d&&!_0x1ffe59){const _0x4ef3a1=player2IsDualShipActive?SHIP_WIDTH+DUAL_SHIP_OFFSET_X:SHIP_WIDTH,_0x241d44=Math[_0x3e004f(0x11d)](gameCanvas[_0x3e004f(0xaa)]/0x2-_0x4ef3a1/0x2);ship2['x']=_0x241d44,ship2[_0x3e004f(0xa3)]=_0x241d44,smoothedShip2X=_0x241d44;}}}if(isCsCompletionDelayActive&&_0x1d6721&&gameOverSequenceStartTime===0x0){if(_0x628a77-csCompletionDelayStartTime>=CS_COMPLETION_MESSAGE_DELAY+EXPLOSION_DURATION){isCsCompletionDelayActive=![],csCompletionResultIsPerfect=challengingStageEnemiesHit>=challengingStageTotalEnemies;csCompletionResultIsPerfect?(playSound(_0x3e004f(0x6f),![],0.6),showCsHitsMessage=!![],csHitsMessageStartTime=_0x628a77):(playSound('csClearSound',![],0.6),showCSClearMessage=!![],csClearMessageStartTime=_0x628a77);bullets=[],enemyBullets=[],renderGame();return;}else{if(_0x628a77-csCompletionDelayStartTime>=CS_COMPLETION_MESSAGE_DELAY&&explosions[_0x3e004f(0xbb)]>0x0){updateExplosions(),renderGame();return;}else{if(_0x628a77-csCompletionDelayStartTime<CS_COMPLETION_MESSAGE_DELAY){renderGame();return;}}}}let _0x1465b6=![],_0x44f623=![];if(_0x1d6721&&gameOverSequenceStartTime===0x0&&!isShowingCoopPlayersReady&&!_0x483794){if(showCsHitsMessage){if(_0x628a77-csHitsMessageStartTime<0x64){explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}if(Date['now']()-csHitsMessageStartTime>CS_HITS_MESSAGE_DURATION){showCsHitsMessage=![],showPerfectMessage=!![],perfectMessageStartTime=_0x628a77,explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}_0x44f623=!![];}else{if(showPerfectMessage){if(_0x628a77-perfectMessageStartTime<0x64){explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}if(Date['now']()-perfectMessageStartTime>CS_PERFECT_MESSAGE_DURATION){showPerfectMessage=![],showCsBonusScoreMessage=!![],csBonusScoreMessageStartTime=_0x628a77,explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}_0x44f623=!![];}else{if(showCsBonusScoreMessage){if(_0x628a77-csBonusScoreMessageStartTime<0x64){explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}if(Date['now']()-csBonusScoreMessageStartTime>CS_BONUS_MESSAGE_DURATION){showCsBonusScoreMessage=![],_0x1465b6=!![],playLevelUpAfterCSBonus=!![],explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}_0x44f623=!![];}else{if(showCSClearMessage){if(_0x628a77-csClearMessageStartTime<0x64){explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}Date['now']()-csClearMessageStartTime>=CS_CLEAR_HITS_DELAY&&!showCsHitsForClearMessage&&(showCsHitsForClearMessage=!![]);Date['now']()-csClearMessageStartTime>=CS_CLEAR_SCORE_DELAY&&!showCsScoreForClearMessage&&(showCsScoreForClearMessage=!![]);if(Date['now']()-csClearMessageStartTime>=CS_CLEAR_DELAY){showCSClearMessage=![],showCsHitsForClearMessage=![],showCsScoreForClearMessage=![],_0x1465b6=!![],playLevelUpAfterCSBonus=!![],explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}_0x44f623=!![];}else{if(showExtraLifeMessage)Date[_0x3e004f(0x12f)]()-extraLifeMessageStartTime>EXTRA_LIFE_MESSAGE_DURATION&&(showExtraLifeMessage=![]),_0x44f623=!![];else{if(showReadyMessage){if(_0x628a77-readyMessageStartTime<0x64){explosions=[];if(typeof updateExplosions==='function')updateExplosions();}if(Date[_0x3e004f(0x12f)]()-readyMessageStartTime>READY_MESSAGE_DURATION){showReadyMessage=![],_0x1465b6=!![],explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}_0x44f623=!![];}}}}}}}if(_0x44f623&&!_0x1465b6&&!isShowingCoopPlayersReady&&!_0x483794&&!isShowingCaptureMessage&&_0x1d6721){if(!((_0x25ba54||showCsHitsMessage||showCSClearMessage)&&isManualControl)&&!showExtraLifeMessage){renderGame();return;}}if(_0x132221&&_0x1d6721&&gameOverSequenceStartTime===0x0){let _0x21bd6b=![];const _0x5aeb74=_0x628a77-introDisplayStartTime;let _0x586382=INTRO_DURATION_PER_STEP;const _0x27e078=isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_NORMAL',_0x4379c5=isTwoPlayerMode&&selectedGameMode===_0x3e004f(0x14b)&&!isPlayerTwoAI;(_0x4379c5||_0x27e078)&&(_0x586382=TWO_PLAYER_STAGE_INTRO_DURATION);if(introStep===0x1){if(_0x5aeb74<0x64){explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}let _0x2135a2=null,_0xafcc3b=0x1;if(!playerIntroSoundPlayed){const _0x2c52a8=_0x27e078||_0x4379c5,_0x3ec187=isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7)&&level>0x1;if(_0x2c52a8){if(currentPlayer===0x1&&level===0x1&&!initialGameStartSoundPlayedThisSession)_0x2135a2=_0x3e004f(0xe3),_0xafcc3b=0.4;else(currentPlayer===0x2||level>0x1)&&(_0x2135a2=_0x3e004f(0xd3),_0xafcc3b=0.2);}else{if(_0x3ec187)_0x2135a2=_0x3e004f(0xd3),_0xafcc3b=0.2;else{if(!isTwoPlayerMode){if(level===0x1&&!initialGameStartSoundPlayedThisSession)_0x2135a2=_0x3e004f(0xe3),_0xafcc3b=0.4;else level>0x1&&(_0x2135a2='levelUpSound',_0xafcc3b=0.2);}}}}_0x2135a2&&(playSound(_0x2135a2,![],_0xafcc3b),playerIntroSoundPlayed=!![],_0x2135a2==='startSound'&&(initialGameStartSoundPlayedThisSession=!![]));if(_0x5aeb74>=_0x586382){if(isChallengingStage)introStep=0x3;else introStep=0x2;introDisplayStartTime=_0x628a77,explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}}else{if(introStep===0x2){if(_0x5aeb74<0x64){explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}if(!stageIntroSoundPlayed){if(playLevelUpAfterCSBonus&&(isTwoPlayerMode&&selectedGameMode==='coop'))playSound(_0x3e004f(0xd3),![],0.2),playLevelUpAfterCSBonus=![],stageIntroSoundPlayed=!![];else{if(isTwoPlayerMode&&selectedGameMode===_0x3e004f(0xed)&&!isPlayerTwoAI&&!isCoopAIDemoActive)playSound(_0x3e004f(0xd3),![],0.2),stageIntroSoundPlayed=!![];else{if(selectedGameMode==='coop'){if((isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))&&level>0x1)playSound(_0x3e004f(0xd3),![],0.2),stageIntroSoundPlayed=!![];else(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))&&level===0x1&&(stageIntroSoundPlayed=!![]);}else{if(!isTwoPlayerMode&&level>0x1)playSound('levelUpSound',![],0.2),stageIntroSoundPlayed=!![];else{if(level>0x1&&!playerIntroSoundPlayed&&!(isPlayerTwoAI&&selectedGameMode==='normal')&&!initialGameStartSoundPlayedThisSession)playSound(_0x3e004f(0xd3),![],0.2),stageIntroSoundPlayed=!![];else level===0x1&&!isManualControl&&!isCoopAIDemoActive&&!(isPlayerTwoAI&&selectedGameMode==='coop')&&!initialGameStartSoundPlayedThisSession&&(playSound(_0x3e004f(0xe3),![],0.4),initialGameStartSoundPlayedThisSession=!![],stageIntroSoundPlayed=!![]);}}}}}if(_0x5aeb74>=_0x586382){_0x21bd6b=!![],explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}}else{if(introStep===0x3){if(_0x5aeb74<0x64){explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}!csIntroSoundPlayed&&(playSound(_0x3e004f(0x84),![],0.4),csIntroSoundPlayed=!![],stageIntroSoundPlayed=!![]);if(_0x5aeb74>=_0x586382){_0x21bd6b=!![],explosions=[];if(typeof updateExplosions==='function')updateExplosions();}}}}if(isInGameState&&_0x1d6721&&gameOverSequenceStartTime===0x0&&gameCanvas){let _0x44067d=null,_0x23bf59=null;const _0x113051=isManualControl&&isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_NORMAL'&&currentPlayer===0x1&&isShowingIntro;if(_0x113051){let _0x1ff91f=![],_0x13e9da=![];const _0x27da11=navigator[_0x3e004f(0x142)]();if(connectedGamepadIndex!==null&&_0x27da11?.[connectedGamepadIndex]){const _0x468484=_0x27da11[connectedGamepadIndex],_0x4dde94=processSingleController(_0x468484,previousGameButtonStates);_0x1ff91f=_0x4dde94[_0x3e004f(0xef)],_0x13e9da=_0x4dde94[_0x3e004f(0xf2)];}_0x44067d=keyboardP1LeftDown||_0x1ff91f,_0x23bf59=keyboardP1RightDown||_0x13e9da;}if(_0x27e078&&currentPlayer===0x2)aiControl();else{if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP')aiControlCoop();else!isManualControl&&!isPlayerTwoAI&&aiControl();}typeof moveEntities==='function'&&moveEntities(_0x44067d,_0x23bf59),updateExplosions(),updateFloatingScores();}if(_0x21bd6b){isShowingIntro=![],introStep=0x0,playerIntroSoundPlayed=![],stageIntroSoundPlayed=![],csIntroSoundPlayed=![];isManualControl&&(isShowingDemoText=![]);if(!isChallengingStage)isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7)?(aiShip1CanShootTime=Date['now']()+0x3e8,aiShip2CanShootTime=Date[_0x3e004f(0x12f)]()+0x4b0):aiCanShootTime=Date['now']()+(isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0x134)?0x3e8:0xbb8);else{if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))aiShip1CanShootTime=0x0,aiShip2CanShootTime=0x0;else aiCanShootTime=0x0;}const _0x3fa924=level===0x1&&selectedGameMode!=='coop',_0x2093e8=level===0x1&&selectedGameMode===_0x3e004f(0xed),_0x4f1888=_0x3fa924&&!gameJustStartedAndWaveLaunched||level>0x1||isChallengingStage||_0x2093e8&&!gameJustStartedAndWaveLaunched;if(_0x4f1888){if(isChallengingStage)startChallengingStageSequence();else{if(currentWaveDefinition&&currentWaveDefinition[_0x3e004f(0xbb)]>0x0){if(isFullGridWave)startFullGridWave();else scheduleEntranceFlightWave(),playSound(_0x3e004f(0x84),![],0.4);}else isEntrancePhaseActive=![],stopSound(_0x3e004f(0x84)),isWaveTransitioning=!![],readyForNextWaveReset=!![],bullets=[],enemyBullets=[],explosions=[],setTimeout(()=>{const _0xba9bfc=_0x3e004f,_0x301bd8=isTwoPlayerMode&&selectedGameMode===_0xba9bfc(0xed)?player1Lives>0x0||player2Lives>0x0:playerLives>0x0;if((isInGameState||!isInGameState&&_0x301bd8)&&typeof resetWaveInternal===_0xba9bfc(0x78)){if(_0x301bd8)resetWaveInternal(),gameJustStartedAndWaveLaunched=![],gameJustStarted=!![];else triggerFinalGameOverSequence();}},0x64);}if(_0x3fa924||level>0x1||isChallengingStage||_0x2093e8)gameJustStartedAndWaveLaunched=!![];}}isManualControl&&_0x132221&&_0x1d6721&&gameOverSequenceStartTime===0x0&&handlePlayerInput();renderGame();return;}const _0x3da7c8=!_0x483794&&!_0x132221&&!_0x1465b6&&!isShowingCaptureMessage;if(gameJustStarted&&_0x3da7c8){if(!gameJustStartedAndWaveLaunched){const _0xc82bec=selectedGameMode===_0x3e004f(0xed)&&level===0x1&&coopPlayersReadyStartTime!==0x0;if(!_0xc82bec){if(isChallengingStage)startChallengingStageSequence();else{if(currentWaveDefinition&&currentWaveDefinition[_0x3e004f(0xbb)]>0x0){if(isFullGridWave)startFullGridWave();else scheduleEntranceFlightWave(),playSound(_0x3e004f(0x84),![],0.4);}else isWaveTransitioning=!![],readyForNextWaveReset=!![];}gameJustStartedAndWaveLaunched=!![];}}gameJustStarted=![];}if(_0x3da7c8&&isInGameState&&_0x1d6721&&gameOverSequenceStartTime===0x0){if(!_0x25ba54||_0x25ba54&&isManualControl){if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP')aiControlCoop();else{if(isPlayerTwoAI&&selectedGameMode===_0x3e004f(0x14b)&&currentPlayer===0x2)aiControl();else!isManualControl&&!isPlayerTwoAI&&aiControl();}isManualControl&&handlePlayerInput();if(typeof moveEntities==='function')moveEntities();updateExplosions(),updateFloatingScores();}else _0x25ba54&&(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))&&(updateExplosions(),updateFloatingScores());}if(_0x3da7c8&&_0x1d6721&&gameOverSequenceStartTime===0x0){if(GRID_BREATH_ENABLED&&isInGameState&&!isChallengingStage&&!isWaveTransitioning&&_0x36be0f){const _0x1f5a32=enemies[_0x3e004f(0x181)](_0x488b67=>_0x488b67?.['state']===_0x3e004f(0x80));if(_0x1f5a32&&isGridBreathingActive){const _0x3839f6=_0x628a77-gridBreathStartTime,_0x353336=scaleValue(level,BASE_GRID_BREATH_CYCLE_MS,MIN_GRID_BREATH_CYCLE_MS),_0x5b2241=_0x3839f6%_0x353336;currentGridBreathFactor=(Math[_0x3e004f(0xd1)](_0x5b2241/_0x353336*Math['PI']*0x2-Math['PI']/0x2)+0x1)/0x2;}else{if(!_0x1f5a32&&isGridBreathingActive)isGridBreathingActive=![],gridBreathStartTime=0x0,currentGridBreathFactor=0x0;else _0x1f5a32&&!isGridBreathingActive&&(isGridBreathingActive=!![],gridBreathStartTime=_0x628a77,currentGridBreathFactor=0x0);}}else isGridBreathingActive&&(isGridBreathingActive=![],gridBreathStartTime=0x0,currentGridBreathFactor=0x0);if(isEntrancePhaseActive){const _0x27eec0=enemiesSpawnedThisWave>=totalEnemiesScheduledForWave,_0x2832b3=enemies[_0x3e004f(0x181)](_0x3b2953=>_0x3b2953?.[_0x3e004f(0x14f)]===_0x3e004f(0x1a2)||_0x3b2953?.[_0x3e004f(0x14f)]===_0x3e004f(0xdd)||_0x3b2953?.[_0x3e004f(0x14f)]===_0x3e004f(0x100));if(totalEnemiesScheduledForWave>0x0&&_0x27eec0&&!_0x2832b3){const _0x22e225=isEntrancePhaseActive;isEntrancePhaseActive=![];if(_0x22e225){stopSound(_0x3e004f(0x84)),enemiesSpawnedThisWave=0x0,totalEnemiesScheduledForWave=0x0,enemySpawnTimeouts[_0x3e004f(0x10c)](clearTimeout),enemySpawnTimeouts=[],gridJustCompleted=!![];if(!isChallengingStage&&!isFullGridWave){if(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))coopAICaptureDiveAnticipationActive=!![],coopAICaptureDiveAnticipationEndTime=Date['now']()+COOP_AI_CAPTURE_DIVE_ANTICIPATION_DURATION_MS,typeof triggerImmediateCaptureDive===_0x3e004f(0x78)&&triggerImmediateCaptureDive();else typeof triggerImmediateCaptureDive===_0x3e004f(0x78)&&triggerImmediateCaptureDive();}}}}if(!isChallengingStage&&!_0x132221&&!isPaused&&!isWaveTransitioning)triggerGridFiring();if(!isWaveTransitioning&&_0x36be0f&&!_0x132221&&!isShowingCaptureMessage&&!isEntrancePhaseActive){let _0x33ecf0=enemies[_0x3e004f(0xbb)]===0x0,_0x5aed8d=fallingShips[_0x3e004f(0xbb)]===0x0,_0x4e3158=![];if(isChallengingStage){if(_0x33ecf0&&!isEntrancePhaseActive)_0x4e3158=!![];}else{if(_0x33ecf0&&!isEntrancePhaseActive&&_0x5aed8d)_0x4e3158=!![];}if(_0x4e3158){isGridBreathingActive&&(isGridBreathingActive=![],gridBreathStartTime=0x0,currentGridBreathFactor=0x0);if((isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))&&gameCanvas&&gameCanvas[_0x3e004f(0xaa)]>0x0){const _0x31cb88=player1Lives,_0x3570a1=player2Lives,_0x528e00=gameCanvas[_0x3e004f(0x74)]-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN;if(_0x31cb88>0x0&&_0x3570a1<=0x0&&ship1){const _0x3e23ab=player1IsDualShipActive?SHIP_WIDTH+DUAL_SHIP_OFFSET_X:SHIP_WIDTH,_0x571b6d=Math[_0x3e004f(0x11d)](gameCanvas[_0x3e004f(0xaa)]/0x2-_0x3e23ab/0x2);ship1['x']=_0x571b6d,ship1['targetX']=_0x571b6d,smoothedShip1X=_0x571b6d,ship1['y']=_0x528e00;}else{if(_0x3570a1>0x0&&_0x31cb88<=0x0&&ship2){const _0x22cbec=player2IsDualShipActive?SHIP_WIDTH+DUAL_SHIP_OFFSET_X:SHIP_WIDTH,_0x1b93b2=Math[_0x3e004f(0x11d)](gameCanvas[_0x3e004f(0xaa)]/0x2-_0x22cbec/0x2);ship2['x']=_0x1b93b2,ship2[_0x3e004f(0xa3)]=_0x1b93b2,smoothedShip2X=_0x1b93b2,ship2['y']=_0x528e00;}}}isWaveTransitioning=!![];isGridSoundPlaying&&(stopSound(_0x3e004f(0x191)),isGridSoundPlaying=![]);!isChallengingStage&&(bullets=[],enemyBullets=[]);floatingScores=[],enemySpawnTimeouts[_0x3e004f(0x10c)](clearTimeout),enemySpawnTimeouts=[],totalEnemiesScheduledForWave=0x0,enemiesSpawnedThisWave=0x0;let _0xc4f0aa;if(isChallengingStage){csCompletionResultIsPerfect=challengingStageEnemiesHit>=challengingStageTotalEnemies,csCurrentChainHits=0x0,csCurrentChainScore=0x0,csLastHitTime=0x0,csLastChainHitPosition=null,setTimeout(()=>{const _0x5b77ab=_0x3e004f;if(isWaveTransitioning){explosions=[];if(typeof updateExplosions===_0x5b77ab(0x78))updateExplosions();isCsCompletionDelayActive=!![],csCompletionDelayStartTime=Date[_0x5b77ab(0x12f)]();}},EXPLOSION_DURATION);if(csCompletionResultIsPerfect){let _0x5a039b=0x2710;if(isTwoPlayerMode&&selectedGameMode===_0x3e004f(0xed))(player1Lives>0x0||(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))&&ship1)&&(player1Score+=_0x5a039b),(player2Lives>0x0||(isCoopAIDemoActive||isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x3e004f(0xa7))&&ship2)&&(player2Score+=_0x5a039b),highScore=Math[_0x3e004f(0x12c)](highScore,player1Score,player2Score),checkAndAwardExtraLife(null);else{score+=_0x5a039b;if(!isTwoPlayerMode)player1Score=score;else{if(isTwoPlayerMode&&selectedGameMode===_0x3e004f(0x14b)){if(currentPlayer===0x1)player1Score=score;else player2Score=score;}}highScore=Math[_0x3e004f(0x12c)](highScore,score,player1Score,player2Score),checkAndAwardExtraLife(currentPlayer);}_0xc4f0aa=EXPLOSION_DURATION+CS_COMPLETION_MESSAGE_DELAY+CS_HITS_MESSAGE_DURATION+CS_PERFECT_MESSAGE_DURATION+CS_BONUS_MESSAGE_DURATION;}else isTwoPlayerMode&&selectedGameMode===_0x3e004f(0xed)?checkAndAwardExtraLife(null):checkAndAwardExtraLife(currentPlayer),_0xc4f0aa=EXPLOSION_DURATION+CS_COMPLETION_MESSAGE_DELAY+CS_CLEAR_DELAY;_0xc4f0aa+=0x64;}else playSound(_0x3e004f(0x1ad),![],0.8),normalWaveCurrentChainHits=0x0,normalWaveCurrentChainScore=0x0,normalWaveLastHitTime=0x0,normalWaveLastHitPosition=null,_0xc4f0aa=POST_MESSAGE_RESET_DELAY;setTimeout(()=>{const _0x1a5d66=_0x3e004f;let _0x299998=![],_0x38be7c=0x0;if(isTwoPlayerMode&&selectedGameMode===_0x1a5d66(0x14b)){_0x38be7c=currentPlayer;_0x38be7c===0x1?player1MaxLevelReached=Math[_0x1a5d66(0x12c)](player1MaxLevelReached,level):player2MaxLevelReached=Math[_0x1a5d66(0x12c)](player2MaxLevelReached,level);const _0x35d29e=switchPlayerTurn();if(_0x35d29e){if(_0x38be7c===0x2&&currentPlayer===0x1&&player1CompletedLevel===level)_0x299998=!![],player1CompletedLevel=-0x1;else _0x38be7c===0x1?(player1CompletedLevel=level,_0x299998=![]):_0x299998=![];}else _0x299998=!![],player1CompletedLevel=-0x1;}else{_0x299998=!![];if(!isTwoPlayerMode)player1MaxLevelReached=Math[_0x1a5d66(0x12c)](player1MaxLevelReached,level);else{if(isTwoPlayerMode&&selectedGameMode==='coop'){if(player1Lives>0x0)player1MaxLevelReached=Math[_0x1a5d66(0x12c)](player1MaxLevelReached,level);if(player2Lives>0x0)player2MaxLevelReached=Math[_0x1a5d66(0x12c)](player2MaxLevelReached,level);}}}if(_0x299998){level++;if(isTwoPlayerMode&&selectedGameMode==='coop'){if(player1Lives>0x0)player1MaxLevelReached=Math[_0x1a5d66(0x12c)](player1MaxLevelReached,level);if(player2Lives>0x0)player2MaxLevelReached=Math[_0x1a5d66(0x12c)](player2MaxLevelReached,level);}else{if(isTwoPlayerMode&&selectedGameMode==='normal'){if(currentPlayer===0x1&&player1Lives>0x0)player1MaxLevelReached=Math[_0x1a5d66(0x12c)](player1MaxLevelReached,level);else{if(currentPlayer===0x2&&player2Lives>0x0)player2MaxLevelReached=Math[_0x1a5d66(0x12c)](player2MaxLevelReached,level);}}else{if(playerLives>0x0)player1MaxLevelReached=Math[_0x1a5d66(0x12c)](player1MaxLevelReached,level);}}}let _0x81716a=![];if(isTwoPlayerMode&&selectedGameMode===_0x1a5d66(0xed))_0x81716a=player1Lives>0x0||player2Lives>0x0;else{if(isTwoPlayerMode&&selectedGameMode==='normal')_0x81716a=(currentPlayer===0x1?player1Lives:player2Lives)>0x0;else _0x81716a=playerLives>0x0;}_0x81716a?(resetWaveInternal(),gameJustStartedAndWaveLaunched=![],gameJustStarted=!![]):triggerFinalGameOverSequence();},_0xc4f0aa),renderGame();return;}if(!isChallengingStage){if(enemies[_0x3e004f(0xbb)]>0x0){let _0x581383=null;const _0x33758d=enemies[_0x3e004f(0xd2)](_0x752a78=>_0x752a78?.['state']===_0x3e004f(0x80)),_0x1f061e=_0x33758d[_0x3e004f(0xbb)]<=0x3,_0x398505=Math[_0x3e004f(0x12c)](0x1,Math[_0x3e004f(0x99)](level,LEVEL_CAP_FOR_SCALING)),_0x5b679c=0x1068,_0x409123=0x320,_0x51c16a=(_0x398505-0x1)*((_0x5b679c-_0x409123)/(LEVEL_CAP_FOR_SCALING-0x1)),_0x2b1058=Math[_0x3e004f(0x12c)](_0x409123,_0x5b679c-_0x51c16a),_0x4529ba=Math['round'](scaleValue(level,BASE_MAX_ATTACKING_ENEMIES,MAX_MAX_ATTACKING_ENEMIES)),_0x3d2333=enemies[_0x3e004f(0xd2)](_0x2c7a37=>_0x2c7a37?.[_0x3e004f(0x14f)]===_0x3e004f(0x177)||_0x2c7a37?.[_0x3e004f(0x14f)]===_0x3e004f(0x109))[_0x3e004f(0xbb)];if(_0x1f061e||_0x628a77-lastEnemyDetachTime>_0x2b1058&&_0x33758d[_0x3e004f(0xbb)]>0x0&&_0x3d2333<_0x4529ba){_0x581383=findAndDetachEnemy();if(_0x581383&&_0x581383['length']>0x0){const _0x416f8f=_0x581383['map'](_0x423925=>enemies['find'](_0x4f1fad=>_0x4f1fad?.['id']===_0x423925['id']))[_0x3e004f(0xd2)](_0x201d0e=>_0x201d0e&&_0x201d0e[_0x3e004f(0x14f)]==='in_grid');if(_0x416f8f['length']>0x0){const _0x5ea8cf=_0x416f8f[0x0],_0xd7e5a1=_0x5ea8cf['attackType'];if(!_0x1f061e)lastEnemyDetachTime=_0x628a77;if(_0xd7e5a1===_0x3e004f(0x14b)){const _0x5a0d24=generateAttackPathInternal(_0x5ea8cf);if(_0x5a0d24&&_0x5a0d24[_0x3e004f(0xbb)]>0x0){if(_0x416f8f[_0x3e004f(0xbb)]===0x3&&_0x5ea8cf[_0x3e004f(0x19d)]===ENEMY3_TYPE&&level!==0x1)playSound('tripleAttackSound',![],0.3);let _0x1c9925=[..._0x416f8f];const _0x208df0=_0x1c9925[_0x3e004f(0xbb)];if(_0x208df0>0x1){let _0x15d343=null,_0xd11e82=[];_0x1c9925[_0x3e004f(0x10c)](_0x749838=>{const _0x30a122=_0x3e004f;if(_0x749838['type']===ENEMY3_TYPE)_0x15d343=_0x749838;else _0xd11e82[_0x30a122(0xc9)](_0x749838);});if(_0x15d343&&level!==0x1&&_0x208df0===0x3&&_0xd11e82[_0x3e004f(0xbb)]===0x2)_0x1c9925=[_0xd11e82[0x0],_0x15d343,_0xd11e82[0x1]];else _0x1c9925[_0x3e004f(0xa9)]((_0x308a93,_0x58eedc)=>(_0x308a93?.[_0x3e004f(0xf4)]??0x0)-(_0x58eedc?.['gridCol']??0x0));const _0x14a80f=0x5;let _0x24de0e=0x0;_0x1c9925=_0x1c9925[_0x3e004f(0xd2)](_0x31edce=>_0x31edce&&typeof _0x31edce[_0x3e004f(0xaa)]===_0x3e004f(0xcf));const _0x32864e=_0x1c9925[_0x3e004f(0xbb)];for(let _0x7dda11=0x0;_0x7dda11<_0x32864e;_0x7dda11++){_0x24de0e+=_0x1c9925[_0x7dda11][_0x3e004f(0xaa)];if(_0x7dda11<_0x32864e-0x1)_0x24de0e+=_0x14a80f;}const _0x195aaa=-_0x24de0e/0x2;let _0x3064aa=_0x195aaa;for(let _0x2d6761=0x0;_0x2d6761<_0x32864e;_0x2d6761++){const _0x1627d1=_0x1c9925[_0x2d6761];_0x1627d1['attackFormationOffsetX']=_0x3064aa+_0x1627d1[_0x3e004f(0xaa)]/0x2,_0x3064aa+=_0x1627d1['width']+_0x14a80f;}}else _0x1c9925['forEach'](_0x56cff4=>_0x56cff4['attackFormationOffsetX']=0x0);const _0x4b4d59=_0x3e004f(0xa5)+_0x5ea8cf['id']+'-'+_0x628a77;_0x1c9925[_0x3e004f(0x10c)](_0x57a6b0=>{const _0x17c3b0=_0x3e004f;if(_0x57a6b0)_0x57a6b0[_0x17c3b0(0x76)]=_0x4b4d59;});let _0x104496=![],_0x107fef=GROUP_FIRE_BURST_DELAY;if(_0x5ea8cf['type']===ENEMY2_TYPE||_0x5ea8cf[_0x3e004f(0x19d)]===ENEMY3_TYPE){_0x104496=!![];if(_0x5ea8cf[_0x3e004f(0x19d)]===ENEMY2_TYPE&&_0x208df0===0x1)_0x107fef=SOLO_BUTTERFLY_FIRE_DELAY;}else{if(_0x5ea8cf['type']===ENEMY1_TYPE)_0x104496=!![];}if(_0x1f061e&&level>0x1)_0x104496=![];_0x104496&&_0x1c9925[_0x3e004f(0x10c)](_0x5a8d6c=>{const _0x49b608=_0x3e004f,_0x38b8d6=_0x5a8d6c&&!(_0x5a8d6c[_0x49b608(0x19d)]===ENEMY3_TYPE&&_0x5a8d6c[_0x49b608(0x19f)]);if(_0x38b8d6)fireEnemyBurst(_0x5a8d6c['id'],_0x49b608(0x177),_0x107fef);}),_0x1c9925[_0x3e004f(0x10c)]((_0xf0f035,_0x38c3ed)=>{const _0x3ec914=_0x3e004f;_0xf0f035&&_0xf0f035['state']==='in_grid'&&(_0xf0f035['state']=_0x3ec914(0x109),_0xf0f035[_0x3ec914(0x71)]=![],_0xf0f035[_0x3ec914(0x96)]=0x0,_0xf0f035[_0x3ec914(0xf1)]=0x0,_0xf0f035[_0x3ec914(0x92)]=![],setTimeout(()=>{const _0xb57753=_0x3ec914;if(isPaused)return;const _0xff3641=enemies[_0xb57753(0x152)](_0x1b7955=>_0x1b7955?.['id']===_0xf0f035['id']);if(_0xff3641&&_0xff3641[_0xb57753(0x14f)]==='preparing_attack')try{const _0x4e81b0=scaleValue(level,BASE_ENEMY_ATTACK_SPEED,MAX_ENEMY_ATTACK_SPEED);let _0x151fef=0x1;if(_0xff3641[_0xb57753(0x19d)]===ENEMY1_TYPE)_0x151fef=ENEMY1_DIVE_SPEED_FACTOR;else{if(_0xff3641[_0xb57753(0x19d)]===ENEMY2_TYPE)_0x151fef=ENEMY2_DIVE_SPEED_FACTOR;else{if(_0xff3641[_0xb57753(0x19d)]===ENEMY3_TYPE)_0x151fef=ENEMY3_ATTACK_SPEED_FACTOR;}}if(_0xf0f035['type']===ENEMY3_TYPE)playSound('bossGalagaDiveSound',![],0.2);else playSound('butterflyDiveSound',![],0.2);_0xff3641[_0xb57753(0x14f)]='attacking',_0xff3641[_0xb57753(0x114)]=_0x5a0d24,_0xff3641['attackPathSegmentIndex']=0x0,_0xff3641['attackPathT']=0x0,_0xff3641['speed']=_0x4e81b0*_0x151fef,_0xff3641['lastFiredTime']=0x0,_0xff3641[_0xb57753(0x92)]=!![];}catch(_0x5b319e){console[_0xb57753(0x186)](_0xb57753(0x143)+_0xf0f035['id']+':',_0x5b319e);}},_0x38c3ed*GROUP_DETACH_DELAY_MS));});}else _0x581383['forEach'](_0x446b04=>{const _0x2cbbbe=_0x3e004f;if(_0x446b04)_0x446b04[_0x2cbbbe(0x71)]=![];});}}}}}}enemies['forEach'](_0x3b35f1=>{const _0xc1d878=_0x3e004f;if(_0x3b35f1&&_0x3b35f1['type']===ENEMY3_TYPE&&_0x3b35f1[_0xc1d878(0x19f)]&&_0x3b35f1[_0xc1d878(0x14f)]===_0xc1d878(0x177)&&_0x3b35f1[_0xc1d878(0x179)]&&typeof _0x3b35f1['capturedShipLastFiredTime']===_0xc1d878(0xcf)){if(_0x628a77-_0x3b35f1[_0xc1d878(0x146)]>CAPTURED_SHIP_FIRE_COOLDOWN_MS){const _0x2d471f=_0x3b35f1['x']+_0x3b35f1[_0xc1d878(0xaa)]/0x2,_0x1ee4f6=_0x3b35f1['y']+_0x3b35f1['height']+_0x3b35f1['capturedShipDimensions'][_0xc1d878(0x74)]*0.5,_0x317081={'x':_0x2d471f,'y':_0x1ee4f6};createBulletSimple(_0x3b35f1,_0x317081)&&(_0x3b35f1[_0xc1d878(0x146)]=_0x628a77,playSound(_0xc1d878(0x174),![],0.4));}}});}}else{if(gameOverSequenceStartTime>0x0){const _0x51404b=_0x628a77-gameOverSequenceStartTime,_0x3ee6a5=_0x51404b>=GAME_OVER_DURATION;if(_0x3ee6a5&&!isShowingResultsScreen){isShowingResultsScreen=!![],stopSound('gameOverSound'),playSound(_0x3e004f(0xc7),!![],0.2),explosions=[];if(typeof updateExplosions===_0x3e004f(0x78))updateExplosions();}}}!_0x483794&&renderGame();}catch(_0x10f53d){console[_0x3e004f(0x186)](_0x3e004f(0x129),_0x10f53d,_0x10f53d['stack']),isPaused=![];mainLoopId&&(cancelAnimationFrame(mainLoopId),mainLoopId=null);isInGameState=![],isPlayer1ShowingGameOverMessage=![],player1GameOverMessageStartTime=0x0,isPlayer2ShowingGameOverMessage=![],player2GameOverMessageStartTime=0x0,isShowingPlayerGameOverMessage=![],playerGameOverMessageStartTime=0x0,playerWhoIsGameOver=0x0,nextActionAfterPlayerGameOver='',alert('A\x20critical\x20error\x20occurred\x20in\x20the\x20game\x20loop.\x20Please\x20refresh.'),stopAllGameSoundsInternal(),isGridSoundPlaying=![],isInvincible=![],invincibilityEndTime=0x0;try{typeof showMenuState===_0x3e004f(0x78)&&showMenuState();}catch(_0xd9326c){console['error']('Failed\x20to\x20return\x20to\x20menu\x20after\x20critical\x20error:',_0xd9326c);}}}function checkAndAwardExtraLife(_0x383f21=null){const _0x47d335=_0x1d45a4;try{const _0x29da7e=[];if(_0x383f21===0x1){const _0x3fbe71=isTwoPlayerMode&&selectedGameMode===_0x47d335(0xed)?player1Lives:isTwoPlayerMode&&selectedGameMode===_0x47d335(0x14b)&&currentPlayer===0x1?playerLives:player1Lives,_0x1f7157=isTwoPlayerMode&&selectedGameMode===_0x47d335(0xed)?player1Score:isTwoPlayerMode&&selectedGameMode==='normal'&&currentPlayer===0x1?score:player1Score;_0x29da7e[_0x47d335(0xc9)]({'num':0x1,'currentLives':_0x3fbe71,'currentScore':_0x1f7157,'thresholdsMet':player1LifeThresholdsMet});}else{if(_0x383f21===0x2&&isTwoPlayerMode){const _0x27e8f6=selectedGameMode===_0x47d335(0xed)?player2Lives:selectedGameMode===_0x47d335(0x14b)&&currentPlayer===0x2?playerLives:player2Lives,_0x32c064=selectedGameMode===_0x47d335(0xed)?player2Score:selectedGameMode===_0x47d335(0x14b)&&currentPlayer===0x2?score:player2Score;_0x29da7e[_0x47d335(0xc9)]({'num':0x2,'currentLives':_0x27e8f6,'currentScore':_0x32c064,'thresholdsMet':player2LifeThresholdsMet});}else{if(isTwoPlayerMode&&selectedGameMode===_0x47d335(0xed)&&_0x383f21===null)_0x29da7e['push']({'num':0x1,'currentLives':player1Lives,'currentScore':player1Score,'thresholdsMet':player1LifeThresholdsMet}),_0x29da7e[_0x47d335(0xc9)]({'num':0x2,'currentLives':player2Lives,'currentScore':player2Score,'thresholdsMet':player2LifeThresholdsMet});else{if(!isTwoPlayerMode&&(_0x383f21===null||_0x383f21===0x1))_0x29da7e[_0x47d335(0xc9)]({'num':0x1,'currentLives':playerLives,'currentScore':score,'thresholdsMet':player1LifeThresholdsMet});else isTwoPlayerMode&&selectedGameMode===_0x47d335(0x14b)&&_0x383f21===currentPlayer&&(currentPlayer===0x1?_0x29da7e[_0x47d335(0xc9)]({'num':0x1,'currentLives':playerLives,'currentScore':score,'thresholdsMet':player1LifeThresholdsMet}):_0x29da7e[_0x47d335(0xc9)]({'num':0x2,'currentLives':playerLives,'currentScore':score,'thresholdsMet':player2LifeThresholdsMet}));}}}_0x29da7e['forEach'](_0x139884=>{const _0x2d7019=_0x47d335;let _0x4c34b9=![];while(!![]){let _0x41b9f1=![],_0x1265de=-0x1;const _0x2a6e71=_0x139884[_0x2d7019(0x176)][_0x2d7019(0x180)];if(_0x2a6e71===0x0)_0x1265de=EXTRA_LIFE_THRESHOLD_1;else{if(_0x2a6e71===0x1&&!_0x139884[_0x2d7019(0x176)][_0x2d7019(0x8b)](EXTRA_LIFE_THRESHOLD_2))_0x1265de=EXTRA_LIFE_THRESHOLD_2;else{if(_0x2a6e71>=0x1&&_0x139884['thresholdsMet'][_0x2d7019(0x8b)](EXTRA_LIFE_THRESHOLD_1)&&_0x139884['thresholdsMet'][_0x2d7019(0x8b)](EXTRA_LIFE_THRESHOLD_2)){let _0x4bc442=0x0;_0x139884[_0x2d7019(0x176)][_0x2d7019(0x10c)](_0x53cd20=>{_0x53cd20>=EXTRA_LIFE_THRESHOLD_2&&(_0x53cd20-EXTRA_LIFE_THRESHOLD_2)%RECURRING_EXTRA_LIFE_INTERVAL===0x0&&_0x4bc442++;}),_0x1265de=EXTRA_LIFE_THRESHOLD_2+_0x4bc442*RECURRING_EXTRA_LIFE_INTERVAL;}else{if(_0x2a6e71===0x1&&_0x139884[_0x2d7019(0x176)][_0x2d7019(0x8b)](EXTRA_LIFE_THRESHOLD_1)&&!_0x139884[_0x2d7019(0x176)][_0x2d7019(0x8b)](EXTRA_LIFE_THRESHOLD_2))_0x1265de=EXTRA_LIFE_THRESHOLD_2;else _0x2a6e71===0x1&&_0x139884['thresholdsMet'][_0x2d7019(0x8b)](EXTRA_LIFE_THRESHOLD_2)&&!_0x139884[_0x2d7019(0x176)][_0x2d7019(0x8b)](EXTRA_LIFE_THRESHOLD_1)&&(_0x1265de=EXTRA_LIFE_THRESHOLD_1);}}}if(_0x1265de!==-0x1&&_0x139884['currentScore']>=_0x1265de&&!_0x139884[_0x2d7019(0x176)][_0x2d7019(0x8b)](_0x1265de)){if(_0x139884[_0x2d7019(0x111)]===0x1){if(isTwoPlayerMode&&selectedGameMode===_0x2d7019(0xed))player1Lives++;else{if(isTwoPlayerMode&&selectedGameMode===_0x2d7019(0x14b)&&currentPlayer===0x1)playerLives++;else{if(!isTwoPlayerMode)playerLives++;}}player1Lives=isTwoPlayerMode&&selectedGameMode==='coop'?player1Lives:isTwoPlayerMode&&selectedGameMode===_0x2d7019(0x14b)&&currentPlayer===0x1?playerLives:player1Lives,_0x139884[_0x2d7019(0xe5)]=player1Lives;}else{if(_0x139884[_0x2d7019(0x111)]===0x2){if(isTwoPlayerMode&&selectedGameMode===_0x2d7019(0xed))player2Lives++;else{if(isTwoPlayerMode&&selectedGameMode===_0x2d7019(0x14b)&&currentPlayer===0x2)playerLives++;}player2Lives=isTwoPlayerMode&&selectedGameMode===_0x2d7019(0xed)?player2Lives:isTwoPlayerMode&&selectedGameMode===_0x2d7019(0x14b)&&currentPlayer===0x2?playerLives:player2Lives,_0x139884[_0x2d7019(0xe5)]=player2Lives;}}_0x139884[_0x2d7019(0x176)][_0x2d7019(0xe6)](_0x1265de),_0x4c34b9=!![],_0x41b9f1=!![];}if(!_0x41b9f1)break;}_0x4c34b9&&!showExtraLifeMessage&&!showCsBonusScoreMessage&&!showPerfectMessage&&!showCsHitsMessage&&!showCSClearMessage&&!showReadyMessage&&setTimeout(()=>{const _0x428348=_0x2d7019;if(isInGameState){explosions=[];if(typeof updateExplosions==='function')updateExplosions();showExtraLifeMessage=!![],extraLifeMessageStartTime=Date[_0x428348(0x12f)](),playSound(_0x428348(0xcb),![],0.5);}},EXPLOSION_DURATION);});}catch(_0x27c1ba){console[_0x47d335(0x186)](_0x47d335(0x17f),_0x27c1ba);}}
+// --- START OF FILE game_logic.js ---
+// --- DEEL 1      van 8 dit code blok    ---
+
+
+function generateAttackPathInternal(enemy) { // Hernoemd naar Internal
+    try {
+        if (!enemy || !gameCanvas) {
+            return [];
+        }
+
+        const enemyWidth = (enemy.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((enemy.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH);
+        const enemyHeight = (enemy.type === ENEMY3_TYPE) ? BOSS_HEIGHT : ((enemy.type === ENEMY1_TYPE) ? ENEMY1_HEIGHT : ENEMY_HEIGHT);
+        const margin = enemyWidth * 0.5;
+
+        const canvasW = gameCanvas.width;
+        const canvasH = gameCanvas.height;
+        let generatedSegments = [];
+
+        const initialP0 = { x: enemy.x, y: enemy.y };
+        const upwardArcHeight = Math.min(canvasH * 0.06, enemyHeight * 1.8);
+        const upwardArcWidth = Math.min(canvasW * 0.04, enemyWidth * 1.2);
+        const diveDirection = (enemy.x + enemyWidth / 2 < canvasW / 2) ? 1 : -1;
+        const upwardEndPoint = {
+            x: initialP0.x - diveDirection * upwardArcWidth * 0.6,
+            y: initialP0.y - upwardArcHeight
+        };
+        upwardEndPoint.x = Math.max(margin, Math.min(canvasW - margin - enemyWidth, upwardEndPoint.x));
+        upwardEndPoint.y = Math.max(margin, upwardEndPoint.y);
+        const initialP1 = {
+            x: initialP0.x + diveDirection * upwardArcWidth * 0.1,
+            y: initialP0.y - upwardArcHeight * 1.4
+        };
+        const initialP2 = {
+            x: upwardEndPoint.x + diveDirection * upwardArcWidth * 0.3,
+            y: initialP0.y - upwardArcHeight * 1.5
+        };
+        const initialUpwardSegment = { p0: initialP0, p1: initialP1, p2: initialP2, p3: upwardEndPoint };
+        generatedSegments.push(initialUpwardSegment);
+
+        const startPoint = upwardEndPoint;
+        const diveDepthBase = canvasH * 0.45;
+        const loopWidthBase = canvasW * 0.22;
+        const loopHeightBase = canvasH * 0.28;
+        const controlTightnessX = 0.5;
+        const controlTightnessY = 0.6;
+        const bottomAvoidAttackY = canvasH * 0.85;
+        const attackPatternType = Math.floor(Math.random() * 3);
+        let diveSegments = [];
+
+        if (attackPatternType === 0) { // Patroon 0: Dive with a loop and exit
+            const diveDepth = diveDepthBase + Math.random() * canvasH * 0.1; const loopWidth = loopWidthBase + Math.random() * canvasW * 0.08; const loopHeight = loopHeightBase + Math.random() * canvasH * 0.08;
+            const divePointX = startPoint.x + diveDirection * loopWidth * 0.5; const divePointY = Math.min(bottomAvoidAttackY, startPoint.y + diveDepth);
+            const loopTopX = divePointX + diveDirection * loopWidth * 0.5; const loopTopY = Math.max(startPoint.y + 20, divePointY - loopHeight);
+            const returnPointX = loopTopX - diveDirection * loopWidth * 0.9; const returnPointY = Math.max(startPoint.y + 40, loopTopY + loopHeight * 0.6);
+            const exitPointX = returnPointX - diveDirection * loopWidth * 0.3; const exitPointY = canvasH + enemyHeight * 2;
+            const clampedDivePointX = Math.max(margin, Math.min(canvasW - margin - enemyWidth, divePointX));
+            const clampedLoopTopX = Math.max(margin, Math.min(canvasW - margin - enemyWidth, loopTopX));
+            const clampedReturnPointX = Math.max(margin, Math.min(canvasW - margin - enemyWidth, returnPointX));
+            const p1_seg1 = { x: startPoint.x, y: startPoint.y + diveDepth * controlTightnessY * 0.5 };
+            const p2_seg1 = { x: clampedDivePointX - diveDirection * loopWidth * controlTightnessX, y: divePointY };
+            const seg1_p3 = { x: clampedDivePointX, y: divePointY };
+            const p1_seg2 = { x: clampedDivePointX + diveDirection * loopWidth * controlTightnessX, y: divePointY };
+            const p2_seg2 = { x: clampedLoopTopX, y: loopTopY + loopHeight * controlTightnessY };
+            const seg2_p3 = { x: clampedLoopTopX, y: loopTopY };
+            const p1_seg3 = { x: clampedLoopTopX, y: loopTopY - loopHeight * controlTightnessY * 0.5 };
+            const p2_seg3 = { x: clampedReturnPointX + diveDirection * loopWidth * controlTightnessX, y: returnPointY };
+            const seg3_p3 = { x: clampedReturnPointX, y: returnPointY };
+            const p1_seg4 = { x: seg3_p3.x, y: seg3_p3.y + canvasH * 0.1 };
+            const p2_seg4 = { x: exitPointX, y: exitPointY - canvasH * 0.2 };
+            const seg4_p3 = { x: exitPointX, y: exitPointY };
+            diveSegments = [ { p0: startPoint, p1: p1_seg1, p2: p2_seg1, p3: seg1_p3 }, { p0: seg1_p3, p1: p1_seg2, p2: p2_seg2, p3: seg2_p3 }, { p0: seg2_p3, p1: p1_seg3, p2: p2_seg3, p3: seg3_p3 }, { p0: seg3_p3, p1: p1_seg4, p2: p2_seg4, p3: seg4_p3 } ];
+        } else if (attackPatternType === 1) { // Patroon 1: Wider curve, less looping
+            const diveDepth = diveDepthBase * 0.8 + Math.random() * canvasH * 0.1; const curveWidth = loopWidthBase * 1.2 + Math.random() * canvasW * 0.1; const curveHeight = loopHeightBase * 0.7 + Math.random() * canvasH * 0.1;
+            const midPoint1X = startPoint.x + diveDirection * curveWidth * 0.4; const midPoint1Y = Math.min(bottomAvoidAttackY - curveHeight*0.5, startPoint.y + diveDepth * 0.6);
+            const midPoint2X = midPoint1X + diveDirection * curveWidth * 0.6; const midPoint2Y = Math.min(bottomAvoidAttackY, midPoint1Y + curveHeight);
+            const exitPointX = midPoint2X - diveDirection * curveWidth * 0.5; const exitPointY = canvasH + enemyHeight * 2;
+            const clampedMid1X = Math.max(margin, Math.min(canvasW - margin - enemyWidth, midPoint1X));
+            const clampedMid2X = Math.max(margin, Math.min(canvasW - margin - enemyWidth, midPoint2X));
+            const p1_seg1 = { x: startPoint.x - diveDirection * curveWidth * 0.1, y: startPoint.y + diveDepth * 0.3 };
+            const p2_seg1 = { x: clampedMid1X - diveDirection * curveWidth * controlTightnessX * 0.8, y: midPoint1Y + curveHeight * controlTightnessY * 0.4 };
+            const seg1_p3 = { x: clampedMid1X, y: midPoint1Y };
+            const p1_seg2 = { x: clampedMid1X + diveDirection * curveWidth * controlTightnessX * 0.8, y: midPoint1Y - curveHeight * controlTightnessY * 0.4 };
+            const p2_seg2 = { x: clampedMid2X + diveDirection * curveWidth * controlTightnessX * 0.6, y: midPoint2Y + curveHeight * controlTightnessY * 0.5 };
+            const seg2_p3 = { x: clampedMid2X, y: midPoint2Y };
+            const p1_seg3 = { x: clampedMid2X - diveDirection * curveWidth * 0.2, y: midPoint2Y + canvasH * 0.1 };
+            const p2_seg3 = { x: exitPointX, y: exitPointY - canvasH * 0.3 };
+            const seg3_p3 = { x: exitPointX, y: exitPointY };
+            diveSegments = [ { p0: startPoint, p1: p1_seg1, p2: p2_seg1, p3: seg1_p3 }, { p0: seg1_p3, p1: p1_seg2, p2: p2_seg2, p3: seg2_p3 }, { p0: seg2_p3, p1: p1_seg3, p2: p2_seg3, p3: seg3_p3 } ];
+        } else { // Patroon 2: Double small loop
+            const diveDepth = diveDepthBase * 0.6 + Math.random() * canvasH * 0.05; const loopWidth = loopWidthBase * 0.7 + Math.random() * canvasW * 0.05; const loopHeight = loopHeightBase * 0.6 + Math.random() * canvasH * 0.05; const loopOffsetY = loopHeight * 1.5;
+            const loop1TopX = startPoint.x + diveDirection * loopWidth * 0.5; const loop1TopY = Math.min(bottomAvoidAttackY - loopOffsetY, startPoint.y + diveDepth);
+            const loop1BottomX = loop1TopX + diveDirection * loopWidth * 0.5; const loop1BottomY = loop1TopY + loopHeight;
+            const loop2TopX = loop1BottomX - diveDirection * loopWidth * 0.8; const loop2TopY = Math.min(bottomAvoidAttackY, loop1BottomY + loopOffsetY * 0.7);
+            const loop2BottomX = loop2TopX + diveDirection * loopWidth * 0.4; const loop2BottomY = loop2TopY + loopHeight * 0.8;
+            const exitPointX = loop2BottomX; const exitPointY = canvasH + enemyHeight * 2;
+            const clpL1TX = Math.max(margin, Math.min(canvasW - margin - enemyWidth, loop1TopX));
+            const clpL1BX = Math.max(margin, Math.min(canvasW - margin - enemyWidth, loop1BottomX));
+            const clpL2TX = Math.max(margin, Math.min(canvasW - margin - enemyWidth, loop2TopX));
+            const clpL2BX = Math.max(margin, Math.min(canvasW - margin - enemyWidth, loop2BottomX));
+            const p1_L1_1 = { x: startPoint.x, y: startPoint.y + diveDepth*0.5 };
+            const p2_L1_1 = { x: clpL1TX - diveDirection * loopWidth * controlTightnessX, y: loop1TopY + loopHeight*controlTightnessY*0.3 };
+            const p3_L1_1 = { x: clpL1TX, y: loop1TopY };
+            const p1_L1_2 = { x: clpL1TX + diveDirection * loopWidth * controlTightnessX, y: loop1TopY - loopHeight*controlTightnessY*0.3 };
+            const p2_L1_2 = { x: clpL1BX + diveDirection * loopWidth * controlTightnessX, y: loop1BottomY + loopHeight*controlTightnessY*0.5 };
+            const p3_L1_2 = { x: clpL1BX, y: loop1BottomY };
+            const p1_L2_1 = { x: clpL1BX - diveDirection * loopWidth * controlTightnessX, y: loop1BottomY - loopHeight*controlTightnessY*0.5 };
+            const p2_L2_1 = { x: clpL2TX - diveDirection * loopWidth * controlTightnessX, y: loop2TopY + loopHeight*controlTightnessY*0.4 };
+            const p3_L2_1 = { x: clpL2TX, y: loop2TopY };
+            const p1_L2_2 = { x: clpL2TX + diveDirection * loopWidth * controlTightnessX, y: loop2TopY - loopHeight*controlTightnessY*0.4 };
+            const p2_L2_2 = { x: clpL2BX + diveDirection * loopWidth * controlTightnessX, y: loop2BottomY + loopHeight*controlTightnessY*0.6 };
+            const p3_L2_2 = { x: clpL2BX, y: loop2BottomY };
+            const p1_EXIT = { x: clpL2BX - diveDirection*loopWidth*0.1, y: loop2BottomY + canvasH*0.05 };
+            const p2_EXIT = { x: exitPointX, y: exitPointY - canvasH*0.2 };
+            const p3_EXIT = { x: exitPointX, y: exitPointY };
+            diveSegments = [ {p0: startPoint, p1: p1_L1_1, p2: p2_L1_1, p3: p3_L1_1}, {p0: p3_L1_1, p1: p1_L1_2, p2: p2_L1_2, p3: p3_L1_2}, {p0: p3_L1_2, p1: p1_L2_1, p2: p2_L2_1, p3: p3_L2_1}, {p0: p3_L2_1, p1: p1_L2_2, p2: p2_L2_2, p3: p3_L2_2}, {p0: p3_L2_2, p1: p1_EXIT, p2: p2_EXIT, p3: p3_EXIT}, ];
+        }
+        generatedSegments.push(...diveSegments);
+        return generatedSegments;
+    } catch (e) {
+         console.error(`[DEBUG] Error generating attack path for enemy ${enemy?.id}:`, e);
+         return [];
+    }
+}
+window.generateAttackPath = generateAttackPathInternal;
+
+
+// --- Functie Definities voor Reset & Game Flow ---
+
+/** Helper functie om alle berichtvlaggen te resetten. */
+function resetAllMessagesInternal() {
+    showReadyMessage = false;
+    isShowingIntro = false;
+    showCsHitsMessage = false;
+    showPerfectMessage = false;
+    showCsBonusScoreMessage = false;
+    showCSClearMessage = false;
+    showCsHitsForClearMessage = false;
+    showCsScoreForClearMessage = false;
+    showExtraLifeMessage = false;
+    isShowingCaptureMessage = false;
+    isShowingPlayerGameOverMessage = false;
+    isShowingCoopPlayersReady = false;
+
+    csHitsMessageStartTime = 0;
+    perfectMessageStartTime = 0;
+    csBonusScoreMessageStartTime = 0;
+    csClearMessageStartTime = 0;
+    extraLifeMessageStartTime = 0;
+    readyMessageStartTime = 0;
+    captureMessageStartTime = 0;
+    playerGameOverMessageStartTime = 0;
+    csCompletionDelayStartTime = 0;
+    introDisplayStartTime = 0;
+    coopPlayersReadyStartTime = 0;
+}
+window.resetAllMessages = resetAllMessagesInternal;
+
+/** Helper functie om game geluiden te stoppen. */
+function stopAllGameSoundsInternal() {
+    // Stop alle geluiden via hun sound ID's.
+    // soundPaths is gedefinieerd in setup_utils.js
+    if (typeof soundPaths === 'object' && soundPaths !== null && typeof stopSound === 'function') {
+        for (const soundId in soundPaths) {
+            stopSound(soundId);
+        }
+    }
+    isGridSoundPlaying = false; // Reset specifieke vlaggen
+}
+window.stopAllGameSounds = stopAllGameSoundsInternal;
+
+/**
+ * Reset de volledige game state naar beginwaarden.
+ */
+function resetGameInternal() {
+    score = 0;
+    level = 1;
+    playerLives = 3;
+
+    if (isTwoPlayerMode) {
+        player1Lives = 3;
+        player2Lives = 3;
+        player1Score = 0;
+        player2Score = 0;
+        currentPlayer = 1;
+        player1CompletedLevel = -1;
+        player1MaxLevelReached = 1;
+        player2MaxLevelReached = 1;
+        if (player1LifeThresholdsMet instanceof Set) player1LifeThresholdsMet.clear(); else player1LifeThresholdsMet = new Set();
+        if (player2LifeThresholdsMet instanceof Set) player2LifeThresholdsMet.clear(); else player2LifeThresholdsMet = new Set();
+
+        player1IsDualShipActive = false;
+        player2IsDualShipActive = false;
+        isPlayer1ShipCaptured = false;
+        isPlayer2ShipCaptured = false;
+        isPlayer1WaitingForRespawn = false;
+        isPlayer2WaitingForRespawn = false;
+        isPlayer1Invincible = false;
+        isPlayer2Invincible = false;
+        player1RespawnTime = 0;
+        player2RespawnTime = 0;
+        player1InvincibilityEndTime = 0;
+        player2InvincibilityEndTime = 0;
+        player1CaptureRespawnX = 0;
+        player2CaptureRespawnX = 0;
+        player1NeedsRespawnAfterCapture = false;
+        player2NeedsRespawnAfterCapture = false;
+
+        if (selectedGameMode === 'coop') { // Geldt voor Human COOP, 1P vs AI COOP, COOP AI Demo
+            playerLives = 0;
+            if (gameCanvas && gameCanvas.width > 0 && gameCanvas.height > 0) {
+                const p1InitialX = gameCanvas.width / 2 - gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2);
+                const p2InitialX = gameCanvas.width / 2 + gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2);
+                const shipBaseY = gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN;
+
+                ship1 = { x: p1InitialX, y: shipBaseY, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOVE_SPEED, targetX: p1InitialX, id: 'p1' };
+                ship2 = { x: p2InitialX, y: shipBaseY, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOVE_SPEED, targetX: p2InitialX, id: 'p2' };
+
+                if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                    smoothedShip1X = p1InitialX;
+                    smoothedShip2X = p2InitialX;
+                    aiShip1TargetEnemy = null;
+                    aiShip2TargetEnemy = null;
+                    aiShip1CanShootTime = 0;
+                    aiShip2CanShootTime = 0;
+                    aiShip1LastShotTime = 0;
+                    aiShip2LastShotTime = 0;
+                    aiPlayerActivelySeekingCaptureById = null;
+                    coopAICaptureDiveAnticipationActive = false;
+                    coopAICaptureDiveAnticipationEndTime = 0;
+                }
+            }
+            ship = null;
+        } else { // selectedGameMode === 'normal' (Human 2P Normal, 1P vs AI Normal)
+            if (!ship && gameCanvas && gameCanvas.width > 0 && gameCanvas.height > 0) {
+                 ship = { x: Math.round(gameCanvas.width / 2 - SHIP_WIDTH / 2), y: gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOVE_SPEED, targetX: 0, id: 'main' };
+                 ship.targetX = ship.x;
+            } else if (ship && gameCanvas && gameCanvas.width > 0 && gameCanvas.height > 0) {
+                 ship.x = Math.round(gameCanvas.width / 2 - SHIP_WIDTH / 2);
+                 ship.targetX = ship.x;
+                 ship.y = gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN;
+            }
+            ship1 = null;
+            ship2 = null;
+        }
+    } else { // 1P Classic
+        player1Lives = 3;
+        player1Score = 0;
+        player1MaxLevelReached = 1;
+        if (player1LifeThresholdsMet instanceof Set) player1LifeThresholdsMet.clear(); else player1LifeThresholdsMet = new Set();
+
+        if (!ship && gameCanvas && gameCanvas.width > 0 && gameCanvas.height > 0) {
+             ship = { x: Math.round(gameCanvas.width / 2 - SHIP_WIDTH / 2), y: gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOVE_SPEED, targetX: 0, id: 'main' };
+             ship.targetX = ship.x;
+        } else if (ship && gameCanvas && gameCanvas.width > 0 && gameCanvas.height > 0) {
+             ship.x = Math.round(gameCanvas.width / 2 - SHIP_WIDTH / 2);
+             ship.targetX = ship.x;
+             ship.y = gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN;
+        }
+        ship1 = null; ship2 = null;
+    }
+
+    isShipCaptured = false;
+    isWaitingForRespawn = false;
+    respawnTime = 0;
+    isInvincible = false;
+    invincibilityEndTime = 0;
+    isDualShipActive = false;
+    if (!isTwoPlayerMode) player1IsDualShipActive = false;
+
+    fallingShips = [];
+    visualOffsetX = -20;
+
+    gameOverSequenceStartTime = 0;
+    isShowingResultsScreen = false;
+    gameStartTime = Date.now();
+    gameJustStarted = true;
+    gameJustStartedAndWaveLaunched = false;
+
+    currentGridOffsetX = 0;
+    gridMoveDirection = 1;
+    gridJustCompleted = false;
+    isGridBreathingActive = false;
+    gridBreathStartTime = 0;
+    currentGridBreathFactor = 0;
+    lastGridFireCheckTime = 0;
+
+    player1ShotsFired = 0;
+    player2ShotsFired = 0;
+    player1EnemiesHit = 0;
+    player2EnemiesHit = 0;
+    scoreEarnedThisCS = 0;
+    challengingStageEnemiesHit = 0;
+
+    aiNeedsStabilization = true;
+    aiStabilizationEndTime = 0;
+    smoothedShipX = undefined;
+    aiCanShootTime = 0;
+    aiLastShotTime = 0;
+    // aiPlayerActivelySeekingCaptureById en coopAICapture... zijn al gereset in de COOP specifieke if-tak
+    if (!(selectedGameMode === 'coop' && (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')))) {
+        aiPlayerActivelySeekingCaptureById = null;
+        coopAICaptureDiveAnticipationActive = false;
+        coopAICaptureDiveAnticipationEndTime = 0;
+    }
+
+
+    playerLastShotTime = 0;
+    player1LastShotTime = 0;
+    player2LastShotTime = 0;
+    p1FireInputWasDown = false; p2FireInputWasDown = false;
+    p1JustFiredSingle = false; p2JustFiredSingle = false;
+
+    player1TriggeredHighScoreSound = false;
+    player2TriggeredHighScoreSound = false;
+
+    isShowingCoopPlayersReady = false;
+    coopPlayersReadyStartTime = 0;
+
+    resetWaveInternal();
+}
+window.resetGame = resetGameInternal;
+
+
+/**
+ * Reset de state voor een nieuwe wave (ronde).
+ */
+function resetWaveInternal() {
+    isWaveTransitioning = false;
+    readyForNextWave = false;
+    readyForNextWaveReset = false;
+    isEntrancePhaseActive = true;
+    firstEnemyLanded = false;
+    captureAttemptMadeThisLevel = false;
+    gameJustStartedAndWaveLaunched = false;
+    aiPlayerActivelySeekingCaptureById = null;
+    coopAICaptureDiveAnticipationActive = false;
+    coopAICaptureDiveAnticipationEndTime = 0;
+    player1CaptureRespawnX = 0;
+    player2CaptureRespawnX = 0;
+    player1NeedsRespawnAfterCapture = false;
+    player2NeedsRespawnAfterCapture = false;
+
+
+    enemies = [];
+    bullets = [];
+    enemyBullets = [];
+    explosions = [];
+    floatingScores = [];
+    hitSparks = [];
+
+    if (Array.isArray(enemySpawnTimeouts)) {
+        enemySpawnTimeouts.forEach(clearTimeout);
+    }
+    enemySpawnTimeouts = [];
+    squadronCompletionStatus = {};
+    squadronEntranceFiringStatus = {};
+    totalEnemiesScheduledForWave = 0;
+    enemiesSpawnedThisWave = 0;
+
+    const currentWaveType = getWaveTypeInternal(level);
+    isChallengingStage = currentWaveType === 'challenging_stage';
+    isFullGridWave = currentWaveType === 'full_grid';
+
+    challengingStageEnemiesHit = 0;
+    scoreEarnedThisCS = 0;
+    csCurrentChainHits = 0;
+    csCurrentChainScore = 0;
+    csLastHitTime = 0;
+    csLastChainHitPosition = null;
+
+
+    if (isFullGridWave || isChallengingStage) {
+        isEntrancePhaseActive = false;
+    }
+
+    const wasShowingDemoText = isShowingDemoText;
+    resetAllMessagesInternal();
+    if (wasShowingDemoText) {
+        isShowingDemoText = true;
+    }
+
+    // --- AANGEPASTE INTRODUCTIE LOGICA ---
+    if (selectedGameMode === 'coop' && level === 1) { // Geldt voor Human COOP, 1P vs AI COOP, COOP AI Demo
+        // "PLAYERS READY" wordt al getoond via baseStartGame.
+        // Na "PLAYERS READY", zal runSingleGameUpdate overgaan naar de "STAGE 1" intro.
+        isShowingIntro = false; // Wordt true na PLAYERS READY in runSingleGameUpdate
+        introStep = 2; // Klaarzetten voor STAGE 1
+    } else if ((isTwoPlayerMode && selectedGameMode === 'normal') ||
+               (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL')) {
+        introStep = 1;
+        isShowingIntro = true;
+        if (!isManualControl) isShowingDemoText = true;
+    } else if (isChallengingStage) {
+        introStep = 3;
+        isShowingIntro = true;
+        if (!isManualControl) isShowingDemoText = true;
+    } else if (level === 1 && !isTwoPlayerMode) { // 1P Classic (level 1)
+        introStep = 1;
+        isShowingIntro = true;
+        if (!isManualControl) isShowingDemoText = true;
+    } else { // 1P Classic (level > 1), of COOP modes (level > 1), of 1P vs AI Normal (level > 1)
+        introStep = 2;
+        isShowingIntro = true;
+        if (!isManualControl) isShowingDemoText = true;
+    }
+    // --- EINDE AANGEPASTE INTRODUCTIE LOGICA ---
+
+
+    if (isShowingIntro && !(selectedGameMode === 'coop' && level === 1)) {
+        introDisplayStartTime = Date.now();
+    }
+    playerIntroSoundPlayed = false;
+    stageIntroSoundPlayed = false;
+    csIntroSoundPlayed = false;
+
+    currentWaveDefinition = generateWaveDefinitionInternal(level);
+
+    // Correcte positionering van schepen bij aanvang van een wave
+    if (selectedGameMode === 'coop') { // Geldt voor Human COOP, 1P vs AI COOP, COOP AI Demo
+        if (gameCanvas && gameCanvas.width > 0 && gameCanvas.height > 0) {
+            const p1Active = ship1 && player1Lives > 0;
+            const p2Active = ship2 && player2Lives > 0;
+            const shipBaseY = gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN;
+
+            if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                if (p1Active && p2Active) {
+                    const p1InitialX = gameCanvas.width / 2 - gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2);
+                    if(ship1) { ship1.targetX = p1InitialX; ship1.x = p1InitialX; smoothedShip1X = p1InitialX; ship1.y = shipBaseY;}
+                    const p2InitialX = gameCanvas.width / 2 + gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2);
+                    if(ship2) { ship2.targetX = p2InitialX; ship2.x = p2InitialX; smoothedShip2X = p2InitialX; ship2.y = shipBaseY;}
+                } else if (p1Active && ship1) {
+                    const p1EffectiveWidth = player1IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                    const centeredX1 = Math.round(gameCanvas.width / 2 - p1EffectiveWidth / 2);
+                    ship1.targetX = centeredX1; ship1.x = centeredX1; smoothedShip1X = centeredX1; ship1.y = shipBaseY;
+                } else if (p2Active && ship2) {
+                    const p2EffectiveWidth = player2IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                    const centeredX2 = Math.round(gameCanvas.width / 2 - p2EffectiveWidth / 2);
+                    ship2.targetX = centeredX2; ship2.x = centeredX2; smoothedShip2X = centeredX2; ship2.y = shipBaseY;
+                }
+            } else { // Human COOP (forceCenterShipNextReset wordt false gezet, dus X blijft waar het was, alleen Y reset)
+                 if (p1Active && ship1) ship1.y = shipBaseY;
+                 if (p2Active && ship2) ship2.y = shipBaseY;
+            }
+        }
+    } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+        if (ship && gameCanvas && gameCanvas.width > 0 && gameCanvas.height > 0 && (forceCenterShipNextReset || !isManualControl || (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2))) {
+            let effectiveWidthForCentering = ship.width;
+            if (isDualShipActive) effectiveWidthForCentering = DUAL_SHIP_OFFSET_X + SHIP_WIDTH;
+            ship.x = Math.round(gameCanvas.width / 2 - effectiveWidthForCentering / 2);
+            ship.targetX = ship.x;
+            ship.y = gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN;
+            if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) smoothedShipX = ship.x;
+        } else if (ship && gameCanvas && gameCanvas.width > 0) {
+            ship.y = gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN;
+        }
+    }
+    forceCenterShipNextReset = false;
+
+    if (!isManualControl && aiNeedsStabilization && selectedGameMode !== 'coop' && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2)) {
+        aiStabilizationEndTime = Date.now() + AI_STABILIZATION_DURATION;
+        if (ship) smoothedShipX = ship.x;
+    } else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2 && aiNeedsStabilization) {
+        aiStabilizationEndTime = Date.now() + AI_STABILIZATION_DURATION;
+        if (ship) smoothedShipX = ship.x;
+    }
+}
+window.resetWave = resetWaveInternal;
+
+/**
+ * Bepaalt het type wave voor een gegeven level.
+ */
+function getWaveTypeInternal(level) {
+    const patternIndex = (level - 1) % 4;
+    switch (patternIndex) {
+        case 0: return 'full_grid';
+        case 1: return 'entrance_flight_1';
+        case 2: return 'challenging_stage';
+        case 3: return 'entrance_flight_2';
+        default: return 'unknown';
+    }
+}
+window.getWaveType = getWaveTypeInternal;
+
+/**
+ * Genereert de *structuur* (layout) voor een gegeven wave level.
+ */
+function generateWaveDefinitionInternal(level) {
+    let waveDef = [];
+    currentWavePatternIndex = -1;
+    const waveType = getWaveTypeInternal(level);
+
+    if (typeof waveEntrancePatterns === 'undefined' || !Array.isArray(waveEntrancePatterns) || waveEntrancePatterns.length < 2) {
+        return [];
+    }
+
+    if (waveType === 'challenging_stage') {
+        waveDef = [];
+    } else if (waveType === 'full_grid') {
+        currentWavePatternIndex = 0;
+        const selectedPattern = waveEntrancePatterns[0];
+        if (!selectedPattern || selectedPattern.length === 0) {
+            waveDef = [];
+        } else {
+            try {
+                waveDef = JSON.parse(JSON.stringify(selectedPattern), (key, value) => {
+                    if (value && typeof value === 'object' && value.type === ENEMY3_TYPE && typeof value.hasCapturedShip === 'undefined') {
+                        value.hasCapturedShip = false;
+                    }
+                    return value;
+                });
+            } catch (e) { waveDef = []; }
+        }
+    } else if (waveType === 'entrance_flight_1') {
+        currentWavePatternIndex = 0;
+        const selectedPattern = waveEntrancePatterns[0];
+         if (!selectedPattern || selectedPattern.length === 0) {
+            waveDef = [];
+        } else {
+            try {
+                waveDef = JSON.parse(JSON.stringify(selectedPattern), (key, value) => {
+                    if (value && typeof value === 'object' && value.type === ENEMY3_TYPE && typeof value.hasCapturedShip === 'undefined') {
+                        value.hasCapturedShip = false;
+                    }
+                    return value;
+                });
+            } catch (e) { waveDef = []; }
+        }
+    } else if (waveType === 'entrance_flight_2') {
+        currentWavePatternIndex = 1;
+        const selectedPattern = waveEntrancePatterns[1];
+        if (!selectedPattern || selectedPattern.length === 0) {
+            waveDef = [];
+        } else {
+            try {
+                waveDef = JSON.parse(JSON.stringify(selectedPattern), (key, value) => {
+                    if (value && typeof value === 'object' && value.type === ENEMY3_TYPE && typeof value.hasCapturedShip === 'undefined') {
+                        value.hasCapturedShip = false;
+                    }
+                    return value;
+                });
+            } catch (e) { waveDef = []; }
+        }
+    } else {
+        waveDef = [];
+    }
+
+    if (waveType !== 'challenging_stage') {
+        if (typeof normalWaveEntrancePaths === 'undefined' || Object.keys(normalWaveEntrancePaths).length === 0) {
+             return waveDef;
+        }
+        for (let i = waveDef.length - 1; i >= 0; i--) {
+            const squadron = waveDef[i];
+            if (!normalWaveEntrancePaths?.[squadron.pathId]) {
+                waveDef.splice(i, 1);
+                continue;
+            }
+            if (squadron.enemies && Array.isArray(squadron.enemies)) {
+                for (let j = squadron.enemies.length - 1; j >= 0; j--) {
+                    const enemy = squadron.enemies[j];
+                    if (!enemy || !normalWaveEntrancePaths?.[enemy.entrancePathId]) {
+                        squadron.enemies.splice(j, 1);
+                    }
+                    if (enemy && enemy.type === ENEMY3_TYPE && typeof enemy.hasCapturedShip === 'undefined') {
+                        enemy.hasCapturedShip = false;
+                    }
+                }
+                if (squadron.enemies.length === 0) {
+                    waveDef.splice(i, 1);
+                }
+            } else {
+                 waveDef.splice(i, 1);
+            }
+        }
+    }
+    return waveDef;
+}
+window.generateWaveDefinition = generateWaveDefinitionInternal;
+
+
+// ...
+// --- EINDE deel 1      van 8 dit codeblok ---
+// --- END OF FILE game_logic.js ---
+
+
+
+
+
+
+
+
+// --- START OF FILE game_logic.js ---
+// --- DEEL 2      van 8 dit code blok    --- (<<< REVISE: REMOVED triggerImmediateCaptureDive call from startFullGridWave >>>)
+
+
+const createBulletSimple = (targetEnemy, overrideStartPos = null) => {
+    let currentTargetShip = null;
+    let gameActiveForTargeting = false;
+
+    if (isTwoPlayerMode && selectedGameMode === 'coop') {
+        const p1Active = ship1 && player1Lives > 0 && !isPlayer1WaitingForRespawn && !isPlayer1ShipCaptured;
+        const p2Active = ship2 && player2Lives > 0 && !isPlayer2WaitingForRespawn && !isPlayer2ShipCaptured;
+
+        if (p1Active && p2Active) {
+            currentTargetShip = Math.random() < 0.5 ? ship1 : ship2;
+            gameActiveForTargeting = true;
+        } else if (p1Active) {
+            currentTargetShip = ship1;
+            gameActiveForTargeting = true;
+        } else if (p2Active) {
+            currentTargetShip = ship2;
+            gameActiveForTargeting = true;
+        }
+    } else { // 1P of Alternating 2P
+        if (ship && playerLives > 0 && !isShipCaptured && !isWaitingForRespawn) {
+            currentTargetShip = ship;
+            gameActiveForTargeting = true;
+        }
+    }
+
+    if (!targetEnemy || !isInGameState || !gameActiveForTargeting || !currentTargetShip) {
+        return false;
+    }
+
+    const effectiveBulletSpeed = scaleValue(level, BASE_ENEMY_BULLET_SPEED, MAX_ENEMY_BULLET_SPEED);
+    const startX = overrideStartPos ? overrideStartPos.x : targetEnemy.x + targetEnemy.width / 2;
+    const startY = overrideStartPos ? overrideStartPos.y : targetEnemy.y + targetEnemy.height / 2;
+    let bulletVx = 0;
+    let bulletVy = effectiveBulletSpeed;
+
+    const dx = (currentTargetShip.x + currentTargetShip.width / 2) - startX;
+    const dy = (currentTargetShip.y + currentTargetShip.height / 2) - startY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist > 0) {
+        let aimFactor = 0;
+        if (!isChallengingStage) {
+            aimFactor = scaleValue(level, BASE_ENEMY_AIM_FACTOR, MAX_ENEMY_AIM_FACTOR);
+        }
+        let targetAngle = Math.atan2(dy, dx);
+        bulletVx = Math.cos(targetAngle) * effectiveBulletSpeed * aimFactor;
+        bulletVy = Math.sqrt(effectiveBulletSpeed ** 2 - bulletVx ** 2); // Herbereken Vy
+        bulletVy = Math.max(effectiveBulletSpeed * (1.0 - aimFactor) * 0.5, bulletVy); // Min. neerwaartse snelheid
+        if (dy < 0 && bulletVy > 0) { // Als doelwit boven is en kogel naar beneden gaat
+             // Dit is meestal niet gewenst, tenzij de aimFactor heel laag is.
+             // Als aimFactor hoog is, zou Math.sin(targetAngle) * effectiveBulletSpeed beter zijn.
+             // Voor nu, als het doelwit significant boven is, forceer Vy negatief als Vx dat toelaat.
+             // Of, als dy < 0, forceer vy positief (naar beneden)
+        }
+        if (dy < 0) bulletVy = Math.abs(bulletVy); // Zorg dat het altijd naar beneden gaat als doelwit boven is
+
+        enemyBullets.push({
+            x: startX - ENEMY_BULLET_WIDTH / 2,
+            y: startY,
+            width: ENEMY_BULLET_WIDTH,
+            height: ENEMY_BULLET_HEIGHT,
+            vx: bulletVx,
+            vy: bulletVy,
+            type: targetEnemy.type
+        });
+        return true;
+    }
+    return false;
+};
+
+
+/**
+ * Hulpfunctie om een ENKEL squadron te plannen voor ENTRANCE FLIGHT waves.
+ */
+function scheduleSingleEntranceSquadron(squadronData, sqIdx, startDelay) { if (isFullGridWave || isChallengingStage) { console.warn(`[scheduleSingleEntranceSquadron] Called inappropriately for non-entrance wave type (Level ${level}, isFullGrid: ${isFullGridWave}, isCS: ${isChallengingStage}). Skipping.`); if (squadronData?.enemies?.length > 0) { enemiesSpawnedThisWave += squadronData.enemies.length; if (squadronCompletionStatus[sqIdx]) { squadronCompletionStatus[sqIdx].completed = squadronCompletionStatus[sqIdx].total; } } return false; } const pathSource = normalWaveEntrancePaths; const pathId = squadronData.pathId; const pathSegments = pathSource[pathId]; if (!pathSegments || pathSegments.length === 0) { console.error(`Entrance Wave: Path ${pathId} for squadron ${sqIdx} invalid! Skipping squadron.`); if (squadronData?.enemies?.length > 0) { enemiesSpawnedThisWave += squadronData.enemies.length; if (squadronCompletionStatus[sqIdx]) { squadronCompletionStatus[sqIdx].completed = squadronCompletionStatus[sqIdx].total; } } return false; } const squadronStartTimeoutId = setTimeout(() => { const sqTimeoutIdx = enemySpawnTimeouts.indexOf(squadronStartTimeoutId); if (sqTimeoutIdx > -1) enemySpawnTimeouts.splice(sqTimeoutIdx, 1);
+    let gameCanContinue = false;
+    if (isTwoPlayerMode && selectedGameMode === 'coop') { gameCanContinue = (player1Lives > 0 && !isPlayer1ShipCaptured) || (player2Lives > 0 && !isPlayer2ShipCaptured); }
+    else { gameCanContinue = playerLives > 0 && !isShipCaptured; }
+
+    if (isPaused || !isInGameState || !isEntrancePhaseActive || isChallengingStage || isWaveTransitioning || !gameCanContinue || isFullGridWave) { if (squadronData?.enemies?.length > 0) { enemiesSpawnedThisWave += squadronData.enemies.length; if (squadronCompletionStatus[sqIdx]) { squadronCompletionStatus[sqIdx].completed = squadronCompletionStatus[sqIdx].total; } } return; } try { if (squadronEntranceFiringStatus[sqIdx]) { squadronEntranceFiringStatus[sqIdx].scheduledStartTime = Date.now() + startDelay; squadronEntranceFiringStatus[sqIdx].hasFired = false; } else { console.warn(`[scheduleSingleEntranceSquadron] Firing status for squadron ${sqIdx} not found.`); squadronEntranceFiringStatus[sqIdx] = { hasFired: false, scheduledStartTime: Date.now() + startDelay }; } const spawnDelayBetweenEnemies = ENEMY_SPAWN_DELAY_IN_SQUADRON; const spawnDelayBetweenPairs = spawnDelayBetweenEnemies * 2; const verySmallDelayForPair = 1; squadronData.enemies.forEach((enemyDef, enemyIndex) => { if (!enemyDef || !enemyDef.type || typeof enemyDef.gridRow === 'undefined' || typeof enemyDef.gridCol === 'undefined' || !enemyDef.entrancePathId) { console.error(`Entrance Wave: Invalid enemy def in squadron ${sqIdx} (Path ${pathId}), index ${enemyIndex}. Skipping.`); enemiesSpawnedThisWave++; if(squadronCompletionStatus[sqIdx]) { squadronCompletionStatus[sqIdx].completed++; } return; } const enemyAssignedPath = pathSource[enemyDef.entrancePathId]; if (!enemyAssignedPath || enemyAssignedPath.length === 0) { console.warn(`Entrance Wave: Assigned entrance path "${enemyDef.entrancePathId}" for enemy in squadron ${sqIdx}, index ${enemyIndex} not found. Enemy will follow squadron path "${pathId}".`); } let individualSpawnDelay = 0; const waveTypeForTiming = getWaveType(level); const useWave2SpawnTiming = (waveTypeForTiming === 'entrance_flight_2') && (sqIdx === 2 || sqIdx === 3); if (useWave2SpawnTiming) { const pairIndex = Math.floor(enemyIndex / 2); if (enemyIndex % 2 === 0) { individualSpawnDelay = pairIndex * spawnDelayBetweenPairs; } else { individualSpawnDelay = pairIndex * spawnDelayBetweenPairs + verySmallDelayForPair; } } else { individualSpawnDelay = enemyIndex * ENEMY_SPAWN_DELAY_IN_SQUADRON; } const enemyTimeoutId = setTimeout(() => { const enTimeoutIdx = enemySpawnTimeouts.indexOf(enemyTimeoutId); if (enTimeoutIdx > -1) enemySpawnTimeouts.splice(enTimeoutIdx, 1);
+    let spawnCanContinue = false;
+    if (isTwoPlayerMode && selectedGameMode === 'coop') { spawnCanContinue = (player1Lives > 0 && !isPlayer1ShipCaptured) || (player2Lives > 0 && !isPlayer2ShipCaptured); }
+    else { spawnCanContinue = playerLives > 0 && !isShipCaptured; }
+    if (isPaused || !isInGameState || !isEntrancePhaseActive || isChallengingStage || isWaveTransitioning || !spawnCanContinue || isFullGridWave) { enemiesSpawnedThisWave++; if(squadronCompletionStatus[sqIdx]) { squadronCompletionStatus[sqIdx].completed++; } return; } try { let enemyType = enemyDef.type; let enemyHealth = (enemyType === ENEMY3_TYPE) ? ENEMY3_MAX_HITS : 1; let enemyWidth, enemyHeight; if (enemyType === ENEMY1_TYPE) { enemyWidth = ENEMY1_WIDTH; enemyHeight = ENEMY1_HEIGHT; } else if (enemyType === ENEMY3_TYPE) { enemyWidth = BOSS_WIDTH; enemyHeight = BOSS_HEIGHT; } else { enemyWidth = ENEMY_WIDTH; enemyHeight = ENEMY_HEIGHT; } let startX = 0, startY = 0; if (pathSegments && pathSegments[0]?.p0) { startX = pathSegments[0].p0.x; startY = pathSegments[0].p0.y; } else { throw new Error(`Invalid start segment for squadron path ${pathId}`); } let targetGridX, targetGridY; try { const { x: finalTargetX, y: finalTargetY } = getCurrentGridSlotPosition(enemyDef.gridRow, enemyDef.gridCol, enemyWidth); targetGridX = finalTargetX; targetGridY = finalTargetY; } catch(e) { console.error(`Error getting target grid pos for new enemy ${enemyDef.type} at [${enemyDef.gridRow},${enemyDef.gridCol}]`, e); targetGridX = gameCanvas?.width / 2 || 200; targetGridY = ENEMY_TOP_MARGIN + enemyDef.gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING); } let initialPathT = 0; const isPairingSquadron = useWave2SpawnTiming; const isSecondInPairCheck = isPairingSquadron && (enemyIndex % 2 !== 0); if (isSecondInPairCheck) { initialPathT = -ENTRANCE_PAIR_PATH_T_OFFSET; } else { initialPathT = -enemyIndex * PATH_T_OFFSET_PER_ENEMY; } const newEnemy = { x: startX, y: startY, width: enemyWidth, height: enemyHeight, targetGridX: targetGridX, targetGridY: targetGridY, speed: 0, state: 'following_entrance_path', gridRow: enemyDef.gridRow, gridCol: enemyDef.gridCol, type: enemyType, health: enemyHealth, isDamaged: false, velocityX: 0, velocityY: 0, attackPathStep: 0, initialY: 0, initialX: 0, diveDirection: 1, lastFiredTime: 0, targetX1: 0, targetY1: 0, targetX2: 0, targetY2: 0, targetX3: 0, targetY3: 0, attackPathSegments: [], attackPathSegmentIndex: 0, attackPathT: 0, attackStartTime: 0, attackFormationOffsetX: 0, attackGroupId: null, entrancePathId: pathId, pathSegmentIndex: 0, pathT: initialPathT, squadronId: sqIdx, squadronEnemyIndex: enemyIndex, id: `enemy-entr-${sqIdx}-${enemyIndex}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`, justReturned: false, canFireThisDive: false, attackType: 'normal', hasCapturedShip: (enemyType === ENEMY3_TYPE) ? false : undefined, capturedShipX: undefined, capturedShipY: undefined, capturedShipLastFiredTime: (enemyType === ENEMY3_TYPE) ? 0 : undefined, captureStartTime: 0, capturePrepareTimeout: null, pathSpeedMultiplier: 1.0 }; enemies.push(newEnemy); enemiesSpawnedThisWave++; if(squadronCompletionStatus[sqIdx]) { squadronCompletionStatus[sqIdx].completed++; } if (enemyIndex === 0) { let fireDelayMs = 1500; if (sqIdx === 0 || sqIdx === 1) { fireDelayMs = 250; } const firstEnemyId = newEnemy.id; const firstEnemyFireTimeout = setTimeout(() => { const tIdx = enemySpawnTimeouts.indexOf(firstEnemyFireTimeout); if(tIdx > -1) enemySpawnTimeouts.splice(tIdx, 1);
+    let fireCanContinue = false; if (isTwoPlayerMode && selectedGameMode === 'coop') { fireCanContinue = (player1Lives > 0 && !isPlayer1ShipCaptured) || (player2Lives > 0 && !isPlayer2ShipCaptured); } else { fireCanContinue = playerLives > 0 && !isShipCaptured; }
+    if (isPaused || !isInGameState || !fireCanContinue || isChallengingStage || isWaveTransitioning || isFullGridWave) return; fireFixedEnemyBurst(firstEnemyId, null, 0, 3); }, fireDelayMs); enemySpawnTimeouts.push(firstEnemyFireTimeout); } } catch (spawnError) { console.error(`Entrance Wave: Error during enemy spawn execution (Sq ${sqIdx}, Idx ${enemyIndex}, Path ${pathId}):`, spawnError); enemiesSpawnedThisWave++; if(squadronCompletionStatus[sqIdx]) { squadronCompletionStatus[sqIdx].completed++; } } }, individualSpawnDelay); enemySpawnTimeouts.push(enemyTimeoutId); }); } catch (squadronProcessError) { console.error(`Entrance Wave: Error processing enemies for squadron ${sqIdx} (Path ${pathId}):`, squadronProcessError); if(squadronData?.enemies?.length > 0) { enemiesSpawnedThisWave += squadronData.enemies.length; if(squadronCompletionStatus[sqIdx]) { squadronCompletionStatus[sqIdx].completed = squadronCompletionStatus[sqIdx].total; } } } }, startDelay); enemySpawnTimeouts.push(squadronStartTimeoutId); return true; };
+
+
+/**
+ * Plant de squadrons voor een "Entrance Flight" wave.
+ */
+function scheduleEntranceFlightWave() {
+    if (isFullGridWave || isChallengingStage || !currentWaveDefinition || currentWaveDefinition.length === 0) {
+        console.warn(`[scheduleEntranceFlightWave] Called inappropriately or with no definition. Level ${level}, isFullGrid: ${isFullGridWave}, isCS: ${isChallengingStage}, def length: ${currentWaveDefinition?.length}`);
+        isEntrancePhaseActive = false;
+        isWaveTransitioning = true; readyForNextWaveReset = true;
+        return;
+    }
+
+    enemySpawnTimeouts.forEach(clearTimeout);
+    enemySpawnTimeouts = [];
+    totalEnemiesScheduledForWave = 0;
+    enemiesSpawnedThisWave = 0;
+    squadronCompletionStatus = {};
+    squadronEntranceFiringStatus = {};
+
+    let cumulativeDelay = 0;
+    let totalSquadronsScheduled = 0;
+
+    currentWaveDefinition.forEach((squadronData, squadronIndex) => {
+        if (squadronData && squadronData.enemies && Array.isArray(squadronData.enemies) && squadronData.enemies.length > 0) {
+            totalEnemiesScheduledForWave += squadronData.enemies.length;
+            squadronCompletionStatus[squadronIndex] = { completed: 0, total: squadronData.enemies.length, hasFiredPostLanding: false };
+            squadronEntranceFiringStatus[squadronIndex] = { hasFired: false, scheduledStartTime: 0 };
+
+            if (scheduleSingleEntranceSquadron(squadronData, squadronIndex, cumulativeDelay)) {
+                totalSquadronsScheduled++;
+            }
+            cumulativeDelay += NORMAL_WAVE_SQUADRON_INTERVAL;
+        } else {
+            console.warn(`Entrance Wave: Squadron ${squadronIndex} is empty or invalid.`);
+        }
+    });
+
+    if (totalSquadronsScheduled === 0 && totalEnemiesScheduledForWave === 0) {
+        console.warn(`Entrance Wave: No squadrons or enemies scheduled for level ${level}. Transitioning.`);
+        isEntrancePhaseActive = false;
+        isWaveTransitioning = true; readyForNextWaveReset = true;
+    } else {
+        isEntrancePhaseActive = true;
+    }
+}
+
+
+/**
+ * Start de sequentie voor een Challenging Stage.
+ */
+function startChallengingStageSequence() { currentWaveDefinition = []; isEntrancePhaseActive = false; enemySpawnTimeouts.forEach(clearTimeout); enemySpawnTimeouts = []; totalEnemiesScheduledForWave = 0; enemiesSpawnedThisWave = 0; squadronEntranceFiringStatus = {}; if (Object.keys(challengingStagePaths).length === 0) { defineChallengingStagePaths(); } if (Object.keys(challengingStagePaths).length === 0) { console.error("CRITICAL: Failed to define CS paths!"); isWaveTransitioning = true; setTimeout(() => { if ((isInGameState || (!isInGameState && ((isTwoPlayerMode && selectedGameMode === 'coop' && (player1Lives > 0 || player2Lives > 0)) || (!isTwoPlayerMode && playerLives > 0)))) && typeof resetWave === 'function') { resetWave(); } }, NEXT_WAVE_DELAY_AFTER_MESSAGE); return; } const fixedPathSequence = [ 'CS3_DiveLoopL_Sharp', 'CS3_DiveLoopR_Sharp', 'CS_HorizontalFlyByL', 'CS_HorizontalFlyByR' ]; const loopAttackPaths = [ 'CS_LoopAttack_TL', 'CS_LoopAttack_TR', 'CS_LoopAttack_BL', 'CS_LoopAttack_BR' ]; const requiredPaths = [...fixedPathSequence, ...loopAttackPaths]; for (const pathId of requiredPaths) { if (!challengingStagePaths.hasOwnProperty(pathId)) { console.error(`CRITICAL: Required CS path "${pathId}" not found! Aborting CS.`); isWaveTransitioning = true; setTimeout(() => { if ((isInGameState || (!isInGameState && ((isTwoPlayerMode && selectedGameMode === 'coop' && (player1Lives > 0 || player2Lives > 0)) || (!isTwoPlayerMode && playerLives > 0)))) && typeof resetWave === 'function') { resetWave(); } }, NEXT_WAVE_DELAY_AFTER_MESSAGE); return; } } let finalPathIdsForStage = [...fixedPathSequence]; let shuffledLoopPaths = [...loopAttackPaths].sort(() => Math.random() - 0.5); finalPathIdsForStage.push(...shuffledLoopPaths); currentWaveDefinition = []; for (let i = 0; i < CHALLENGING_STAGE_SQUADRON_COUNT; i++) { const pathId = finalPathIdsForStage[i]; const squadron = { pathId: pathId, enemies: [] }; for (let j = 0; j < CHALLENGING_STAGE_SQUADRON_SIZE; j++) { let enemyType = (j < Math.floor(CHALLENGING_STAGE_SQUADRON_SIZE / 2)) ? ENEMY1_TYPE : ENEMY2_TYPE; squadron.enemies.push({ type: enemyType, entrancePathId: pathId }); } currentWaveDefinition.push(squadron); } challengingStageTotalEnemies = CHALLENGING_STAGE_ENEMY_COUNT; totalEnemiesScheduledForWave = challengingStageTotalEnemies; enemiesSpawnedThisWave = 0; if (currentWaveDefinition.length > 0) { isEntrancePhaseActive = true; enemySpawnTimeouts = []; let totalTimeoutsScheduled = 0; const CS3_START_SHIFT_X = -28; const csLevelIndex = Math.floor(Math.max(0, level - 3) / 4) + 1; const effectiveBaseSpeedMultiplier = scaleValue(csLevelIndex, BASE_CS_SPEED_MULTIPLIER, MAX_CS_SPEED_MULTIPLIER); currentWaveDefinition.forEach((squadronData, squadronIndex) => { let startDelay = 0; if (squadronIndex <= 1) { startDelay = 0; } else if (squadronIndex <= 3) { startDelay = CHALLENGING_STAGE_SQUADRON_INTERVAL; } else { startDelay = (squadronIndex - 2) * CHALLENGING_STAGE_SQUADRON_INTERVAL; } let currentSpeedMultiplier = effectiveBaseSpeedMultiplier; if (squadronIndex === 2 || squadronIndex === 3) { currentSpeedMultiplier *= CS_HORIZONTAL_FLYBY_SPEED_FACTOR; } const squadronStartTimeoutId = setTimeout(() => { const sqIdx = enemySpawnTimeouts.indexOf(squadronStartTimeoutId); if (sqIdx > -1) enemySpawnTimeouts.splice(sqIdx, 1);
+    let csGameCanContinue = false; if (isTwoPlayerMode && selectedGameMode === 'coop') { csGameCanContinue = player1Lives > 0 || player2Lives > 0; } else { csGameCanContinue = playerLives > 0; }
+    if (!isPaused && isInGameState && isEntrancePhaseActive && isChallengingStage && !isWaveTransitioning && csGameCanContinue) { try { const pathId = squadronData.pathId; const pathSource = challengingStagePaths; const pathSegments = pathSource[pathId]; if (!pathSegments || pathSegments.length === 0) { console.error(`CS: Path ${pathId} for squadron ${squadronIndex} invalid! Skipping.`); enemiesSpawnedThisWave += squadronData.enemies.length; return; } let spawnDelayBetweenEnemies = CS_ENEMY_SPAWN_DELAY_IN_SQUADRON; if (squadronIndex >= 2 && squadronIndex <= 3) { spawnDelayBetweenEnemies = CS_HORIZONTAL_FLYBY_SPAWN_DELAY; } else if (squadronIndex >= 4) { spawnDelayBetweenEnemies = CS_LOOP_ATTACK_SPAWN_DELAY; } squadronData.enemies.forEach((enemyDef, enemyIndex) => { if (!enemyDef || !enemyDef.type) { console.error(`CS: Invalid enemy def in squadron ${squadronIndex}, index ${enemyIndex}. Skipping.`); enemiesSpawnedThisWave++; return; } const spawnDelay = enemyIndex * spawnDelayBetweenEnemies; const enemyTimeoutId = setTimeout(() => { const enIdx = enemySpawnTimeouts.indexOf(enemyTimeoutId); if (enIdx > -1) enemySpawnTimeouts.splice(enIdx, 1);
+    let csSpawnCanContinue = false; if (isTwoPlayerMode && selectedGameMode === 'coop') { csSpawnCanContinue = player1Lives > 0 || player2Lives > 0; } else { csSpawnCanContinue = playerLives > 0; }
+    if (isPaused || !isInGameState || !isEntrancePhaseActive || !isChallengingStage || isWaveTransitioning || !csSpawnCanContinue ) { enemiesSpawnedThisWave++; return; } try { let enemyType = enemyDef.type; let enemyHealth = (enemyType === ENEMY3_TYPE) ? ENEMY3_MAX_HITS : 1; let enemyWidth, enemyHeight; if (enemyType === ENEMY1_TYPE) { enemyWidth = ENEMY1_WIDTH; enemyHeight = ENEMY1_HEIGHT; } else if (enemyType === ENEMY3_TYPE) { enemyWidth = BOSS_WIDTH; enemyHeight = BOSS_HEIGHT; } else { enemyWidth = ENEMY_WIDTH; enemyHeight = ENEMY_HEIGHT; } let startX = 0, startY = 0; if (pathSegments[0]?.p0) { startX = pathSegments[0].p0.x; startY = pathSegments[0].p0.y; } else { throw new Error(`Invalid start segment for path ${pathId}`); } if (squadronIndex === 0 || squadronIndex === 1) { startX += CS3_START_SHIFT_X; } const initialPathT_CS = -enemyIndex * PATH_T_OFFSET_PER_ENEMY; const newEnemy = { x: startX, y: startY, width: enemyWidth, height: enemyHeight, targetGridX: 0, targetGridY: 0, speed: 0, state: 'following_bezier_path', gridRow: -1, gridCol: -1, type: enemyType, health: enemyHealth, isDamaged: false, velocityX: 0, velocityY: 0, attackPathStep: 0, initialY: 0, initialX: 0, diveDirection: 1, lastFiredTime: 0, targetX1: 0, targetY1: 0, targetX2: 0, targetY2: 0, targetX3: 0, targetY3: 0, attackPathSegments: [], attackPathSegmentIndex: 0, attackPathT: 0, attackStartTime: 0, attackFormationOffsetX: 0, attackGroupId: null, entrancePathId: pathId, pathSegmentIndex: 0, pathT: initialPathT_CS, squadronId: squadronIndex, id: `enemy-cs-${squadronIndex}-${enemyIndex}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`, justReturned: false, canFireThisDive: false, attackType: 'normal', hasCapturedShip: (enemyType === ENEMY3_TYPE) ? false : undefined, capturedShipX: undefined, capturedShipY: undefined, capturedShipLastFiredTime: (enemyType === ENEMY3_TYPE) ? 0 : undefined, captureStartTime: 0, capturePrepareTimeout: null, pathSpeedMultiplier: currentSpeedMultiplier }; enemies.push(newEnemy); enemiesSpawnedThisWave++; } catch (spawnError) { console.error(`CS: Error during enemy spawn execution (Sq ${squadronIndex}, Idx ${enemyIndex}, Path ${pathId}):`, spawnError); enemiesSpawnedThisWave++; } }, spawnDelay); enemySpawnTimeouts.push(enemyTimeoutId); totalTimeoutsScheduled++; }); } catch (squadronSpawnError) { console.error(`CS: Error setting up spawns for squadron ${squadronIndex}:`, squadronSpawnError); enemiesSpawnedThisWave += squadronData.enemies.length;} } else { if(squadronData?.enemies?.length > 0) { enemiesSpawnedThisWave += squadronData.enemies.length; } } }, startDelay); enemySpawnTimeouts.push(squadronStartTimeoutId); }); } else { console.warn("CS: No squadrons generated. Skipping CS sequence."); isWaveTransitioning = true; setTimeout(() => { if ((isInGameState || (!isInGameState && ((isTwoPlayerMode && selectedGameMode === 'coop' && (player1Lives > 0 || player2Lives > 0)) || (!isTwoPlayerMode && playerLives > 0)))) && typeof resetWave === 'function') { resetWave(); } }, NEXT_WAVE_DELAY_AFTER_MESSAGE); } }
+
+
+/**
+ * Vuur een burst van vijandelijke kogels af, met een GESCHAALD aantal kogels.
+ */
+function fireEnemyBurst(enemyId, requiredState, initialDelayMs) {
+    let fireBurstCanContinue = false; if (isTwoPlayerMode && selectedGameMode === 'coop') { fireBurstCanContinue = (player1Lives > 0 && !isPlayer1ShipCaptured) || (player2Lives > 0 && !isPlayer2ShipCaptured); } else { fireBurstCanContinue = playerLives > 0 && !isShipCaptured; }
+    if (!enemyId || isPaused || !isInGameState || !fireBurstCanContinue || isChallengingStage || isWaveTransitioning) { return; } const bulletCount = Math.round(scaleValue(level, BASE_ENEMY_BULLET_BURST_COUNT, MAX_ENEMY_BULLET_BURST_COUNT)); for (let i = 0; i < bulletCount; i++) { const totalDelay = initialDelayMs + i * ENTRANCE_FIRE_BURST_DELAY_MS; const burstTimeoutId = setTimeout(() => { try { const fireTimeoutIdx = enemySpawnTimeouts.indexOf(burstTimeoutId); if (fireTimeoutIdx > -1) { enemySpawnTimeouts.splice(fireTimeoutIdx, 1); }
+    let currentFireCanContinue = false; if (isTwoPlayerMode && selectedGameMode === 'coop') { currentFireCanContinue = (player1Lives > 0 && !isPlayer1ShipCaptured) || (player2Lives > 0 && !isPlayer2ShipCaptured); } else { currentFireCanContinue = playerLives > 0 && !isShipCaptured; }
+    if (isPaused || !isInGameState || !currentFireCanContinue || isChallengingStage || isWaveTransitioning) { return; } const currentEnemy = enemies.find(e => e && e.id === enemyId); if (currentEnemy && currentEnemy.state === requiredState) { if (createBulletSimple(currentEnemy)) { if (i === 0) { playSound('enemyShootSound', false, 0.4); } currentEnemy.lastFiredTime = Date.now(); } } } catch (fireError) { console.error(`Error during enemy burst firing (bullet ${i + 1}/${bulletCount}) for ${enemyId}:`, fireError); } }, totalDelay); enemySpawnTimeouts.push(burstTimeoutId); } }
+
+/**
+ * Vuur een burst van een VAST aantal vijandelijke kogels af.
+ */
+function fireFixedEnemyBurst(enemyId, requiredState, initialDelayMs, fixedBulletCount) {
+    let fireFixedCanContinue = false; if (isTwoPlayerMode && selectedGameMode === 'coop') { fireFixedCanContinue = (player1Lives > 0 && !isPlayer1ShipCaptured) || (player2Lives > 0 && !isPlayer2ShipCaptured); } else { fireFixedCanContinue = playerLives > 0 && !isShipCaptured; }
+    if (!enemyId || isPaused || !isInGameState || !fireFixedCanContinue || isChallengingStage || isWaveTransitioning || fixedBulletCount <= 0) { return; } for (let i = 0; i < fixedBulletCount; i++) { const totalDelay = initialDelayMs + i * ENTRANCE_FIRE_BURST_DELAY_MS; const burstTimeoutId = setTimeout(() => { try { const fireTimeoutIdx = enemySpawnTimeouts.indexOf(burstTimeoutId); if (fireTimeoutIdx > -1) { enemySpawnTimeouts.splice(fireTimeoutIdx, 1); }
+    let currentFixedFireCanContinue = false; if (isTwoPlayerMode && selectedGameMode === 'coop') { currentFixedFireCanContinue = (player1Lives > 0 && !isPlayer1ShipCaptured) || (player2Lives > 0 && !isPlayer2ShipCaptured); } else { currentFixedFireCanContinue = playerLives > 0 && !isShipCaptured; }
+    if (isPaused || !isInGameState || !currentFixedFireCanContinue || isChallengingStage || isWaveTransitioning) { return; } const currentEnemy = enemies.find(e => e && e.id === enemyId); if (currentEnemy) { if (createBulletSimple(currentEnemy)) { if (i === 0) { playSound('enemyShootSound', false, 0.4); } currentEnemy.lastFiredTime = Date.now(); } } else { } } catch (fireError) { console.error(`Error during FIXED enemy burst firing (bullet ${i + 1}/${fixedBulletCount}) for ${enemyId}:`, fireError); } }, totalDelay); enemySpawnTimeouts.push(burstTimeoutId); } }
+
+
+/**
+ * Plaatst alle vijanden direct in de grid voor "Full Grid" waves.
+ * <<< GEWIJZIGD: Aanroep van triggerImmediateCaptureDive verwijderd. >>>
+ * <<< GEWIJZIGD: Log '[startFullGridWave] Placed ...' verwijderd. >>>
+ */
+function startFullGridWave() {
+    if (!currentWaveDefinition || currentWaveDefinition.length === 0 || !isFullGridWave) {
+        console.error("Attempted to start Full Grid wave without valid definition or when not in Full Grid mode.");
+        isWaveTransitioning = true; readyForNextWaveReset = true;
+        return;
+    }
+    playSound('entranceSound', false, 0.4);
+    enemySpawnTimeouts.forEach(clearTimeout); enemySpawnTimeouts = [];
+    totalEnemiesScheduledForWave = 0;
+    enemiesSpawnedThisWave = 0;
+    squadronCompletionStatus = {};
+    squadronEntranceFiringStatus = {};
+    let totalEnemiesPlaced = 0;
+    currentWaveDefinition.forEach((squadronData, squadronIndex) => {
+        let enemiesInSquadron = 0;
+        if (squadronData && squadronData.enemies && Array.isArray(squadronData.enemies)) {
+            enemiesInSquadron = squadronData.enemies.length;
+            squadronData.enemies.forEach((enemyDef, enemyIndex) => {
+                try {
+                    if (!enemyDef || !enemyDef.type || typeof enemyDef.gridRow === 'undefined' || typeof enemyDef.gridCol === 'undefined') {
+                        console.error(`Full Grid: Invalid enemy def in squadron ${squadronIndex}, index ${enemyIndex}. Skipping.`);
+                        return;
+                    }
+                    let enemyType = enemyDef.type;
+                    let enemyHealth = (enemyType === ENEMY3_TYPE) ? ENEMY3_MAX_HITS : 1;
+                    let enemyWidth, enemyHeight;
+                    if (enemyType === ENEMY1_TYPE) { enemyWidth = ENEMY1_WIDTH; enemyHeight = ENEMY1_HEIGHT; }
+                    else if (enemyType === ENEMY3_TYPE) { enemyWidth = BOSS_WIDTH; enemyHeight = BOSS_HEIGHT; }
+                    else { enemyWidth = ENEMY_WIDTH; enemyHeight = ENEMY_HEIGHT; }
+                    let targetGridX, targetGridY;
+                    try {
+                        const { x: finalTargetX, y: finalTargetY } = getCurrentGridSlotPosition(enemyDef.gridRow, enemyDef.gridCol, enemyWidth);
+                        targetGridX = finalTargetX;
+                        targetGridY = finalTargetY;
+                    } catch(e) {
+                        console.error(`Full Grid: Error getting target grid pos for enemy ${enemyDef.type} at [${enemyDef.gridRow},${enemyDef.gridCol}]`, e);
+                        targetGridX = gameCanvas?.width / 2 || 200;
+                        targetGridY = ENEMY_TOP_MARGIN + enemyDef.gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING);
+                    }
+                    const newEnemy = {
+                        x: targetGridX, y: targetGridY, width: enemyWidth, height: enemyHeight,
+                        targetGridX: targetGridX, targetGridY: targetGridY,
+                        speed: 0, state: 'in_grid', gridRow: enemyDef.gridRow, gridCol: enemyDef.gridCol,
+                        type: enemyType, health: enemyHealth, isDamaged: false,
+                        velocityX: 0, velocityY: 0, attackPathStep: 0, initialY: 0, initialX: 0, diveDirection: 1, lastFiredTime: 0,
+                        targetX1: 0, targetY1: 0, targetX2: 0, targetY2: 0, targetX3: 0, targetY3: 0,
+                        attackPathSegments: [], attackPathSegmentIndex: 0, attackPathT: 0, attackStartTime: 0, attackFormationOffsetX: 0, attackGroupId: null,
+                        entrancePathId: null, pathSegmentIndex: 0, pathT: 0, squadronId: squadronIndex, squadronEnemyIndex: enemyIndex,
+                        id: `enemy-grid-${squadronIndex}-${enemyIndex}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+                        justReturned: false, canFireThisDive: false, attackType: 'normal',
+                        hasCapturedShip: (enemyType === ENEMY3_TYPE) ? false : undefined,
+                        capturedShipX: undefined, capturedShipY: undefined,
+                        capturedShipLastFiredTime: (enemyType === ENEMY3_TYPE) ? 0 : undefined,
+                        captureStartTime: 0, capturePrepareTimeout: null, pathSpeedMultiplier: 1.0
+                    };
+                    enemies.push(newEnemy);
+                    totalEnemiesPlaced++;
+                } catch (placementError) { console.error(`Full Grid: Error placing enemy (Sq ${squadronIndex}, Idx ${enemyIndex}):`, placementError); }
+            });
+        } else { console.warn(`Full Grid: Squadron ${squadronIndex} has invalid enemy data.`); }
+        squadronCompletionStatus[squadronIndex] = { completed: enemiesInSquadron, total: enemiesInSquadron };
+    });
+    totalEnemiesScheduledForWave = totalEnemiesPlaced;
+    enemiesSpawnedThisWave = totalEnemiesPlaced;
+    isEntrancePhaseActive = false;
+    gridJustCompleted = true;
+    if (!isGridSoundPlaying) {
+        isGridSoundPlaying = true;
+        playSound('gridBackgroundSound', true, 0.1);
+    }
+    if (GRID_BREATH_ENABLED && !isGridBreathingActive) {
+        isGridBreathingActive = true;
+        gridBreathStartTime = Date.now();
+        currentGridBreathFactor = 0;
+    }
+
+    lastGridFireCheckTime = Date.now();
+    firstEnemyLanded = true;
+    // Geen triggerImmediateCaptureDive hier; dat gebeurt na de introductie messages, indien van toepassing.
+}
+
+// --- EINDE deel 2      van 8 dit codeblok ---
+// --- END OF FILE game_logic.js ---
+
+
+
+
+
+
+
+
+
+// --- START OF FILE rendering_menu.js ---
+// --- DEEL 3      van 3 dit code blok    --- (Focus op renderGame voor CO-OP schip rendering)
+
+function renderGame() {
+    try {
+        if (!gameCtx || !gameCanvas) { if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; return; }
+        gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+        const now = Date.now();
+
+        // --- STAP 1: Teken UI (Score, Levens, Level) ---
+        // ... (UI rendering blijft ongewijzigd, maar moet later P1/P2 levens/scores tonen) ...
+        // Voor nu focussen we op de schepen. De UI voor P2 levens/scores kan later worden toegevoegd.
+        gameCtx.save();
+        const UI_FONT="20px 'Press Start 2P'"; const LABEL_COLOR="red"; const SCORE_COLOR="white"; /* ... etc. ... */
+        // ... (de drawTopUiElement en gerelateerde logica blijft zoals het was)
+        let score1PValue, score2PValue, sessionHighScore, label1P;
+        let show1UPBlink = false, show2UPBlink = false, highScoreConditionMet = false;
+        // Logic to determine score1PValue, score2PValue, etc. (ongewijzigd voor nu, maar moet CO-OP scores reflecteren)
+        if (isShowingResultsScreen) { /* ... */ }
+        else if (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage) { /* ... */ }
+        else if (isShowingPlayerGameOverMessage) { /* ... */ }
+        else if (!isInGameState) { /* ... */ }
+        else { /* ... */
+            sessionHighScore = highScore || 0;
+            if (!isManualControl) { /* AI ... */ }
+            else if (isTwoPlayerMode && selectedGameMode === 'coop') { // CO-OP SCORES
+                score1PValue = player1Score;
+                score2PValue = player2Score;
+                sessionHighScore = Math.max(highScore, player1Score, player2Score);
+                label1P = "1UP";
+                show1UPBlink = !isShowingIntro && !isPaused && player1Lives > 0 && ship1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn;
+                show2UPBlink = !isShowingIntro && !isPaused && player2Lives > 0 && ship2 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn;
+                // High score blink: check if P1 of P2 de high score heeft
+                if (player1Score >= sessionHighScore && player1Score > 0) highScoreConditionMet = show1UPBlink;
+                if (player2Score >= sessionHighScore && player2Score > 0 && player2Score > player1Score) highScoreConditionMet = show2UPBlink; // P2 blinkt alleen als P2 de HS heeft en hoger is dan P1
+
+            } else if (isTwoPlayerMode && selectedGameMode === 'normal') { // Alternating
+                score1PValue = (currentPlayer === 1) ? score : player1Score;
+                score2PValue = (currentPlayer === 2) ? score : player2Score;
+                sessionHighScore = Math.max(highScore, player1Score, player2Score, score);
+                label1P = "1UP";
+                show1UPBlink = !isShowingIntro && !isPaused && currentPlayer === 1 && playerLives > 0 && !isShipCaptured && !isWaitingForRespawn;
+                show2UPBlink = !isShowingIntro && !isPaused && currentPlayer === 2 && playerLives > 0 && !isShipCaptured && !isWaitingForRespawn;
+                highScoreConditionMet = !isPaused && !isShowingIntro && score > 0 && sessionHighScore > 0 && score >= sessionHighScore;
+            } else { // 1P
+                score1PValue = score; score2PValue = 0; /* ... */ label1P = "1UP"; /* ... */
+            }
+        }
+        let isHighScoreBlinkingNow = false; if (highScoreConditionMet) { /* ... */ }
+        if(typeof MARGIN_SIDE!=='undefined' && typeof MARGIN_TOP!=='undefined' && typeof SCORE_OFFSET_Y!=='undefined'){ drawTopUiElement(label1P, score1PValue, 'left', MARGIN_SIDE, show1UPBlink); drawTopUiElement("HIGH SCORE", sessionHighScore, 'center', gameCanvas.width / 2, isHighScoreBlinkingNow); drawTopUiElement("2UP", score2PValue, 'right', gameCanvas.width - MARGIN_SIDE, show2UPBlink); }
+
+        // Levens iconen (moet P1 en P2 apart tonen in CO-OP)
+        if (typeof shipImage !== 'undefined' && typeof LIFE_ICON_MARGIN_BOTTOM !== 'undefined' && typeof LIFE_ICON_SIZE !== 'undefined' && typeof LIFE_ICON_MARGIN_LEFT !== 'undefined' && typeof LIFE_ICON_SPACING !== 'undefined') {
+            if (shipImage.complete && shipImage.naturalHeight !== 0) {
+                const lifeIconY = gameCanvas.height - LIFE_ICON_MARGIN_BOTTOM - LIFE_ICON_SIZE;
+                let livesP1ToDisplay = 0;
+                let livesP2ToDisplay = 0; // Voor CO-OP
+
+                if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                    if (player1Lives > 0) livesP1ToDisplay = Math.max(0, player1Lives -1); // -1 omdat actieve schip niet telt
+                    if (player2Lives > 0) livesP2ToDisplay = Math.max(0, player2Lives -1);
+                } else { // 1P of 2P Alternating
+                     if (playerLives > 0) livesP1ToDisplay = Math.max(0, playerLives - 1);
+                }
+                // ... (verdere logica om P1 en P2 levens apart te tekenen)
+                // Voor nu, alleen P1:
+                const maxLivesIcons = 5;
+                for (let i = 0; i < Math.min(livesP1ToDisplay, maxLivesIcons); i++) {
+                    const currentIconX = LIFE_ICON_MARGIN_LEFT + i * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
+                    gameCtx.drawImage(shipImage, Math.round(currentIconX), Math.round(lifeIconY), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
+                }
+                // Toon P2 levens rechtsonder in CO-OP
+                if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                    const p2LivesStartX = gameCanvas.width - LIFE_ICON_MARGIN_RIGHT - (Math.min(livesP2ToDisplay, maxLivesIcons) * (LIFE_ICON_SIZE + LIFE_ICON_SPACING)) + LIFE_ICON_SPACING;
+                     for (let i = 0; i < Math.min(livesP2ToDisplay, maxLivesIcons); i++) {
+                        const currentIconX = p2LivesStartX + i * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
+                        gameCtx.drawImage(shipImage, Math.round(currentIconX), Math.round(lifeIconY), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
+                    }
+                }
+            }
+        }
+        // ... (level iconen ongewijzigd) ...
+        gameCtx.restore();
+
+
+        // --- STAP 1.6: Teken Spelersschip (Hoofd + Dual) ---
+        gameCtx.save();
+        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+            // Teken Schip 1 (P1)
+            if (ship1 && player1Lives > 0 && !isPlayer1WaitingForRespawn && !isPlayer1ShipCaptured) {
+                let shouldDrawP1 = true;
+                if (isPlayer1Invincible) {
+                    const blinkCycleTime = INVINCIBILITY_BLINK_ON_MS + INVINCIBILITY_BLINK_OFF_MS;
+                    if ((now % blinkCycleTime) >= INVINCIBILITY_BLINK_ON_MS) shouldDrawP1 = false;
+                }
+                if (shouldDrawP1) {
+                    const shipDrawX = ship1.x;
+                    const shipDrawY = ship1.y; // Y is al correct gezet
+                    if (typeof shipImage !== 'undefined' && shipImage.complete) {
+                        gameCtx.drawImage(shipImage, Math.round(shipDrawX), Math.round(shipDrawY), ship1.width, ship1.height);
+                        if (player1IsDualShipActive) {
+                             gameCtx.drawImage(shipImage, Math.round(shipDrawX + DUAL_SHIP_OFFSET_X), Math.round(shipDrawY), ship1.width, ship1.height);
+                        }
+                    } else { gameCtx.fillStyle = "blue"; gameCtx.fillRect(Math.round(shipDrawX), Math.round(shipDrawY), ship1.width, ship1.height); }
+                }
+            }
+            // Teken Schip 2 (P2)
+            if (ship2 && player2Lives > 0 && !isPlayer2WaitingForRespawn && !isPlayer2ShipCaptured) {
+                let shouldDrawP2 = true;
+                if (isPlayer2Invincible) {
+                    const blinkCycleTime = INVINCIBILITY_BLINK_ON_MS + INVINCIBILITY_BLINK_OFF_MS;
+                    if ((now % blinkCycleTime) >= INVINCIBILITY_BLINK_ON_MS) shouldDrawP2 = false;
+                }
+                if (shouldDrawP2) {
+                    const shipDrawX = ship2.x;
+                    const shipDrawY = ship2.y;
+                    if (typeof shipImage !== 'undefined' && shipImage.complete) {
+                        gameCtx.drawImage(shipImage, Math.round(shipDrawX), Math.round(shipDrawY), ship2.width, ship2.height);
+                         if (player2IsDualShipActive) {
+                             gameCtx.drawImage(shipImage, Math.round(shipDrawX + DUAL_SHIP_OFFSET_X), Math.round(shipDrawY), ship2.width, ship2.height);
+                        }
+                    } else { gameCtx.fillStyle = "green"; gameCtx.fillRect(Math.round(shipDrawX), Math.round(shipDrawY), ship2.width, ship2.height); }
+                }
+            }
+        } else { // 1P of 2P Alternating (gebruik het 'ship' object)
+            if (ship && !isShowingCaptureMessage) {
+                let shouldDrawShip = true;
+                if (isInGameState && !gameOverSequenceStartTime && !isShowingPlayerGameOverMessage && isInvincible) {
+                    const blinkCycleTime = INVINCIBILITY_BLINK_ON_MS + INVINCIBILITY_BLINK_OFF_MS;
+                    if ((now % blinkCycleTime) >= INVINCIBILITY_BLINK_ON_MS) shouldDrawShip = false;
+                }
+                if (shouldDrawShip) {
+                    let shipDrawX = ship.x;
+                    let shouldCenterSingleShip = (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || !isInGameState || isShowingScoreScreen || (isInGameState && isShowingIntro && !isManualControl && (introStep === 1 || introStep === 2 || introStep === 3))) && !isDualShipActive;
+                    if (shouldCenterSingleShip) { shipDrawX = Math.round(gameCanvas.width / 2 - ship.width / 2); }
+                    const shipDrawY = ship.y; // Y is al correct
+                    if (typeof shipImage !== 'undefined' && shipImage.complete) {
+                        gameCtx.drawImage(shipImage, Math.round(shipDrawX), Math.round(shipDrawY), ship.width, ship.height);
+                        if (isInGameState && !gameOverSequenceStartTime && !isShowingPlayerGameOverMessage && isDualShipActive && !isShipCaptured) {
+                            gameCtx.drawImage(shipImage, Math.round(shipDrawX + DUAL_SHIP_OFFSET_X), Math.round(shipDrawY), ship.width, ship.height);
+                        }
+                    } else { gameCtx.fillStyle = "blue"; gameCtx.fillRect(Math.round(shipDrawX), Math.round(shipDrawY), ship.width, ship.height); }
+                }
+            }
+        }
+        // Vallende schepen (ongewijzigd)
+        if (fallingShips.length > 0 && typeof shipImage !== 'undefined' && shipImage.complete) { /* ... */ }
+        gameCtx.restore();
+
+
+        // --- STAP 2: State-specifieke content (Menu / Game / Score) ---
+        if (!isInGameState) { // Menu of Score Screen
+            // ... (Menu rendering logica zoals eerder gecorrigeerd, met logo en ondertitel altijd zichtbaar in menu states) ...
+             if (isShowingScoreScreen) { /* ... score screen ... */ }
+             else { // Hoofdmenu of een sub-menu (Player, Game Mode, Firing Mode)
+                gameCtx.save();
+                const canvasWidth = gameCanvas.width; const canvasHeight = gameCanvas.height; const canvasCenterX = canvasWidth / 2;
+                if (selectedButtonIndex === -1 && (isPlayerSelectMode || isFiringModeSelectMode || isGameModeSelectMode || (!isPlayerSelectMode && !isFiringModeSelectMode && !isGameModeSelectMode))) { selectedButtonIndex = 0; }
+                let actualLogoHeight = MENU_LOGO_APPROX_HEIGHT; let actualLogoWidth = actualLogoHeight * (logoImage.naturalWidth / logoImage.naturalHeight || 1); if (typeof logoImage !== 'undefined' && logoImage.complete && logoImage.naturalHeight !== 0) { actualLogoHeight = logoImage.naturalHeight * LOGO_SCALE_FACTOR; actualLogoWidth = logoImage.naturalWidth * LOGO_SCALE_FACTOR; }
+                const subtitleHeight = getSubtitleApproxHeight(MENU_SUBTITLE_FONT);
+                const totalContentHeightForLayout = actualLogoHeight + MENU_LOGO_BOTTOM_TO_START_GAP + (2 * MENU_BUTTON_HEIGHT) + MENU_BUTTON_V_GAP + MENU_BUTTON_SUBTITLE_V_GAP + subtitleHeight;
+                let groupStartYForLayout = (canvasHeight - totalContentHeightForLayout) / 2 - 70; groupStartYForLayout += MENU_GENERAL_Y_OFFSET;
+                const logoDrawX = canvasCenterX - actualLogoWidth / 2; const logoDrawY = groupStartYForLayout + MENU_LOGO_EXTRA_Y_OFFSET;
+                if (typeof logoImage !== 'undefined' && logoImage.complete && logoImage.naturalHeight !== 0) { gameCtx.drawImage(logoImage, Math.round(logoDrawX), Math.round(logoDrawY), actualLogoWidth, actualLogoHeight); }
+                else { drawCanvasText("LOGO", canvasCenterX, logoDrawY + actualLogoHeight / 2, "30px Arial", "grey"); }
+
+                if (isGameModeSelectMode) { drawCanvasButton("NORMAL GAME", 0, selectedButtonIndex === 0); drawCanvasButton("CO-OP GAME", 1, selectedButtonIndex === 1); }
+                else if (isFiringModeSelectMode) { drawCanvasButton("EASY", 0, selectedButtonIndex === 0); drawCanvasButton("NORMAL", 1, selectedButtonIndex === 1); }
+                else if (isPlayerSelectMode) { drawCanvasButton("1 PLAYER", 0, selectedButtonIndex === 0); drawCanvasButton("2 PLAYER", 1, selectedButtonIndex === 1); }
+                else { drawCanvasButton("START GAME", 0, selectedButtonIndex === 0); drawCanvasButton("GAME EXIT", 1, selectedButtonIndex === 1); }
+
+                const exitButtonRect = getMenuButtonRect(1); let subtitleCenterY; if (exitButtonRect) { subtitleCenterY = exitButtonRect.y + exitButtonRect.height + MENU_BUTTON_SUBTITLE_V_GAP + (subtitleHeight / 2); } else { subtitleCenterY = groupStartYForLayout + actualLogoHeight + MENU_LOGO_BOTTOM_TO_START_GAP + (2 * MENU_BUTTON_HEIGHT) + MENU_BUTTON_V_GAP + MENU_BUTTON_SUBTITLE_V_GAP + (subtitleHeight / 2); }
+                drawCanvasText( MENU_SUBTITLE_TEXT, canvasCenterX - 1, Math.round(subtitleCenterY), MENU_SUBTITLE_FONT, MENU_SUBTITLE_COLOR, 'center', 'middle', true );
+                gameCtx.restore();
+            }
+        } else { // --- Game bezig OF Game Over / Results ---
+            // --- STAP 2.1: Gameplay Actief (of PAUSED) ---
+            if (gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage) {
+                // ... (Rendering kogels, vijanden, capture beam, explosies, scores, sparks, berichten - ongewijzigd) ...
+                 gameCtx.save();
+                 let showBullets = !showReadyMessage && !showCsHitsMessage && !showPerfectMessage && !showCsBonusScoreMessage && !showCSClearMessage && !isCsCompletionDelayActive && !isShowingIntro && !isShowingCaptureMessage;
+                 if (showBullets) { bullets.forEach(b => { /* ... */ }); enemyBullets.forEach(eb => { /* ... */ }); }
+                 enemies.forEach(e => { /* ... */ });
+                 if (captureBeamActive && capturingBossId && captureBeamProgress > 0) { /* ... */ }
+                 renderExplosions(); renderFloatingScores(); renderHitSparks();
+                 let messageDrawn = false; const midScreenY = gameCanvas.height / 2; /* ... etc. ... */
+                 if (isPaused) { /* ... */ } else if (isShowingCaptureMessage) { /* ... */ } /* ... etc. ... */
+                 gameCtx.restore();
+            }
+            // --- STAP 2.2: Game Over State (Player X of Final) ---
+            else {
+                // ... (Game Over / Results rendering - ongewijzigd) ...
+                if (isShowingPlayerGameOverMessage) { /* ... */ }
+                else if (gameOverSequenceStartTime > 0) { /* ... */ }
+            }
+        }
+    } catch (e) { /* ... error handling (ongewijzigd) ... */ console.error("Error in renderGame:", e, e.stack); /* ... */ }
+} // Einde renderGame
+
+// ... (hideCursor, handleCanvasMouseMove, mainLoop, startMainLoop, initializeGame - ongewijzigd) ...
+
+// --- EINDE deel 3      van 3 dit codeblok ---
+// --- END OF rendering_menu.js ---
+
+
+
+
+
+
+
+
+
+// --- START OF FILE game_logic.js ---
+// --- DEEL 4      van 8 dit code blok    ---
+
+function handleEnemyHit(enemy, shootingPlayerId = null) {
+    if (!enemy) return { destroyed: false, pointsAwarded: 0 };
+    const now = Date.now();
+    let points = 0; let destroyed = false; let wasBossDamagedBeforeHit = enemy.isDamaged; let playHitSoundId = null; let playHitSoundVolume = 1.0;
+    const enemyWidthForCalc = (enemy.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((enemy.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH);
+    const enemyHeightForCalc = (enemy.type === ENEMY3_TYPE) ? BOSS_HEIGHT : ((enemy.type === ENEMY1_TYPE) ? ENEMY1_HEIGHT : ENEMY_HEIGHT);
+    const bossHadCapturedShipInitially = enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip;
+    const bossHadDimensionsInitially = enemy.type === ENEMY3_TYPE && enemy.capturedShipDimensions;
+
+    let wasPartnershipCapturedByThisBoss = false;
+    let partnerWhoWasCapturedId = null; // Houd bij WIE gevangen was door DEZE boss
+
+    if (bossHadCapturedShipInitially) {
+        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+            if (isPlayer1ShipCaptured && capturedBossIdWithMessage === enemy.id) {
+                wasPartnershipCapturedByThisBoss = true;
+                partnerWhoWasCapturedId = 'player1';
+            } else if (isPlayer2ShipCaptured && capturedBossIdWithMessage === enemy.id) {
+                wasPartnershipCapturedByThisBoss = true;
+                partnerWhoWasCapturedId = 'player2';
+            }
+        } else if (!isTwoPlayerMode && isShipCaptured && capturedBossIdWithMessage === enemy.id) {
+            wasPartnershipCapturedByThisBoss = true;
+            // In 1P, de "partner" is de speler zelf. shootingPlayerId is relevant.
+        }
+    }
+
+
+    const sparkX = enemy.x + enemyWidthForCalc / 2; const sparkY = enemy.y + enemyHeightForCalc * 0.2;
+    createHitSparks(sparkX, sparkY);
+    enemy.health--;
+    if (enemy.type === ENEMY3_TYPE) { enemy.isDamaged = (enemy.health < ENEMY3_MAX_HITS); }
+
+    if (enemy.health <= 0) {
+        destroyed = true;
+        if (isChallengingStage) {
+            challengingStageEnemiesHit++;
+        }
+
+        if (bossHadCapturedShipInitially && bossHadDimensionsInitially) {
+            let fallingShipTargetPlayerId = null;
+
+            // Priority 1: Return ship to its original owner if a specific partnership was involved
+            if (wasPartnershipCapturedByThisBoss && partnerWhoWasCapturedId) {
+                fallingShipTargetPlayerId = partnerWhoWasCapturedId;
+            } else {
+                // Priority 2: AI Dual ship gives neutral/other's ship to its partner
+                let assignedByAIDualRule = false;
+                if (isCoopAIDemoActive) {
+                    if (shootingPlayerId === 'player1' && player1IsDualShipActive) {
+                        fallingShipTargetPlayerId = 'player2'; // AI P1 dual shot, ship goes to AI P2
+                        assignedByAIDualRule = true;
+                    } else if (shootingPlayerId === 'player2' && player2IsDualShipActive) {
+                        fallingShipTargetPlayerId = 'player1'; // AI P2 dual shot, ship goes to AI P1
+                        assignedByAIDualRule = true;
+                    }
+                } else if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+                    if (shootingPlayerId === 'ai_p2' && player2IsDualShipActive) {
+                        fallingShipTargetPlayerId = 'player1'; // AI P2 dual shot, ship goes to Human P1
+                        assignedByAIDualRule = true;
+                    } else if (shootingPlayerId === 'player1' && player1IsDualShipActive) { // Human P1 is dual
+                        fallingShipTargetPlayerId = 'ai_p2'; // Human P1 dual shot, ship goes to AI P2
+                        assignedByAIDualRule = true;
+                    }
+                }
+
+                if (!assignedByAIDualRule) {
+                    // Priority 3: Default to the shooter if no other rules applied for neutral ship
+                    fallingShipTargetPlayerId = shootingPlayerId;
+                }
+            }
+            // Fallback if no target was assigned (should ideally not happen if shootingPlayerId is valid)
+            if (fallingShipTargetPlayerId === null && shootingPlayerId) {
+                fallingShipTargetPlayerId = shootingPlayerId;
+            }
+
+
+            if (enemy.capturedShipDimensions) {
+                const capturedW = enemy.capturedShipDimensions.width;
+                const capturedH = enemy.capturedShipDimensions.height;
+                const fallingShipX = enemy.x + (enemyWidthForCalc - capturedW) / 2 + CAPTURED_SHIP_OFFSET_X;
+                const fallingShipY = enemy.y + CAPTURED_SHIP_OFFSET_Y;
+                const alreadyFalling = fallingShips.some(fs => Math.abs(fs.x - fallingShipX) < 1 && Math.abs(fs.y - fallingShipY) < 1);
+                if (!alreadyFalling) {
+                    fallingShips.push({
+                        x: fallingShipX,
+                        y: fallingShipY,
+                        width: capturedW,
+                        height: capturedH,
+                        creationTime: now,
+                        tintProgress: 1.0,
+                        rotation: 0,
+                        rotationDirection: (Math.random() < 0.5 ? -1 : 1),
+                        totalRotation: 0,
+                        rotationCompleted: false,
+                        targetPlayerId: fallingShipTargetPlayerId
+                    });
+                }
+            } else { console.error("[handleEnemyHit] CRITICAL: Boss destroyed, had ship initially but dimensions missing!"); }
+            enemy.hasCapturedShip = false; enemy.capturedShipDimensions = null;
+        } else if (bossHadCapturedShipInitially && !bossHadDimensionsInitially) {
+            console.error(`[handleEnemyHit] CRITICAL: Boss ${enemy.id} destroyed, had ship initially but dimensions missing! Resetting state anyway.`);
+            enemy.hasCapturedShip = false; enemy.capturedShipDimensions = null;
+        }
+
+        if (isChallengingStage) {
+            let baseScore = 100;
+            const previousLastHitTime = csLastHitTime;
+            csLastHitTime = now;
+            csLastChainHitPosition = { x: enemy.x, y: enemy.y };
+            if (csCurrentChainHits > 0 && (now - previousLastHitTime < CS_CHAIN_BREAK_TIME_MS)) {
+                csCurrentChainHits++;
+            } else {
+                csCurrentChainHits = 1;
+                csCurrentChainScore = 0;
+            }
+            if (csCurrentChainHits >= CS_CHAIN_SCORE_THRESHOLD) {
+                baseScore *= 2;
+            }
+            points = baseScore;
+            csCurrentChainScore += points;
+            scoreEarnedThisCS += points;
+            playHitSoundId = 'explosionSound'; playHitSoundVolume = 0.4;
+        }
+        else {
+            if (enemy.state === 'in_grid') {
+                points = (enemy.type === ENEMY1_TYPE) ? 50 : (enemy.type === ENEMY2_TYPE ? 80 : 0);
+                if (enemy.type === ENEMY3_TYPE) { points = 150; }
+                playHitSoundId = 'explosionSound'; playHitSoundVolume = 0.4;
+            }
+            else { // Enemy is attacking or in entrance path
+                points = (enemy.type === ENEMY1_TYPE) ? 100 : (enemy.type === ENEMY2_TYPE ? 160 : 0);
+                if (enemy.type === ENEMY3_TYPE) {
+                    if (bossHadCapturedShipInitially) {
+                        const rescueBonusOptions = [1000, 1500, 2000, 3000];
+                        points = rescueBonusOptions[Math.floor(Math.random() * rescueBonusOptions.length)];
+                        playHitSoundId = 'bossHit2Sound'; playHitSoundVolume = 0.4;
+                    } else if (wasBossDamagedBeforeHit) {
+                        points = 400;
+                        playHitSoundId = 'bossHit2Sound'; playHitSoundVolume = 0.4;
+                    } else {
+                        points = 0; // Boss destroyed on first hit while attacking (shouldn't happen with 2 HP)
+                        console.warn(`[Destroyed Boss Score - Attack] Boss destroyed on first hit? Awarding ${points} points. Health was: ${enemy.health + 1}`);
+                        playHitSoundId = 'explosionSound'; playHitSoundVolume = 0.4;
+                    }
+                } else { // Bee or Butterfly destroyed while attacking
+                    playHitSoundId = 'explosionSound'; playHitSoundVolume = 0.4;
+                }
+                if (destroyed && points > 0) {
+                    const previousNormalLastHitTime = normalWaveLastHitTime;
+                    normalWaveLastHitTime = now;
+                    normalWaveLastChainHitPosition = { x: enemy.x, y: enemy.y };
+                    if (normalWaveLastChainHitPosition && (now - previousNormalLastHitTime < NORMAL_WAVE_CHAIN_BREAK_TIME_MS)) {
+                        normalWaveCurrentChainHits++;
+                    } else {
+                        normalWaveCurrentChainHits = 1;
+                        normalWaveCurrentChainScore = 0;
+                    }
+                    if (NORMAL_WAVE_CHAIN_BONUS_ENABLED && normalWaveCurrentChainHits >= NORMAL_WAVE_CHAIN_SCORE_THRESHOLD) {
+                        const chainBonusOptions = [300, 600, 1000, 1500, 2000, 3000];
+                        const bonusIndex = Math.min(chainBonusOptions.length - 1, normalWaveCurrentChainHits - NORMAL_WAVE_CHAIN_SCORE_THRESHOLD);
+                        const chainBonus = chainBonusOptions[bonusIndex];
+                        points += chainBonus;
+                        normalWaveCurrentChainScore += chainBonus;
+                    }
+                }
+            }
+        }
+
+        if (points > 0) {
+            let playerSpecificEnemiesHitIncrementer = null;
+
+            if (isCoopAIDemoActive) { // COOP AI DEMO
+                if (shootingPlayerId === 'player1') {
+                    player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    if (player1Score > highScore) { highScore = player1Score; if (!player1TriggeredHighScoreSound) { player1TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); } }
+                    checkAndAwardExtraLife(1);
+                } else if (shootingPlayerId === 'player2') {
+                    player2Score += points; playerSpecificEnemiesHitIncrementer = () => player2EnemiesHit++;
+                    if (player2Score > highScore) { highScore = player2Score; if (!player2TriggeredHighScoreSound) { player2TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); } }
+                    checkAndAwardExtraLife(2);
+                } else { // Fallback for CO-OP AI demo if shooterId is somehow null
+                    player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    if (player1Score > highScore) highScore = player1Score;
+                    checkAndAwardExtraLife(1);
+                }
+            } else if (!isManualControl) { // Standaard 1P AI Demo (niet COOP AI Demo)
+                score += points;
+                player1Score = score;
+                playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                if (score > highScore) {
+                    highScore = score;
+                    if (!player1TriggeredHighScoreSound) { player1TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }
+                }
+                checkAndAwardExtraLife(1);
+            } else if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { // 1P vs AI COOP
+                if (shootingPlayerId === 'player1') { // P1 (mens) schoot
+                    player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    if (player1Score > highScore) { highScore = player1Score; if (!player1TriggeredHighScoreSound) { player1TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }}
+                    checkAndAwardExtraLife(1);
+                } else if (shootingPlayerId === 'ai_p2') { // AI P2 schoot
+                    player2Score += points; playerSpecificEnemiesHitIncrementer = () => player2EnemiesHit++;
+                    if (player2Score > highScore) { highScore = player2Score; if (!player2TriggeredHighScoreSound) { player2TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }}
+                    checkAndAwardExtraLife(2);
+                } else { // Fallback als shooterId onbekend is in 1P vs AI COOP
+                    player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    if (player1Score > highScore) highScore = player1Score;
+                    checkAndAwardExtraLife(1);
+                }
+            } else if (isTwoPlayerMode && selectedGameMode === 'coop') { // Manual CO-OP (Human P1 & Human P2)
+                if (shootingPlayerId === 'player1') {
+                    player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    if (player1Score > highScore) { highScore = player1Score; if (!player1TriggeredHighScoreSound) { player1TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }}
+                    checkAndAwardExtraLife(1);
+                } else if (shootingPlayerId === 'player2') {
+                    player2Score += points; playerSpecificEnemiesHitIncrementer = () => player2EnemiesHit++;
+                    if (player2Score > highScore) { highScore = player2Score; if (!player2TriggeredHighScoreSound) { player2TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }}
+                    checkAndAwardExtraLife(2);
+                } else { // Fallback voor manual CO-OP als shooterId null is
+                    player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    if (player1Score > highScore) { highScore = player1Score; if (!player1TriggeredHighScoreSound) { player1TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }}
+                    checkAndAwardExtraLife(1);
+                }
+            } else { // 1P Classic, 1P_VS_AI_NORMAL (Alternating), 2P_NORMAL (Alternating)
+                score += points;
+                let playerSpecificScore = score;
+                let setPlayerSpecificHSTriggerFlag = null;
+                let playerNumForLifeCheck = currentPlayer;
+
+                if (currentPlayer === 1 || !isTwoPlayerMode) {
+                    player1Score = score;
+                    playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    setPlayerSpecificHSTriggerFlag = () => { player1TriggeredHighScoreSound = true; };
+                } else { // currentPlayer === 2
+                    player2Score = score;
+                    playerSpecificEnemiesHitIncrementer = () => player2EnemiesHit++;
+                    setPlayerSpecificHSTriggerFlag = () => { player2TriggeredHighScoreSound = true; };
+                }
+
+                if (playerSpecificScore > highScore) {
+                    highScore = playerSpecificScore;
+                    const currentHSTriggerFlag = (currentPlayer === 1 || !isTwoPlayerMode) ? player1TriggeredHighScoreSound : player2TriggeredHighScoreSound;
+                    if (!currentHSTriggerFlag && setPlayerSpecificHSTriggerFlag) {
+                        setPlayerSpecificHSTriggerFlag();
+                        playSound('hiScoreSound', false, 0.2);
+                    }
+                }
+                checkAndAwardExtraLife(playerNumForLifeCheck);
+            }
+
+
+            if (playerSpecificEnemiesHitIncrementer && !isChallengingStage) {
+                 playerSpecificEnemiesHitIncrementer();
+            }
+
+            const scoreColor = (enemy.state === 'in_grid' || isChallengingStage) ? FLOATING_SCORE_COLOR_GRID : FLOATING_SCORE_COLOR_ACTIVE;
+            floatingScores.push({ text: points.toString(), x: enemy.x + enemyWidthForCalc / 2, y: enemy.y, color: scoreColor, creationTime: now, displayStartTime: now + FLOATING_SCORE_APPEAR_DELAY });
+        }
+
+        createExplosion(enemy.x + enemyWidthForCalc / 2, enemy.y + enemyHeightForCalc / 2);
+        if (enemy.id === capturingBossId) { stopSound('captureSound'); }
+        if (enemy.state === 'attacking' || enemy.state === 'following_entrance_path' || enemy.state === 'diving_to_capture_position' || enemy.state === 'following_bezier_path' || enemy.state === 'returning' || enemy.state === 'showing_capture_message') {
+            if (enemy.type === ENEMY3_TYPE) stopSound('bossGalagaDiveSound');
+            else stopSound('butterflyDiveSound');
+        }
+
+    } else { // Enemy not destroyed, only damaged (Boss)
+        destroyed = false;
+        if (enemy.type === ENEMY3_TYPE) {
+            playHitSoundId = 'bossHit1Sound'; playHitSoundVolume = 0.6;
+            points = 0;
+        }
+        else { // Bee or Butterfly hit but not destroyed (should not happen with 1 HP)
+            points = 0;
+             // For bees/butterflies, if they are somehow hit but not destroyed, play their specific hit sound
+            if (enemy.type === ENEMY1_TYPE) { playHitSoundId = 'beeHitSound'; playHitSoundVolume = 0.3; }
+            else if (enemy.type === ENEMY2_TYPE) { playHitSoundId = 'butterflyHitSound'; playHitSoundVolume = 0.3; }
+        }
+    }
+
+    if (playHitSoundId) {
+        playSound(playHitSoundId, false, playHitSoundVolume);
+    }
+    return { destroyed: destroyed, pointsAwarded: points };
+}
+
+
+/** Helper functie om hit spark particles te genereren */
+function createHitSparks(x, y) { if (!gameCtx) return; const now = Date.now(); for (let i = 0; i < HIT_SPARK_COUNT; i++) { const angle = Math.random() * Math.PI * 2; const speed = HIT_SPARK_SPEED * (0.7 + Math.random() * 0.6); const lifetime = HIT_SPARK_LIFETIME * (0.8 + Math.random() * 0.4); hitSparks.push({ x: x, y: y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, creationTime: now, lifetime: lifetime, size: HIT_SPARK_SIZE, color: HIT_SPARK_COLOR }); } }
+
+
+/** Update functie voor hit spark particles */
+function updateHitSparks() { const now = Date.now(); for (let i = hitSparks.length - 1; i >= 0; i--) { const s = hitSparks[i]; const elapsedTime = now - s.creationTime; if (elapsedTime >= s.lifetime) { hitSparks.splice(i, 1); } else { s.vy += HIT_SPARK_GRAVITY; s.x += s.vx; s.y += s.vy; s.alpha = Math.max(0, 1.0 - elapsedTime * HIT_SPARK_FADE_SPEED); } } }
+
+
+function moveEntities() {
+    try {
+        if (isPaused) {
+             return;
+        }
+        const now = Date.now();
+
+        // --- Ship Movement ---
+        // Deze logica is verplaatst naar DEEL 7 en gebruikt nu globale vlaggen.
+
+        // --- Player Bullet Movement & Collision ---
+        // Deze logica is verplaatst naar DEEL 7.
+
+        // --- Enemy Bullet Movement ---
+        // Deze logica is verplaatst naar DEEL 7.
+
+        // --- Falling Ship Movement & Collision ---
+        // Deze logica is verplaatst naar DEEL 7.
+
+    } catch (e) {
+        console.error("FATAL Error in moveEntities (Restored Conditions):", e, e.stack);
+        isGridSoundPlaying = false; stopSound('gridBackgroundSound'); isEntrancePhaseActive = false; stopSound('entranceSound'); isShowingPlayerGameOverMessage = false; playerGameOverMessageStartTime = 0; playerWhoIsGameOver = 0; nextActionAfterPlayerGameOver = ''; isShipCaptured = false; captureBeamActive = false; capturingBossId = null; stopSound('captureSound'); stopSound('shipCapturedSound'); isWaitingForRespawn = false; fallingShips = []; isDualShipActive = false; player1IsDualShipActive = false; player2IsDualShipActive = false; isInvincible = false; invincibilityEndTime = 0; hitSparks = []; if(typeof showMenuState === 'function') showMenuState(); if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; alert("Critical error during entity movement/collision. Returning to menu.");
+    }
+}
+
+
+/**
+ * Switches the current player in a 2-player game. (Vooral voor 'alternating' mode)
+ * <<< GEWIJZIGD: Zorgt ervoor dat playerXMaxLevelReached correct wordt geüpdatet
+ *     met het level waarop de speler zijn/haar beurt beëindigde. >>>
+ */
+function switchPlayerTurn() {
+    if (!isTwoPlayerMode || selectedGameMode === 'coop') return false; // Niet voor CO-OP
+    stopSound('hiScoreSound');
+
+    // Sla de staat van de Zojuist Geëindigde Speler op.
+    // 'level' is hier het level waarop de vorige speler zijn beurt eindigde.
+    // Belangrijk: playerXMaxLevelReached wordt hier bijgewerkt VOORDAT 'level' mogelijk verandert
+    // door de logica in runSingleGameUpdate (als beide spelers het level hebben voltooid).
+    if (currentPlayer === 1) {
+        player1Score = score;
+        player1IsDualShipActive = isDualShipActive;
+        player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+        if (player1Score > highScore) highScore = player1Score;
+    } else { // currentPlayer === 2
+        player2Score = score;
+        player2IsDualShipActive = isDualShipActive;
+        player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
+        if (player2Score > highScore) highScore = player2Score;
+    }
+
+    const nextPlayer = (currentPlayer === 1) ? 2 : 1;
+    const nextPlayerLives = (nextPlayer === 1) ? player1Lives : player2Lives;
+
+    if (nextPlayerLives <= 0) {
+        const livesOfCurrentPlayerEndingTurn = (currentPlayer === 1) ? player1Lives : player2Lives;
+        if (livesOfCurrentPlayerEndingTurn <= 0) {
+            triggerFinalGameOverSequence();
+            return false;
+        } else {
+            forceCenterShipNextReset = false;
+            return false; // Geen succesvolle wissel, huidige speler gaat door (indien nog levens)
+        }
+    }
+
+    // Wissel naar de volgende speler
+    currentPlayer = nextPlayer;
+    score = (currentPlayer === 1) ? player1Score : player2Score;
+    playerLives = (currentPlayer === 1) ? player1Lives : player2Lives;
+    isDualShipActive = (currentPlayer === 1) ? player1IsDualShipActive : player2IsDualShipActive;
+
+    // Het 'level' (de globale variabele) blijft ongewijzigd hier.
+    // resetWaveInternal zal het correcte intro tonen voor het huidige `level`.
+    // De logica in runSingleGameUpdate (na een succesvolle wave) bepaalt of `level` omhoog gaat.
+
+    forceCenterShipNextReset = true;
+    scoreEarnedThisCS = 0;
+    csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
+    normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null;
+    leftPressed = false; rightPressed = false; shootPressed = false;
+    p2LeftPressed = false; p2RightPressed = false; p2ShootPressed = false;
+    keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false;
+    keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false;
+    p1JustFiredSingle = false; p2JustFiredSingle = false;
+    p1FireInputWasDown = false; p2FireInputWasDown = false;
+    isShipCaptured = false;
+    isWaitingForRespawn = false; respawnTime = 0;
+    isInvincible = false; invincibilityEndTime = 0;
+    fallingShips = []; hitSparks = [];
+    showExtraLifeMessage = false; extraLifeMessageStartTime = 0;
+    return true;
+}
+
+
+// --- EINDE deel 4      van 8 dit codeblok ---
+// --- END OF FILE game_logic.js ---
+
+
+
+
+
+
+
+
+
+// --- START OF FILE game_logic.js ---
+// --- DEEL 5      van 8 dit code blok    --- (Focus: AI Capture Logic & CS AI No Dodge & Dual Ship Dodge & Last Life No Capture)
+
+function firePlayerBullet(shooterId = null, isTapEvent = false) {
+    const now = Date.now();
+
+    const inCoopLevel1IntroStrict = isTwoPlayerMode && selectedGameMode === 'coop' && level === 1 &&
+                                   coopPlayersReadyStartTime > 0 && now < coopPlayersReadyStartTime + 8000;
+    if (inCoopLevel1IntroStrict) {
+        return false;
+    }
+
+    let canShootLogic = false;
+    let shootingShipObject = null;
+    let isDual = false;
+    let playerSpecificLastShotTime = 0;
+    let setPlayerSpecificLastShotTime = (time) => {};
+    let incrementPlayerShotsFired = (count) => {};
+    let useSingleShotFlag = false;
+    let getSingleShotFlag = () => false;
+    let setSingleShotFlag = (val) => {};
+    let currentShooterPlayerId = shooterId;
+
+    const baseChecks = !isPaused && isInGameState &&
+                       gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage &&
+                       !isShowingIntro && !showReadyMessage && !isCsCompletionDelayActive &&
+                       !showCsHitsMessage && !showPerfectMessage && !showCsBonusScoreMessage && !showCSClearMessage &&
+                       !(isTwoPlayerMode && selectedGameMode === 'coop' &&
+                         ((shooterId === 'player1' && isPlayer1ShowingGameOverMessage) ||
+                          (shooterId === 'player2' && isPlayer2ShowingGameOverMessage)));
+
+    if (!baseChecks) return false;
+
+    if (currentShooterPlayerId) {
+        let isCurrentShooterCaptured = false;
+        if (currentShooterPlayerId === 'ai' && isShipCaptured) isCurrentShooterCaptured = true;
+        else if (currentShooterPlayerId === 'ai_p2' && isTwoPlayerMode && selectedGameMode === 'normal' && isShipCaptured) {
+             isCurrentShooterCaptured = true;
+        }
+        else if (currentShooterPlayerId === 'player1' && isCoopAIDemoActive && isPlayer1ShipCaptured) isCurrentShooterCaptured = true;
+        else if (currentShooterPlayerId === 'player2' && isCoopAIDemoActive && isPlayer2ShipCaptured) isCurrentShooterCaptured = true;
+        else if (currentShooterPlayerId === 'ai_p2' && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP' && isPlayer2ShipCaptured) isCurrentShooterCaptured = true;
+
+        if (isCurrentShooterCaptured) return false;
+    }
+
+
+    if (isTwoPlayerMode && selectedGameMode === 'coop') {
+        if (shooterId === 'player1' && ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !player1NeedsRespawnAfterCapture) {
+            if (!isShowingCaptureMessage || (isShowingCaptureMessage && !isPlayer1ShipCaptured)) {
+                shootingShipObject = ship1; isDual = player1IsDualShipActive; playerSpecificLastShotTime = player1LastShotTime;
+                setPlayerSpecificLastShotTime = (time) => { player1LastShotTime = time; }; incrementPlayerShotsFired = (count) => { player1ShotsFired += count; };
+                useSingleShotFlag = selectedFiringMode === 'single'; getSingleShotFlag = () => p1JustFiredSingle; setSingleShotFlag = (val) => { p1JustFiredSingle = val; };
+                canShootLogic = true;
+            }
+        } else if (shooterId === 'player2' && ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture) {
+             if (!isShowingCaptureMessage || (isShowingCaptureMessage && !isPlayer2ShipCaptured)) {
+                shootingShipObject = ship2; isDual = player2IsDualShipActive; playerSpecificLastShotTime = player2LastShotTime;
+                setPlayerSpecificLastShotTime = (time) => { player2LastShotTime = time; }; incrementPlayerShotsFired = (count) => { player2ShotsFired += count; };
+                if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+                    useSingleShotFlag = false;
+                } else {
+                    useSingleShotFlag = selectedFiringMode === 'single'; getSingleShotFlag = () => p2JustFiredSingle; setSingleShotFlag = (val) => { p2JustFiredSingle = val; };
+                }
+                canShootLogic = true;
+            }
+        }
+    } else {
+        if (ship && playerLives > 0 && !isShipCaptured) {
+            shootingShipObject = ship; isDual = isDualShipActive;
+            if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                if (currentPlayer === 1) {
+                    playerSpecificLastShotTime = player1LastShotTime; setPlayerSpecificLastShotTime = (time) => { player1LastShotTime = time; };
+                    incrementPlayerShotsFired = (count) => { player1ShotsFired += count; }; useSingleShotFlag = selectedFiringMode === 'single';
+                    getSingleShotFlag = () => p1JustFiredSingle; setSingleShotFlag = (val) => { p1JustFiredSingle = val; };
+                    if (!currentShooterPlayerId) currentShooterPlayerId = 'player1';
+                } else {
+                    playerSpecificLastShotTime = player2LastShotTime; setPlayerSpecificLastShotTime = (time) => { player2LastShotTime = time; };
+                    incrementPlayerShotsFired = (count) => { player2ShotsFired += count; };
+                    if (isPlayerTwoAI) {
+                        useSingleShotFlag = false;
+                        if (!currentShooterPlayerId) currentShooterPlayerId = 'ai_p2';
+                    } else {
+                        useSingleShotFlag = selectedFiringMode === 'single';
+                        if (connectedGamepadIndexP2 === null && connectedGamepadIndex !== null) {
+                            getSingleShotFlag = () => p1JustFiredSingle;
+                            setSingleShotFlag = (val) => { p1JustFiredSingle = val; };
+                        } else {
+                            getSingleShotFlag = () => p2JustFiredSingle;
+                            setSingleShotFlag = (val) => { p2JustFiredSingle = val; };
+                        }
+                        if (!currentShooterPlayerId) currentShooterPlayerId = 'player2';
+                    }
+                }
+            } else {
+                playerSpecificLastShotTime = player1LastShotTime;
+                setPlayerSpecificLastShotTime = (time) => { player1LastShotTime = time; };
+                incrementPlayerShotsFired = (count) => { player1ShotsFired += count; }; useSingleShotFlag = selectedFiringMode === 'single';
+                getSingleShotFlag = () => p1JustFiredSingle; setSingleShotFlag = (val) => { p1JustFiredSingle = val; };
+                if (!currentShooterPlayerId) currentShooterPlayerId = 'player1';
+            }
+            canShootLogic = true;
+        }
+    }
+
+    if (shooterId === null && !isManualControl && !isCoopAIDemoActive && ship && playerLives > 0 && !isShipCaptured && !isShowingCaptureMessage) {
+        shootingShipObject = ship; isDual = isDualShipActive; playerSpecificLastShotTime = aiLastShotTime;
+        setPlayerSpecificLastShotTime = (time) => { aiLastShotTime = time; }; incrementPlayerShotsFired = (count) => { player1ShotsFired += count; };
+        useSingleShotFlag = false;
+        canShootLogic = true; currentShooterPlayerId = 'ai';
+    }
+
+
+    if (!canShootLogic || !shootingShipObject) return false;
+
+    if (useSingleShotFlag) {
+        if (isTapEvent) {
+            if (now - playerSpecificLastShotTime < SHOOT_COOLDOWN) return false;
+        } else {
+            let fireButtonIsCurrentlyPressed = false;
+             if (currentShooterPlayerId === 'player1' || (!isTwoPlayerMode && currentShooterPlayerId === 'player1')) {
+                fireButtonIsCurrentlyPressed = keyboardP1ShootDown || (connectedGamepadIndex !== null && navigator.getGamepads()?.[connectedGamepadIndex]?.buttons[PS5_BUTTON_CROSS]?.pressed);
+            } else if (currentShooterPlayerId === 'player2' && !isPlayerTwoAI) {
+                if (connectedGamepadIndexP2 !== null) {
+                    fireButtonIsCurrentlyPressed = keyboardP2ShootDown || (connectedGamepadIndexP2 !== null && navigator.getGamepads()?.[connectedGamepadIndexP2]?.buttons[PS5_BUTTON_CROSS]?.pressed);
+                } else if (connectedGamepadIndex !== null) {
+                    fireButtonIsCurrentlyPressed = keyboardP2ShootDown || (connectedGamepadIndex !== null && navigator.getGamepads()?.[connectedGamepadIndex]?.buttons[PS5_BUTTON_CROSS]?.pressed);
+                } else {
+                    fireButtonIsCurrentlyPressed = keyboardP2ShootDown;
+                }
+            }
+
+            if (getSingleShotFlag()) {
+                if (fireButtonIsCurrentlyPressed) return false;
+                else setSingleShotFlag(false);
+            }
+            if (now - playerSpecificLastShotTime < SHOOT_COOLDOWN) return false;
+        }
+    } else {
+        if (now - playerSpecificLastShotTime < SHOOT_COOLDOWN) return false;
+    }
+
+
+    try {
+        const bulletY = shootingShipObject.y;
+        let bulletsCreated = 0;
+        if (isDual) {
+            const ship1CenterX = shootingShipObject.x + shootingShipObject.width / 2;
+            const ship2CenterX = shootingShipObject.x + DUAL_SHIP_OFFSET_X + shootingShipObject.width / 2;
+            const bulletX1 = ship1CenterX - PLAYER_BULLET_WIDTH / 2;
+            const bulletX2 = ship2CenterX - PLAYER_BULLET_WIDTH / 2;
+            bullets.push({ x: bulletX1, y: bulletY, width: PLAYER_BULLET_WIDTH, height: PLAYER_BULLET_HEIGHT, speed: PLAYER_BULLET_SPEED, playerId: currentShooterPlayerId });
+            bullets.push({ x: bulletX2, y: bulletY, width: PLAYER_BULLET_WIDTH, height: PLAYER_BULLET_HEIGHT, speed: PLAYER_BULLET_SPEED, playerId: currentShooterPlayerId });
+            bulletsCreated = 2;
+        } else {
+            const bulletX = shootingShipObject.x + shootingShipObject.width / 2 - PLAYER_BULLET_WIDTH / 2;
+            bullets.push({ x: bulletX, y: bulletY, width: PLAYER_BULLET_WIDTH, height: PLAYER_BULLET_HEIGHT, speed: PLAYER_BULLET_SPEED, playerId: currentShooterPlayerId });
+            bulletsCreated = 1;
+        }
+
+        if (useSingleShotFlag && !isTapEvent) setSingleShotFlag(true);
+
+        playSound('playerShootSound', false, 0.4);
+        incrementPlayerShotsFired(bulletsCreated);
+        setPlayerSpecificLastShotTime(now);
+        return true;
+    } catch(e) {
+        console.error("Error creating player bullet(s):", e);
+        return false;
+    }
+}
+
+
+/**
+ * Handles player input (manual control), considering currentPlayer and input sources.
+ */
+function handlePlayerInput() {
+     try {
+         const now = Date.now();
+
+         const inCoopLevel1IntroStrict = isTwoPlayerMode && selectedGameMode === 'coop' && level === 1 &&
+                                       coopPlayersReadyStartTime > 0 && now < coopPlayersReadyStartTime + 8000;
+
+         if (isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2 && !isManualControl) ) {
+             if (isCoopAIDemoActive) {
+                leftPressed = false; rightPressed = false; shootPressed = false;
+                p2LeftPressed = false; p2RightPressed = false; p2ShootPressed = false;
+             }
+             return;
+         }
+
+         let blockAllGlobalInput = isPaused || !isManualControl || !gameCanvas || !isInGameState ||
+                                   gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage ||
+                                   (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage));
+
+         if (blockAllGlobalInput) {
+             keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false;
+             keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false;
+             leftPressed = false; rightPressed = false; shootPressed = false;
+             p2LeftPressed = false; p2RightPressed = false; p2ShootPressed = false;
+             p1FireInputWasDown = false; p2FireInputWasDown = false;
+             return;
+         }
+
+        let canvasTouchX = 0;
+        if (isTouchActiveGame && gameCanvas && gameCanvas.width > 0) {
+            const rect = gameCanvas.getBoundingClientRect();
+            const scaleX = gameCanvas.width / rect.width;
+            canvasTouchX = (touchCurrentX - rect.left) * scaleX;
+        }
+
+
+        let ctrlP1Left = false, ctrlP1Right = false, ctrlP1ShootIsRaw = false;
+        let ctrlP2Left = false, ctrlP2Right = false, ctrlP2ShootIsRaw = false;
+
+        if (connectedGamepadIndex !== null) {
+            const gamepads = navigator.getGamepads();
+            if (gamepads?.[connectedGamepadIndex]) {
+                const gamepadP1Obj = gamepads[connectedGamepadIndex];
+                const resultP1 = processSingleController(gamepadP1Obj, previousGameButtonStates);
+                ctrlP1Left = resultP1.left; ctrlP1Right = resultP1.right; ctrlP1ShootIsRaw = resultP1.shoot;
+                previousGameButtonStates = resultP1.newButtonStates.slice();
+                if (resultP1.pause && !isShowingCaptureMessage) { togglePause(); return; }
+                if (resultP1.back && !isShowingCaptureMessage) { stopGameAndShowMenu(); return; }
+            } else { if (previousGameButtonStates.length > 0) previousGameButtonStates = []; }
+        } else { if (previousGameButtonStates.length > 0) previousGameButtonStates = []; }
+
+        if (!(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+            if (isTwoPlayerMode && connectedGamepadIndexP2 !== null && connectedGamepadIndexP2 !== connectedGamepadIndex) {
+                const gamepads = navigator.getGamepads();
+                if (gamepads?.[connectedGamepadIndexP2]) {
+                    const gamepadP2Obj = gamepads[connectedGamepadIndexP2];
+                    const resultP2 = processSingleController(gamepadP2Obj, previousGameButtonStatesP2);
+                    ctrlP2Left = resultP2.left; ctrlP2Right = resultP2.right; ctrlP2ShootIsRaw = resultP2.shoot;
+                    previousGameButtonStatesP2 = resultP2.newButtonStates.slice();
+                } else { if (previousGameButtonStatesP2.length > 0) previousGameButtonStatesP2 = []; }
+            } else { if (previousGameButtonStatesP2.length > 0) previousGameButtonStatesP2 = []; }
+        }
+
+        const oldP1FireInputWasDown = p1FireInputWasDown;
+        p1FireInputWasDown = keyboardP1ShootDown || ctrlP1ShootIsRaw;
+
+        let oldP2FireInputWasDown = false;
+        if (!(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+            oldP2FireInputWasDown = p2FireInputWasDown;
+            if (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 2 && !isPlayerTwoAI) {
+                 if (connectedGamepadIndexP2 !== null) {
+                     p2FireInputWasDown = keyboardP2ShootDown || ctrlP2ShootIsRaw;
+                 } else if (connectedGamepadIndex !== null) {
+                     p2FireInputWasDown = keyboardP2ShootDown || ctrlP1ShootIsRaw;
+                 } else {
+                     p2FireInputWasDown = keyboardP2ShootDown;
+                 }
+            } else {
+                p2FireInputWasDown = keyboardP2ShootDown || ctrlP2ShootIsRaw;
+            }
+        } else {
+             p2FireInputWasDown = false;
+        }
+
+        if (selectedFiringMode === 'single') {
+            if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                if (!isTouchActiveGame) {
+                    if (oldP1FireInputWasDown && !p1FireInputWasDown) p1JustFiredSingle = false;
+                    if (!isPlayerTwoAI && oldP2FireInputWasDown && !p2FireInputWasDown) p2JustFiredSingle = false;
+                }
+            } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                 if (!isTouchActiveGame) {
+                    if (currentPlayer === 1 && oldP1FireInputWasDown && !p1FireInputWasDown) p1JustFiredSingle = false;
+                    else if (currentPlayer === 2 && !isPlayerTwoAI) {
+                        let p2UsedP1GamepadLast = (connectedGamepadIndexP2 === null && connectedGamepadIndex !== null);
+                        let p2UsingP1GamepadNow = (connectedGamepadIndexP2 === null && connectedGamepadIndex !== null);
+
+                        if (p2UsedP1GamepadLast && p2UsingP1GamepadNow) {
+                            if (oldP1FireInputWasDown && !p1FireInputWasDown) {
+                                p1JustFiredSingle = false;
+                            }
+                        } else {
+                            if (oldP2FireInputWasDown && !p2FireInputWasDown) {
+                                p2JustFiredSingle = false;
+                            }
+                        }
+                    }
+                }
+            } else { // 1P Classic
+                if (!isTouchActiveGame) {
+                    if (oldP1FireInputWasDown && !p1FireInputWasDown) p1JustFiredSingle = false;
+                }
+            }
+        }
+
+
+        leftPressed = false; rightPressed = false; shootPressed = false;
+        p2LeftPressed = false; p2RightPressed = false; p2ShootPressed = false;
+
+        let p1MovementFromTouch = false;
+
+        if (isTouchActiveGame && gameCanvas) {
+            if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) {
+                    const p1EffectiveWidth = ship1.width + (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
+                    let targetShip1X = canvasTouchX - p1EffectiveWidth / 2;
+                    targetShip1X = Math.max(0, Math.min(gameCanvas.width - p1EffectiveWidth, targetShip1X));
+                    ship1.x = targetShip1X; ship1.targetX = targetShip1X;
+                    p1MovementFromTouch = true;
+                }
+            } else {
+                if (ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && gameOverSequenceStartTime === 0 && (!isPlayerTwoAI || (isPlayerTwoAI && currentPlayer === 1))) {
+                    const effectiveWidth = ship.width + (isDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
+                    let targetShipX = canvasTouchX - effectiveWidth / 2;
+                    targetShipX = Math.max(0, Math.min(gameCanvas.width - effectiveWidth, targetShipX));
+                    ship.x = targetShipX; ship.targetX = targetShipX;
+                    p1MovementFromTouch = true;
+                }
+            }
+        }
+
+
+        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+            if (!p1MovementFromTouch) {
+                const p1CanControl = ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture;
+                if (p1CanControl) {
+                    leftPressed = keyboardP1LeftDown || ctrlP1Left;
+                    rightPressed = keyboardP1RightDown || ctrlP1Right;
+                }
+            }
+            if (!isPlayerTwoAI) {
+                const p2CanControl = ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture;
+                if (p2CanControl) {
+                    p2LeftPressed = keyboardP2LeftDown || ctrlP2Left;
+                    p2RightPressed = keyboardP2RightDown || ctrlP2Right;
+                }
+            }
+        } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+            if (!p1MovementFromTouch) {
+                const activePlayerCanControl = ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage;
+                if (activePlayerCanControl) {
+                    if (currentPlayer === 1 || !isTwoPlayerMode) { // P1's turn or 1P mode
+                        leftPressed = (keyboardP1LeftDown || ctrlP1Left);
+                        rightPressed = (keyboardP1RightDown || ctrlP1Right);
+                    } else if (currentPlayer === 2 && !isPlayerTwoAI && selectedGameMode === 'normal') { // Human P2 in Normal mode
+                        if (connectedGamepadIndexP2 !== null) { // P2 has their own controller
+                            leftPressed = (keyboardP2LeftDown || ctrlP2Left);
+                            rightPressed = (keyboardP2RightDown || ctrlP2Right);
+                        } else if (connectedGamepadIndex !== null) { // P1's controller is active, P2's is not
+                            leftPressed = (keyboardP2LeftDown || ctrlP1Left);
+                            rightPressed = (keyboardP2RightDown || ctrlP1Right);
+                        } else { // No gamepads connected
+                            leftPressed = keyboardP2LeftDown;
+                            rightPressed = keyboardP2RightDown;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+            const p1CanShoot = ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture && !inCoopLevel1IntroStrict;
+            if (p1CanShoot) {
+                // <<< START GEWIJZIGD DEEL >>>
+                let p1_touch_shoot_condition = false;
+                if (isTouchActiveGame && selectedFiringMode === 'rapid') {
+                    if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { // P1 is human, P2 is AI
+                        p1_touch_shoot_condition = true; // P1 (human) uses full screen
+                    } else if (!isPlayerTwoAI) { // Human 2P COOP
+                        // Behoud huidige logica voor Human 2P P1 als "goed" (full screen)
+                        // Als P1 links/P2 rechts de bedoeling was, dan: p1_touch_shoot_condition = (canvasTouchX <= gameCanvas.width / 2);
+                        p1_touch_shoot_condition = true; // P1 (human) uses full screen
+                    }
+                    // Else (COOP AI Demo, P1 is AI): p1_touch_shoot_condition blijft false
+                }
+                shootPressed = p1_touch_shoot_condition || p1FireInputWasDown;
+                // <<< EINDE GEWIJZIGD DEEL >>>
+                if (isShowingCaptureMessage && isPlayer1ShipCaptured) shootPressed = false;
+            }
+
+            if (!isPlayerTwoAI) { // Human P2
+                const p2CanShoot = ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture && !inCoopLevel1IntroStrict;
+                if (p2CanShoot) {
+                    p2ShootPressed = (isTouchActiveGame && selectedFiringMode === 'rapid' && canvasTouchX > gameCanvas.width / 2) || p2FireInputWasDown;
+                    if (isShowingCaptureMessage && isPlayer2ShipCaptured) p2ShootPressed = false;
+                }
+            }
+        } else { // 1P Classic, 1P vs AI Normal, 2P Normal
+            const activePlayerCanShoot = ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && !isShowingIntro && !inCoopLevel1IntroStrict;
+            if (activePlayerCanShoot) {
+                let currentFireInputWasDown = false;
+                if (currentPlayer === 1 || !isTwoPlayerMode) { // P1's turn or 1P mode
+                    currentFireInputWasDown = p1FireInputWasDown;
+                } else if (currentPlayer === 2 && !isPlayerTwoAI && selectedGameMode === 'normal') { // Human P2 in Normal mode
+                    currentFireInputWasDown = p2FireInputWasDown;
+                }
+                shootPressed = (isTouchActiveGame && selectedFiringMode === 'rapid') || currentFireInputWasDown;
+                if (isShowingCaptureMessage && isShipCaptured) shootPressed = false;
+            }
+        }
+
+
+        if (isManualControl) {
+            if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                if (shootPressed) {
+                    firePlayerBullet('player1', false);
+                }
+                if (!isPlayerTwoAI && p2ShootPressed) {
+                    firePlayerBullet('player2', false);
+                }
+            } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+                if (shootPressed) {
+                    if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
+                        // AI P2 schiet via aiControl, niet hier
+                    } else {
+                        firePlayerBullet(currentPlayer === 1 || !isTwoPlayerMode ? 'player1' : 'player2', false);
+                    }
+                }
+            }
+        }
+
+     } catch (e) {
+         console.error("Error handling player input:", e);
+         leftPressed = false; rightPressed = false; shootPressed = false;
+         p2LeftPressed = false; p2RightPressed = false; p2ShootPressed = false;
+         p1FireInputWasDown = false; p2FireInputWasDown = false;
+         p1JustFiredSingle = false; p2JustFiredSingle = false;
+     }
+}
+
+
+// --- AI control functies (aiControl, aiControlCoop, fireCoopAIBullet, calculateAIDesiredState) ---
+let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
+
+
+ function aiControl() { // Voor 1P AI Demo & 1P vs AI Normal (wanneer AI P2 aan de beurt is)
+    try {
+        if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') ) return;
+
+        let activeShipForAI = null;
+        let currentSmoothedShipXForAI = null;
+        let isDualActiveForAI = false;
+        let isShipCapturedForAI = false;
+        let isInvincibleForAI = false;
+        let aiLivesForAI = 0;
+        let aiIdentifierForAI = 'ai';
+        let isAIPlayer2NormalMode = false;
+        let aiCanBeCapturedThisTurn = false;
+
+        if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
+            if (!ship || playerLives <= 0 || isShipCaptured || isShowingPlayerGameOverMessage) {
+                if(ship) ship.targetX = ship.x;
+                aiNeedsStabilization = true;
+                smoothedShipX = ship ? ship.x : (gameCanvas ? gameCanvas.width / 2 : 0);
+                return;
+            }
+            activeShipForAI = ship;
+            currentSmoothedShipXForAI = smoothedShipX;
+            isDualActiveForAI = isDualShipActive;
+            isShipCapturedForAI = isShipCaptured;
+            isInvincibleForAI = isInvincible;
+            aiLivesForAI = playerLives;
+            aiIdentifierForAI = 'ai_p2';
+            isAIPlayer2NormalMode = true;
+            // <<< GEWIJZIGD: Check voor laatste leven toegevoegd >>>
+            aiCanBeCapturedThisTurn = playerLives > 1 && !isDualActiveForAI && !isShipCaptured;
+
+        } else if (!isManualControl && !isPlayerTwoAI) {
+            if (playerLives <= 0 || !ship || !gameCanvas || !isInGameState || gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage) {
+                if (ship) ship.targetX = ship.x;
+                aiNeedsStabilization = true;
+                smoothedShipX = ship ? ship.x : (gameCanvas ? gameCanvas.width / 2 : 0);
+                if (aiIsCurrentlyTargetingCaptureBoss) aiIsCurrentlyTargetingCaptureBoss = false;
+                return;
+            }
+            if (isShipCaptured || isShowingCaptureMessage) {
+                if (ship) ship.targetX = ship.x;
+                else if (activeShipForAI) activeShipForAI.targetX = activeShipForAI.x;
+                if (smoothedShipX !== undefined && ship) smoothedShipX = ship.x;
+                else if (smoothedShipX !== undefined && activeShipForAI) smoothedShipX = activeShipForAI.x;
+                aiIsCurrentlyTargetingCaptureBoss = false;
+                return;
+            }
+            activeShipForAI = ship;
+            currentSmoothedShipXForAI = smoothedShipX;
+            isDualActiveForAI = isDualShipActive;
+            isShipCapturedForAI = isShipCaptured;
+            isInvincibleForAI = isInvincible;
+            aiLivesForAI = playerLives;
+            // <<< GEWIJZIGD: Check voor laatste leven toegevoegd >>>
+            aiCanBeCapturedThisTurn = playerLives > 1 && !isDualActiveForAI && !isShipCaptured;
+        } else {
+            if (aiIsCurrentlyTargetingCaptureBoss) aiIsCurrentlyTargetingCaptureBoss = false;
+            return;
+        }
+
+        if (currentSmoothedShipXForAI === undefined && activeShipForAI) {
+            currentSmoothedShipXForAI = activeShipForAI.x;
+            if (isAIPlayer2NormalMode || (!isManualControl && !isPlayerTwoAI)) {
+                 smoothedShipX = currentSmoothedShipXForAI;
+            }
+        } else if (currentSmoothedShipXForAI === undefined && !activeShipForAI) {
+            currentSmoothedShipXForAI = gameCanvas ? gameCanvas.width / 2 : 0;
+            if (isAIPlayer2NormalMode || (!isManualControl && !isPlayerTwoAI)) {
+                smoothedShipX = currentSmoothedShipXForAI;
+            }
+            if (aiIsCurrentlyTargetingCaptureBoss) aiIsCurrentlyTargetingCaptureBoss = false;
+            return;
+        }
+
+
+        const now = Date.now();
+        const canvasWidth = gameCanvas.width;
+        const canvasHeight = gameCanvas.height;
+        let effectiveShipWidth = activeShipForAI.width;
+        if (isDualActiveForAI) {
+            effectiveShipWidth = DUAL_SHIP_OFFSET_X + activeShipForAI.width;
+        }
+        const shipCenterX = activeShipForAI.x + effectiveShipWidth / 2;
+        const shipTopY = activeShipForAI.y;
+        const AI_CENTER_TARGET_X_VISUAL = canvasWidth / 2;
+        const targetCenterShipX = AI_CENTER_TARGET_X_VISUAL - (effectiveShipWidth / 2);
+        const isShowingBlockingMessage = showReadyMessage || showCSClearMessage || showCsHitsMessage || showPerfectMessage || showCsBonusScoreMessage || showExtraLifeMessage || isCsCompletionDelayActive || isShowingCaptureMessage || isShowingIntro;
+
+        let desiredTargetX = currentSmoothedShipXForAI;
+        let shouldTryShoot = false;
+        let isDodgingThreat = false;
+        let dodgeTargetX = currentSmoothedShipXForAI;
+        let targetEnemyForAI = null;
+        let isMovingToCapture = false;
+
+        let aiNormalIsLettingShipBeCaptured = false;
+
+
+        if (aiNeedsStabilization && !isShowingBlockingMessage) {
+            aiStabilizationEndTime = now + AI_STABILIZATION_DURATION;
+            aiNeedsStabilization = false;
+            currentSmoothedShipXForAI = activeShipForAI.x;
+            if (isAIPlayer2NormalMode || (!isManualControl && !isPlayerTwoAI)) {
+                smoothedShipX = currentSmoothedShipXForAI;
+            }
+        }
+
+        const capturingBossObject = enemies.find(e => e.id === capturingBossId && e.type === ENEMY3_TYPE);
+
+        // <<< GEWIJZIGD: aiCanBeCapturedThisTurn wordt nu gecheckt VOORDAT AI zich laat vangen >>>
+        if (aiCanBeCapturedThisTurn && captureBeamActive && capturingBossObject && capturingBossObject.state === 'capturing' && !isShipCapturedForAI && !isWaitingForRespawn) {
+            if (!isManualControl && !isPlayerTwoAI) {
+                aiIsCurrentlyTargetingCaptureBoss = true;
+            } else if (isAIPlayer2NormalMode) {
+                aiNormalIsLettingShipBeCaptured = true;
+                aiIsCurrentlyTargetingCaptureBoss = true;
+            }
+
+            if (aiIsCurrentlyTargetingCaptureBoss) {
+                shouldTryShoot = false;
+                targetEnemyForAI = null;
+                const beamCenterX = capturingBossObject.x + (capturingBossObject.width / 2);
+                if (now - (capturingBossObject.captureStartTime || 0) >= AI_CAPTURE_BEAM_APPROACH_DELAY_MS) {
+                    desiredTargetX = beamCenterX - effectiveShipWidth / 2;
+                    isMovingToCapture = true;
+                } else {
+                    desiredTargetX = targetCenterShipX;
+                    isMovingToCapture = false;
+                }
+            }
+        } else if (aiIsCurrentlyTargetingCaptureBoss && (!captureBeamActive || !capturingBossObject || capturingBossObject.state !== 'capturing' || !aiCanBeCapturedThisTurn)) { // Ook resetten als AI niet meer gevangen kan worden
+            aiIsCurrentlyTargetingCaptureBoss = false;
+            aiNormalIsLettingShipBeCaptured = false;
+        }
+
+
+        if (now < aiStabilizationEndTime && !isShowingBlockingMessage && !aiIsCurrentlyTargetingCaptureBoss) {
+            desiredTargetX = targetCenterShipX;
+        } else if (!isShowingBlockingMessage && !aiIsCurrentlyTargetingCaptureBoss) {
+            isDodgingThreat = false;
+            dodgeTargetX = currentSmoothedShipXForAI;
+
+            if (!isChallengingStage && !isInvincibleForAI) {
+                let threateningBullets = [];
+                const baseLookahead = isEntrancePhaseActive ? ENTRANCE_BULLET_DODGE_LOOKAHEAD * 1.1 : FINAL_DODGE_LOOKAHEAD * 1.2;
+                const baseBuffer = isEntrancePhaseActive ? ENTRANCE_BULLET_DODGE_BUFFER * 1.1 : FINAL_DODGE_BUFFER_BASE * 1.2;
+                const bulletLookahead = isDualActiveForAI ? baseLookahead * 1.25 : baseLookahead;
+                const bulletBuffer = isDualActiveForAI ? baseBuffer * 1.35 : baseBuffer;
+
+                const dangerZoneForBullets = { x: activeShipForAI.x - bulletBuffer, y: activeShipForAI.y - bulletLookahead, width: effectiveShipWidth + bulletBuffer * 2, height: bulletLookahead + activeShipForAI.height };
+
+                for (const bullet of enemyBullets) {
+                    if (bullet && bullet.y + bullet.height > activeShipForAI.y - activeShipForAI.height*2 && bullet.y < canvasHeight) {
+                        const bulletRect = { x: bullet.x, y: bullet.y, width: bullet.width, height: bullet.height };
+                        if (checkCollision(dangerZoneForBullets, bulletRect)) {
+                            threateningBullets.push(bullet);
+                        }
+                    }
+                }
+
+                if (threateningBullets.length > 0) {
+                    isDodgingThreat = true;
+                    let bestDodgeX = currentSmoothedShipXForAI;
+                    let maxDodgeScore = -Infinity;
+
+                    for (let dodgeDir = -1; dodgeDir <= 1; dodgeDir += 2) {
+                        const dodgeAmount = effectiveShipWidth * (isDualActiveForAI ? 2.6 : 2.0) + Math.random() * (effectiveShipWidth * 0.5) + (threateningBullets.length > 1 ? effectiveShipWidth * 0.5 : 0) ;
+                        let potentialDodgeX = currentSmoothedShipXForAI + dodgeDir * dodgeAmount;
+                        potentialDodgeX = Math.max(AI_ANTI_CORNER_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER, potentialDodgeX));
+
+                        let bulletsNearDodge = 0;
+                        const testDodgeZone = { x: potentialDodgeX - bulletBuffer/2, y: activeShipForAI.y - bulletLookahead, width: effectiveShipWidth + bulletBuffer, height: bulletLookahead + activeShipForAI.height};
+                        for (const bullet of threateningBullets) {
+                            if (checkCollision(testDodgeZone, { x: bullet.x, y: bullet.y, width: bullet.width, height: bullet.height })) {
+                                bulletsNearDodge++;
+                            }
+                        }
+                        let dodgeScore = -bulletsNearDodge;
+                        if (Math.abs(potentialDodgeX - currentSmoothedShipXForAI) < effectiveShipWidth * 0.5) dodgeScore -=10;
+
+                        if (dodgeScore > maxDodgeScore) {
+                            maxDodgeScore = dodgeScore;
+                            bestDodgeX = potentialDodgeX;
+                        }
+                    }
+                    dodgeTargetX = bestDodgeX;
+                }
+
+                if (!isDodgingThreat) {
+                    const enemyLookahead = AI_COLLISION_LOOKAHEAD * (isDualActiveForAI ? 1.85 : 1.5);
+                    const enemyBuffer = FINAL_DODGE_BUFFER_BASE * (isDualActiveForAI ? 1.85 : 1.5);
+                    for (const currentEnemy of enemies) {
+                        if (currentEnemy && (currentEnemy.state === 'attacking' || currentEnemy.state === 'diving_to_capture_position' || currentEnemy.state === 'following_entrance_path' || currentEnemy.state === 'following_bezier_path') && currentEnemy.y + currentEnemy.height > activeShipForAI.y - enemyLookahead/2 && currentEnemy.y < activeShipForAI.y + activeShipForAI.height) {
+                            const dangerZoneForEnemy = { x: activeShipForAI.x - enemyBuffer, y: activeShipForAI.y - enemyLookahead, width: effectiveShipWidth + enemyBuffer * 2, height: enemyLookahead + activeShipForAI.height };
+                            const enemyRect = { x: currentEnemy.x, y: currentEnemy.y, width: currentEnemy.width, height: currentEnemy.height };
+                            if (checkCollision(dangerZoneForEnemy, enemyRect)) {
+                                isDodgingThreat = true;
+                                const enemyCenterX = currentEnemy.x + currentEnemy.width / 2;
+                                const dodgeDirection = (shipCenterX < enemyCenterX) ? -1 : 1;
+                                const dodgeAmount = effectiveShipWidth * (isDualActiveForAI ? 2.9 : 2.2) + Math.random() * (effectiveShipWidth * 0.6);
+                                dodgeTargetX = currentSmoothedShipXForAI + dodgeDirection * dodgeAmount;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (isDodgingThreat) {
+                desiredTargetX = Math.max(AI_ANTI_CORNER_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER, dodgeTargetX));
+                targetEnemyForAI = null;
+                shouldTryShoot = false;
+            } else if (fallingShips.length > 0 && !isShipCapturedForAI && !isWaitingForRespawn && !isDualActiveForAI ) {
+                let closestFallingShip = null;
+                let minDist = Infinity;
+                for (const fs of fallingShips) {
+                    let isOwnShip = false;
+                    if ((!isManualControl && !isPlayerTwoAI) || (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2)) {
+                        if(isAIPlayer2NormalMode && fs.targetPlayerId === 'player1'){
+                             isOwnShip = true;
+                        } else if (!isManualControl && !isPlayerTwoAI && fs.targetPlayerId === 'player1') {
+                             isOwnShip = true;
+                        }
+                        if (!closestFallingShip && !isOwnShip) isOwnShip = true;
+                    }
+
+                    if (fs && !fs.landed && isOwnShip) {
+                        const dist = Math.abs(fs.x + fs.width / 2 - shipCenterX) + Math.abs(fs.y - activeShipForAI.y);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            closestFallingShip = fs;
+                        }
+                    }
+                }
+                if (closestFallingShip) {
+                    desiredTargetX = closestFallingShip.x + closestFallingShip.width / 2 - effectiveShipWidth / 2;
+                    shouldTryShoot = false;
+                    targetEnemyForAI = null;
+                }
+            } else {
+                if (!isMovingToCapture) {
+                    targetEnemyForAI = null;
+                    let bestTargetScore = -Infinity;
+
+                    for (const enemy of enemies) {
+                        if (!enemy) continue;
+
+                        let blockShootingThisEnemyAsCaptureTarget = false;
+                        if (aiIsCurrentlyTargetingCaptureBoss && enemy.id === capturingBossId) {
+                             blockShootingThisEnemyAsCaptureTarget = true;
+                        }
+
+                        let currentScore = 0;
+                        const enemyCenterX = enemy.x + enemy.width / 2;
+                        const dx = enemyCenterX - shipCenterX;
+                        const dy = shipTopY - (enemy.y + enemy.height);
+
+                        if (dy < 0 && enemy.state !== 'attacking' && enemy.state !== 'diving_to_capture_position' && enemy.state !== 'following_bezier_path') continue;
+
+                        currentScore = (canvasHeight - enemy.y) * 2 - Math.abs(dx) * 3 - dy;
+                        if (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') currentScore += 3000;
+                        if (enemy.type === ENEMY3_TYPE && !enemy.isDamaged) currentScore += 2000;
+                        if (enemy.type === ENEMY3_TYPE && enemy.isDamaged) currentScore += 4000;
+                        if (enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip) currentScore += 5000;
+
+
+                        if (currentScore > bestTargetScore) {
+                            bestTargetScore = currentScore;
+                            targetEnemyForAI = enemy;
+                        }
+                    }
+
+                    if (targetEnemyForAI) {
+                        const enemyMidX = targetEnemyForAI.x + targetEnemyForAI.width / 2;
+                        desiredTargetX = enemyMidX - (effectiveShipWidth / 2);
+
+                        const ALIGNMENT_MULTIPLIER = 1.8;
+                        let alignmentThresholdForShooting;
+
+                        if (isChallengingStage) {
+                            alignmentThresholdForShooting = effectiveShipWidth * 2.5;
+                        } else if (targetEnemyForAI.state === 'in_grid' || targetEnemyForAI.state === 'preparing_capture') {
+                            alignmentThresholdForShooting = effectiveShipWidth * (GRID_SHOOT_ALIGNMENT_FACTOR * ALIGNMENT_MULTIPLIER);
+                        } else {
+                            alignmentThresholdForShooting = effectiveShipWidth * (FINAL_SHOOT_ALIGNMENT_THRESHOLD * ALIGNMENT_MULTIPLIER);
+                        }
+
+                        const horizontalDiffToAim = Math.abs(shipCenterX - enemyMidX);
+
+                        let doNotShootThisTarget = false;
+                        if (aiIsCurrentlyTargetingCaptureBoss && targetEnemyForAI.id === capturingBossId) {
+                            doNotShootThisTarget = true;
+                        } else if (aiCanBeCapturedThisTurn && targetEnemyForAI.type === ENEMY3_TYPE && // <<< Check aiCanBeCapturedThisTurn
+                                   !targetEnemyForAI.hasCapturedShip && !captureAttemptMadeThisLevel && !isFullGridWave &&
+                                   (targetEnemyForAI.state === 'in_grid' ||
+                                    targetEnemyForAI.state === 'preparing_capture' ||
+                                    targetEnemyForAI.state === 'diving_to_capture_position' ||
+                                    (targetEnemyForAI.state === 'capturing' && targetEnemyForAI.id === capturingBossId)
+                                   )
+                                  ) {
+                            doNotShootThisTarget = true;
+                        }
+
+                        if (horizontalDiffToAim < alignmentThresholdForShooting && !doNotShootThisTarget) {
+                            shouldTryShoot = true;
+                        }
+                    } else {
+                        desiredTargetX = targetCenterShipX;
+                        shouldTryShoot = false;
+                    }
+                }
+            }
+        } else if (aiIsCurrentlyTargetingCaptureBoss && isShowingBlockingMessage) {
+            shouldTryShoot = false;
+            targetEnemyForAI = null;
+        }
+
+
+        if (activeShipForAI) {
+            currentSmoothedShipXForAI += (desiredTargetX - currentSmoothedShipXForAI) * AI_SMOOTHING_FACTOR_MOVE;
+            activeShipForAI.targetX = currentSmoothedShipXForAI;
+
+            if (isAIPlayer2NormalMode) {
+                smoothedShipX = currentSmoothedShipXForAI;
+            } else if (!isManualControl && !isPlayerTwoAI) {
+                smoothedShipX = currentSmoothedShipXForAI;
+            }
+        }
+
+        if (aiIsCurrentlyTargetingCaptureBoss) {
+            shouldTryShoot = false;
+        }
+
+        if (shouldTryShoot && !isDodgingThreat && !isMovingToCapture && !isShowingBlockingMessage) {
+            let canAIShootNow = false;
+            if (isAIPlayer2NormalMode) {
+                canAIShootNow = true;
+            } else {
+                if (now >= aiCanShootTime) {
+                    canAIShootNow = true;
+                }
+            }
+
+            if (canAIShootNow && !isShowingIntro) {
+                if (firePlayerBullet(aiIdentifierForAI, false)) {
+                    if (!isAIPlayer2NormalMode) {
+                        aiCanShootTime = now + SHOOT_COOLDOWN;
+                    }
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Error in aiControl:", e, e.stack);
+        if (ship) {
+            ship.targetX = ship.x;
+        }
+        aiNeedsStabilization = true;
+        smoothedShipX = ship ? ship.x : (gameCanvas ? gameCanvas.width / 2 : 0);
+        if (aiIsCurrentlyTargetingCaptureBoss) aiIsCurrentlyTargetingCaptureBoss = false;
+    }
+ }
+
+ /**
+ * Controls CO-OP AI ships (demo mode of 1P vs AI COOP).
+ */
+function aiControlCoop() {
+    if (!(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) || isPaused || !gameCanvas || !isInGameState || gameOverSequenceStartTime > 0 ) {
+        if (ship1) ship1.targetX = ship1.x;
+        if (ship2) ship2.targetX = ship2.x;
+        return;
+    }
+
+    const now = Date.now();
+    const canvasWidth = gameCanvas.width;
+
+    const p1IsHuman = isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP';
+
+    const p1CanAct = ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture;
+    const p2CanAct = ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture;
+
+    const getShipBlockingState = (shipIdForBlockCheck) => {
+        const isGameOverForThisShip = (shipIdForBlockCheck === 'p1' && isPlayer1ShowingGameOverMessage) ||
+                                      (shipIdForBlockCheck === 'p2' && isPlayer2ShowingGameOverMessage);
+        return isGameOverForThisShip ||
+               showReadyMessage ||
+               isCsCompletionDelayActive ||
+               (isShowingIntro && !(level === 1 && coopPlayersReadyStartTime > 0 && (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ));
+    };
+
+    let p1ShouldShootOverrideGeneral = true;
+    let p2ShouldShootOverrideGeneral = true;
+
+    if (coopAICaptureDiveAnticipationActive && now < coopAICaptureDiveAnticipationEndTime) {
+        if (!p1IsHuman) p1ShouldShootOverrideGeneral = false;
+        p2ShouldShootOverrideGeneral = false;
+    } else if (coopAICaptureDiveAnticipationActive) {
+        coopAICaptureDiveAnticipationActive = false;
+        coopAICaptureDiveAnticipationEndTime = 0;
+    }
+
+    if (p1CanAct && ship1 && !p1IsHuman) { // AI P1 in COOP AI Demo
+        if (smoothedShip1X === undefined) smoothedShip1X = ship1.x;
+        const p1CompletelyBlocked = getShipBlockingState('p1');
+        let { desiredTargetX: dt1, shouldTryShoot: sts1, targetEnemyForAI: te1 } = calculateAIDesiredState(ship1, smoothedShip1X, player1IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer1Invincible, isPlayer1ShipCaptured, isPlayer1WaitingForRespawn, now, canvasWidth, p1CompletelyBlocked, 'p1');
+        aiShip1TargetEnemy = te1;
+        smoothedShip1X += (dt1 - smoothedShip1X) * AI_SMOOTHING_FACTOR_MOVE;
+        ship1.targetX = smoothedShip1X;
+
+        const p1IsSavingPartner = te1 && te1.type === ENEMY3_TYPE && te1.hasCapturedShip && te1.id === capturedBossIdWithMessage && isPlayer2ShipCaptured;
+
+        if (sts1 && p1ShouldShootOverrideGeneral && !(isShowingCaptureMessage && isPlayer1ShipCaptured) ) {
+            if (p1IsSavingPartner || now >= aiShip1CanShootTime) {
+                fireCoopAIBullet(ship1, player1IsDualShipActive, 'player1');
+                if (!p1IsSavingPartner) aiShip1CanShootTime = now + SHOOT_COOLDOWN;
+                else aiShip1CanShootTime = now + (SHOOT_COOLDOWN / 2);
+            }
+        }
+    }
+
+    if (p2CanAct && ship2) { // AI P2 in COOP AI Demo OF 1P vs AI COOP
+        if (smoothedShip2X === undefined) smoothedShip2X = ship2.x;
+        const p2CompletelyBlocked = getShipBlockingState('p2');
+        let { desiredTargetX: dt2, shouldTryShoot: sts2, targetEnemyForAI: te2 } = calculateAIDesiredState(ship2, smoothedShip2X, player2IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer2Invincible, isPlayer2ShipCaptured, isPlayer2WaitingForRespawn, now, canvasWidth, p2CompletelyBlocked, 'ai_p2');
+        aiShip2TargetEnemy = te2;
+        smoothedShip2X += (dt2 - smoothedShip2X) * AI_SMOOTHING_FACTOR_MOVE;
+        ship2.targetX = smoothedShip2X;
+
+        const p2IsSavingPartner = te2 && te2.type === ENEMY3_TYPE && te2.hasCapturedShip && te2.id === capturedBossIdWithMessage && isPlayer1ShipCaptured;
+
+        if (sts2 && p2ShouldShootOverrideGeneral && !(isShowingCaptureMessage && isPlayer2ShipCaptured) ) {
+            if (p2IsSavingPartner || now >= aiShip2CanShootTime) {
+                fireCoopAIBullet(ship2, player2IsDualShipActive, (isCoopAIDemoActive ? 'player2' : 'ai_p2'));
+                if (!p2IsSavingPartner) aiShip2CanShootTime = now + SHOOT_COOLDOWN;
+                else aiShip2CanShootTime = now + (SHOOT_COOLDOWN / 2);
+            }
+        }
+    }
+}
+
+/**
+ * Helper functie voor CO-OP AI om een kogel af te vuren.
+ */
+function fireCoopAIBullet(shootingShip, isDual, shooterPlayerId) {
+    if (!shootingShip) return false;
+    const now = Date.now();
+
+    let shooterIsGameOver = false;
+    if (shooterPlayerId === 'player1' && isPlayer1ShowingGameOverMessage) shooterIsGameOver = true;
+    if ((shooterPlayerId === 'player2' || shooterPlayerId === 'ai_p2') && isPlayer2ShowingGameOverMessage) shooterIsGameOver = true;
+
+    let generalBlock = isPaused || !isInGameState || gameOverSequenceStartTime > 0 || shooterIsGameOver;
+
+    if (generalBlock) return false;
+
+    if (shooterPlayerId === 'player1' && isPlayer1ShipCaptured) return false;
+    if ((shooterPlayerId === 'player2' || shooterPlayerId === 'ai_p2') && isPlayer2ShipCaptured) return false;
+
+
+    try {
+        const bulletY = shootingShip.y;
+        let bulletsCreated = 0;
+        const bulletPlayerId = shooterPlayerId;
+
+        if (isDual) {
+            const ship1CenterX = shootingShip.x + shootingShip.width / 2;
+            const ship2CenterX = shootingShip.x + DUAL_SHIP_OFFSET_X + shootingShip.width / 2;
+            const bulletX1 = ship1CenterX - PLAYER_BULLET_WIDTH / 2;
+            const bulletX2 = ship2CenterX - PLAYER_BULLET_WIDTH / 2;
+            bullets.push({ x: bulletX1, y: bulletY, width: PLAYER_BULLET_WIDTH, height: PLAYER_BULLET_HEIGHT, speed: PLAYER_BULLET_SPEED, playerId: bulletPlayerId });
+            bullets.push({ x: bulletX2, y: bulletY, width: PLAYER_BULLET_WIDTH, height: PLAYER_BULLET_HEIGHT, speed: PLAYER_BULLET_SPEED, playerId: bulletPlayerId });
+            bulletsCreated = 2;
+        } else {
+            const bulletX = shootingShip.x + shootingShip.width / 2 - PLAYER_BULLET_WIDTH / 2;
+            bullets.push({ x: bulletX, y: bulletY, width: PLAYER_BULLET_WIDTH, height: PLAYER_BULLET_HEIGHT, speed: PLAYER_BULLET_SPEED, playerId: bulletPlayerId });
+            bulletsCreated = 1;
+        }
+        playSound('playerShootSound', false, 0.4);
+        if (shooterPlayerId === 'player1') {
+            player1ShotsFired += bulletsCreated;
+            player1LastShotTime = now;
+            aiShip1LastShotTime = now;
+        } else if (shooterPlayerId === 'player2' || shooterPlayerId === 'ai_p2') {
+            player2ShotsFired += bulletsCreated;
+            player2LastShotTime = now;
+            aiShip2LastShotTime = now;
+        }
+        return true;
+    } catch(e) {
+        console.error(`Error creating CO-OP AI bullet for ${shooterPlayerId}:`, e);
+        return false;
+    }
+}
+
+
+/**
+ * Helper functie die de gewenste state (doel X, schieten ja/nee, doel vijand) voor een ENKEL AI schip berekent.
+ * @param {string} shipIdentifier - 'p1' voor AI P1 (in COOP demo), 'ai_p2' voor AI P2 (in COOP demo of 1P vs AI COOP).
+ */
+function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, gameEnemies, gameEnemyBullets, gameFallingShips, isShipInvincible, isThisShipCaptured, isThisShipWaitingForRespawn, currentTime, gameCanvasWidth, isCurrentShipCompletelyBlocked, shipIdentifier) {
+    let desiredTargetX = currentSmoothedX;
+    let shouldTryShoot = false;
+    let targetEnemyForAI = null;
+    let isDodgingThreat = false;
+    let isMovingForOwnFallingShip = false;
+    let isTargetingCapturedPartnerBoss = false;
+    let isMovingToCaptureBeam = false;
+
+    const canvasHeight = gameCanvas.height;
+    const effectiveShipWidth = currentShip.width + (isShipDual ? DUAL_SHIP_OFFSET_X : 0);
+    const shipCenterX = currentShip.x + effectiveShipWidth / 2;
+    const shipTopY = currentShip.y;
+    const livesOfThisAIShip = (shipIdentifier === 'p1') ? player1Lives : ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') ? player2Lives : 0);
+    // <<< GEWIJZIGD: AI laat zich niet vangen met laatste leven >>>
+    const canThisAIShipBeCaptured = livesOfThisAIShip > 1 && !isShipDual && !isThisShipCaptured;
+
+    let laneCenterX = gameCanvasWidth / 2;
+    const generalIntroIsActive = (isShowingIntro || isShowingCoopPlayersReady);
+    const isCoopDemoAndGeneralIntroActive = isCoopAIDemoActive && generalIntroIsActive && !(isChallengingStage && isEntrancePhaseActive);
+    const isSingleSurvivorInCoopDemo = isCoopAIDemoActive &&
+                                       ((shipIdentifier === 'p1' && player1Lives > 0 && player2Lives <= 0) ||
+                                        ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') && player2Lives > 0 && player1Lives <= 0));
+
+    if (isCoopDemoAndGeneralIntroActive && isSingleSurvivorInCoopDemo) {
+         laneCenterX = gameCanvasWidth / 2;
+    } else if (shipIdentifier === 'p1') {
+        laneCenterX = gameCanvasWidth * 0.25 + Math.sin(currentTime / (AI_WIGGLE_PERIOD * 1.1)) * (AI_WIGGLE_AMPLITUDE * 0.8);
+    } else if (shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') {
+        laneCenterX = gameCanvasWidth * 0.75 + Math.cos(currentTime / (AI_WIGGLE_PERIOD * 0.9)) * (AI_WIGGLE_AMPLITUDE * 0.8);
+    }
+    let targetCenterShipX = laneCenterX - (effectiveShipWidth / 2);
+
+    if (isCurrentShipCompletelyBlocked || isThisShipCaptured || isThisShipWaitingForRespawn || (shipIdentifier === 'p1' && player1NeedsRespawnAfterCapture) || ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') && player2NeedsRespawnAfterCapture) ) {
+        if (isCoopDemoAndGeneralIntroActive && isSingleSurvivorInCoopDemo) {
+             desiredTargetX = targetCenterShipX;
+        } else {
+            desiredTargetX = targetCenterShipX;
+        }
+        if (isThisShipCaptured || isThisShipWaitingForRespawn || (shipIdentifier === 'p1' && player1NeedsRespawnAfterCapture) || ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') && player2NeedsRespawnAfterCapture) ) {
+             desiredTargetX = currentShip.x;
+        }
+        return { desiredTargetX, shouldTryShoot: false, targetEnemyForAI: null };
+    }
+
+    const otherPlayerId = (shipIdentifier === 'p1') ? 'ai_p2' : 'p1';
+    const otherPlayerIsActuallyCaptured = (otherPlayerId === 'p1' && isPlayer1ShipCaptured) || (otherPlayerId === 'ai_p2' && isPlayer2ShipCaptured);
+    const otherPlayerIsShowingGameOver = (otherPlayerId === 'p1' && isPlayer1ShowingGameOverMessage) || (otherPlayerId === 'ai_p2' && isPlayer2ShowingGameOverMessage);
+    let bossHoldingPartner = null;
+    let allowTargetingCapturedPartnerBoss = true;
+
+    if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+        if (otherPlayerIsActuallyCaptured && !otherPlayerIsShowingGameOver && capturedBossIdWithMessage) {
+            const partnerCaptureTime = (otherPlayerId === 'p1') ? coopPartner1CapturedTime : coopPartner2CapturedTime;
+            if (partnerCaptureTime > 0 && (currentTime - partnerCaptureTime < COOP_AI_SAVE_PARTNER_DELAY_MS)) {
+                allowTargetingCapturedPartnerBoss = false;
+            }
+            bossHoldingPartner = gameEnemies.find(e => e.id === capturedBossIdWithMessage && e.type === ENEMY3_TYPE && e.hasCapturedShip);
+        }
+    }
+
+
+    if (bossHoldingPartner && !isShipDual && allowTargetingCapturedPartnerBoss) {
+        isTargetingCapturedPartnerBoss = true;
+        targetEnemyForAI = bossHoldingPartner;
+        const bossCenterX = bossHoldingPartner.x + bossHoldingPartner.width / 2;
+        desiredTargetX = bossCenterX - effectiveShipWidth / 2;
+        shouldTryShoot = true;
+        isDodgingThreat = false;
+        if (!isShipInvincible) {
+            let threateningBulletsNearBossTarget = [];
+            const bulletLookaheadSave = FINAL_DODGE_LOOKAHEAD * 0.4;
+            const bulletBufferSave = FINAL_DODGE_BUFFER_BASE * 0.3;
+            const dangerZoneForSaving = { x: Math.min(shipCenterX, bossCenterX) - bulletBufferSave, y: currentShip.y - bulletLookaheadSave, width: Math.abs(shipCenterX - bossCenterX) + effectiveShipWidth + bulletBufferSave * 2, height: bulletLookaheadSave + currentShip.height };
+            for (const bullet of gameEnemyBullets) {
+                if (bullet && bullet.y + bullet.height > currentShip.y - currentShip.height && bullet.y < canvasHeight) {
+                    const bulletRect = { x: bullet.x, y: bullet.y, width: bullet.width, height: bullet.height };
+                    if (checkCollision(dangerZoneForSaving, bulletRect)) {
+                        threateningBulletsNearBossTarget.push(bullet);
+                    }
+                }
+            }
+            if (threateningBulletsNearBossTarget.length > 0) {
+                isDodgingThreat = true;
+                const dodgeDirection = (currentSmoothedX < gameCanvasWidth / 2) ? -1 : 1;
+                desiredTargetX = currentSmoothedX + dodgeDirection * (effectiveShipWidth * 0.6);
+                shouldTryShoot = false;
+            }
+        }
+        desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
+        return { desiredTargetX, shouldTryShoot, targetEnemyForAI };
+    }
+
+    if (!isChallengingStage && !isShipInvincible) {
+        let threateningBullets = [];
+        const baseLookaheadDodge = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.6 : 0.8;
+        const baseBufferDodge  = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.7 : 0.8;
+        const bulletLookahead = FINAL_DODGE_LOOKAHEAD * baseLookaheadDodge * (isShipDual ? 1.25 : 1.0);
+        const bulletBuffer = FINAL_DODGE_BUFFER_BASE * baseBufferDodge * (isShipDual ? 1.35 : 1.0);
+
+        const dangerZoneForBullets = { x: currentShip.x - bulletBuffer, y: currentShip.y - bulletLookahead, width: effectiveShipWidth + bulletBuffer * 2, height: bulletLookahead + currentShip.height };
+        for (const bullet of gameEnemyBullets) {
+            if (bullet && bullet.y + bullet.height > currentShip.y - currentShip.height * 1.5 && bullet.y < canvasHeight) {
+                const bulletRect = { x: bullet.x, y: bullet.y, width: bullet.width, height: bullet.height };
+                if (checkCollision(dangerZoneForBullets, bulletRect)) {
+                    threateningBullets.push(bullet);
+                }
+            }
+        }
+        if (threateningBullets.length > 0) {
+            isDodgingThreat = true;
+            let bestDodgeX = currentSmoothedX;
+            const dodgeAmountMultiplier = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 3.0 : 2.0;
+            const dodgeAmountBase = effectiveShipWidth * dodgeAmountMultiplier * (isShipDual ? 1.3 : 1.0);
+            let bulletsCenter = 0, bulletsLeft = 0, bulletsRight = 0;
+            const shipEffectiveCenter = currentShip.x + effectiveShipWidth / 2;
+            for (const b of threateningBullets) {
+                if (b.x < shipEffectiveCenter - effectiveShipWidth * 0.5) bulletsLeft++;
+                else if (b.x > shipEffectiveCenter + effectiveShipWidth * 0.5) bulletsRight++;
+                else bulletsCenter++;
+            }
+            if (bulletsLeft <= bulletsRight && bulletsLeft <= bulletsCenter) {
+                bestDodgeX = currentSmoothedX - dodgeAmountBase - (Math.random() * effectiveShipWidth * 0.4);
+            } else if (bulletsRight <= bulletsLeft && bulletsRight <= bulletsCenter) {
+                bestDodgeX = currentSmoothedX + dodgeAmountBase + (Math.random() * effectiveShipWidth * 0.4);
+            } else {
+                 if (currentSmoothedX < laneCenterX) bestDodgeX = laneCenterX + dodgeAmountBase + (Math.random() * effectiveShipWidth * 0.7);
+                 else bestDodgeX = laneCenterX - dodgeAmountBase - (Math.random() * effectiveShipWidth * 0.7);
+            }
+            desiredTargetX = bestDodgeX;
+        }
+
+        if (!isDodgingThreat) {
+            const enemyLookaheadMultiplier = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.0 : 0.75;
+            const enemyCollisionBufferMultiplier = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.0 : 0.8;
+            const enemyLookahead = AI_COLLISION_LOOKAHEAD * enemyLookaheadMultiplier * (isShipDual ? 1.3 : 1.0);
+            const enemyCollisionBuffer = AI_COLLISION_BUFFER * enemyCollisionBufferMultiplier * (isShipDual ? 1.4 : 1.0);
+
+            for (const enemy of gameEnemies) {
+                if (!enemy) continue;
+                if (!allowTargetingCapturedPartnerBoss && bossHoldingPartner && enemy.id === bossHoldingPartner.id) {
+                    continue;
+                }
+                if ((enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') &&
+                    enemy.y + enemy.height > shipTopY - enemyLookahead &&
+                    enemy.y < shipTopY + currentShip.height * 1.5) {
+                    const dangerZoneForEnemy = { x: currentShip.x - enemyCollisionBuffer, y: currentShip.y - enemyLookahead, width: effectiveShipWidth + enemyCollisionBuffer * 2, height: enemyLookahead + currentShip.height };
+                    const enemyRect = { x: enemy.x, y: enemy.y, width: enemy.width, height: enemy.height };
+                    if (checkCollision(dangerZoneForEnemy, enemyRect)) {
+                        isDodgingThreat = true;
+                        targetEnemyForAI = null;
+                        shouldTryShoot = false;
+                        const enemyCenterX = enemy.x + enemy.width / 2;
+                        const dodgeMultiplierEnemy = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 2.2 : 1.9;
+                        desiredTargetX = currentSmoothedX + ((shipCenterX < enemyCenterX) ? -1 : 1) * (effectiveShipWidth * dodgeMultiplierEnemy * (isShipDual ? 1.35 : 1.0));
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+
+    // <<< GEWIJZIGD: Check canThisAIShipBeCaptured (die al rekening houdt met lives > 1) >>>
+    if (!isDodgingThreat && canThisAIShipBeCaptured && captureBeamActive && capturingBossId && !isThisShipCaptured) {
+        if (aiPlayerActivelySeekingCaptureById === null || aiPlayerActivelySeekingCaptureById === shipIdentifier) {
+            const capturingBossEntity = gameEnemies.find(e => e.id === capturingBossId);
+            if (capturingBossEntity && capturingBossEntity.state === 'capturing') {
+                if (aiPlayerActivelySeekingCaptureById === null) {
+                    aiPlayerActivelySeekingCaptureById = shipIdentifier;
+                }
+                if (aiPlayerActivelySeekingCaptureById === shipIdentifier) {
+                    if (currentTime - (capturingBossEntity.captureStartTime || 0) >= AI_CAPTURE_BEAM_APPROACH_DELAY_MS) {
+                        isMovingToCaptureBeam = true;
+                        const beamCenterX = capturingBossEntity.x + (capturingBossEntity.type === ENEMY3_TYPE ? BOSS_WIDTH : ENEMY_WIDTH) / 2;
+                        desiredTargetX = beamCenterX - effectiveShipWidth / 2;
+                        shouldTryShoot = false;
+                        targetEnemyForAI = null;
+                    } else {
+                        desiredTargetX = targetCenterShipX;
+                        shouldTryShoot = false;
+                        targetEnemyForAI = null;
+                    }
+                }
+            } else {
+                if (aiPlayerActivelySeekingCaptureById === shipIdentifier) {
+                    aiPlayerActivelySeekingCaptureById = null;
+                }
+            }
+        }
+    } else {
+        if (aiPlayerActivelySeekingCaptureById === shipIdentifier && !(canThisAIShipBeCaptured && captureBeamActive && capturingBossId && !isThisShipCaptured) ) {
+             aiPlayerActivelySeekingCaptureById = null;
+        }
+    }
+
+
+    if (!isDodgingThreat && !isMovingToCaptureBeam && !isShipDual) {
+        const ownFallingShip = gameFallingShips.find(fs => fs.targetPlayerId === shipIdentifier && !fs.landed);
+        if (ownFallingShip) {
+            isMovingForOwnFallingShip = true;
+            desiredTargetX = ownFallingShip.x + ownFallingShip.width / 2 - effectiveShipWidth / 2;
+            shouldTryShoot = false;
+            targetEnemyForAI = null;
+        }
+    }
+
+    if (!isDodgingThreat && !isMovingToCaptureBeam && !isMovingForOwnFallingShip && !isTargetingCapturedPartnerBoss) {
+        let bestTargetScore = -Infinity;
+        let localShouldTryShoot = false;
+        let localTargetEnemyForAI = null;
+
+        for (const enemy of gameEnemies) {
+            if (!enemy) continue;
+
+            if (!allowTargetingCapturedPartnerBoss && bossHoldingPartner && enemy.id === bossHoldingPartner.id) {
+                continue;
+            }
+
+            if (isMovingToCaptureBeam && enemy.id === capturingBossId && aiPlayerActivelySeekingCaptureById === shipIdentifier) {
+                continue;
+            }
+
+            let isBossWithNeutralShipAndAILowLife = false;
+            if (enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip && livesOfThisAIShip <= 1) {
+                 const isPartnerBoss = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && enemy.id === capturedBossIdWithMessage && otherPlayerIsActuallyCaptured;
+                 if (!isPartnerBoss) {
+                    isBossWithNeutralShipAndAILowLife = true;
+                 }
+            }
+            let currentScore = 0;
+            const enemyCenterX = enemy.x + enemy.width/2;
+            const dx = enemyCenterX - shipCenterX;
+            const dy = shipTopY - (enemy.y + enemy.height);
+            if (dy < 0 && enemy.state !== 'attacking' && enemy.state !== 'diving_to_capture_position' && enemy.state !== 'following_bezier_path') continue;
+            let laneBonus = 0;
+            if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                if (shipIdentifier === 'p1' && enemyCenterX < gameCanvasWidth / 2) laneBonus = 5000;
+                else if ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') && enemyCenterX >= gameCanvasWidth / 2) laneBonus = 5000;
+            }
+            currentScore = laneBonus + (canvasHeight - enemy.y) * 2 - Math.abs(dx) * 3 - dy;
+            if (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') currentScore += 3000;
+            if (enemy.type === ENEMY3_TYPE && !enemy.isDamaged) currentScore += 2000;
+            if (enemy.type === ENEMY3_TYPE && enemy.isDamaged) currentScore += 4000;
+            if (enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip) {
+                if (!isBossWithNeutralShipAndAILowLife) { currentScore += 5000; }
+                else { currentScore -= 10000; }
+            }
+            if (currentScore > bestTargetScore) {
+                bestTargetScore = currentScore;
+                localTargetEnemyForAI = enemy;
+                let doNotShootThisBossSpecifically = false;
+
+                // <<< GEWIJZIGD: Check canThisAIShipBeCaptured ook hier >>>
+                if (localTargetEnemyForAI.type === ENEMY3_TYPE && !localTargetEnemyForAI.hasCapturedShip && !isFullGridWave) {
+                    if (canThisAIShipBeCaptured && !captureAttemptMadeThisLevel &&
+                        (localTargetEnemyForAI.state === 'in_grid' ||
+                         localTargetEnemyForAI.state === 'preparing_capture' ||
+                         localTargetEnemyForAI.state === 'diving_to_capture_position' ||
+                         localTargetEnemyForAI.state === 'capturing'
+                        )
+                       ) {
+                        if (isMovingToCaptureBeam && localTargetEnemyForAI.id === capturingBossId && aiPlayerActivelySeekingCaptureById === shipIdentifier) {
+                            doNotShootThisBossSpecifically = true;
+                        }
+                        else if (!isMovingToCaptureBeam && aiPlayerActivelySeekingCaptureById !== shipIdentifier){
+                             doNotShootThisBossSpecifically = true;
+                        }
+                    }
+
+                    if (isShipDual) {
+                        const partnerPlayerIdToCheck = (shipIdentifier === 'p1') ? 'ai_p2' : 'p1';
+                        let partnerIsActiveAndNeedsDual = false;
+                        if (partnerPlayerIdToCheck === 'p1') {
+                            if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture && !player1IsDualShipActive) {
+                                partnerIsActiveAndNeedsDual = true;
+                            }
+                        } else {
+                            if (ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture && !player2IsDualShipActive) {
+                                partnerIsActiveAndNeedsDual = true;
+                            }
+                        }
+                        if (partnerIsActiveAndNeedsDual) {
+                            doNotShootThisBossSpecifically = true;
+                        }
+                    }
+                }
+
+
+                if (isBossWithNeutralShipAndAILowLife && localTargetEnemyForAI === enemy) {
+                     if (Math.abs(shipCenterX - (localTargetEnemyForAI.x + localTargetEnemyForAI.width / 2)) < effectiveShipWidth * 1.1) { localShouldTryShoot = true; }
+                     else { localShouldTryShoot = false; }
+                } else if (doNotShootThisBossSpecifically) {
+                    localShouldTryShoot = false;
+                } else if (Math.abs(shipCenterX - (localTargetEnemyForAI.x + localTargetEnemyForAI.width / 2)) < effectiveShipWidth * 0.9) {
+                    localShouldTryShoot = true;
+                } else {
+                    localShouldTryShoot = false;
+                }
+            }
+        }
+        targetEnemyForAI = localTargetEnemyForAI;
+        shouldTryShoot = localShouldTryShoot;
+
+
+        if (targetEnemyForAI) {
+            let isTargetBossWithNeutralShipAndAILowLife = false;
+            if (targetEnemyForAI.type === ENEMY3_TYPE && targetEnemyForAI.hasCapturedShip && livesOfThisAIShip <= 1) {
+                const isPartnerBoss = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && targetEnemyForAI.id === capturedBossIdWithMessage && otherPlayerIsActuallyCaptured;
+                if (!isPartnerBoss) {
+                    isTargetBossWithNeutralShipAndAILowLife = true;
+                }
+            }
+            if (isTargetBossWithNeutralShipAndAILowLife) {
+                desiredTargetX = targetCenterShipX;
+            } else {
+                const enemyCenterX = targetEnemyForAI.x + targetEnemyForAI.width / 2;
+                desiredTargetX = enemyCenterX - effectiveShipWidth / 2;
+            }
+        } else {
+            desiredTargetX = targetCenterShipX;
+            shouldTryShoot = false;
+        }
+    }
+
+    if (isMovingToCaptureBeam && aiPlayerActivelySeekingCaptureById === shipIdentifier) {
+        shouldTryShoot = false;
+        targetEnemyForAI = null;
+    }
+
+    desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
+    return { desiredTargetX, shouldTryShoot, targetEnemyForAI };
+}
+
+
+// --- EINDE deel 5      van 8 dit codeblok ---
+// --- END OF FILE game_logic.js ---
+
+
+
+
+
+
+// --- START OF FILE game_logic.js ---
+// --- DEEL 6      van 8 dit code blok    --- (Focus: Enemy Attack Selection & Capture Trigger)
+
+function findAndDetachEnemy() {
+    try {
+        let aShipIsCapturedInGame = false;
+        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+            aShipIsCapturedInGame = isPlayer1ShipCaptured || isPlayer2ShipCaptured;
+        } else {
+            aShipIsCapturedInGame = isShipCaptured;
+        }
+
+        if (!isFullGridWave && aShipIsCapturedInGame) {
+            const bossWithShip = enemies.find(e => e && e.type === ENEMY3_TYPE && e.hasCapturedShip && e.state === 'in_grid');
+            if (bossWithShip) {
+                bossWithShip.justReturned = true;
+                bossWithShip.attackType = 'normal';
+                const attackGroupIds = new Set([bossWithShip.id]);
+                resetJustReturnedFlags(attackGroupIds);
+                return [bossWithShip];
+            }
+        }
+
+        if (isEntrancePhaseActive) { return null; }
+        let availableGridEnemies = enemies.filter(e => e && e.state === 'in_grid' && !e.justReturned); if (availableGridEnemies.length === 0) { availableGridEnemies = enemies.filter(e => e && e.state === 'in_grid'); if (availableGridEnemies.length === 0) { return null; } } if (availableGridEnemies.length === 0) { return null; }
+        availableGridEnemies.sort((a, b) => (b.gridRow || 0) - (a.gridRow || 0)); const isForcedAttackScenario = availableGridEnemies.length <= 3; let attackGroup = []; const selectedAttackType = 'normal';
+        if (gridJustCompleted) { gridJustCompleted = false; }
+        let groupSelected = false;
+        if (level > 1 && !isForcedAttackScenario && availableGridEnemies.length >= 3) { const bossesForTriple = availableGridEnemies.filter(e => e.type === ENEMY3_TYPE && !e.hasCapturedShip); for (const boss of bossesForTriple) { const escortLeft = availableGridEnemies.find(e => e.type === ENEMY2_TYPE && e.gridRow === boss.gridRow && e.gridCol === boss.gridCol - 1); const escortRight = availableGridEnemies.find(e => e.type === ENEMY2_TYPE && e.gridRow === boss.gridRow && e.gridCol === boss.gridCol + 1); if (escortLeft && escortRight) { attackGroup = [boss, escortLeft, escortRight]; groupSelected = true; break; } } }
+        if (!groupSelected && !isForcedAttackScenario) { const availableBees = availableGridEnemies.filter(e => e.type === ENEMY1_TYPE); const beeGroupAttackChance = scaleValue(level, BASE_BEE_GROUP_ATTACK_PROBABILITY, MAX_BEE_GROUP_ATTACK_PROBABILITY) * 1.2; if (availableBees.length >= 2 && Math.random() < beeGroupAttackChance) { const beeTripleChance = scaleValue(level, BASE_BEE_TRIPLE_ATTACK_PROBABILITY, MAX_BEE_TRIPLE_ATTACK_PROBABILITY) * 1.1; const targetGroupSize = (availableBees.length >= 3 && Math.random() < beeTripleChance) ? 3 : 2; let foundCoordinatedGroup = false; availableBees.sort(() => Math.random() - 0.5); for (let i = 0; i < availableBees.length; i++) { const leaderBee = availableBees[i]; let potentialGroup = [leaderBee]; const neighbors = availableBees.filter(b => b.id !== leaderBee.id && b.gridRow === leaderBee.gridRow); neighbors.sort((a, b) => Math.abs(a.gridCol - leaderBee.gridCol) - Math.abs(b.gridCol - leaderBee.gridCol)); for(let j = 0; j < neighbors.length && potentialGroup.length < targetGroupSize; j++){ potentialGroup.push(neighbors[j]); } if (potentialGroup.length === targetGroupSize) { attackGroup = potentialGroup; groupSelected = true; foundCoordinatedGroup = true; break; } } if (!foundCoordinatedGroup && availableBees.length >= targetGroupSize) { attackGroup = availableBees.slice(0, targetGroupSize); groupSelected = true; } } }
+        if (!groupSelected && !isForcedAttackScenario) { const availableButterflies = availableGridEnemies.filter(e => e.type === ENEMY2_TYPE); const butterflyGroupAttackChance = 0.2; if (availableButterflies.length >= 2 && Math.random() < butterflyGroupAttackChance) { const targetGroupSize = 2; let foundCoordinatedGroup = false; availableButterflies.sort(() => Math.random() - 0.5); for (let i = 0; i < availableButterflies.length; i++) { const leader = availableButterflies[i]; let potentialGroup = [leader]; const neighbors = availableButterflies.filter(b => b.id !== leader.id && b.gridRow === leader.gridRow); neighbors.sort((a, b) => Math.abs(a.gridCol - leader.gridCol) - Math.abs(b.gridCol - leader.gridCol)); for(let j = 0; j < neighbors.length && potentialGroup.length < targetGroupSize; j++){ potentialGroup.push(neighbors[j]); } if (potentialGroup.length === targetGroupSize) { attackGroup = potentialGroup; groupSelected = true; foundCoordinatedGroup = true; break; } } if (!foundCoordinatedGroup && availableButterflies.length >= targetGroupSize) { attackGroup = availableButterflies.slice(0, targetGroupSize); groupSelected = true; } } }
+        if (!groupSelected && availableGridEnemies.length > 0) { const chosenEnemy = availableGridEnemies[0]; attackGroup.push(chosenEnemy); if (availableGridEnemies.length > 1 && !isForcedAttackScenario && Math.random() < 0.2) { const partnerLeft = availableGridEnemies.find(e => e.id !== chosenEnemy.id && e.gridRow === chosenEnemy.gridRow && e.gridCol === chosenEnemy.gridCol - 1); const partnerRight = availableGridEnemies.find(e => e.id !== chosenEnemy.id && e.gridRow === chosenEnemy.gridRow && e.gridCol === chosenEnemy.gridCol + 1); const potentialPartner = partnerLeft || partnerRight; if (potentialPartner) { const bothAreBosses = chosenEnemy.type === ENEMY3_TYPE && potentialPartner.type === ENEMY3_TYPE; if (!bothAreBosses) { attackGroup.push(potentialPartner); } } } groupSelected = true; }
+        if (attackGroup.length > 0) { attackGroup = attackGroup.filter(e => e); if (attackGroup.length === 0) { return null; } attackGroup.forEach(enemy => { if (enemy) { enemy.justReturned = true; enemy.attackType = selectedAttackType; } }); const attackGroupIds = new Set(attackGroup.map(e => e.id)); resetJustReturnedFlags(attackGroupIds); return attackGroup; }
+        return null;
+    } catch (e) { console.error("Error in findAndDetachEnemy:", e); return null; }
+}
+
+
+/**
+ * Start direct een capture dive als aan voorwaarden voldaan is.
+ */
+function triggerImmediateCaptureDive() {
+    try {
+        let canAttemptCapture = false;
+        let targetPlayerShipForDive = null;
+
+        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+            const p1CanBeTargeted = ship1 && player1Lives > 1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn;
+            const p2CanBeTargeted = ship2 && player2Lives > 1 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn;
+
+            // In CO-OP Demo, we staan een poging toe zolang `captureAttemptMadeThisLevel` false is,
+            // zelfs als de vorige geselecteerde boss sneuvelde.
+            // De vlag wordt pas true als een beam daadwerkelijk activeert.
+            if ((p1CanBeTargeted || p2CanBeTargeted) && !captureAttemptMadeThisLevel) {
+                canAttemptCapture = true;
+                if (p1CanBeTargeted && p2CanBeTargeted) {
+                    targetPlayerShipForDive = Math.random() < 0.5 ? ship1 : ship2;
+                } else if (p1CanBeTargeted) {
+                    targetPlayerShipForDive = ship1;
+                } else if (p2CanBeTargeted) {
+                    targetPlayerShipForDive = ship2;
+                }
+            }
+        } else {
+            if (playerLives > 1 && ship && !isShipCaptured && !isWaitingForRespawn && !captureAttemptMadeThisLevel) {
+                canAttemptCapture = true;
+                targetPlayerShipForDive = ship;
+            }
+        }
+
+        if (isChallengingStage || !canAttemptCapture || !targetPlayerShipForDive) {
+            return;
+        }
+
+        const potentialCapturingBosses = enemies.filter(e =>
+            e && e.state === 'in_grid' && e.type === ENEMY3_TYPE && !e.hasCapturedShip && !e.isPreparingForImmediateCapture
+        );
+
+        if (potentialCapturingBosses.length > 0) {
+            const chosenBoss = potentialCapturingBosses[Math.floor(Math.random() * potentialCapturingBosses.length)];
+            const now = Date.now();
+
+            // Markeer deze boss als geselecteerd, maar zet captureAttemptMadeThisLevel nog NIET.
+            chosenBoss.isPreparingForImmediateCapture = true;
+
+            chosenBoss.justReturned = true; // Voorkom dat hij direct weer aanvalt als dit mislukt
+            const attackGroupIds = new Set([chosenBoss.id]);
+            resetJustReturnedFlags(attackGroupIds);
+
+            const diveTargetXPos = targetPlayerShipForDive.x + targetPlayerShipForDive.width / 2;
+            const diveSide = (diveTargetXPos < gameCanvas.width / 2) ? 'right' : 'left';
+            const targetX = diveSide === 'left'
+                ? gameCanvas.width * CAPTURE_DIVE_SIDE_MARGIN_FACTOR
+                : gameCanvas.width * (1 - CAPTURE_DIVE_SIDE_MARGIN_FACTOR) - BOSS_WIDTH;
+            const targetY = gameCanvas.height * CAPTURE_DIVE_BOTTOM_HOVER_Y_FACTOR;
+
+            chosenBoss.state = 'preparing_capture';
+            chosenBoss.targetX = targetX;
+            chosenBoss.targetY = targetY;
+            chosenBoss.diveStartTime = now; // diveStartTime wordt gebruikt om de beam te timen in moveEntities
+            playSound('bossGalagaDiveSound', false, 0.2);
+            const leaderId = chosenBoss.id;
+
+            chosenBoss.capturePrepareTimeout = setTimeout(() => {
+                const currentEnemy = enemies.find(e => e?.id === leaderId);
+                if (currentEnemy && currentEnemy.state === 'preparing_capture') {
+                    currentEnemy.state = 'diving_to_capture_position';
+                }
+                if(currentEnemy) currentEnemy.capturePrepareTimeout = null;
+                const timeoutIndex = enemySpawnTimeouts.findIndex(tId => tId === chosenBoss.capturePrepareTimeout); // Moet capturePrepareTimeout van de boss zijn
+                if (timeoutIndex > -1) enemySpawnTimeouts.splice(timeoutIndex, 1);
+            }, 300);
+            enemySpawnTimeouts.push(chosenBoss.capturePrepareTimeout);
+        }
+    } catch (e) {
+        console.error("Error in triggerImmediateCaptureDive:", e);
+    }
+}
+
+
+/**
+ * Resets justReturned flag for other grid enemies. (Nu met Set<string> of null)
+ * <<< GEWIJZIGD: Parameter type aangepast in commentaar en logica >>>
+ * @param {Set<string>|string|null} excludedIds - ID(s) to exclude. Set for multiple, string for single, null for none.
+ */
+function resetJustReturnedFlags(excludedIds) {
+    enemies.forEach(e => {
+        let exclude = false;
+        if (excludedIds instanceof Set) {
+            exclude = excludedIds.has(e.id);
+        } else if (typeof excludedIds === 'string') {
+            exclude = (e.id === excludedIds);
+        }
+        if (e && e.state === 'in_grid' && e.justReturned && !exclude) {
+            e.justReturned = false;
+        }
+    });
+}
+
+// --- EINDE deel 6      van 8 dit codeblok ---
+// --- END OF FILE game_logic.js ---
+
+
+
+
+
+
+
+
+
+// --- START OF FILE game_logic.js ---
+// --- DEEL 7      van 8 dit code blok    ---
+
+function updateFloatingScores() { if (isPaused) return; try { const now = Date.now(); floatingScores = floatingScores.filter(fs => (now - fs.creationTime < FLOATING_SCORE_DURATION + FLOATING_SCORE_APPEAR_DELAY)); } catch (e) { console.error("Error updating floating scores:", e); floatingScores = []; } }
+
+/** Update de positie en alpha van alle actieve explosie deeltjes. */
+function updateExplosions() { if (isPaused) return; try { const now = Date.now(); for (let i = explosions.length - 1; i >= 0; i--) { const explosion = explosions[i]; const elapsedTime = now - explosion.creationTime; if (elapsedTime > explosion.duration) { explosions.splice(i, 1); continue; } explosion.particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.alpha = Math.max(0, 1.0 - (elapsedTime / explosion.duration) * EXPLOSION_FADE_SPEED); }); } } catch (e) { console.error("Error updating explosions:", e); explosions = []; } }
+
+
+// --- Functie moveEntities: Update posities en states van alle entiteiten ---
+function moveEntities(overrideP1Left = null, overrideP1Right = null) {
+    if (isPaused) return;
+    try {
+        const now = Date.now();
+        const shipBaseY  = gameCanvas ? gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN : 500;
+
+        // --- Ship Movement (CO-OP, 1P, AI) ---
+        // Keyboard/Gamepad beweging (als touch niet actief is voor beweging)
+        if (gameCanvas && !isTouchActiveGame) { // Alleen keyboard/gamepad beweging als touch NIET actief is.
+            if (isManualControl) {
+                if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                    // P1 (mens) beweging via keyboard/gamepad
+                    if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) {
+                        const p1EffectiveWidth = ship1.width + (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
+                        if (leftPressed) ship1.x -= ship1.speed;
+                        if (rightPressed) ship1.x += ship1.speed;
+                        ship1.x = Math.max(0, Math.min(gameCanvas.width - p1EffectiveWidth, ship1.x));
+                        ship1.targetX = ship1.x;
+                    }
+                    // P2 (mens) beweging via keyboard/gamepad (als geen AI)
+                    if (!isPlayerTwoAI && ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture) {
+                        const p2EffectiveWidth = ship2.width + (player2IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
+                        if (p2LeftPressed) ship2.x -= ship2.speed;
+                        if (p2RightPressed) ship2.x += ship2.speed;
+                        ship2.x = Math.max(0, Math.min(gameCanvas.width - p2EffectiveWidth, ship2.x));
+                        ship2.targetX = ship2.x;
+                    }
+                } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+                    if (ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && gameOverSequenceStartTime === 0) {
+                        if (!isPlayerTwoAI || (isPlayerTwoAI && currentPlayer === 1) ) { // Alleen als P1 (mens) aan de beurt is in 1P vs AI
+                            const effectiveWidth = ship.width + (isDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
+                            let useOverrideLeft = false; let useOverrideRight = false;
+                            if (isManualControl && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && currentPlayer === 1 && isShowingIntro) {
+                                if(overrideP1Left !== null) useOverrideLeft = overrideP1Left;
+                                if(overrideP1Right !== null) useOverrideRight = overrideP1Right;
+                            }
+
+                            if (useOverrideLeft || leftPressed) ship.x -= ship.speed;
+                            if (useOverrideRight || rightPressed) ship.x += ship.speed;
+                            ship.x = Math.max(0, Math.min(gameCanvas.width - effectiveWidth, ship.x));
+                            ship.targetX = ship.x;
+                        }
+                    }
+                }
+            }
+        }
+        // Touch beweging wordt direct in handlePlayerInput afgehandeld door ship.x te zetten.
+
+        // AI Control Movement (Demo modes & AI P2 in 1P vs AI Normal & AI in CO-OP modes)
+        // Dit blijft nodig voor de AI-gestuurde schepen.
+        if (!isManualControl ||
+            (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) ||
+            (isCoopAIDemoActive) ||
+            (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') ) {
+
+            if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                // AI P1 in COOP AI Demo
+                if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) {
+                    const moveDifference1 = ship1.targetX - ship1.x;
+                    let effectiveShipSpeed1 = ship1.speed * AI_POSITION_MOVE_SPEED_FACTOR;
+                    if (Math.abs(moveDifference1) > AI_MOVEMENT_DEADZONE) ship1.x += Math.sign(moveDifference1) * Math.min(Math.abs(moveDifference1), effectiveShipSpeed1);
+                    const aiEffectiveWidth1 = ship1.width + (player1IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
+                    ship1.x = Math.max(0, Math.min(gameCanvas.width - aiEffectiveWidth1, ship1.x));
+                }
+                // AI P2 in COOP AI Demo OF 1P vs AI COOP
+                if (ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture) {
+                    const moveDifference2 = ship2.targetX - ship2.x;
+                    let effectiveShipSpeed2 = ship2.speed * AI_POSITION_MOVE_SPEED_FACTOR;
+                    if (Math.abs(moveDifference2) > AI_MOVEMENT_DEADZONE) ship2.x += Math.sign(moveDifference2) * Math.min(Math.abs(moveDifference2), effectiveShipSpeed2);
+                    const aiEffectiveWidth2 = ship2.width + (player2IsDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
+                    ship2.x = Math.max(0, Math.min(gameCanvas.width - aiEffectiveWidth2, ship2.x));
+                }
+            } else if (ship) { // Standaard 1P AI Demo OF AI P2 in 1P vs AI Normal
+                if (playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && gameOverSequenceStartTime === 0) {
+                    const moveDifference = ship.targetX - ship.x;
+                    let effectiveShipSpeed = ship.speed * AI_POSITION_MOVE_SPEED_FACTOR;
+                    if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
+                        effectiveShipSpeed = ship.speed * (AI_POSITION_MOVE_SPEED_FACTOR * 1.15);
+                    }
+
+                    if (Math.abs(moveDifference) > AI_MOVEMENT_DEADZONE) {
+                        ship.x += Math.sign(moveDifference) * Math.min(Math.abs(moveDifference), effectiveShipSpeed);
+                    }
+                    const aiEffectiveWidth = ship.width + (isDualShipActive ? DUAL_SHIP_OFFSET_X : 0);
+                    ship.x = Math.max(0, Math.min(gameCanvas.width - aiEffectiveWidth, ship.x));
+                }
+            }
+        }
+
+
+        // --- Respawn Timers & Invincibility End Checks ---
+        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+            if (isPlayer1WaitingForRespawn && now >= player1RespawnTime) isPlayer1WaitingForRespawn = false;
+            if (isPlayer1Invincible && now >= player1InvincibilityEndTime) isPlayer1Invincible = false;
+            if (isPlayer2WaitingForRespawn && now >= player2RespawnTime) isPlayer2WaitingForRespawn = false;
+            if (isPlayer2Invincible && now >= player2InvincibilityEndTime) isPlayer2Invincible = false;
+        } else { // Geldt voor 1P classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+            if (isWaitingForRespawn && now >= respawnTime) isWaitingForRespawn = false;
+            if (isInvincible && now >= invincibilityEndTime) isInvincible = false;
+        }
+
+        // Move Player Bullets & Collision with Enemies
+        for (let i = bullets.length - 1; i >= 0; i--) {
+            const b = bullets[i]; if (!b) { bullets.splice(i, 1); continue; }
+            b.y -= b.speed; if (b.y + PLAYER_BULLET_HEIGHT < 0) { bullets.splice(i, 1); continue; }
+            for (let j = enemies.length - 1; j >= 0; j--) {
+                const enemy = enemies[j]; if (!enemy) { enemies.splice(j,1); continue; }
+                const enemyRect = { x: enemy.x, y: enemy.y, width: (enemy.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((enemy.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH), height: (enemy.type === ENEMY3_TYPE) ? BOSS_HEIGHT : ((enemy.type === ENEMY1_TYPE) ? ENEMY1_HEIGHT : ENEMY_HEIGHT) };
+                const bulletRect = { x: b.x, y: b.y, width: b.width, height: b.height };
+                if (checkCollision(bulletRect, enemyRect)) { bullets.splice(i, 1); const hitResult = handleEnemyHit(enemy, b.playerId); if (hitResult.destroyed) enemies.splice(j, 1); break; }
+            }
+        }
+
+        // Move Enemy Bullets
+        for (let i = enemyBullets.length - 1; i >= 0; i--) { const eb = enemyBullets[i]; if (!eb) { enemyBullets.splice(i, 1); continue; } eb.x += eb.vx; eb.y += eb.vy; if (eb.y > gameCanvas.height || eb.y < -ENEMY_BULLET_HEIGHT || eb.x < -ENEMY_BULLET_WIDTH || eb.x > gameCanvas.width) { enemyBullets.splice(i, 1); } }
+
+        // Move Falling Ships
+        const TARGET_FALLING_SHIP_Y = gameCanvas ? gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN : 500;
+        const MAX_FALLING_SHIP_ROTATIONS = 2;
+        for (let i = fallingShips.length - 1; i >= 0; i--) {
+            const fs = fallingShips[i]; if (!fs) { fallingShips.splice(i,1); continue; }
+            let dockedThisFrame = false;
+            if (!fs.landed) {
+                fs.y += FALLING_SHIP_SPEED;
+                if (fs.y >= TARGET_FALLING_SHIP_Y) {
+                    fs.y = TARGET_FALLING_SHIP_Y; fs.landed = true; fs.landedTime = now;
+                    if (!fs.rotationCompleted) { fs.rotation = 0; fs.rotationCompleted = true; }
+
+                    let rescuingPlayerShipObject = null;
+                    let setDualShipForRescuer = () => {};
+                    let rescuerAlreadyDual = false;
+                    let playerShipIsCurrentlyCaptured = false;
+                    let rescuerIsActiveAndExists = false;
+                    let rescuerPlayerId = null;
+
+                    if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) { // <<<< GEWIJZIGD
+                        if (fs.targetPlayerId === 'player1' && ship1 && player1Lives > 0) {
+                            rescuingPlayerShipObject = ship1;
+                            rescuerAlreadyDual = player1IsDualShipActive;
+                            setDualShipForRescuer = () => { player1IsDualShipActive = true; };
+                            rescuerIsActiveAndExists = true;
+                            rescuerPlayerId = 'player1';
+                        } else if ((fs.targetPlayerId === 'player2' || fs.targetPlayerId === 'ai_p2') && ship2 && player2Lives > 0) { // <<<< GEWIJZIGD
+                            rescuingPlayerShipObject = ship2;
+                            rescuerAlreadyDual = player2IsDualShipActive;
+                            setDualShipForRescuer = () => { player2IsDualShipActive = true; };
+                            rescuerIsActiveAndExists = true;
+                            rescuerPlayerId = (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') ? 'ai_p2' : 'player2'; // <<<< GEWIJZIGD
+                        }
+                    } else { // Human COOP (niet 1P vs AI COOP)
+                        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                            if (fs.targetPlayerId === 'player1' && ship1 && player1Lives > 0 ) { rescuingPlayerShipObject = ship1; rescuerAlreadyDual = player1IsDualShipActive; playerShipIsCurrentlyCaptured = isPlayer1ShipCaptured; setDualShipForRescuer = () => { player1IsDualShipActive = true; isPlayer1ShipCaptured = false;}; rescuerIsActiveAndExists = true; rescuerPlayerId = 'player1';}
+                            else if (fs.targetPlayerId === 'player2' && ship2 && player2Lives > 0 ) { rescuingPlayerShipObject = ship2; rescuerAlreadyDual = player2IsDualShipActive; playerShipIsCurrentlyCaptured = isPlayer2ShipCaptured; setDualShipForRescuer = () => { player2IsDualShipActive = true; isPlayer2ShipCaptured = false;}; rescuerIsActiveAndExists = true; rescuerPlayerId = 'player2';}
+                        } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+                            if (ship && playerLives > 0 ) {
+                                rescuingPlayerShipObject = ship;
+                                rescuerAlreadyDual = isDualShipActive;
+                                playerShipIsCurrentlyCaptured = isShipCaptured;
+                                setDualShipForRescuer = () => {
+                                    isDualShipActive = true;
+                                    if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                                        if (currentPlayer === 1) player1IsDualShipActive = true; else player2IsDualShipActive = true;
+                                    } else if (!isTwoPlayerMode) player1IsDualShipActive = true;
+                                    isShipCaptured = false;
+                                };
+                                rescuerIsActiveAndExists = true;
+                                rescuerPlayerId = (isTwoPlayerMode && selectedGameMode === 'normal') ? String(currentPlayer) : 'player1';
+                            }
+                        }
+                    }
+
+                    if (rescuerIsActiveAndExists && !rescuerAlreadyDual) {
+                        setDualShipForRescuer();
+                        playSound('dualShipSound', false, 0.4);
+                        if (playerShipIsCurrentlyCaptured && !(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'))) { // <<<< GEWIJZIGD
+                            if (rescuerPlayerId === 'player1' && ship1) { isPlayer1Invincible = true; player1InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
+                            else if (rescuerPlayerId === 'player2' && ship2) { isPlayer2Invincible = true; player2InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
+                            else if (ship) { isInvincible = true; invincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
+                        }
+                        fallingShips.splice(i, 1); dockedThisFrame = true; continue;
+                    } else if (rescuerIsActiveAndExists && rescuerAlreadyDual) {
+                        fallingShips.splice(i, 1); dockedThisFrame = true; continue;
+                    } else {
+                        fallingShips.splice(i, 1); dockedThisFrame = true; continue;
+                    }
+                }
+            }
+            if(dockedThisFrame) continue;
+            const elapsedFadeTime = now - fs.creationTime; if (elapsedFadeTime < FALLING_SHIP_FADE_DURATION_MS) fs.tintProgress = Math.max(0, 1.0 - (elapsedFadeTime / FALLING_SHIP_FADE_DURATION_MS)); else fs.tintProgress = 0;
+            if (fs.rotationCompleted) fs.rotation = 0; else if (!fs.landed && typeof fs.rotationDirection === 'number' && typeof FALLING_SHIP_ROTATION_SPEED === 'number' && FALLING_SHIP_ROTATION_SPEED > 0) { const rotationIncrement = FALLING_SHIP_ROTATION_SPEED * fs.rotationDirection; fs.rotation += rotationIncrement; fs.totalRotation += Math.abs(rotationIncrement); if (fs.totalRotation >= (MAX_FALLING_SHIP_ROTATIONS * 2 * Math.PI)) { fs.rotation = 0; fs.rotationCompleted = true; } else { if (fs.rotation > Math.PI * 2) fs.rotation -= Math.PI * 2; if (fs.rotation < 0) fs.rotation += Math.PI * 2; } } else fs.rotation = fs.rotation || 0;
+
+            if (!fs.landed) {
+                let targetShipForDocking = null, setDualShipFlagEarly = () => {}, playerNumForDocking = 0, playerShipCapturedStateForEarlyDock = false, isTargetShipDualAlready = false;
+                 if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) { // <<<< GEWIJZIGD
+                    if (fs.targetPlayerId === 'player1' && ship1 && player1Lives > 0) {
+                        targetShipForDocking = ship1;
+                        isTargetShipDualAlready = player1IsDualShipActive;
+                        setDualShipFlagEarly = () => { if (!isTargetShipDualAlready) player1IsDualShipActive = true; };
+                        playerNumForDocking = 1;
+                    } else if ((fs.targetPlayerId === 'player2' || fs.targetPlayerId === 'ai_p2') && ship2 && player2Lives > 0) { // <<<< GEWIJZIGD
+                        targetShipForDocking = ship2;
+                        isTargetShipDualAlready = player2IsDualShipActive;
+                        setDualShipFlagEarly = () => { if (!isTargetShipDualAlready) player2IsDualShipActive = true; };
+                        playerNumForDocking = 2;
+                    }
+                } else if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                    if (fs.targetPlayerId === 'player1' && ship1 && player1Lives > 0 ) {
+                        targetShipForDocking = ship1;
+                        playerShipCapturedStateForEarlyDock = isPlayer1ShipCaptured;
+                        isTargetShipDualAlready = player1IsDualShipActive;
+                        setDualShipFlagEarly = () => { if (!isTargetShipDualAlready) player1IsDualShipActive = true; isPlayer1ShipCaptured = false; };
+                        playerNumForDocking = 1;
+                    } else if (fs.targetPlayerId === 'player2' && ship2 && player2Lives > 0 ) {
+                        targetShipForDocking = ship2;
+                        playerShipCapturedStateForEarlyDock = isPlayer2ShipCaptured;
+                        isTargetShipDualAlready = player2IsDualShipActive;
+                        setDualShipFlagEarly = () => { if (!isTargetShipDualAlready) player2IsDualShipActive = true; isPlayer2ShipCaptured = false; };
+                        playerNumForDocking = 2;
+                    }
+                } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+                    if (ship && playerLives > 0 ) {
+                        targetShipForDocking = ship;
+                        playerShipCapturedStateForEarlyDock = isShipCaptured;
+                        isTargetShipDualAlready = isDualShipActive;
+                        setDualShipFlagEarly = () => {
+                            if (!isTargetShipDualAlready) {
+                                isDualShipActive = true;
+                                if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                                    if (currentPlayer === 1) player1IsDualShipActive = true; else player2IsDualShipActive = true;
+                                } else if (!isTwoPlayerMode) player1IsDualShipActive = true;
+                            }
+                            isShipCaptured = false;
+                        };
+                        playerNumForDocking = (isTwoPlayerMode && selectedGameMode === 'normal') ? currentPlayer : 1;
+                    }
+                }
+                if (targetShipForDocking && !isTargetShipDualAlready) {
+                    const fallingShipRect = { x: fs.x, y: fs.y, width: fs.width, height: fs.height };
+                    const playerShipRect = { x: targetShipForDocking.x, y: targetShipForDocking.y, width: targetShipForDocking.width, height: targetShipForDocking.height };
+                    if (checkCollision(fallingShipRect, playerShipRect)) {
+                        setDualShipFlagEarly();
+                        if (playerShipCapturedStateForEarlyDock && !(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'))) { // <<<< GEWIJZIGD
+                            playSound('dualShipSound', false, 0.4);
+                            if (playerNumForDocking === 1 && ship1) { isPlayer1Invincible = true; player1InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS ; }
+                            else if (playerNumForDocking === 2 && ship2) { isPlayer2Invincible = true; player2InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
+                            else if (playerNumForDocking !== 0 && ship) { isInvincible = true; invincibilityEndTime = now + INVINCIBILITY_DURATION_MS; }
+                        } else {
+                            playSound('dualShipSound', false, 0.4);
+                        }
+                        fallingShips.splice(i, 1); continue;
+                    }
+                }
+            }
+            if (!fs.landed && fs.y >= gameCanvas.height) fallingShips.splice(i, 1);
+        }
+
+        // Grid Movement
+        let gridHorizontalShift = 0; const gridEnemiesPresent = enemies.some(e => e?.state === 'in_grid'); const gridShouldBeMoving = !isChallengingStage && !isWaveTransitioning && gridEnemiesPresent && !isShowingPlayerGameOverMessage && !(isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage)); if (gridShouldBeMoving) { if (!isGridSoundPlaying) { isGridSoundPlaying = true; playSound('gridBackgroundSound', true, 0.1); } const gridEnemiesList = enemies.filter(e => e?.state === 'in_grid'); if (gridEnemiesList.length > 0) { let minX = gameCanvas.width, maxX = 0; gridEnemiesList.forEach(enemy => { if (enemy) { minX = Math.min(minX, enemy.x); maxX = Math.max(maxX, enemy.x + enemy.width); } }); const leftBoundary = gameCanvas.width * GRID_HORIZONTAL_MARGIN_PERCENT; const rightBoundary = gameCanvas.width * (1 - GRID_HORIZONTAL_MARGIN_PERCENT); if (gridMoveDirection === 1 && maxX >= rightBoundary) gridMoveDirection = -1; else if (gridMoveDirection === -1 && minX <= leftBoundary) gridMoveDirection = 1; const effectiveGridMoveSpeed = scaleValue(level, BASE_GRID_MOVE_SPEED, MAX_GRID_MOVE_SPEED); gridHorizontalShift = effectiveGridMoveSpeed * gridMoveDirection; currentGridOffsetX += gridHorizontalShift; enemies.forEach(e => { if (e && (e.state === 'returning' || e.state === 'in_grid' || e.state === 'moving_to_grid')) { try { const enemyWidthForGrid = (e.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((e.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH); const { x: newTargetX, y: newTargetY } = getCurrentGridSlotPosition(e.gridRow, e.gridCol, enemyWidthForGrid); e.targetGridX = newTargetX; e.targetGridY = newTargetY; } catch (gridPosError) { console.error(`Error updating target grid pos for enemy ${e?.id} (state: ${e?.state}) during shift:`, gridPosError); } } }); } } else { if (isGridSoundPlaying) { stopSound('gridBackgroundSound'); isGridSoundPlaying = false; } gridHorizontalShift = 0; }
+
+        // Enemy State Machine and Movement
+        for (let i = enemies.length - 1; i >= 0; i--) {
+             let enemy = enemies[i]; if (!enemy) { enemies.splice(i,1); continue; }
+             const enemyId = enemy.id;
+             if (enemy.capturePrepareTimeout && enemy.state !== 'preparing_capture') { clearTimeout(enemy.capturePrepareTimeout); const timeoutIndex = enemySpawnTimeouts.indexOf(enemy.capturePrepareTimeout); if (timeoutIndex > -1) enemySpawnTimeouts.splice(timeoutIndex, 1); enemy.capturePrepareTimeout = null; }
+             const currentEnemyWidthCorrected = (enemy.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((enemy.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH);
+             const currentEnemyHeightCorrected = (enemy.type === ENEMY3_TYPE) ? BOSS_HEIGHT : ((enemy.type === ENEMY1_TYPE) ? ENEMY1_HEIGHT : ENEMY_HEIGHT);
+
+             switch (enemy.state) {
+                 case 'following_bezier_path': { let pathSpeedFactor = CS_ENTRANCE_PATH_SPEED; const speedMultiplier = enemy.pathSpeedMultiplier || 1.0; pathSpeedFactor *= speedMultiplier; if (!isChallengingStage) { enemies.splice(i, 1); enemy = null; break; } let pathSource = challengingStagePaths; let pathSegments = pathSource[enemy.entrancePathId]; if (!pathSegments || enemy.pathSegmentIndex >= pathSegments.length) { enemies.splice(i, 1); enemy = null; break; } const segmentCS = pathSegments[enemy.pathSegmentIndex]; if (!segmentCS || !segmentCS.p0 || !segmentCS.p1 || !segmentCS.p2 || !segmentCS.p3) { console.error(`Invalid CS Bezier segment ${enemy.pathSegmentIndex} for path ${enemy.entrancePathId}. Enemy ${enemy.id}`); enemies.splice(i, 1); enemy = null; break; } enemy.pathT += pathSpeedFactor; let newX_CS, newY_CS; let oldX_CS = enemy.x, oldY_CS = enemy.y; if (enemy.pathT >= 1.0) { enemy.pathT = 0; enemy.pathSegmentIndex++; if (enemy.pathSegmentIndex >= pathSegments.length) { enemies.splice(i, 1); enemy = null; } else { const nextSegmentCS = pathSegments[enemy.pathSegmentIndex]; if (nextSegmentCS?.p0) { newX_CS = nextSegmentCS.p0.x; newY_CS = nextSegmentCS.p0.y; } else { console.error(`Invalid next CS Bezier segment ${enemy.pathSegmentIndex} for path ${enemy.entrancePathId}. Enemy ${enemyId}`); enemies.splice(i, 1); enemy = null; } } } else { try { newX_CS = calculateBezierPoint(enemy.pathT, segmentCS.p0.x, segmentCS.p1.x, segmentCS.p2.x, segmentCS.p3.x); newY_CS = calculateBezierPoint(enemy.pathT, segmentCS.p0.y, segmentCS.p1.y, segmentCS.p2.y, segmentCS.p3.y); } catch (bezierError) { console.error(`Error calculating CS Bezier point for enemy ${enemyId}:`, bezierError); enemies.splice(i, 1); enemy = null; } } if (enemy) { if (isNaN(newX_CS) || isNaN(newY_CS)) { console.error(`NaN detected in CS path calculation for enemy ${enemyId}. Removing.`); enemies.splice(i, 1); enemy = null; } else { enemy.velocityX = newX_CS - oldX_CS; enemy.velocityY = newY_CS - oldY_CS; enemy.x = newX_CS; enemy.y = newY_CS; } } break; }
+                 case 'following_entrance_path': { if (isChallengingStage) { enemies.splice(i, 1); enemy = null; break; } let pathSource = normalWaveEntrancePaths; let pathSegments = pathSource[enemy.entrancePathId]; let pathSpeedFactor; if (enemy.entrancePathId === 'boss_loop_left' || enemy.entrancePathId === 'boss_loop_right') { pathSpeedFactor = BOSS_LOOP_ENTRANCE_PATH_SPEED; } else { pathSpeedFactor = NORMAL_ENTRANCE_PATH_SPEED; } if (!pathSegments) { console.warn(`Enemy ${enemyId} missing SHARED path ${enemy.entrancePathId}. Switching to moving_to_grid.`); try { enemy.targetGridX = enemy.targetGridX ?? (gameCanvas.width/2); enemy.targetGridY = enemy.targetGridY ?? ENEMY_TOP_MARGIN; } catch(err){ console.error(`Error getting grid pos for ${enemyId} after missing path`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } enemy.state = 'moving_to_grid'; enemy.pathT = 0; enemy.pathSegmentIndex = 0; enemy.velocityX = 0; enemy.velocityY = 0; if (enemy.squadronId !== undefined && squadronCompletionStatus[enemy.squadronId]) { squadronCompletionStatus[enemy.squadronId].completed++; } break; } if (enemy.pathSegmentIndex >= pathSegments.length) { console.warn(`Enemy ${enemyId} path index ${enemy.pathSegmentIndex} out of bounds for SHARED path ${enemy.entrancePathId}. Switching to moving_to_grid.`); try { enemy.targetGridX = enemy.targetGridX ?? (gameCanvas.width/2); enemy.targetGridY = enemy.targetGridY ?? ENEMY_TOP_MARGIN; } catch(err){ console.error(`Error getting grid pos for ${enemyId} after invalid path index`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } enemy.state = 'moving_to_grid'; enemy.pathT = 0; enemy.pathSegmentIndex = 0; enemy.velocityX = 0; enemy.velocityY = 0; if (enemy.squadronId !== undefined && squadronCompletionStatus[enemy.squadronId]) { squadronCompletionStatus[enemy.squadronId].completed++; } break; } const segmentNorm = pathSegments[enemy.pathSegmentIndex]; if (!segmentNorm || !segmentNorm.p0 || !segmentNorm.p1 || !segmentNorm.p2 || !segmentNorm.p3) { console.error(`Invalid Normal Bezier segment ${enemy.pathSegmentIndex} for SHARED path ${enemy.entrancePathId}. Enemy ${enemyId}. Switching to moving_to_grid.`); try { enemy.targetGridX = enemy.targetGridX ?? (gameCanvas.width/2); enemy.targetGridY = enemy.targetGridY ?? ENEMY_TOP_MARGIN + enemy.gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING); } catch(err){ console.error(`Error getting grid pos for ${enemyId} after bad segment`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } enemy.state = 'moving_to_grid'; enemy.pathT = 0; enemy.pathSegmentIndex = 0; enemy.velocityX = 0; enemy.velocityY = 0; if (enemy.squadronId !== undefined && squadronCompletionStatus[enemy.squadronId]) { squadronCompletionStatus[enemy.squadronId].completed++; } break; } enemy.pathT += pathSpeedFactor; let newX_Norm, newY_Norm; let oldX_Norm = enemy.x, oldY_Norm = enemy.y; if (enemy.pathT >= 1.0) { enemy.pathT = 0; enemy.pathSegmentIndex++; if (enemy.pathSegmentIndex >= pathSegments.length) { let finalPathX, finalPathY; try { finalPathX = calculateBezierPoint(1.0, segmentNorm.p0.x, segmentNorm.p1.x, segmentNorm.p2.x, segmentNorm.p3.x); finalPathY = calculateBezierPoint(1.0, segmentNorm.p0.y, segmentNorm.p1.y, segmentNorm.p2.y, segmentNorm.p3.y); } catch(err) { console.error(`Error calculating final bezier point for ${enemyId} at end of normal path ${enemy.entrancePathId}`, err); finalPathX = segmentNorm.p3.x; finalPathY = segmentNorm.p3.y; } enemy.x = finalPathX; enemy.y = finalPathY; try { enemy.targetGridX = enemy.targetGridX ?? (gameCanvas.width/2); enemy.targetGridY = enemy.targetGridY ?? ENEMY_TOP_MARGIN; } catch(err){ console.error(`Error getting target grid pos for ${enemyId} at end of normal path ${enemy.entrancePathId}`, err); enemy.targetGridX = enemy.x; enemy.targetGridY = ENEMY_TOP_MARGIN + enemy.gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING); } const previousState = enemy.state; enemy.state = 'moving_to_grid'; enemy.velocityX = 0; enemy.velocityY = 0; enemy.pathSegmentIndex = 0; if (previousState === 'following_entrance_path' && enemy.squadronId !== undefined && squadronCompletionStatus[enemy.squadronId]) { squadronCompletionStatus[enemy.squadronId].completed++; } break; } else { const nextSegmentNorm = pathSegments[enemy.pathSegmentIndex]; if (nextSegmentNorm?.p0) { newX_Norm = nextSegmentNorm.p0.x; newY_Norm = nextSegmentNorm.p0.y; } else { console.error(`Invalid next Normal Bezier segment ${enemy.pathSegmentIndex} for SHARED path ${enemy.entrancePathId}. Enemy ${enemyId}. Switching to moving_to_grid.`); try { enemy.targetGridX = enemy.targetGridX ?? (gameCanvas.width/2); enemy.targetGridY = enemy.targetGridY ?? ENEMY_TOP_MARGIN; } catch(err){ console.error(`Error getting grid pos for ${enemyId} after bad next segment`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } enemy.state = 'moving_to_grid'; enemy.pathT = 0; enemy.pathSegmentIndex = 0; enemy.velocityX = 0; enemy.velocityY = 0; if (enemy.squadronId !== undefined && squadronCompletionStatus[enemy.squadronId]) { squadronCompletionStatus[enemy.squadronId].completed++; } break; } } } else { try { newX_Norm = calculateBezierPoint(enemy.pathT, segmentNorm.p0.x, segmentNorm.p1.x, segmentNorm.p2.x, segmentNorm.p3.x); newY_Norm = calculateBezierPoint(enemy.pathT, segmentNorm.p0.y, segmentNorm.p1.y, segmentNorm.p2.y, segmentNorm.p3.y); } catch (bezierError) { console.error(`Error calculating Normal Bezier point for enemy ${enemyId}:`, bezierError); try { enemy.targetGridX = enemy.targetGridX ?? (gameCanvas.width/2); enemy.targetGridY = enemy.targetGridY ?? ENEMY_TOP_MARGIN; } catch(err){ console.error(`Error getting grid pos for ${enemyId} after bezier error`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } enemy.state = 'moving_to_grid'; enemy.pathT = 0; enemy.pathSegmentIndex = 0; enemy.velocityX = 0; enemy.velocityY = 0; if (enemy.squadronId !== undefined && squadronCompletionStatus[enemy.squadronId]) { squadronCompletionStatus[enemy.squadronId].completed++; } break; } } if (enemy && enemy.state === 'following_entrance_path') { if (isNaN(newX_Norm) || isNaN(newY_Norm)) { console.error(`NaN detected in Normal path calculation for enemy ${enemyId}. Switching to moving_to_grid.`); try { enemy.targetGridX = enemy.targetGridX ?? (gameCanvas.width/2); enemy.targetGridY = enemy.targetGridY ?? ENEMY_TOP_MARGIN; } catch(err){ console.error(`Error getting grid pos for ${enemyId} after NaN`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } enemy.state = 'moving_to_grid'; enemy.pathT = 0; enemy.pathSegmentIndex = 0; enemy.velocityX = 0; enemy.velocityY = 0; if (enemy.squadronId !== undefined && squadronCompletionStatus[enemy.squadronId]) { squadronCompletionStatus[enemy.squadronId].completed++; } } else { let finalX = newX_Norm; const isPattern1LoopSquadron = currentWavePatternIndex === 1 && (enemy.squadronId === 2 || enemy.squadronId === 3); const isSecondInPair = typeof enemy.squadronEnemyIndex === 'number' && enemy.squadronEnemyIndex % 2 !== 0; if (isPattern1LoopSquadron && isSecondInPair) { const pairOffset = currentEnemyWidthCorrected + ENTRANCE_PAIR_HORIZONTAL_GAP; finalX = newX_Norm + pairOffset; } enemy.velocityX = finalX - oldX_Norm; enemy.velocityY = newY_Norm - oldY_Norm; enemy.x = finalX; enemy.y = newY_Norm; } } break; }
+                 case 'moving_to_grid': { if (enemy.targetGridX == null || enemy.targetGridY == null) { console.warn(`Enemy ${enemyId} in moving_to_grid state without target. Recalculating.`); try { const { x: finalTargetX, y: finalTargetY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = finalTargetX; enemy.targetGridY = finalTargetY; } catch(err){ console.error(`Error getting grid pos for ${enemyId} in moving_to_grid`, err); enemy.state = 'in_grid'; enemy.x = gameCanvas.width/2; enemy.y = ENEMY_TOP_MARGIN; break;} } const moveTargetX = enemy.targetGridX; const moveTargetY = enemy.targetGridY; const dxMove = moveTargetX - enemy.x; const dyMove = moveTargetY - enemy.y; const distMove = Math.sqrt(dxMove * dxMove + dyMove * dyMove); const moveSpeed = ENTRANCE_SPEED * 1.2; const arrivalThreshold = moveSpeed * 0.5; if (distMove > arrivalThreshold) { enemy.velocityX = (dxMove / distMove) * moveSpeed; enemy.velocityY = (dyMove / distMove) * moveSpeed; enemy.x += enemy.velocityX; enemy.y += enemy.velocityY; } else { enemy.x = moveTargetX; enemy.y = moveTargetY; enemy.velocityX = 0; enemy.velocityY = 0; const previousState = enemy.state; enemy.state = 'in_grid'; enemy.justReturned = false; if (!isGridSoundPlaying && !isChallengingStage) { isGridSoundPlaying = true; playSound('gridBackgroundSound', true, 0.1); } if (GRID_BREATH_ENABLED && !isGridBreathingActive && !isChallengingStage) { isGridBreathingActive = true; gridBreathStartTime = now; currentGridBreathFactor = 0; } if (!firstEnemyLanded && !isFullGridWave && !isChallengingStage) { lastGridFireCheckTime = Date.now(); firstEnemyLanded = true; } if (previousState === 'moving_to_grid' && !isChallengingStage && !isFullGridWave && enemy.squadronId !== undefined) { const squadId = enemy.squadronId; const squadStatus = squadronCompletionStatus[squadId]; if (squadStatus && !squadStatus.hasFiredPostLanding) { const allLanded = enemies.every(e => { if (e && e.squadronId === squadId) { return e.state === 'in_grid' || !enemies.some(aliveE => aliveE.id === e.id); } return true; }); if (allLanded) { squadStatus.hasFiredPostLanding = true; const eligibleShooters = enemies.filter(e => e && e.squadronId === squadId && e.state === 'in_grid' && (e.type === ENEMY2_TYPE || e.type === ENEMY3_TYPE) && !(e.type === ENEMY3_TYPE && e.hasCapturedShip)); if (eligibleShooters.length > 0) { const shooter = eligibleShooters[Math.floor(Math.random() * eligibleShooters.length)]; const shooterId = shooter.id; const fireDelay = 200 + Math.random() * 400; const postLandingFireTimeout = setTimeout(() => { try { const tIdx = enemySpawnTimeouts.indexOf(postLandingFireTimeout); if(tIdx > -1) enemySpawnTimeouts.splice(tIdx, 1); if (isPaused || !isInGameState || (playerLives <= 0 && (!isTwoPlayerMode || (player1Lives <=0 && player2Lives <=0) )) || isChallengingStage || isWaveTransitioning || isShipCaptured) return; const currentShooter = enemies.find(e => e && e.id === shooterId); if (currentShooter && currentShooter.state === 'in_grid') { if (createBulletSimple(currentShooter)) { playSound('enemyShootSound', false, 0.4); currentShooter.lastFiredTime = Date.now(); } } } catch (fireError) { console.error(`Error during post-landing fire for ${shooterId}:`, fireError); } }, fireDelay); enemySpawnTimeouts.push(postLandingFireTimeout); } } } } } break; }
+                 case 'in_grid': { try { const enemyWidthForGrid = (enemy.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((enemy.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH); const { x: currentTargetX, y: currentTargetY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, enemyWidthForGrid); if (typeof currentTargetX === 'number' && !isNaN(currentTargetX)) { enemy.x = currentTargetX; } if (typeof currentTargetY === 'number' && !isNaN(currentTargetY)) { enemy.y = currentTargetY; } enemy.targetGridX = currentTargetX; enemy.targetGridY = currentTargetY; } catch(gridPosError) { console.error(`Error getting grid pos within 'in_grid' for ${enemy.id}:`, gridPosError); } enemy.velocityX = gridShouldBeMoving ? gridHorizontalShift : 0; enemy.velocityY = 0; if (enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip && enemy.capturedShipDimensions) { enemy.capturedShipX = enemy.x + CAPTURED_SHIP_OFFSET_X; enemy.capturedShipY = enemy.y + CAPTURED_SHIP_OFFSET_Y; } break; }
+                 case 'preparing_attack': { enemy.velocityX = 0; enemy.velocityY = 0; break; }
+                 case 'preparing_capture': { enemy.velocityX = 0; enemy.velocityY = 0; break; }
+                 case 'diving_to_capture_position': { let aShipIsAlreadyCaptured = (isTwoPlayerMode && selectedGameMode === 'coop') ? (isPlayer1ShipCaptured || isPlayer2ShipCaptured) : isShipCaptured; if (aShipIsAlreadyCaptured) { enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (e) { console.error(`Error getting grid pos for returning boss ${enemy.id}:`, e); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } const targetXCapture = enemy.targetX; const targetYCapture = enemy.targetY; if (targetXCapture == null || targetYCapture == null) { console.error(`Boss ${enemy.id} diving to capture without targetX/Y! Aborting.`); enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (e) { console.error(`Error getting grid pos for returning boss ${enemy.id}:`, e); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } const dxCaptureDive = targetXCapture - enemy.x; const dyCaptureDive = targetYCapture - enemy.y; const distCaptureDive = Math.sqrt(dxCaptureDive * dxCaptureDive + dyCaptureDive * dyCaptureDive); const captureDiveSpeed = BOSS_CAPTURE_DIVE_SPEED_FACTOR * BASE_ENEMY_ATTACK_SPEED; const arrivalThresholdCapture = captureDiveSpeed * 0.6; if (distCaptureDive > arrivalThresholdCapture) { enemy.velocityX = (dxCaptureDive / distCaptureDive) * captureDiveSpeed; enemy.velocityY = (dyCaptureDive / distCaptureDive) * captureDiveSpeed; enemy.x += enemy.velocityX; enemy.y += enemy.velocityY; } else { enemy.x = targetXCapture; enemy.y = targetYCapture; enemy.velocityX = 0; enemy.velocityY = 0; enemy.state = 'capturing'; enemy.captureStartTime = now; capturingBossId = enemy.id; captureBeamActive = true; captureBeamSource = { x: enemy.x + currentEnemyWidthCorrected / 2, y: enemy.y + currentEnemyHeightCorrected }; captureBeamTargetY = enemy.y; captureBeamProgress = 0; playSound('captureSound', false, 0.6); if (enemy.isPreparingForImmediateCapture) { captureAttemptMadeThisLevel = true; delete enemy.isPreparingForImmediateCapture; } } break; }
+                 case 'capturing': {
+                    enemy.velocityX = 0; enemy.velocityY = 0;
+                    if (enemy.isPreparingForImmediateCapture && !captureAttemptMadeThisLevel) {
+                        captureAttemptMadeThisLevel = true;
+                        delete enemy.isPreparingForImmediateCapture;
+                    }
+
+                    let alreadyCapturedByThisBoss = false;
+                    if (isTwoPlayerMode && selectedGameMode === 'coop') { alreadyCapturedByThisBoss = (isPlayer1ShipCaptured && capturedBossIdWithMessage === enemy.id) || (isPlayer2ShipCaptured && capturedBossIdWithMessage === enemy.id);
+                    } else { alreadyCapturedByThisBoss = isShipCaptured && capturedBossIdWithMessage === enemy.id; }
+                    if (alreadyCapturedByThisBoss) { captureBeamActive = false; if(capturingBossId === enemy.id) capturingBossId = null; enemy.state = 'returning'; stopSound('captureSound'); break; }
+                    const elapsedCaptureTime = now - enemy.captureStartTime; const halfAnimationTime = CAPTURE_BEAM_ANIMATION_DURATION_MS / 2; const totalBeamStayTime = CAPTURE_BEAM_DURATION_MS; if (elapsedCaptureTime < halfAnimationTime) { captureBeamProgress = elapsedCaptureTime / halfAnimationTime; } else if (elapsedCaptureTime < totalBeamStayTime - halfAnimationTime) { captureBeamProgress = 1.0; } else if (elapsedCaptureTime < totalBeamStayTime) { captureBeamProgress = 1.0 - ((elapsedCaptureTime - (totalBeamStayTime - halfAnimationTime)) / halfAnimationTime); } else { captureBeamProgress = 0; captureBeamActive = false; capturingBossId = null; stopSound('captureSound'); enemy.state = 'attacking'; enemy.attackPathSegments = generateAttackPathInternal(enemy); enemy.attackPathSegmentIndex = 0; enemy.attackPathT = 0; enemy.speed = BASE_ENEMY_ATTACK_SPEED * ENEMY3_ATTACK_SPEED_FACTOR; enemy.lastFiredTime = 0; enemy.canFireThisDive = true; enemy.attackFormationOffsetX = 0; enemy.attackGroupId = null; break; } captureBeamProgress = Math.max(0, Math.min(1, captureBeamProgress));
+                    if (captureBeamActive && captureBeamProgress >= 0.95) {
+                        const beamTopWidth = BOSS_WIDTH * CAPTURE_BEAM_WIDTH_TOP_FACTOR; const beamBottomWidth = SHIP_WIDTH * CAPTURE_BEAM_WIDTH_BOTTOM_FACTOR; const beamCenterX = enemy.x + currentEnemyWidthCorrected / 2; const beamVisualTopY = enemy.y + currentEnemyHeightCorrected; const beamVisualBottomY = gameCanvas.height - LIFE_ICON_MARGIN_BOTTOM - LIFE_ICON_SIZE - 10; const boxWidth = Math.max(beamTopWidth, beamBottomWidth); const boxX = beamCenterX - boxWidth / 2; const boxY = beamVisualTopY; const boxHeight = beamVisualBottomY - beamVisualTopY;
+                        if (boxHeight > 0) { const beamBoundingBox = { x: boxX, y: boxY, width: boxWidth, height: boxHeight }; let shipHitObject = null; let playerHitId = 0;
+                            if (isTwoPlayerMode && selectedGameMode === 'coop') { if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && checkCollision(ship1, beamBoundingBox)) { shipHitObject = ship1; playerHitId = 1; } else if (ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && checkCollision(ship2, beamBoundingBox)) { shipHitObject = ship2; playerHitId = 2; }
+                            } else { if (ship && playerLives > 0 && !isShipCaptured && checkCollision(ship, beamBoundingBox)) { shipHitObject = ship; playerHitId = currentPlayer; } }
+                            if (shipHitObject) { enemy.capturedShipDimensions = { width: shipHitObject.width, height: shipHitObject.height }; enemy.hasCapturedShip = true; stopSound('captureSound'); enemy.state = 'showing_capture_message'; enemy.targetGridX = null; enemy.targetGridY = null; enemy.initialCaptureAnimationY = shipHitObject.y; enemy.captureAnimationRotation = 0; isShowingCaptureMessage = true; captureMessageStartTime = now; capturedBossIdWithMessage = enemy.id; playSound('shipCapturedSound', false, 0.3); csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null; normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null; handlePlayerShipCollision(playerHitId, false, now, true); if((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && aiPlayerActivelySeekingCaptureById) aiPlayerActivelySeekingCaptureById = null; break; } // <<<< GEWIJZIGD
+                        }
+                    } break;
+                 }
+                 case 'showing_capture_message': { enemy.velocityX = 0; enemy.velocityY = 0; if (enemy.hasCapturedShip && enemy.capturedShipDimensions && typeof enemy.initialCaptureAnimationY === 'number') { const elapsedMessageTime = now - captureMessageStartTime; const animationProgress = Math.min(1.0, elapsedMessageTime / CAPTURE_MESSAGE_DURATION); const finalCapturedShipY = enemy.y + CAPTURED_SHIP_OFFSET_Y; const startY = enemy.initialCaptureAnimationY; enemy.capturedShipY = startY + (finalCapturedShipY - startY) * animationProgress; enemy.capturedShipX = enemy.x + CAPTURED_SHIP_OFFSET_X; } else { enemy.capturedShipX = enemy.x + CAPTURED_SHIP_OFFSET_X; enemy.capturedShipY = enemy.y + CAPTURED_SHIP_OFFSET_Y; } break; }
+                 case 'attacking': { if (isEntrancePhaseActive) break; const attackSegments = enemy.attackPathSegments; const attackPathSpeedFactor = 3.8; if (!attackSegments || attackSegments.length === 0) { console.error(`Enemy ${enemyId} attacking without path! Returning.`); enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (err) { console.error(`Error getting grid pos for returning enemy ${enemyId} (no attack path):`, err); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } if (enemy.attackPathSegmentIndex >= attackSegments.length) { console.warn(`Enemy ${enemyId} attacking, index ${enemy.attackPathSegmentIndex} out of bounds (${attackSegments.length})! Returning.`); enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (err) { console.error(`Error getting grid pos for returning enemy ${enemyId} (invalid attack index):`, err); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } const attackSegment = attackSegments[enemy.attackPathSegmentIndex]; if (!attackSegment || !attackSegment.p0 || !attackSegment.p1 || !attackSegment.p2 || !attackSegment.p3) { console.error(`Enemy ${enemyId} attacking, invalid segment ${enemy.attackPathSegmentIndex}! Returning.`); enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (err) { console.error(`Error getting grid pos for returning enemy ${enemyId} (invalid attack segment):`, err); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } const tIncrement = (enemy.speed / 1000) * attackPathSpeedFactor; enemy.attackPathT += tIncrement; let pathX, pathY; const oldFinalX = enemy.x; const oldFinalY = enemy.y; if (enemy.attackPathT >= 1.0) { try { pathX = calculateBezierPoint(1.0, attackSegment.p0.x, attackSegment.p1.x, attackSegment.p2.x, attackSegment.p3.x); pathY = calculateBezierPoint(1.0, attackSegment.p0.y, attackSegment.p1.y, attackSegment.p2.y, attackSegment.p3.y); } catch(bezierError) { console.error(`Error calculating FINAL bezier point for attack ${enemy.id}:`, bezierError); pathX = enemy.x; pathY = enemy.y; enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch(err){ console.error(`Error getting grid pos after FINAL bezier error for ${enemy.id}:`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } enemy.attackPathT = 0; enemy.attackPathSegmentIndex++; if (enemy.attackPathSegmentIndex >= attackSegments.length) { enemy.state = 'returning'; enemy.lastFiredTime = 0; enemy.attackFormationOffsetX = 0; enemy.attackGroupId = null; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch(err){ console.error(`Error getting grid pos for returning enemy ${enemyId} after attack:`, err); enemy.targetGridX = gameCanvas.width / 2; enemy.targetGridY = ENEMY_TOP_MARGIN; } } else { const nextAttackSegment = attackSegments[enemy.attackPathSegmentIndex]; if (!nextAttackSegment?.p0) { console.error(`Enemy ${enemyId} attacking, invalid NEXT segment ${enemy.attackPathSegmentIndex}! Returning.`); pathX = enemy.x; pathY = enemy.y; enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch(err){ console.error(`Error getting grid pos after invalid NEXT attack segment for ${enemy.id}:`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } } } else { try { pathX = calculateBezierPoint(enemy.attackPathT, attackSegment.p0.x, attackSegment.p1.x, attackSegment.p2.x, attackSegment.p3.x); pathY = calculateBezierPoint(enemy.attackPathT, attackSegment.p0.y, attackSegment.p1.y, attackSegment.p2.y, attackSegment.p3.y); } catch (bezierError) { console.error(`Error calculating bezier point during attack for ${enemy.id}:`, bezierError); pathX = enemy.x; pathY = enemy.y; enemy.state = 'returning'; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch(err){ console.error(`Error getting grid pos after bezier error for ${enemy.id}:`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } break; } } if (enemy && enemy.state === 'attacking') { const formationOffset = enemy.attackFormationOffsetX || 0; const finalX = pathX + formationOffset; const finalY = pathY; enemy.velocityX = finalX - oldFinalX; enemy.velocityY = finalY - oldFinalY; enemy.x = finalX; enemy.y = finalY; if (enemy.y > gameCanvas.height + currentEnemyHeightCorrected * 1.5) { enemy.state = 'returning'; enemy.attackPathSegmentIndex = 0; enemy.attackPathT = 0; enemy.lastFiredTime = 0; enemy.attackFormationOffsetX = 0; enemy.attackGroupId = null; enemy.y = -currentEnemyHeightCorrected * (1.1 + Math.random() * 0.4); enemy.x = Math.random() * (gameCanvas.width - currentEnemyWidthCorrected); enemy.velocityX = 0; enemy.velocityY = 0; try { const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = tgtX; enemy.targetGridY = tgtY; } catch (err) { console.error(`Error getting grid pos for returning enemy ${enemyId} off screen:`, err); enemy.targetGridX = gameCanvas.width/2; enemy.targetGridY = ENEMY_TOP_MARGIN; } } } break; }
+                 case 'returning': { if (isEntrancePhaseActive) break; if (enemy.targetGridX == null || enemy.targetGridY == null) { console.warn(`Enemy ${enemyId} returning without target coords. Recalculating.`); try { const { x: finalTargetX, y: finalTargetY } = getCurrentGridSlotPosition(enemy.gridRow, enemy.gridCol, currentEnemyWidthCorrected); enemy.targetGridX = finalTargetX; enemy.targetGridY = finalTargetY; } catch(err){ console.error(`Error getting grid pos for ${enemyId} in returning`, err); enemy.state = 'in_grid'; enemy.x = gameCanvas.width/2; enemy.y = ENEMY_TOP_MARGIN; break; } } const targetReturnX = enemy.targetGridX; const targetReturnY = enemy.targetGridY; const dxReturn = targetReturnX - enemy.x; const dyReturn = targetReturnY - enemy.y; const distReturn = Math.sqrt(dxReturn * dxReturn + dyReturn * dyReturn); const scaledReturnSpeedFactor = scaleValue(level, BASE_RETURN_SPEED_FACTOR, MAX_RETURN_SPEED_FACTOR); const returnSpeed = BASE_RETURN_SPEED * scaledReturnSpeedFactor; const returnArrivalThreshold = returnSpeed * 0.5; if (distReturn > returnArrivalThreshold) { enemy.velocityX = (dxReturn / distReturn) * returnSpeed; enemy.velocityY = (dyReturn / distReturn) * returnSpeed; enemy.x += enemy.velocityX; enemy.y += enemy.velocityY; } else { enemy.x = targetReturnX; enemy.y = targetReturnY; enemy.velocityX = 0; enemy.velocityY = 0; enemy.state = 'in_grid'; enemy.justReturned = true; enemy.attackFormationOffsetX = 0; enemy.attackGroupId = null; if (enemy.hasOwnProperty('returnLogDone')) { delete enemy.returnLogDone; } if (!isGridSoundPlaying && !isChallengingStage) { isGridSoundPlaying = true; playSound('gridBackgroundSound', true, 0.1); } } break; }
+             }
+
+            // --- Enemy vs Player Ship Collision Detection ---
+            if (enemy && !isShowingPlayerGameOverMessage && !(isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage)) && gameOverSequenceStartTime === 0) {
+                const collisionStates = ['attacking', 'following_entrance_path', 'following_bezier_path', 'diving_to_capture_position'];
+                if (collisionStates.includes(enemy.state)) {
+                    let shipsToCollideWith = [];
+                    if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                        if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1Invincible && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) shipsToCollideWith.push({shipObj: ship1, playerNum: 1, dual: player1IsDualShipActive});
+                        if (ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2Invincible && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture) shipsToCollideWith.push({shipObj: ship2, playerNum: 2, dual: player2IsDualShipActive});
+                    } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+                        if (ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && !isInvincible) {
+                             shipsToCollideWith.push({shipObj: ship, playerNum: currentPlayer, dual: isDualShipActive});
+                        }
+                    }
+
+                    for (const shipData of shipsToCollideWith) {
+                        const currentShip = shipData.shipObj;
+                        const enemyRectCollision = { x: enemy.x, y: enemy.y, width: currentEnemyWidthCorrected, height: currentEnemyHeightCorrected };
+                        const mainShipRect = { x: currentShip.x, y: currentShip.y, width: currentShip.width, height: currentShip.height };
+                        const dualShipPartRect = shipData.dual ? { x: currentShip.x + DUAL_SHIP_OFFSET_X, y: currentShip.y, width: currentShip.width, height: currentShip.height } : null;
+                        let collided = false; let hitDual = false;
+
+                        if (checkCollision(enemyRectCollision, mainShipRect)) collided = true;
+                        else if (shipData.dual && dualShipPartRect && checkCollision(enemyRectCollision, dualShipPartRect)) { collided = true; hitDual = true; }
+
+                        if (collided) {
+                            createExplosion(enemy.x + currentEnemyWidthCorrected / 2, enemy.y + currentEnemyHeightCorrected / 2);
+                            playSound('lostLifeSound', false, 0.6);
+                            enemies.splice(i, 1); enemy = null;
+                            handlePlayerShipCollision(shipData.playerNum, hitDual, now, false);
+                            if (enemy === null) break;
+                        }
+                    }
+                }
+            }
+            if (!enemy) continue;
+        }
+
+
+        // --- Enemy Bullet vs Player Ship Collision Detection ---
+        if (!isShowingPlayerGameOverMessage && !(isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage)) && gameOverSequenceStartTime === 0) {
+            let shipsToBulletHitCheck = [];
+             if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                if (ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1Invincible && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) shipsToBulletHitCheck.push({shipObj: ship1, playerNum: 1, dual: player1IsDualShipActive});
+                if (ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2Invincible && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture) shipsToBulletHitCheck.push({shipObj: ship2, playerNum: 2, dual: player2IsDualShipActive});
+            } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+                if (ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && !isInvincible) {
+                     shipsToBulletHitCheck.push({shipObj: ship, playerNum: currentPlayer, dual: isDualShipActive});
+                }
+            }
+
+            for (let k = enemyBullets.length - 1; k >= 0; k--) {
+                const eb = enemyBullets[k]; if (!eb) { enemyBullets.splice(k, 1); continue; }
+                const bulletRect = { x: eb.x, y: eb.y, width: eb.width, height: eb.height };
+                let bulletRemoved = false;
+
+                for (const shipData of shipsToBulletHitCheck) {
+                    const currentShip = shipData.shipObj;
+                    const mainShipRect = { x: currentShip.x, y: currentShip.y, width: currentShip.width, height: currentShip.height };
+                    const dualShipPartRect = shipData.dual ? { x: currentShip.x + DUAL_SHIP_OFFSET_X, y: currentShip.y, width: currentShip.width, height: currentShip.height } : null;
+                    let collided = false; let hitDual = false;
+
+                    if (checkCollision(bulletRect, mainShipRect)) collided = true;
+                    else if (shipData.dual && dualShipPartRect && checkCollision(bulletRect, dualShipPartRect)) { collided = true; hitDual = true; }
+
+                    if (collided) {
+                        playSound('lostLifeSound', false, 0.6);
+                        handlePlayerShipCollision(shipData.playerNum, hitDual, now, false);
+                        enemyBullets.splice(k, 1); bulletRemoved = true;
+                        break;
+                    }
+                }
+                if (bulletRemoved) continue;
+            }
+        }
+        updateHitSparks();
+
+    } catch (e) { console.error("FATAL Error in moveEntities:", e, e.stack); isGridSoundPlaying = false; stopSound('gridBackgroundSound'); isEntrancePhaseActive = false; stopSound('entranceSound'); isShowingPlayerGameOverMessage = false; playerGameOverMessageStartTime = 0; playerWhoIsGameOver = 0; nextActionAfterPlayerGameOver = ''; isPlayer1ShowingGameOverMessage = false; player1GameOverMessageStartTime = 0; isPlayer2ShowingGameOverMessage = false; player2GameOverMessageStartTime = 0; isShipCaptured = false; captureBeamActive = false; capturingBossId = null; stopSound('captureSound'); stopSound('shipCapturedSound'); isWaitingForRespawn = false; fallingShips = []; isDualShipActive = false; player1IsDualShipActive = false; player2IsDualShipActive = false; isInvincible = false; invincibilityEndTime = 0; hitSparks = []; if(typeof showMenuState === 'function') showMenuState(); if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; alert("Critical error during entity movement/collision. Returning to menu."); }
+}
+
+
+/**
+ * Helper functie om de gevolgen van een botsing met een spelersschip af te handelen.
+ * `wasCapturedHit` is true als de botsing het gevolg is van gevangenneming (beam, niet een fysieke botsing).
+ */
+function handlePlayerShipCollision(playerNumber, hitDualPart, collisionTime, wasCapturedHit = false) {
+    const now = collisionTime;
+    const shipBaseY  = gameCanvas ? gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN : 500;
+
+    let lastKnownX = 0;
+    let shipObjectToUpdate = null;
+
+    if (isTwoPlayerMode && selectedGameMode === 'coop') {
+        shipObjectToUpdate = (playerNumber === 1) ? ship1 : ship2;
+        if (shipObjectToUpdate) {
+            lastKnownX = shipObjectToUpdate.x;
+            if (wasCapturedHit) {
+                if (playerNumber === 1) player1CaptureRespawnX = shipObjectToUpdate.x;
+                else if (playerNumber === 2) player2CaptureRespawnX = shipObjectToUpdate.x;
+            }
+        } else {
+             if (playerNumber === 1 && typeof player1CaptureRespawnX === 'number' && player1CaptureRespawnX !== 0) lastKnownX = player1CaptureRespawnX;
+             else if (playerNumber === 2 && typeof player2CaptureRespawnX === 'number' && player2CaptureRespawnX !== 0) lastKnownX = player2CaptureRespawnX;
+             else if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && gameCanvas) { // <<<< GEWIJZIGD
+                 lastKnownX = playerNumber === 1 ? (gameCanvas.width / 2 - gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2)) : (gameCanvas.width / 2 + gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2));
+             } else if (gameCanvas) {
+                 lastKnownX = gameCanvas.width / 2 - SHIP_WIDTH / 2;
+             } else {
+                 lastKnownX = 200;
+             }
+        }
+    } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+        shipObjectToUpdate = ship;
+        if (shipObjectToUpdate) {
+            lastKnownX = shipObjectToUpdate.x;
+             if (wasCapturedHit) {
+                capturedShipRespawnX_NormalMode = ship.x;
+             }
+        } else if (wasCapturedHit && capturedShipRespawnX_NormalMode !== 0) {
+            lastKnownX = capturedShipRespawnX_NormalMode;
+        } else {
+            lastKnownX = gameCanvas ? gameCanvas.width / 2 - SHIP_WIDTH / 2 : 200;
+        }
+    }
+
+    if (isTwoPlayerMode && selectedGameMode === 'coop') {
+        if (playerNumber === 1) {
+            if (wasCapturedHit) {
+                isPlayer1ShipCaptured = true;
+                player1IsDualShipActive = false;
+                player1Lives--;
+                if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) coopPartner1CapturedTime = now; // <<<< GEWIJZIGD
+
+
+                if (player1Lives <= 0) {
+                    player1Lives = 0;
+                    isPlayer1ShowingGameOverMessage = true;
+                    player1GameOverMessageStartTime = now;
+                    playSound('gameOverSound', false, 0.4);
+                    ship1 = null;
+                    player1NeedsRespawnAfterCapture = false;
+                    if (aiPlayerActivelySeekingCaptureById === 'p1') aiPlayerActivelySeekingCaptureById = null;
+                    if (capturedBossIdWithMessage && enemies.find(e => e.id === capturedBossIdWithMessage)) {
+                        const boss = enemies.find(e => e.id === capturedBossIdWithMessage);
+                        if (boss) { boss.hasCapturedShip = false; boss.capturedShipDimensions = null; }
+                    }
+                } else {
+                    player1NeedsRespawnAfterCapture = true;
+                    ship1 = null;
+                }
+            } else {
+                if (player1IsDualShipActive && ship1) {
+                    player1IsDualShipActive = false;
+                    const explX = hitDualPart ? (ship1.x + DUAL_SHIP_OFFSET_X + ship1.width/2) : (ship1.x + ship1.width/2);
+                    createExplosion(explX, ship1.y + ship1.height/2);
+                    ship1.x = lastKnownX; ship1.y = shipBaseY; ship1.targetX = ship1.x;
+                    isPlayer1Invincible = true; player1InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS;
+                    isPlayer1WaitingForRespawn = true; player1RespawnTime = now + RESPAWN_DELAY_MS;
+                } else {
+                    if (ship1) createExplosion(ship1.x + ship1.width/2, ship1.y + ship1.height/2);
+                    player1Lives--;
+                    if (player1Lives <= 0) {
+                        player1Lives = 0;
+                        isPlayer1ShowingGameOverMessage = true;
+                        player1GameOverMessageStartTime = now;
+                        playSound('gameOverSound', false, 0.4);
+                        ship1 = null;
+                        if (aiPlayerActivelySeekingCaptureById === 'p1') aiPlayerActivelySeekingCaptureById = null;
+                    } else {
+                        isPlayer1Invincible = true; player1InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS;
+                        isPlayer1WaitingForRespawn = true; player1RespawnTime = now + RESPAWN_DELAY_MS;
+                        if (ship1) { ship1.x = lastKnownX; ship1.y = shipBaseY; ship1.targetX = ship1.x; }
+                        else {
+                            ship1 = { x: lastKnownX, y: shipBaseY, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOVE_SPEED, targetX: lastKnownX, id: 'p1' };
+                        }
+                    }
+                }
+            }
+        } else if (playerNumber === 2) {
+            if (wasCapturedHit) {
+                isPlayer2ShipCaptured = true;
+                player2IsDualShipActive = false;
+                player2Lives--;
+                if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) coopPartner2CapturedTime = now; // <<<< GEWIJZIGD
+
+
+                if (player2Lives <= 0) {
+                    player2Lives = 0;
+                    isPlayer2ShowingGameOverMessage = true;
+                    player2GameOverMessageStartTime = now;
+                    playSound('gameOverSound', false, 0.4);
+                    ship2 = null;
+                    player2NeedsRespawnAfterCapture = false;
+                    if (aiPlayerActivelySeekingCaptureById === 'p2' || aiPlayerActivelySeekingCaptureById === 'ai_p2') aiPlayerActivelySeekingCaptureById = null; // <<<< GEWIJZIGD
+                    if (capturedBossIdWithMessage && enemies.find(e => e.id === capturedBossIdWithMessage)) {
+                        const boss = enemies.find(e => e.id === capturedBossIdWithMessage);
+                        if (boss) { boss.hasCapturedShip = false; boss.capturedShipDimensions = null; }
+                    }
+                } else {
+                    player2NeedsRespawnAfterCapture = true;
+                    ship2 = null;
+                }
+            } else {
+                if (player2IsDualShipActive && ship2) {
+                    player2IsDualShipActive = false;
+                    const explX = hitDualPart ? (ship2.x + DUAL_SHIP_OFFSET_X + ship2.width/2) : (ship2.x + ship2.width/2);
+                    createExplosion(explX, ship2.y + ship2.height/2);
+                    ship2.x = lastKnownX; ship2.y = shipBaseY; ship2.targetX = ship2.x;
+                    isPlayer2Invincible = true; player2InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS;
+                    isPlayer2WaitingForRespawn = true; player2RespawnTime = now + RESPAWN_DELAY_MS;
+                } else {
+                    if (ship2) createExplosion(ship2.x + ship2.width/2, ship2.y + ship2.height/2);
+                    player2Lives--;
+                    if (player2Lives <= 0) {
+                        player2Lives = 0;
+                        isPlayer2ShowingGameOverMessage = true;
+                        player2GameOverMessageStartTime = now;
+                        playSound('gameOverSound', false, 0.4);
+                        ship2 = null;
+                        if (aiPlayerActivelySeekingCaptureById === 'p2' || aiPlayerActivelySeekingCaptureById === 'ai_p2') aiPlayerActivelySeekingCaptureById = null; // <<<< GEWIJZIGD
+                    } else {
+                        isPlayer2Invincible = true; player2InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS;
+                        isPlayer2WaitingForRespawn = true; player2RespawnTime = now + RESPAWN_DELAY_MS;
+                        if (ship2) { ship2.x = lastKnownX; ship2.y = shipBaseY; ship2.targetX = lastKnownX; }
+                        else {
+                            ship2 = { x: lastKnownX, y: shipBaseY, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOVE_SPEED, targetX: lastKnownX, id: 'p2' };
+                        }
+                    }
+                }
+            }
+        }
+
+        if (player1Lives <= 0 && player2Lives <= 0 && gameOverSequenceStartTime === 0) {
+             triggerFinalGameOverSequence();
+        }
+
+    } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL (Human)
+        if (isDualShipActive && !wasCapturedHit && shipObjectToUpdate) {
+            isDualShipActive = false;
+            if (isTwoPlayerMode && selectedGameMode === 'normal') { // Geldt voor Human 2P Normal & 1P_VS_AI_NORMAL
+                if (playerNumber === 1) player1IsDualShipActive = false;
+                else if (playerNumber === 2) player2IsDualShipActive = false;
+            } else if (!isTwoPlayerMode) player1IsDualShipActive = false; // 1P Classic
+
+            const explX = hitDualPart ? (lastKnownX + DUAL_SHIP_OFFSET_X + SHIP_WIDTH/2) : (lastKnownX + SHIP_WIDTH/2);
+            createExplosion(explX, shipBaseY + SHIP_HEIGHT/2);
+            if (ship) {
+                 ship.x = lastKnownX; ship.y = shipBaseY; ship.targetX = ship.x;
+            }
+            isInvincible = true; invincibilityEndTime = now + INVINCIBILITY_DURATION_MS;
+            isWaitingForRespawn = true; respawnTime = now + RESPAWN_DELAY_MS;
+            if (!isManualControl && !isPlayerTwoAI) aiNeedsStabilization = true; // Alleen voor pure 1P AI demo
+            else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) aiNeedsStabilization = true; // AI P2 stabiliseren
+        } else {
+            if(!wasCapturedHit && shipObjectToUpdate) createExplosion(lastKnownX + SHIP_WIDTH/2, shipBaseY + SHIP_HEIGHT/2);
+
+            if(wasCapturedHit) {
+                isShipCaptured = true;
+                if (ship) ship = null;
+            }
+
+            playerLives--;
+            if (playerLives <= 0) {
+                playerLives = 0;
+                if (isTwoPlayerMode && selectedGameMode === 'normal') { // Geldt voor Human 2P Normal & 1P_VS_AI_NORMAL
+                     if (playerNumber === 1) player1Lives = 0; else if (playerNumber === 2) player2Lives = 0;
+                     isShowingPlayerGameOverMessage = true; playerGameOverMessageStartTime = now; playerWhoIsGameOver = playerNumber;
+                     playSound('gameOverSound', false, 0.4);
+                     const nextP = (playerNumber === 1) ? 2 : 1;
+                     const nextPLives = (nextP === 1) ? player1Lives : player2Lives;
+                     if (nextPLives > 0) { nextActionAfterPlayerGameOver = 'switch_player'; }
+                     else { nextActionAfterPlayerGameOver = 'show_results'; }
+                     bullets = []; enemyBullets = []; explosions = [];
+                     if (!(nextPLives > 0)) ship = null;
+                } else { // 1P Classic
+                    player1Lives = 0; ship = null;
+                    playSound('gameOverSound', false, 0.4);
+                    triggerFinalGameOverSequence();
+                }
+            } else { // Nog levens over
+                if (isTwoPlayerMode && selectedGameMode === 'normal') { // Geldt voor Human 2P Normal & 1P_VS_AI_NORMAL
+                    if (playerNumber === 1) player1Lives = playerLives; else player2Lives = playerLives;
+                }
+
+                if (!wasCapturedHit) {
+                    isInvincible = true; invincibilityEndTime = now + INVINCIBILITY_DURATION_MS;
+                    isWaitingForRespawn = true; respawnTime = now + RESPAWN_DELAY_MS;
+                    if (ship && gameCanvas) {
+                        ship.x = lastKnownX; ship.y = shipBaseY; ship.targetX = ship.x;
+                        if (!isManualControl && !isPlayerTwoAI) aiNeedsStabilization = true; // Alleen voor pure 1P AI demo
+                        else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) aiNeedsStabilization = true; // AI P2 stabiliseren
+                    }
+                }
+                if(wasCapturedHit) isDualShipActive = false;
+            }
+        }
+    }
+    if (!wasCapturedHit) fallingShips = [];
+}
+
+
+/**
+ * Switches the current player in a 2-player game. (Vooral voor 'alternating' mode)
+ */
+function switchPlayerTurn() {
+    if (!isTwoPlayerMode || selectedGameMode === 'coop') return false;
+    stopSound('hiScoreSound');
+    if (currentPlayer === 1) { player1Score = score; player1IsDualShipActive = isDualShipActive; if (player1Score > highScore) highScore = player1Score; }
+    else { player2Score = score; player2IsDualShipActive = isDualShipActive; if (player2Score > highScore) highScore = player2Score; }
+    const nextPlayer = (currentPlayer === 1) ? 2 : 1;
+    const nextPlayerLives = (nextPlayer === 1) ? player1Lives : player2Lives;
+    if (nextPlayerLives <= 0) {
+        const currentSpelersLives = (currentPlayer === 1) ? player1Lives : player2Lives;
+        if (currentSpelersLives <= 0) { triggerFinalGameOverSequence(); return false; }
+        else { forceCenterShipNextReset = false; return false; }
+    }
+    currentPlayer = nextPlayer;
+    score = (currentPlayer === 1) ? player1Score : player2Score;
+    playerLives = (currentPlayer === 1) ? player1Lives : player2Lives;
+    isDualShipActive = (currentPlayer === 1) ? player1IsDualShipActive : player2IsDualShipActive;
+    forceCenterShipNextReset = true;
+    scoreEarnedThisCS = 0;
+    csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
+    normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null;
+    leftPressed = false; rightPressed = false; shootPressed = false;
+    p2LeftPressed = false; p2RightPressed = false; p2ShootPressed = false;
+    keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false;
+    keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false;
+    p1JustFiredSingle = false; p2JustFiredSingle = false;
+    p1FireInputWasDown = false; p2FireInputWasDown = false;
+    isShipCaptured = false;
+    isWaitingForRespawn = false; respawnTime = 0;
+    isInvincible = false; invincibilityEndTime = 0;
+    fallingShips = []; hitSparks = [];
+    showExtraLifeMessage = false; extraLifeMessageStartTime = 0;
+    return true;
+}
+
+
+/**
+ * Triggers firing from grid enemies based on level and timing.
+ */
+function triggerGridFiring() {
+    if (isPaused || !isInGameState || isChallengingStage || isWaveTransitioning) { return; }
+    let canFireBasedOnPlayerState = false;
+    if (isTwoPlayerMode && selectedGameMode === 'coop') {
+        if ((player1Lives > 0 && ship1 && !isPlayer1ShipCaptured && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) ||
+            (player2Lives > 0 && ship2 && !isPlayer2ShipCaptured && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture)) {
+            canFireBasedOnPlayerState = true;
+        }
+    } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+        if (playerLives > 0 && ship && !isShipCaptured && !isShowingPlayerGameOverMessage) {
+            canFireBasedOnPlayerState = true;
+        }
+    }
+    if (!canFireBasedOnPlayerState) return;
+
+    const gridEnemies = enemies.filter(e => e && e.state === 'in_grid');
+    if (gridEnemies.length === 0) { return; }
+    const now = Date.now();
+    const effectiveFireInterval = scaleValue(level, BASE_GRID_FIRE_INTERVAL, MIN_GRID_FIRE_INTERVAL);
+    if (now - lastGridFireCheckTime < effectiveFireInterval) { return; }
+    lastGridFireCheckTime = now;
+    const fireProbability = scaleValue(level, BASE_GRID_FIRE_PROBABILITY, MAX_GRID_FIRE_PROBABILITY);
+    const maxFiringEnemies = Math.round(scaleValue(level, BASE_GRID_MAX_FIRING_ENEMIES, MAX_GRID_MAX_FIRING_ENEMIES));
+    let firingCount = 0;
+    gridEnemies.sort(() => Math.random() - 0.5);
+    for (const enemy of gridEnemies) {
+        if (firingCount >= maxFiringEnemies) { break; }
+        if (enemy.type === ENEMY2_TYPE || enemy.type === ENEMY3_TYPE) {
+            if (enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip) { continue; }
+            if (Math.random() < fireProbability) {
+                 if (createBulletSimple(enemy)) {
+                     playSound('enemyShootSound', false, 0.4);
+                     enemy.lastFiredTime = now;
+                     firingCount++;
+                 }
+            }
+        }
+    }
+}
+
+// --- EINDE deel 7      van 8 dit codeblok ---
+// --- END OF FILE game_logic.js ---
+
+
+
+
+
+
+
+
+
+// --- START OF FILE game_logic.js ---
+// --- DEEL 8      van 8 dit code blok    --- (Focus: Geluidslogica introStep === 2 Human 2P CO-OP L1)
+
+function runSingleGameUpdate(timestamp) {
+    try {
+        const now = Date.now();
+        let activePlayersForLogic = false;
+        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+            activePlayersForLogic = (player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage && !player1NeedsRespawnAfterCapture) ||
+                                  (player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage && !player2NeedsRespawnAfterCapture);
+        } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+            activePlayersForLogic = playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage;
+        }
+
+        // Gamepad Exit Check
+        let primaryControllerCanExit = false;
+        if(isManualControl && connectedGamepadIndex !== null){
+            if(isTwoPlayerMode && selectedGameMode === 'coop'){ // Geldt voor Human COOP en 1P vs AI COOP (P1 is mens)
+                if(player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage) primaryControllerCanExit = true;
+            } else { // 1P Classic, 1P_VS_AI_NORMAL (P1's beurt), 2P_NORMAL (actieve speler)
+                if(playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && (!isPlayerTwoAI || (isPlayerTwoAI && currentPlayer === 1))) primaryControllerCanExit = true;
+            }
+        }
+        if (primaryControllerCanExit && gameOverSequenceStartTime === 0 && !isPaused ) {
+            const gamepads = navigator.getGamepads();
+            if (gamepads?.[connectedGamepadIndex]) {
+                 const gamepad = gamepads[connectedGamepadIndex];
+                 const p1Input = processSingleController(gamepad, previousGameButtonStates);
+                 previousGameButtonStates = p1Input.newButtonStates.slice();
+                 if (p1Input.back) { stopGameAndShowMenu(); return; }
+            } else { if(previousGameButtonStates.length > 0) previousGameButtonStates = []; }
+        } else if (connectedGamepadIndex === null && previousGameButtonStates.length > 0) { previousGameButtonStates = [];}
+
+        let secondaryControllerCanExit = false;
+        // Alleen voor 2P Human COOP
+        if(isManualControl && isTwoPlayerMode && selectedGameMode === 'coop' && !isPlayerTwoAI && connectedGamepadIndexP2 !== null){
+            if(player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage) secondaryControllerCanExit = true;
+        } else if (isManualControl && isTwoPlayerMode && selectedGameMode === 'normal' && !isPlayerTwoAI && connectedGamepadIndexP2 !== null) { // Human P2 in Normal
+             if(playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && currentPlayer === 2) secondaryControllerCanExit = true;
+        }
+
+        if(secondaryControllerCanExit && gameOverSequenceStartTime === 0 && !isPaused){
+            const gamepads = navigator.getGamepads();
+            if (gamepads?.[connectedGamepadIndexP2]) {
+                 const gamepadP2 = gamepads[connectedGamepadIndexP2];
+                 const p2Input = processSingleController(gamepadP2, previousGameButtonStatesP2);
+                 previousGameButtonStatesP2 = p2Input.newButtonStates.slice();
+                 if (p2Input.back) { stopGameAndShowMenu(); return; }
+            } else { if(previousGameButtonStatesP2.length > 0) previousGameButtonStatesP2 = []; }
+        } else if (connectedGamepadIndexP2 === null && previousGameButtonStatesP2.length > 0) { previousGameButtonStatesP2 = [];}
+
+
+        if (isPaused) { renderGame(); return; }
+
+        const isShowingCSBonusScreen = showCsBonusScoreMessage || showPerfectMessage;
+        // --- NIEUWE LOGICA: Centreren van overgebleven AI schip in COOP Demo tijdens CS bonus ---
+        if (isCoopAIDemoActive && isShowingCSBonusScreen && gameCanvas?.width > 0) {
+            const p1IsOnlySurvivor = ship1 && player1Lives > 0 && player2Lives <= 0;
+            const p2IsOnlySurvivor = ship2 && player2Lives > 0 && player1Lives <= 0;
+
+            if (p1IsOnlySurvivor) {
+                const p1EffectiveWidth = player1IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                const centeredX1 = Math.round(gameCanvas.width / 2 - p1EffectiveWidth / 2);
+                ship1.x = centeredX1; ship1.targetX = centeredX1; smoothedShip1X = centeredX1;
+                if (ship2) { ship2.targetX = ship2.x; smoothedShip2X = ship2.x; } // Zorg dat P2 niet beweegt
+            } else if (p2IsOnlySurvivor) {
+                const p2EffectiveWidth = player2IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                const centeredX2 = Math.round(gameCanvas.width / 2 - p2EffectiveWidth / 2);
+                ship2.x = centeredX2; ship2.targetX = centeredX2; smoothedShip2X = centeredX2;
+                if (ship1) { ship1.targetX = ship1.x; smoothedShip1X = ship1.x; } // Zorg dat P1 niet beweegt
+            } else if (ship1 && player1Lives > 0 && ship2 && player2Lives > 0) {
+                // Beide leven, standaard posities (al afgehandeld in resetWave/ elders voor CS)
+                // Maar hier specifiek om te zorgen dat ze niet driften als de AI ze probeert te besturen.
+                const p1InitialX = gameCanvas.width / 2 - gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2);
+                ship1.x = p1InitialX; ship1.targetX = p1InitialX; smoothedShip1X = p1InitialX;
+                const p2InitialX = gameCanvas.width / 2 + gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2);
+                ship2.x = p2InitialX; ship2.targetX = p2InitialX; smoothedShip2X = p2InitialX;
+            }
+        }
+        // --- EINDE NIEUWE LOGICA ---
+        else if (isShowingCSBonusScreen && gameCanvas?.width > 0) { // Niet-COOP-Demo AI centreren
+            if (isTwoPlayerMode && selectedGameMode === 'coop') { // Human COOP, 1P vs AI COOP
+                const p1Active = ship1 && player1Lives > 0;
+                const p2Active = ship2 && player2Lives > 0;
+
+                if (p1Active && p2Active) {
+                    if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { // 1P vs AI COOP
+                        const p1InitialX = gameCanvas.width / 2 - gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2);
+                        // P1 (mens) blijft waar die is.
+                        const p2InitialX = gameCanvas.width / 2 + gameCanvas.width * COOP_SHIP_HORIZONTAL_OFFSET_FACTOR - (SHIP_WIDTH / 2);
+                        if(ship2) { ship2.x = p2InitialX; ship2.targetX = p2InitialX; smoothedShip2X = p2InitialX; }
+                    }
+                    // Voor Human COOP, geen automatische centrering hier.
+                } else if (p1Active && ship1) { // Alleen P1 over
+                    const p1EffectiveWidth = player1IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                    const centeredX1 = Math.round(gameCanvas.width / 2 - p1EffectiveWidth / 2);
+                    ship1.x = centeredX1; ship1.targetX = centeredX1;
+                    // In 1P vs AI COOP, smoothedShip1X is niet relevant als P1 mens is.
+                    if(ship2 && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { ship2.targetX = ship2.x; smoothedShip2X = ship2.x; }
+                } else if (p2Active && ship2) { // Alleen P2 over
+                    const p2EffectiveWidth = player2IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                    const centeredX2 = Math.round(gameCanvas.width / 2 - p2EffectiveWidth / 2);
+                    ship2.x = centeredX2; ship2.targetX = centeredX2;
+                    if(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') smoothedShip2X = centeredX2;
+                    if(ship1 && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { ship1.targetX = ship1.x; /* smoothedShip1X is not human controlled */ }
+                }
+            } else if ((!isManualControl || (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2)) && ship) { // 1P AI Demo, AI P2 in Normal
+                 const effectiveShipWidthDemo = isDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                ship.x = Math.round(gameCanvas.width / 2 - effectiveShipWidthDemo / 2); ship.targetX = ship.x;
+                 if(isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) smoothedShipX = ship.x;
+                 else if (!isManualControl) smoothedShipX = ship.x;
+            }
+        }
+
+
+        let coopLevel1IntroIsCurrentlyActive = false;
+        if (selectedGameMode === 'coop' && level === 1 && coopPlayersReadyStartTime > 0) {
+            coopLevel1IntroIsCurrentlyActive = true;
+
+            if (isShowingCoopPlayersReady) {
+                if (now - coopPlayersReadyStartTime < 100) { explosions = []; if (typeof updateExplosions === 'function') updateExplosions(); }
+                if (now >= coopPlayersReadyStartTime + 3000) {
+                    isShowingCoopPlayersReady = false;
+                    explosions = []; if (typeof updateExplosions === 'function') updateExplosions();
+                    if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                        isShowingIntro = true; introStep = 2; introDisplayStartTime = now;
+                    } else { // Human 2P CO-OP
+                        isShowingIntro = true; introStep = 1; introDisplayStartTime = now;
+                    }
+                }
+            } else if (isShowingIntro) {
+                if (now - introDisplayStartTime < 100) { explosions = []; if (typeof updateExplosions === 'function') updateExplosions(); }
+                let currentCoopIntroStepDuration = INTRO_DURATION_PER_STEP;
+                // Voor Human 2P CO-OP, is introStep 1 "PLAYER 1 / PLAYER 2" en introStep 2 "STAGE 1"
+                if (introStep === 1 && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                    currentCoopIntroStepDuration = TWO_PLAYER_STAGE_INTRO_DURATION;
+                }
+
+                if (now >= introDisplayStartTime + currentCoopIntroStepDuration) {
+                    if (introStep === 1 && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                        introStep = 2; // Ga naar "STAGE 1" voor Human 2P CO-OP
+                        introDisplayStartTime = now;
+                        explosions = []; if (typeof updateExplosions === 'function') updateExplosions();
+                    } else { // AI COOP modes waren al op introStep 2, of Human 2P COOP is nu klaar met STAGE 1
+                        isShowingIntro = false; introStep = 0;
+                        playerIntroSoundPlayed = false; stageIntroSoundPlayed = false; csIntroSoundPlayed = false;
+                        explosions = []; if (typeof updateExplosions === 'function') updateExplosions();
+                        coopLevel1IntroIsCurrentlyActive = false;
+                        coopPlayersReadyStartTime = 0;
+                    }
+                }
+            } else {
+                coopLevel1IntroIsCurrentlyActive = false;
+                coopPlayersReadyStartTime = 0;
+            }
+
+            if (isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) handlePlayerInput();
+            if (typeof moveEntities === 'function') moveEntities();
+            renderGame();
+
+            if (coopLevel1IntroIsCurrentlyActive) {
+                return;
+            }
+        }
+
+
+        if (selectedGameMode === 'coop' && level === 1 && !gameJustStartedAndWaveLaunched && coopPlayersReadyStartTime === 0 && gameJustStarted) {
+            if (isFullGridWave) startFullGridWave();
+            else if (isChallengingStage) startChallengingStageSequence();
+            else if (currentWaveDefinition && currentWaveDefinition.length > 0) scheduleEntranceFlightWave();
+            else { isWaveTransitioning = true; readyForNextWaveReset = true; }
+            gameJustStartedAndWaveLaunched = true;
+            gameJustStarted = false;
+        }
+
+
+        if (isShowingPlayerGameOverMessage && isTwoPlayerMode && selectedGameMode === 'normal') {
+            if(now - playerGameOverMessageStartTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
+            if (now - playerGameOverMessageStartTime >= PLAYER_GAME_OVER_MESSAGE_DURATION) {
+                isShowingPlayerGameOverMessage = false;
+                explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+                const prevPlayerGameOver = playerWhoIsGameOver;
+                playerWhoIsGameOver = 0;
+
+                if (nextActionAfterPlayerGameOver === 'switch_player') {
+                    if (switchPlayerTurn()) {
+                        if (prevPlayerGameOver === 2 && currentPlayer === 1 && player1CompletedLevel === level) {
+                           level++;
+                           player1CompletedLevel = -1;
+                           player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                        }
+                        resetWaveInternal();
+                        gameJustStartedAndWaveLaunched = false; gameJustStarted = true;
+                    } else {
+                         triggerFinalGameOverSequence();
+                    }
+                } else if (nextActionAfterPlayerGameOver === 'show_results') {
+                    triggerFinalGameOverSequence();
+                } else {
+                    triggerFinalGameOverSequence();
+                }
+                renderGame(); return;
+            } else { renderGame(); return; }
+        }
+
+        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+            let p1GameOverMsgDone = false;
+            let p2GameOverMsgDone = false;
+
+            if (isPlayer1ShowingGameOverMessage) {
+                if(now - player1GameOverMessageStartTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
+                if (now - player1GameOverMessageStartTime >= PLAYER_GAME_OVER_MESSAGE_DURATION_COOP) {
+                    isPlayer1ShowingGameOverMessage = false;
+                    p1GameOverMsgDone = true;
+                    explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+                }
+            }
+            if (isPlayer2ShowingGameOverMessage) {
+                 if(now - player2GameOverMessageStartTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
+                 if (now - player2GameOverMessageStartTime >= PLAYER_GAME_OVER_MESSAGE_DURATION_COOP) {
+                    isPlayer2ShowingGameOverMessage = false;
+                    p2GameOverMsgDone = true;
+                    explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+                }
+            }
+
+            if (p1GameOverMsgDone || p2GameOverMsgDone) {
+                if (player1Lives <= 0 && player2Lives <= 0 && gameOverSequenceStartTime === 0) {
+                    triggerFinalGameOverSequence();
+                }
+                if (isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) handlePlayerInput();
+                if (typeof moveEntities === 'function') moveEntities();
+                renderGame();
+                if (gameOverSequenceStartTime > 0 || player1Lives > 0 || player2Lives > 0) {
+                    return;
+                }
+            } else if (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage) {
+                if (isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) handlePlayerInput();
+                if (typeof moveEntities === 'function') moveEntities();
+                renderGame();
+                return;
+            }
+        }
+
+
+        if (isShowingCaptureMessage) {
+            if(now - captureMessageStartTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
+            const boss = enemies.find(e => e.id === capturedBossIdWithMessage);
+            if (boss && boss.state === 'showing_capture_message') { const elapsedMessageTime = now - captureMessageStartTime; const animationProgress = Math.min(1.0, elapsedMessageTime / CAPTURE_MESSAGE_DURATION); boss.captureAnimationRotation = animationProgress * 2 * (2 * Math.PI); }
+            else if (boss) { boss.captureAnimationRotation = 0; }
+
+            if (isInGameState && !isShowingPlayerGameOverMessage && !isPlayer1ShowingGameOverMessage && !isPlayer2ShowingGameOverMessage && gameOverSequenceStartTime === 0) {
+                if (isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) handlePlayerInput();
+                if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                    aiControlCoop();
+                } else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
+                    aiControl();
+                }
+                if (typeof moveEntities === 'function') moveEntities();
+                updateExplosions(); updateFloatingScores();
+            }
+
+            if (now - captureMessageStartTime >= CAPTURE_MESSAGE_DURATION) {
+                isShowingCaptureMessage = false;
+                explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+                stopSound('shipCapturedSound');
+                captureBeamActive = false;
+                if (boss && boss.state === 'showing_capture_message') {
+                    boss.state = 'returning'; boss.captureAnimationRotation = 0;
+                    try {
+                        const bossWidth = (boss.type === ENEMY3_TYPE) ? BOSS_WIDTH : ENEMY_WIDTH;
+                        const { x: tgtX, y: tgtY } = getCurrentGridSlotPosition(boss.gridRow, boss.gridCol, bossWidth);
+                        boss.targetGridX = tgtX; boss.targetGridY = tgtY;
+                    } catch (e) {
+                        console.error(`[Capture Message End] Error getting grid pos for returning boss ${boss.id}:`, e);
+                        boss.targetGridX = gameCanvas.width / 2; boss.targetGridY = ENEMY_TOP_MARGIN;
+                    }
+                } else if (boss) {
+                    boss.captureAnimationRotation = 0;
+                }
+                capturedBossIdWithMessage = null;
+
+                const shipBaseY = gameCanvas ? gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN : 500;
+                 if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                    if (player1NeedsRespawnAfterCapture && player1Lives > 0) {
+                        ship1 = { x: player1CaptureRespawnX, y: shipBaseY, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOVE_SPEED, targetX: player1CaptureRespawnX, id: 'p1' };
+                        isPlayer1ShipCaptured = false;
+                        isPlayer1Invincible = true; player1InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS;
+                        isPlayer1WaitingForRespawn = false;
+                        player1NeedsRespawnAfterCapture = false;
+                        player1CaptureRespawnX = 0;
+                        if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) smoothedShip1X = ship1.x;
+                    }
+                    if (player2NeedsRespawnAfterCapture && player2Lives > 0) {
+                        ship2 = { x: player2CaptureRespawnX, y: shipBaseY, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOVE_SPEED, targetX: player2CaptureRespawnX, id: 'p2' };
+                        isPlayer2ShipCaptured = false;
+                        isPlayer2Invincible = true; player2InvincibilityEndTime = now + INVINCIBILITY_DURATION_MS;
+                        isPlayer2WaitingForRespawn = false;
+                        player2NeedsRespawnAfterCapture = false;
+                        player2CaptureRespawnX = 0;
+                        if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) smoothedShip2X = ship2.x;
+                    }
+
+                    if ((player1Lives <=0 && player2Lives <=0) ){
+                        if(gameOverSequenceStartTime === 0) triggerFinalGameOverSequence();
+                    }
+                 } else if (!isManualControl && !isPlayerTwoAI) { // 1P AI Demo
+                    if (isShipCaptured && playerLives > 0) {
+                        let respawnX = gameCanvas ? gameCanvas.width / 2 - SHIP_WIDTH / 2 : 200;
+                        if (typeof smoothedShipX === 'number') respawnX = smoothedShipX;
+
+                        ship = { x: respawnX, y: shipBaseY, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOVE_SPEED, targetX: respawnX, id: 'main' };
+                        isShipCaptured = false;
+                        isInvincible = true; invincibilityEndTime = now + INVINCIBILITY_DURATION_MS;
+                        isWaitingForRespawn = false;
+                        aiNeedsStabilization = true;
+                        if(smoothedShipX === undefined && ship) smoothedShipX = ship.x;
+                    } else if (playerLives <= 0 && gameOverSequenceStartTime === 0) {
+                        triggerFinalGameOverSequence();
+                    }
+                 } else if (isManualControl) { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+                    if (isShipCaptured && playerLives > 0) {
+                        let respawnX = (capturedShipRespawnX_NormalMode !== 0) ? capturedShipRespawnX_NormalMode : (gameCanvas ? gameCanvas.width / 2 - SHIP_WIDTH / 2 : 200);
+
+                        ship = { x: respawnX, y: shipBaseY, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOVE_SPEED, targetX: respawnX, id: 'main' };
+                        isShipCaptured = false;
+                        capturedShipRespawnX_NormalMode = 0;
+                        isInvincible = true; invincibilityEndTime = now + INVINCIBILITY_DURATION_MS;
+                        isWaitingForRespawn = true;
+                        respawnTime = now + RESPAWN_DELAY_MS;
+                        if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) aiNeedsStabilization = true;
+                    } else if (playerLives <= 0 && gameOverSequenceStartTime === 0) {
+                        if (!isTwoPlayerMode || (isTwoPlayerMode && selectedGameMode === 'normal' && ((currentPlayer === 1 && player2Lives <=0) || (currentPlayer === 2 && player1Lives <=0)))) {
+                            triggerFinalGameOverSequence();
+                        }
+                    }
+                 }
+            }
+            renderGame(); return;
+        }
+
+        const noPlayerGameOverIsActive = !(isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || isShowingPlayerGameOverMessage);
+        const inNormalIntro = isShowingIntro && !coopLevel1IntroIsCurrentlyActive && !(selectedGameMode === 'coop' && level ===1);
+
+
+        if (!coopLevel1IntroIsCurrentlyActive && gameOverSequenceStartTime === 0 && activePlayersForLogic && !isShowingCaptureMessage && noPlayerGameOverIsActive) {
+            if (isInGameState && !inNormalIntro) {
+                if (!(isShowingCSBonusScreen && !isManualControl)) {
+                    if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                         aiControlCoop();
+                    } else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
+                         aiControl();
+                    } else if (!isManualControl && !isPlayerTwoAI) {
+                        aiControl();
+                    }
+                }
+                if (isManualControl) {
+                     handlePlayerInput();
+                }
+            }
+        }
+
+
+        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+            if (isPlayer1Invincible && now >= player1InvincibilityEndTime) { isPlayer1Invincible = false; player1InvincibilityEndTime = 0; }
+            if (isPlayer2Invincible && now >= player2InvincibilityEndTime) { isPlayer2Invincible = false; player2InvincibilityEndTime = 0; }
+        } else {
+            if (isInvincible && now >= invincibilityEndTime) { isInvincible = false; invincibilityEndTime = 0; }
+            if (isWaitingForRespawn && now >= respawnTime) { isWaitingForRespawn = false; }
+        }
+
+        const justAwardedExtraLife = showExtraLifeMessage && (now - extraLifeMessageStartTime < 100);
+        if (justAwardedExtraLife && (isWaveTransitioning || (isChallengingStage && enemies.length === 0))) {
+        }
+
+        if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && isChallengingStage && enemies.length === 0 && !isCsCompletionDelayActive && !showCsBonusScoreMessage && !showPerfectMessage && gameCanvas && gameCanvas.width > 0) {
+            const p1StillActive = ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage;
+            const p2StillActive = ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage;
+
+            if (p1StillActive && !p2StillActive) {
+                const p1EffectiveWidth = player1IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                const centeredX1 = Math.round(gameCanvas.width / 2 - p1EffectiveWidth / 2);
+                ship1.x = centeredX1; ship1.targetX = centeredX1; smoothedShip1X = centeredX1;
+            } else if (p2StillActive && !p1StillActive) {
+                const p2EffectiveWidth = player2IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                const centeredX2 = Math.round(gameCanvas.width / 2 - p2EffectiveWidth / 2);
+                ship2.x = centeredX2; ship2.targetX = centeredX2; smoothedShip2X = centeredX2;
+            }
+        }
+
+
+        if (isCsCompletionDelayActive && noPlayerGameOverIsActive && gameOverSequenceStartTime === 0) {
+             if (now - csCompletionDelayStartTime >= CS_COMPLETION_MESSAGE_DELAY + EXPLOSION_DURATION) {
+                 isCsCompletionDelayActive = false;
+                 csCompletionResultIsPerfect = (challengingStageEnemiesHit >= challengingStageTotalEnemies);
+
+                 if (csCompletionResultIsPerfect) {
+                     playSound('csPerfectSound', false, 0.6);
+                     showCsHitsMessage = true;
+                     csHitsMessageStartTime = now;
+                 } else {
+                     playSound('csClearSound', false, 0.6);
+                     showCSClearMessage = true;
+                     csClearMessageStartTime = now;
+                 }
+                 bullets = [];
+                 enemyBullets = [];
+                 renderGame(); return;
+            } else if (now - csCompletionDelayStartTime >= CS_COMPLETION_MESSAGE_DELAY && explosions.length > 0) {
+                 updateExplosions();
+                 renderGame(); return;
+            } else if (now - csCompletionDelayStartTime < CS_COMPLETION_MESSAGE_DELAY) {
+                renderGame(); return;
+            }
+        }
+
+
+        let messageTimeoutCompleted = false; let shouldExitEarly = false;
+        if (noPlayerGameOverIsActive && gameOverSequenceStartTime === 0 && !isShowingCoopPlayersReady && !coopLevel1IntroIsCurrentlyActive) {
+            if (showCsHitsMessage) {
+                if(now - csHitsMessageStartTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
+                if (Date.now() - csHitsMessageStartTime > CS_HITS_MESSAGE_DURATION) {
+                    showCsHitsMessage = false;
+                    showPerfectMessage = true;
+                    perfectMessageStartTime = now;
+                    explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+                }
+                shouldExitEarly = true;
+            }
+            else if (showPerfectMessage) {
+                if(now - perfectMessageStartTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
+                if (Date.now() - perfectMessageStartTime > CS_PERFECT_MESSAGE_DURATION) {
+                    showPerfectMessage = false;
+                    showCsBonusScoreMessage = true;
+                    csBonusScoreMessageStartTime = now;
+                    explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+                }
+                shouldExitEarly = true;
+            }
+            else if (showCsBonusScoreMessage) {
+                if(now - csBonusScoreMessageStartTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
+                if (Date.now() - csBonusScoreMessageStartTime > CS_BONUS_MESSAGE_DURATION) {
+                    showCsBonusScoreMessage = false;
+                    messageTimeoutCompleted = true;
+                    playLevelUpAfterCSBonus = true;
+                    explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+                }
+                shouldExitEarly = true;
+            }
+            else if (showCSClearMessage) {
+                if(now - csClearMessageStartTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
+                if (Date.now() - csClearMessageStartTime >= CS_CLEAR_HITS_DELAY && !showCsHitsForClearMessage) {
+                    showCsHitsForClearMessage = true;
+                }
+                if (Date.now() - csClearMessageStartTime >= CS_CLEAR_SCORE_DELAY && !showCsScoreForClearMessage) {
+                    showCsScoreForClearMessage = true;
+                }
+                if (Date.now() - csClearMessageStartTime >= CS_CLEAR_DELAY) {
+                    showCSClearMessage = false;
+                    showCsHitsForClearMessage = false;
+                    showCsScoreForClearMessage = false;
+                    messageTimeoutCompleted = true;
+                    playLevelUpAfterCSBonus = true;
+                    explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+                }
+                shouldExitEarly = true;
+            }
+            else if (showExtraLifeMessage) {
+                if (Date.now() - extraLifeMessageStartTime > EXTRA_LIFE_MESSAGE_DURATION) {
+                     showExtraLifeMessage = false;
+                }
+                shouldExitEarly = true;
+            }
+            else if (showReadyMessage) {
+                if(now - readyMessageStartTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
+                if (Date.now() - readyMessageStartTime > READY_MESSAGE_DURATION) {
+                    showReadyMessage = false; messageTimeoutCompleted = true;
+                    explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+                }
+                shouldExitEarly = true;
+            }
+        }
+
+
+        if (shouldExitEarly && !messageTimeoutCompleted && !isShowingCoopPlayersReady && !coopLevel1IntroIsCurrentlyActive && !isShowingCaptureMessage && noPlayerGameOverIsActive ) {
+            if (!((isShowingCSBonusScreen || showCsHitsMessage || showCSClearMessage) && isManualControl) && !showExtraLifeMessage) {
+                 renderGame(); return;
+            }
+        }
+
+        if (inNormalIntro && noPlayerGameOverIsActive && gameOverSequenceStartTime === 0) {
+            let introTextFinished = false;
+            const elapsedIntroTime = now - introDisplayStartTime;
+            let currentIntroStepDuration = INTRO_DURATION_PER_STEP;
+
+            const isP1vsAINormal = (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL');
+            const is2PHumanNormal = (isTwoPlayerMode && selectedGameMode === 'normal' && !isPlayerTwoAI);
+
+            if (is2PHumanNormal || isP1vsAINormal) {
+                currentIntroStepDuration = TWO_PLAYER_STAGE_INTRO_DURATION;
+            }
+
+            if (introStep === 1) { // PLAYER X
+                if(elapsedIntroTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
+                let soundIdToPlay = null;
+                let soundVolume = 1.0;
+
+                if (!playerIntroSoundPlayed) {
+                    const isNormalOrVsAIMode = isP1vsAINormal || is2PHumanNormal;
+                    const is1PvsAICoopModeAndNotL1 = isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP' && level > 1;
+
+                    if (isNormalOrVsAIMode) {
+                        if (currentPlayer === 1 && level === 1 && !initialGameStartSoundPlayedThisSession) {
+                            soundIdToPlay = 'startSound'; soundVolume = 0.4;
+                        } else if (currentPlayer === 2 || level > 1) {
+                            soundIdToPlay = 'levelUpSound'; soundVolume = 0.2;
+                        }
+                    } else if (is1PvsAICoopModeAndNotL1) {
+                         soundIdToPlay = 'levelUpSound'; soundVolume = 0.2;
+                    } else if (!isTwoPlayerMode) { // 1P Classic mode
+                        if (level === 1 && !initialGameStartSoundPlayedThisSession) {
+                            soundIdToPlay = 'startSound'; soundVolume = 0.4;
+                        } else if (level > 1) {
+                            soundIdToPlay = 'levelUpSound'; soundVolume = 0.2;
+                        }
+                    }
+                    // Voor Human 2P CO-OP L1, zal initialGameStartSoundPlayedThisSession hier true zijn
+                    // (vanuit baseStartGame), dus bovenstaande condities spelen geen startSound.
+                    // De levelUpSound wordt hieronder bij introStep === 2 afgehandeld.
+                }
+
+
+                if(soundIdToPlay) {
+                    playSound(soundIdToPlay, false, soundVolume);
+                    playerIntroSoundPlayed = true;
+                    if (soundIdToPlay === 'startSound') {
+                        initialGameStartSoundPlayedThisSession = true;
+                    }
+                }
+
+                if (elapsedIntroTime >= currentIntroStepDuration) {
+                    if (isChallengingStage) introStep = 3;
+                    else introStep = 2;
+                    introDisplayStartTime = now;
+                    explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+                }
+            } else if (introStep === 2) { // STAGE X
+                if(elapsedIntroTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
+                if (!stageIntroSoundPlayed) {
+                     if (playLevelUpAfterCSBonus && (isTwoPlayerMode && selectedGameMode === 'coop')) {
+                        playSound('levelUpSound', false, 0.2);
+                        playLevelUpAfterCSBonus = false;
+                        stageIntroSoundPlayed = true;
+                     }
+                     // <<< SPECIFIEKE LOGICA VOOR HUMAN 2P CO-OP STAGE 1 SOUND >>>
+                     else if (isTwoPlayerMode && selectedGameMode === 'coop' && !isPlayerTwoAI && !isCoopAIDemoActive) {
+                        // Voor Human 2-Player CO-OP: speel levelUpSound altijd (ook voor level 1).
+                        // De 'startSound' is al gespeeld in baseStartGame (en playerIntroSoundPlayed is true als introStep 1 is doorlopen).
+                        playSound('levelUpSound', false, 0.2);
+                        stageIntroSoundPlayed = true;
+                     }
+                     // <<< EINDE SPECIFIEKE LOGICA >>>
+                     else if (selectedGameMode === 'coop') { // AI COOP modes
+                        // Voor CO-OP Demo en 1P vs AI CO-OP: speel levelUpSound alleen als level > 1.
+                        if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && level > 1) {
+                            playSound('levelUpSound', false, 0.2);
+                            stageIntroSoundPlayed = true;
+                        }
+                        // Voor CO-OP Demo en 1P vs AI CO-OP level 1, geen extra geluid hier (startSound is al gespeeld)
+                        else if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && level === 1) {
+                             stageIntroSoundPlayed = true; // Markeer als gespeeld (omdat startSound de "introductie" was)
+                        }
+                     }
+                     else if (!isTwoPlayerMode && level > 1 ) { // 1P Classic, level > 1
+                        playSound('levelUpSound', false, 0.2);
+                        stageIntroSoundPlayed = true;
+                     } else if (level > 1 && !playerIntroSoundPlayed && !(isPlayerTwoAI && selectedGameMode === 'normal') && !initialGameStartSoundPlayedThisSession ) { // 2P Normal, level > 1
+                         playSound('levelUpSound', false, 0.2);
+                         stageIntroSoundPlayed = true;
+                     } else if (level === 1 && !isManualControl && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedGameMode === 'coop') && !initialGameStartSoundPlayedThisSession) { // 1P AI Demo, level 1
+                         playSound('startSound', false, 0.4);
+                         initialGameStartSoundPlayedThisSession = true;
+                         stageIntroSoundPlayed = true;
+                     }
+                }
+                if (elapsedIntroTime >= currentIntroStepDuration) {
+                    introTextFinished = true;
+                    explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+                }
+            } else if (introStep === 3) { // CHALLENGING STAGE
+                if(elapsedIntroTime < 100) { explosions = []; if(typeof updateExplosions === 'function') updateExplosions(); }
+                if (!csIntroSoundPlayed) { playSound('entranceSound', false, 0.4); csIntroSoundPlayed = true; stageIntroSoundPlayed = true;}
+                if (elapsedIntroTime >= currentIntroStepDuration) {
+                    introTextFinished = true;
+                    explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+                }
+            }
+
+            if (isInGameState && noPlayerGameOverIsActive && gameOverSequenceStartTime === 0 && gameCanvas) {
+                let p1LeftOverrideForMoveEntities = null;
+                let p1RightOverrideForMoveEntities = null;
+
+                const isP1HumanVsAINormalIntro = isManualControl && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && currentPlayer === 1 && isShowingIntro;
+
+                if (isP1HumanVsAINormalIntro) {
+                    let p1CtrlLeft = false, p1CtrlRight = false;
+                    const gamepads = navigator.getGamepads();
+                    if (connectedGamepadIndex !== null && gamepads?.[connectedGamepadIndex]) {
+                        const gamepadP1Obj = gamepads[connectedGamepadIndex];
+                        const resultP1 = processSingleController(gamepadP1Obj, previousGameButtonStates);
+                        p1CtrlLeft = resultP1.left; p1CtrlRight = resultP1.right;
+                    }
+                    p1LeftOverrideForMoveEntities = keyboardP1LeftDown || p1CtrlLeft;
+                    p1RightOverrideForMoveEntities = keyboardP1RightDown || p1CtrlRight;
+                }
+
+                if (isP1vsAINormal && currentPlayer === 2) { // AI P2 in 1P vs AI Normal
+                    aiControl();
+                } else if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) { // COOP AI Demo or 1P vs AI COOP
+                     aiControlCoop();
+                } else if (!isManualControl && !isPlayerTwoAI) { // 1P AI Demo
+                    aiControl();
+                }
+
+                if (typeof moveEntities === 'function') {
+                    moveEntities(p1LeftOverrideForMoveEntities, p1RightOverrideForMoveEntities);
+                }
+                updateExplosions(); updateFloatingScores();
+            }
+
+
+            if (introTextFinished) {
+                isShowingIntro = false; introStep = 0; playerIntroSoundPlayed = false; stageIntroSoundPlayed = false; csIntroSoundPlayed = false;
+                if (isManualControl) {
+                    isShowingDemoText = false;
+                }
+
+                if (!isChallengingStage) {
+                    if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                        aiShip1CanShootTime = Date.now() + 1000;
+                        aiShip2CanShootTime = Date.now() + 1200;
+                    } else {
+                        aiCanShootTime = Date.now() + ((isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL') ? 1000 : 3000);
+                    }
+                } else {
+                     if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) { aiShip1CanShootTime = 0; aiShip2CanShootTime = 0;}
+                     else aiCanShootTime = 0;
+                }
+                const isNonCoopL1Normal = level === 1 && selectedGameMode !== 'coop';
+                const isCoopL1 = level === 1 && selectedGameMode === 'coop';
+
+                const shouldLaunchWaveNow = (isNonCoopL1Normal && !gameJustStartedAndWaveLaunched) ||
+                                          level > 1 ||
+                                          isChallengingStage ||
+                                          (isCoopL1 && !gameJustStartedAndWaveLaunched);
+
+
+                if (shouldLaunchWaveNow) {
+                    if (isChallengingStage) startChallengingStageSequence();
+                    else {
+                        if (currentWaveDefinition && currentWaveDefinition.length > 0) {
+                            if (isFullGridWave) startFullGridWave();
+                            else { scheduleEntranceFlightWave(); playSound('entranceSound', false, 0.4); }
+                        } else {
+                             isEntrancePhaseActive = false; stopSound('entranceSound'); isWaveTransitioning = true; readyForNextWaveReset = true; bullets = []; enemyBullets = []; explosions = [];
+                            setTimeout(() => {
+                                const livesCheck = (isTwoPlayerMode && selectedGameMode === 'coop') ? (player1Lives > 0 || player2Lives > 0) : (playerLives > 0);
+                                if ((isInGameState || (!isInGameState && livesCheck)) && typeof resetWaveInternal === 'function') {
+                                    if(livesCheck) { resetWaveInternal(); gameJustStartedAndWaveLaunched = false; gameJustStarted = true; }
+                                    else triggerFinalGameOverSequence();
+                                }
+                            }, 100);
+                        }
+                    }
+                    if (isNonCoopL1Normal || level > 1 || isChallengingStage || isCoopL1 ) gameJustStartedAndWaveLaunched = true;
+                }
+            }
+            if (isManualControl && inNormalIntro && noPlayerGameOverIsActive && gameOverSequenceStartTime === 0) {
+                handlePlayerInput();
+            }
+            renderGame(); return;
+        }
+
+
+        const noSpecialOrNormalIntroRunning = !coopLevel1IntroIsCurrentlyActive && !inNormalIntro && !messageTimeoutCompleted && !isShowingCaptureMessage;
+
+        if (gameJustStarted && noSpecialOrNormalIntroRunning) {
+             if (!gameJustStartedAndWaveLaunched) {
+                const isCoopModeL1NotAlreadyHandled = selectedGameMode === 'coop' && level === 1 && coopPlayersReadyStartTime !== 0;
+
+                if (!isCoopModeL1NotAlreadyHandled) {
+                    if (isChallengingStage) startChallengingStageSequence();
+                    else {
+                        if (currentWaveDefinition && currentWaveDefinition.length > 0) {
+                            if (isFullGridWave) startFullGridWave();
+                            else { scheduleEntranceFlightWave(); playSound('entranceSound', false, 0.4); }
+                        } else {
+                             isWaveTransitioning = true; readyForNextWaveReset = true;
+                        }
+                    }
+                    gameJustStartedAndWaveLaunched = true;
+                }
+            }
+            gameJustStarted = false;
+        }
+
+        if (noSpecialOrNormalIntroRunning && isInGameState && noPlayerGameOverIsActive && gameOverSequenceStartTime === 0) {
+            if (!isShowingCSBonusScreen || (isShowingCSBonusScreen && isManualControl)) {
+                if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                    aiControlCoop();
+                } else if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
+                    aiControl();
+                } else if (!isManualControl && !isPlayerTwoAI) {
+                    aiControl();
+                }
+                if (isManualControl) {
+                    handlePlayerInput();
+                }
+                if (typeof moveEntities === 'function') moveEntities();
+                updateExplosions();
+                updateFloatingScores();
+
+            } else if (isShowingCSBonusScreen && (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'))) {
+                 updateExplosions();
+                 updateFloatingScores();
+            }
+        }
+
+
+        if (noSpecialOrNormalIntroRunning && noPlayerGameOverIsActive && gameOverSequenceStartTime === 0) {
+            if (GRID_BREATH_ENABLED && isInGameState && !isChallengingStage && !isWaveTransitioning && activePlayersForLogic ) { const gridEnemiesExist = enemies.some(e => e?.state === 'in_grid'); if (gridEnemiesExist && isGridBreathingActive) { const elapsedBreathTime = now - gridBreathStartTime; const effectiveGridBreathCycleMs = scaleValue(level, BASE_GRID_BREATH_CYCLE_MS, MIN_GRID_BREATH_CYCLE_MS); const cycleTime = elapsedBreathTime % effectiveGridBreathCycleMs; currentGridBreathFactor = (Math.sin((cycleTime / effectiveGridBreathCycleMs) * Math.PI * 2 - Math.PI / 2) + 1) / 2; } else if (!gridEnemiesExist && isGridBreathingActive) { isGridBreathingActive = false; gridBreathStartTime = 0; currentGridBreathFactor = 0; } else if (gridEnemiesExist && !isGridBreathingActive) { isGridBreathingActive = true; gridBreathStartTime = now; currentGridBreathFactor = 0; }
+             } else { if (isGridBreathingActive) { isGridBreathingActive = false; gridBreathStartTime = 0; currentGridBreathFactor = 0; } }
+
+             if (isEntrancePhaseActive) {
+                 const allSpawnsProcessed = enemiesSpawnedThisWave >= totalEnemiesScheduledForWave;
+                 const isAnyEnemyStillEntering = enemies.some(e => e?.state === 'following_entrance_path' || e?.state === 'moving_to_grid' || e?.state === 'following_bezier_path');
+                 if (totalEnemiesScheduledForWave > 0 && allSpawnsProcessed && !isAnyEnemyStillEntering) {
+                    const wasEntrancePhaseActiveBefore = isEntrancePhaseActive;
+                    isEntrancePhaseActive = false;
+                    if (wasEntrancePhaseActiveBefore) {
+                        stopSound('entranceSound');
+                        enemiesSpawnedThisWave = 0; totalEnemiesScheduledForWave = 0;
+                        enemySpawnTimeouts.forEach(clearTimeout); enemySpawnTimeouts = [];
+                        gridJustCompleted = true;
+
+                        if (!isChallengingStage && !isFullGridWave) {
+                            if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
+                                coopAICaptureDiveAnticipationActive = true;
+                                coopAICaptureDiveAnticipationEndTime = Date.now() + COOP_AI_CAPTURE_DIVE_ANTICIPATION_DURATION_MS;
+                                if (typeof triggerImmediateCaptureDive === 'function') {
+                                    triggerImmediateCaptureDive();
+                                }
+                            } else if (typeof triggerImmediateCaptureDive === 'function') {
+                                triggerImmediateCaptureDive();
+                            }
+                        }
+                    }
+                }
+             }
+
+            if (!isChallengingStage && !inNormalIntro && !isPaused && !isWaveTransitioning) triggerGridFiring();
+
+            if (!isWaveTransitioning && activePlayersForLogic && !inNormalIntro && !isShowingCaptureMessage && !isEntrancePhaseActive) {
+                let allEnemiesGone = enemies.length === 0; let noFallingShips = fallingShips.length === 0; let waveConsideredComplete = false;
+                if (isChallengingStage) { if (allEnemiesGone && !isEntrancePhaseActive) waveConsideredComplete = true; }
+                else { if (allEnemiesGone && !isEntrancePhaseActive && noFallingShips) waveConsideredComplete = true; }
+
+                if (waveConsideredComplete) {
+                    if (isGridBreathingActive) { isGridBreathingActive = false; gridBreathStartTime = 0; currentGridBreathFactor = 0; }
+
+                    if ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && gameCanvas && gameCanvas.width > 0) {
+                        const p1LivesLeft = player1Lives;
+                        const p2LivesLeft = player2Lives;
+                        const shipBaseY = gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN;
+
+                        if (p1LivesLeft > 0 && p2LivesLeft <= 0 && ship1) {
+                            const p1EffectiveWidth = player1IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                            const centeredX1 = Math.round(gameCanvas.width / 2 - p1EffectiveWidth / 2);
+                            ship1.x = centeredX1; ship1.targetX = centeredX1; smoothedShip1X = centeredX1;
+                            ship1.y = shipBaseY;
+                        } else if (p2LivesLeft > 0 && p1LivesLeft <= 0 && ship2) {
+                            const p2EffectiveWidth = player2IsDualShipActive ? (SHIP_WIDTH + DUAL_SHIP_OFFSET_X) : SHIP_WIDTH;
+                            const centeredX2 = Math.round(gameCanvas.width / 2 - p2EffectiveWidth / 2);
+                            ship2.x = centeredX2; ship2.targetX = centeredX2; smoothedShip2X = centeredX2;
+                            ship2.y = shipBaseY;
+                        }
+                    }
+
+
+                    isWaveTransitioning = true; if (isGridSoundPlaying) { stopSound('gridBackgroundSound'); isGridSoundPlaying = false; }
+                    if (!isChallengingStage) {
+                        bullets = [];
+                        enemyBullets = [];
+                    }
+
+                    floatingScores = []; enemySpawnTimeouts.forEach(clearTimeout); enemySpawnTimeouts = []; totalEnemiesScheduledForWave = 0; enemiesSpawnedThisWave = 0;
+                    let resetDelay;
+
+                    if (isChallengingStage) {
+                         csCompletionResultIsPerfect = (challengingStageEnemiesHit >= challengingStageTotalEnemies);
+                         csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
+                         setTimeout(() => {
+                            if (isWaveTransitioning) {
+                                explosions = [];
+                                if(typeof updateExplosions === 'function') updateExplosions();
+                                isCsCompletionDelayActive = true;
+                                csCompletionDelayStartTime = Date.now();
+                            }
+                         }, EXPLOSION_DURATION);
+
+                         if (csCompletionResultIsPerfect) {
+                             let perfectBonus = 10000;
+                             if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                                 if (player1Lives > 0 || ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && ship1)) {
+                                     player1Score += perfectBonus;
+                                 }
+                                 if (player2Lives > 0 || ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && ship2)) {
+                                     player2Score += perfectBonus;
+                                 }
+                                 highScore = Math.max(highScore, player1Score, player2Score);
+                                 checkAndAwardExtraLife(null);
+                             } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+                                 score += perfectBonus;
+                                 if (!isTwoPlayerMode) player1Score = score;
+                                 else if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                                      if(currentPlayer === 1) player1Score = score; else player2Score = score;
+                                 }
+                                 highScore = Math.max(highScore, score, player1Score, player2Score);
+                                 checkAndAwardExtraLife(currentPlayer);
+                             }
+                             resetDelay = EXPLOSION_DURATION + CS_COMPLETION_MESSAGE_DELAY + CS_HITS_MESSAGE_DURATION + CS_PERFECT_MESSAGE_DURATION + CS_BONUS_MESSAGE_DURATION;
+                         } else {
+                             if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                                 checkAndAwardExtraLife(null);
+                             } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL
+                                 checkAndAwardExtraLife(currentPlayer);
+                             }
+                             resetDelay = EXPLOSION_DURATION + CS_COMPLETION_MESSAGE_DELAY + CS_CLEAR_DELAY;
+                         }
+                         resetDelay += 100;
+                     } else {
+                         playSound('waveUpSound', false, 0.8);
+                         normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null;
+                         resetDelay = POST_MESSAGE_RESET_DELAY;
+                     }
+
+                    setTimeout(() => {
+                        let advanceLevelGlobally = false;
+                        let playerWhoseTurnEnded = 0;
+
+                        if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                            playerWhoseTurnEnded = currentPlayer;
+
+                            if (playerWhoseTurnEnded === 1) {
+                                player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                            } else {
+                                player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
+                            }
+
+                            const switchedOK = switchPlayerTurn();
+
+                            if (switchedOK) {
+                                if (playerWhoseTurnEnded === 2 && currentPlayer === 1 && player1CompletedLevel === level) {
+                                    advanceLevelGlobally = true;
+                                    player1CompletedLevel = -1;
+                                } else if (playerWhoseTurnEnded === 1) {
+                                    player1CompletedLevel = level;
+                                    advanceLevelGlobally = false;
+                                } else {
+                                    advanceLevelGlobally = false;
+                                }
+                            } else {
+                                advanceLevelGlobally = true;
+                                player1CompletedLevel = -1;
+                            }
+                        } else {
+                            advanceLevelGlobally = true;
+                            if (!isTwoPlayerMode) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                            else if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                                if (player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                                if (player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
+                            }
+                        }
+
+                        if (advanceLevelGlobally) {
+                            level++;
+                            if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                                if (player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                                if (player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
+                            } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                                if (currentPlayer === 1 && player1Lives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                                else if (currentPlayer === 2 && player2Lives > 0) player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
+                            } else {
+                                if (playerLives > 0) player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
+                            }
+                        }
+
+                        let canContinue = false;
+                        if (isTwoPlayerMode && selectedGameMode === 'coop') canContinue = (player1Lives > 0 || player2Lives > 0);
+                        else if (isTwoPlayerMode && selectedGameMode === 'normal') canContinue = (currentPlayer === 1 ? player1Lives : player2Lives) > 0;
+                        else canContinue = playerLives > 0; // Voor 1P classic, playerLives is player1Lives
+
+                        if (canContinue) {
+                            resetWaveInternal(); gameJustStartedAndWaveLaunched = false; gameJustStarted = true;
+                        } else {
+                            triggerFinalGameOverSequence();
+                        }
+                    }, resetDelay);
+                    renderGame(); return;
+                }
+
+                if (!isChallengingStage) {
+                     if (enemies.length > 0) {
+                         let attackGroupEnemies = null; const gridEnemies = enemies.filter(e => e?.state === 'in_grid'); const isLastFewEnemies = gridEnemies.length <= 3; const levelFactor = Math.max(1, Math.min(level, LEVEL_CAP_FOR_SCALING)); const baseAttackInterval = 4200; const minAttackInterval = 800; const levelReduction = (levelFactor - 1) * ((baseAttackInterval - minAttackInterval) / (LEVEL_CAP_FOR_SCALING -1)); const currentAttackInterval = Math.max(minAttackInterval, baseAttackInterval - levelReduction); const effectiveMaxAttackingEnemies = Math.round(scaleValue(level, BASE_MAX_ATTACKING_ENEMIES, MAX_MAX_ATTACKING_ENEMIES)); const attackingEnemiesCount = enemies.filter(e => e?.state === 'attacking' || e?.state === 'preparing_attack').length;
+                         if ( isLastFewEnemies || (now - lastEnemyDetachTime > currentAttackInterval && gridEnemies.length > 0 && attackingEnemiesCount < effectiveMaxAttackingEnemies) ) {
+                            attackGroupEnemies = findAndDetachEnemy();
+                             if (attackGroupEnemies && attackGroupEnemies.length > 0) {
+                                 const validAttackers = attackGroupEnemies.map(e => enemies.find(es => es?.id === e.id)).filter(e => e && e.state === 'in_grid');
+                                 if (validAttackers.length > 0) {
+                                     const leaderEnemy = validAttackers[0]; const attackType = leaderEnemy.attackType; if (!isLastFewEnemies) lastEnemyDetachTime = now;
+                                     if (attackType === 'normal') {
+                                         const sharedPath = generateAttackPathInternal(leaderEnemy);
+                                         if (sharedPath && sharedPath.length > 0) { if (validAttackers.length === 3 && leaderEnemy.type === ENEMY3_TYPE && level !== 1) playSound('tripleAttackSound', false, 0.3); let sortedAttackers = [...validAttackers]; const groupSize = sortedAttackers.length; if (groupSize > 1) { let bossInGroup = null; let nonBossAttackers = []; sortedAttackers.forEach(attacker => { if (attacker.type === ENEMY3_TYPE) bossInGroup = attacker; else nonBossAttackers.push(attacker); }); if (bossInGroup && level !== 1 && groupSize === 3 && nonBossAttackers.length === 2) sortedAttackers = [nonBossAttackers[0], bossInGroup, nonBossAttackers[1]]; else sortedAttackers.sort((a, b) => (a?.gridCol ?? 0) - (b?.gridCol ?? 0)); const MINIMAL_GAP_BETWEEN_ATTACKERS = 5; let totalFormationWidth = 0; sortedAttackers = sortedAttackers.filter(attacker => attacker && typeof attacker.width === 'number'); const currentGroupSize = sortedAttackers.length; for (let k = 0; k < currentGroupSize; k++) { totalFormationWidth += sortedAttackers[k].width; if (k < currentGroupSize - 1) totalFormationWidth += MINIMAL_GAP_BETWEEN_ATTACKERS; } const formationStartOffsetX = -totalFormationWidth / 2; let currentOffsetX = formationStartOffsetX; for (let k = 0; k < currentGroupSize; k++) { const attacker = sortedAttackers[k]; attacker.attackFormationOffsetX = currentOffsetX + attacker.width / 2; currentOffsetX += attacker.width + MINIMAL_GAP_BETWEEN_ATTACKERS; } } else sortedAttackers.forEach(att => att.attackFormationOffsetX = 0); const attackGroupId = `attack-${leaderEnemy.id}-${now}`; sortedAttackers.forEach(attacker => { if(attacker) attacker.attackGroupId = attackGroupId });
+                                             let shouldFire = false; let fireDelay = GROUP_FIRE_BURST_DELAY; if (leaderEnemy.type === ENEMY2_TYPE || leaderEnemy.type === ENEMY3_TYPE) { shouldFire = true; if(leaderEnemy.type === ENEMY2_TYPE && groupSize === 1) fireDelay = SOLO_BUTTERFLY_FIRE_DELAY; } else if (leaderEnemy.type === ENEMY1_TYPE) shouldFire = true; if (isLastFewEnemies && level > 1) shouldFire = false; if (shouldFire) { sortedAttackers.forEach(attacker => { const canAttackerFire = attacker && !(attacker.type === ENEMY3_TYPE && attacker.hasCapturedShip); if (canAttackerFire) fireEnemyBurst(attacker.id, 'attacking', fireDelay); }); }
+                                             sortedAttackers.forEach((enemyToAttack, delayIndex) => {
+                                                  if (enemyToAttack && enemyToAttack.state === 'in_grid') {
+                                                     enemyToAttack.state = 'preparing_attack'; enemyToAttack.justReturned = false; enemyToAttack.velocityX = 0; enemyToAttack.velocityY = 0; enemyToAttack.canFireThisDive = false;
+                                                     setTimeout(() => {
+                                                         if (isPaused) return; const currentEnemyStateDelayed = enemies.find(e => e?.id === enemyToAttack.id);
+                                                         if (currentEnemyStateDelayed && currentEnemyStateDelayed.state === 'preparing_attack') {
+                                                             try { const effectiveBaseSpeed = scaleValue(level, BASE_ENEMY_ATTACK_SPEED, MAX_ENEMY_ATTACK_SPEED); let speedFactor = 1.0; if (currentEnemyStateDelayed.type === ENEMY1_TYPE) speedFactor = ENEMY1_DIVE_SPEED_FACTOR; else if (currentEnemyStateDelayed.type === ENEMY2_TYPE) speedFactor = ENEMY2_DIVE_SPEED_FACTOR; else if (currentEnemyStateDelayed.type === ENEMY3_TYPE) speedFactor = ENEMY3_ATTACK_SPEED_FACTOR; if(enemyToAttack.type === ENEMY3_TYPE) playSound('bossGalagaDiveSound', false, 0.2); else playSound('butterflyDiveSound', false, 0.2); currentEnemyStateDelayed.state = 'attacking'; currentEnemyStateDelayed.attackPathSegments = sharedPath; currentEnemyStateDelayed.attackPathSegmentIndex = 0; currentEnemyStateDelayed.attackPathT = 0; currentEnemyStateDelayed.speed = effectiveBaseSpeed * speedFactor; currentEnemyStateDelayed.lastFiredTime = 0; currentEnemyStateDelayed.canFireThisDive = true; } catch (attackStartError) { console.error(`Error starting attack for ${enemyToAttack.id}:`, attackStartError); }
+                                                         }
+                                                     }, delayIndex * GROUP_DETACH_DELAY_MS);
+                                                 }
+                                             });
+                                         } else attackGroupEnemies.forEach(e => { if (e) e.justReturned = false; });
+                                     }
+                                 }
+                             }
+                         }
+                     }
+                 }
+                enemies.forEach(enemy => { if (enemy && enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip && enemy.state === 'attacking' && enemy.capturedShipDimensions && typeof enemy.capturedShipLastFiredTime === 'number') { if (now - enemy.capturedShipLastFiredTime > CAPTURED_SHIP_FIRE_COOLDOWN_MS) { const capturedShipCenterX = enemy.x + enemy.width / 2; const capturedShipBottomY = enemy.y + enemy.height + enemy.capturedShipDimensions.height * 0.5; const firePos = { x: capturedShipCenterX, y: capturedShipBottomY }; if (createBulletSimple(enemy, firePos)) { enemy.capturedShipLastFiredTime = now; playSound('playerShootSound', false, 0.4); } } } });
+            }
+        } else if (gameOverSequenceStartTime > 0) {
+            const elapsedTime = now - gameOverSequenceStartTime;
+            const isShowingResults = elapsedTime >= GAME_OVER_DURATION;
+            if (isShowingResults && !isShowingResultsScreen) {
+                isShowingResultsScreen = true; stopSound('gameOverSound'); playSound('resultsMusicSound', true, 0.2);
+                explosions = []; if(typeof updateExplosions === 'function') updateExplosions();
+            }
+        }
+
+        if (!coopLevel1IntroIsCurrentlyActive) {
+            renderGame();
+        }
+
+
+    } catch (error) {
+         console.error("!!! CRITICAL ERROR IN runSingleGameUpdate !!!", error, error.stack);
+         isPaused = false; if (mainLoopId) { cancelAnimationFrame(mainLoopId); mainLoopId = null; } isInGameState = false;
+         isPlayer1ShowingGameOverMessage = false; player1GameOverMessageStartTime = 0;
+         isPlayer2ShowingGameOverMessage = false; player2GameOverMessageStartTime = 0;
+         isShowingPlayerGameOverMessage = false; playerGameOverMessageStartTime = 0; playerWhoIsGameOver = 0; nextActionAfterPlayerGameOver = '';
+         alert("A critical error occurred in the game loop. Please refresh."); stopAllGameSoundsInternal(); isGridSoundPlaying = false; isInvincible = false; invincibilityEndTime = 0;
+         try { if(typeof showMenuState === 'function') { showMenuState(); } } catch (menuError) { console.error("Failed to return to menu after critical error:", menuError); }
+    }
+}
+
+
+/**
+ * Checks if the current score warrants an extra life and awards it based on per-player thresholds.
+ */
+function checkAndAwardExtraLife(playerNumber = null) { // playerNumber kan null zijn voor CO-OP (beide checken)
+    try {
+        const playersToCheck = [];
+        if (playerNumber === 1) { // P1 specifiek
+            const lives = (isTwoPlayerMode && selectedGameMode === 'coop') ? player1Lives : ((isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 1) ? playerLives : player1Lives );
+            const scoreVal = (isTwoPlayerMode && selectedGameMode === 'coop') ? player1Score : ((isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 1) ? score : player1Score );
+            playersToCheck.push({ num: 1, currentLives: lives, currentScore: scoreVal, thresholdsMet: player1LifeThresholdsMet });
+        } else if (playerNumber === 2 && isTwoPlayerMode) { // P2 specifiek
+            const lives = (selectedGameMode === 'coop') ? player2Lives : ((selectedGameMode === 'normal' && currentPlayer === 2) ? playerLives : player2Lives);
+            const scoreVal = (selectedGameMode === 'coop') ? player2Score : ((selectedGameMode === 'normal' && currentPlayer === 2) ? score : player2Score);
+            playersToCheck.push({ num: 2, currentLives: lives, currentScore: scoreVal, thresholdsMet: player2LifeThresholdsMet });
+        } else if (isTwoPlayerMode && selectedGameMode === 'coop' && playerNumber === null) { // Beide spelers in CO-OP
+            playersToCheck.push({ num: 1, currentLives: player1Lives, currentScore: player1Score, thresholdsMet: player1LifeThresholdsMet });
+            playersToCheck.push({ num: 2, currentLives: player2Lives, currentScore: player2Score, thresholdsMet: player2LifeThresholdsMet });
+        } else if (!isTwoPlayerMode && (playerNumber === null || playerNumber === 1)) { // 1P Classic
+             playersToCheck.push({ num: 1, currentLives: playerLives, currentScore: score, thresholdsMet: player1LifeThresholdsMet });
+        } else if (isTwoPlayerMode && selectedGameMode === 'normal' && playerNumber === currentPlayer) { // Actieve speler in 2P Normal (Human of vs AI)
+             if (currentPlayer === 1) {
+                playersToCheck.push({ num: 1, currentLives: playerLives, currentScore: score, thresholdsMet: player1LifeThresholdsMet });
+             } else { // currentPlayer === 2
+                playersToCheck.push({ num: 2, currentLives: playerLives, currentScore: score, thresholdsMet: player2LifeThresholdsMet });
+             }
+        }
+
+
+        playersToCheck.forEach(playerData => {
+            let awardedLifeNowForThisPlayer = false;
+            while (true) {
+                 let lifeAwardedThisIteration = false;
+                 let nextThreshold = -1;
+                 const thresholdsAlreadyMetCount = playerData.thresholdsMet.size;
+
+                 if (thresholdsAlreadyMetCount === 0) {
+                     nextThreshold = EXTRA_LIFE_THRESHOLD_1;
+                 } else if (thresholdsAlreadyMetCount === 1 && !playerData.thresholdsMet.has(EXTRA_LIFE_THRESHOLD_2)) {
+                     nextThreshold = EXTRA_LIFE_THRESHOLD_2;
+                 } else if (thresholdsAlreadyMetCount >=1 && playerData.thresholdsMet.has(EXTRA_LIFE_THRESHOLD_1) && playerData.thresholdsMet.has(EXTRA_LIFE_THRESHOLD_2)) {
+                     let recurringMetCount = 0;
+                     playerData.thresholdsMet.forEach(t => {
+                         if (t >= EXTRA_LIFE_THRESHOLD_2 && ((t - EXTRA_LIFE_THRESHOLD_2) % RECURRING_EXTRA_LIFE_INTERVAL === 0)) {
+                             recurringMetCount++;
+                         }
+                     });
+                     nextThreshold = EXTRA_LIFE_THRESHOLD_2 + recurringMetCount * RECURRING_EXTRA_LIFE_INTERVAL;
+                 } else if (thresholdsAlreadyMetCount === 1 && playerData.thresholdsMet.has(EXTRA_LIFE_THRESHOLD_1) && !playerData.thresholdsMet.has(EXTRA_LIFE_THRESHOLD_2)){
+                    nextThreshold = EXTRA_LIFE_THRESHOLD_2;
+                 }
+                 else if (thresholdsAlreadyMetCount === 1 && playerData.thresholdsMet.has(EXTRA_LIFE_THRESHOLD_2) && !playerData.thresholdsMet.has(EXTRA_LIFE_THRESHOLD_1)) {
+                     nextThreshold = EXTRA_LIFE_THRESHOLD_1;
+                 }
+
+
+                 if (nextThreshold !== -1 && playerData.currentScore >= nextThreshold && !playerData.thresholdsMet.has(nextThreshold)) {
+                     if (playerData.num === 1) {
+                         if(isTwoPlayerMode && selectedGameMode === 'coop') player1Lives++;
+                         else if (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 1) playerLives++; // P1's beurt
+                         else if (!isTwoPlayerMode) playerLives++; // 1P Classic
+                         player1Lives = (isTwoPlayerMode && selectedGameMode === 'coop') ? player1Lives : ((isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 1) ? playerLives : player1Lives );
+                         playerData.currentLives = player1Lives;
+                     } else if (playerData.num === 2) { // Alleen relevant voor 2P modes
+                         if(isTwoPlayerMode && selectedGameMode === 'coop') player2Lives++;
+                         else if (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 2) playerLives++; // P2's beurt
+                         player2Lives = (isTwoPlayerMode && selectedGameMode === 'coop') ? player2Lives : ((isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 2) ? playerLives : player2Lives);
+                         playerData.currentLives = player2Lives;
+                     }
+
+                     playerData.thresholdsMet.add(nextThreshold);
+                     awardedLifeNowForThisPlayer = true;
+                     lifeAwardedThisIteration = true;
+                 }
+
+                 if (!lifeAwardedThisIteration) {
+                     break;
+                 }
+            }
+
+            if (awardedLifeNowForThisPlayer && !showExtraLifeMessage && !showCsBonusScoreMessage && !showPerfectMessage && !showCsHitsMessage && !showCSClearMessage && !showReadyMessage) {
+                 setTimeout(() => {
+                    if (isInGameState) {
+                        explosions = [];
+                        if(typeof updateExplosions === 'function') updateExplosions();
+                        showExtraLifeMessage = true;
+                        extraLifeMessageStartTime = Date.now();
+                        playSound('extraLifeSound', false, 0.5);
+                    }
+                 }, EXPLOSION_DURATION);
+            }
+        });
+    } catch (e) { console.error("Error checking/awarding extra life:", e); }
+}
+
+
+// --- EINDE deel 8      van 8 dit codeblok ---
+// --- END OF FILE game_logic.js ---
