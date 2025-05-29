@@ -904,7 +904,7 @@ function createExplosion(x, y) { try { playSound('explosionSound', false, 0.4); 
 
 
 // --- START OF FILE rendering_menu.js ---
-// --- DEEL 3 van 3 dit code blok --- (Aangepast voor stilstaande, gecentreerde Portrait Message)
+// --- DEEL 3 van 3 dit code blok --- (Aangepast voor Portrait Message: aparte font voor disclaimer)
 
 /** Rendert de actieve explosies op het game canvas. */
 function renderExplosions() { try { if (!gameCtx) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; explosions.forEach(explosion => { explosion.particles.forEach(p => { const drawAlpha = p.alpha * EXPLOSION_MAX_OPACITY; if (drawAlpha > 0.01) { gameCtx.beginPath(); gameCtx.arc(Math.round(p.x), Math.round(p.y), p.radius, 0, Math.PI * 2); gameCtx.fillStyle = `rgba(255, 200, 80, ${drawAlpha.toFixed(3)})`; gameCtx.fill(); } }); }); gameCtx.restore(); } catch (e) { console.error("Error rendering explosions:", e); } }
@@ -923,15 +923,6 @@ function renderFloatingScores() { try { if (!gameCtx || !floatingScores || float
  */
 function renderHitSparks() { if (!gameCtx || !hitSparks || hitSparks.length === 0) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; hitSparks.forEach(s => { if (s && s.alpha > 0.01) { gameCtx.fillStyle = s.color; gameCtx.globalAlpha = s.alpha; gameCtx.beginPath(); const currentSize = s.size * Math.sqrt(s.alpha); gameCtx.arc(Math.round(s.x), Math.round(s.y), Math.max(0.5, currentSize / 2), 0, Math.PI * 2); gameCtx.fill(); } }); gameCtx.globalAlpha = 1.0; gameCtx.restore(); }
 
-// Variabelen voor Star Wars Crawl zijn hier niet meer nodig.
-// let starWarsCrawlStartTime = 0;
-// const STAR_WARS_CRAWL_TOTAL_DURATION = 28000;
-// const STAR_WARS_FONT_BASE_SIZE = 24;
-// const STAR_WARS_MAX_SCALE_AT_BOTTOM = 1.0;
-// const STAR_WARS_MIN_SCALE_AT_VANISH = 0.1;
-// const STAR_WARS_PERSPECTIVE_STRENGTH = 0.8;
-// const STAR_WARS_VANISHING_POINT_Y_FACTOR = 0.30;
-// const STAR_WARS_FADE_LENGTH_FACTOR = 0.3;
 
 /**
  * Tekent de volledige game scène.
@@ -948,83 +939,69 @@ function renderGame() {
         if (isShowingPortraitMessage) {
             gameCtx.save();
             const midX = gameCanvas.width / 2;
-            const portraitFont = "bold 24px 'Press Start 2P'";
+            const disclaimerFont = "bold 20px Arial, sans-serif"; // Strakke, leesbare font voor disclaimer
+            const rotateFont = "bold 24px 'Press Start 2P'";    // Bestaande font voor rotate bericht
             const textColor = "rgba(0, 191, 255, 0.9)"; // Cyaan
 
-            const messageBlocks = [
-                [
-                    "This is an unofficial",
-                    "fan remake of Galaga"
-                ],
-                [
-                    "Created out of love",
-                    "for the original."
-                ],
-                [
-                    "All rights to the",
-                    "original Galaga concept,"
-                ],
-                [
-                    "Design, and sounds",
-                    "belong to Bandai Namco."
-                ],
-                [ // Lege blokken voor de dubbele regel overslaan
-                ],
-                [
-                    "ROTATE TO LANDSCAPE",
-                    "TO PLAY GAME"
-                ]
+            const disclaimerLines = [
+                "This is an unofficial",
+                "fan remake of Galaga,",
+                "Created out of love",
+                "for the original.",
+                "All rights to the",
+                "original Galaga concept,",
+                "Design, and sounds",
+                "belong to Bandai Namco."
+            ];
+            const rotateLines = [
+                "ROTATE TO LANDSCAPE",
+                "TO PLAY GAME"
             ];
 
-            gameCtx.font = portraitFont;
-            const metrics = gameCtx.measureText("M");
-            const singleLineHeight = (metrics.actualBoundingBoxAscent || parseInt(portraitFont, 10) * 1.2) + (metrics.actualBoundingBoxDescent || 0) + 5; // +5 voor wat marge
-            const singleSkipHeight = singleLineHeight; // Hoogte voor 1 regel overslaan
-            const doubleSkipHeight = singleLineHeight * 2; // Hoogte voor 2 regels overslaan
+            // Bepaal de hoogte van een regel tekst voor disclaimer
+            gameCtx.font = disclaimerFont;
+            const disclaimerMetrics = gameCtx.measureText("M");
+            const disclaimerLineHeight = (disclaimerMetrics.actualBoundingBoxAscent || parseInt(disclaimerFont, 10) * 1.2) + (disclaimerMetrics.actualBoundingBoxDescent || 0) + 8; // +8 voor marge
 
-            let totalBlockHeight = 0;
-            messageBlocks.forEach((block, index) => {
-                totalBlockHeight += block.length * singleLineHeight;
-                if (index === 0 || index === 1 || index === 2) { // Na eerste 3 blokken
-                    totalBlockHeight += singleSkipHeight;
-                } else if (index === 4) { // Na 5e blok (het lege blok na "Bandai Namco.")
-                    totalBlockHeight += doubleSkipHeight;
-                }
-            });
+            // Bepaal de hoogte van een regel tekst voor rotate bericht
+            gameCtx.font = rotateFont;
+            const rotateMetrics = gameCtx.measureText("M");
+            const rotateLineHeight = (rotateMetrics.actualBoundingBoxAscent || parseInt(rotateFont, 10) * 1.2) + (rotateMetrics.actualBoundingBoxDescent || 0) + 10; // +10 voor marge
 
-            // Positioneer het hele blok zodat de ONDERKANT van "TO PLAY GAME"
-            // ruim boven de retro vloer horizon (GRID_HORIZON_Y_FACTOR) uitkomt.
-            // Laten we zeggen 10% van de schermhoogte boven de horizon.
-            const bottomMarginFromHorizon = gameCanvas.height * 0.10;
-            const retroGridHorizonY = gameCanvas.height * GRID_HORIZON_Y_FACTOR;
-            const desiredBottomOfText = retroGridHorizonY - bottomMarginFromHorizon;
-            let currentY = desiredBottomOfText - totalBlockHeight;
+            const gapAfterDisclaimer = disclaimerLineHeight * 2; // 2 disclaimer-regelhoogtes overslaan
 
-            // Zorg ervoor dat de tekst niet te hoog begint als het scherm erg hoog is / tekstblok kort
+            const totalDisclaimerHeight = disclaimerLines.length * disclaimerLineHeight;
+            const totalRotateHeight = rotateLines.length * rotateLineHeight;
+            const totalBlockHeight = totalDisclaimerHeight + gapAfterDisclaimer + totalRotateHeight;
+
             const topScreenMargin = gameCanvas.height * 0.05; // Minimaal 5% marge van boven
-            currentY = Math.max(topScreenMargin, currentY);
+            let currentY = topScreenMargin;
+
+            // Als het totale blok te hoog is om met 5% marge te beginnen, centreer het dan verticaal.
+            // Anders, start het bij de topScreenMargin.
+            if (totalBlockHeight + topScreenMargin > gameCanvas.height * GRID_HORIZON_Y_FACTOR * 0.9) { // 0.9 om wat ruimte te houden tot de horizon
+                 currentY = (gameCanvas.height * GRID_HORIZON_Y_FACTOR * 0.9 - totalBlockHeight) / 2;
+                 currentY = Math.max(topScreenMargin, currentY); // Zorg dat het niet boven de topmarge komt
+            }
 
 
-            messageBlocks.forEach((block, index) => {
-                for (const line of block) {
-                    if (line) { // Teken alleen als de regel niet leeg is (voor de lege blokken)
-                        drawCanvasText(line, midX, currentY + singleLineHeight / 2, portraitFont, textColor, 'center', 'middle', true);
-                    }
-                    currentY += singleLineHeight;
-                }
-                if (index === 0 || index === 1 || index === 2) {
-                    currentY += singleSkipHeight;
-                } else if (index === 4) {
-                    currentY += doubleSkipHeight;
-                }
-            });
+            // Teken disclaimer regels
+            for (const line of disclaimerLines) {
+                drawCanvasText(line, midX, currentY + disclaimerLineHeight / 2, disclaimerFont, textColor, 'center', 'middle', true);
+                currentY += disclaimerLineHeight;
+            }
+
+            currentY += gapAfterDisclaimer;
+
+            // Teken "ROTATE TO LANDSCAPE" en "TO PLAY GAME"
+            for (const line of rotateLines) {
+                drawCanvasText(line, midX, currentY + rotateLineHeight / 2, rotateFont, textColor, 'center', 'middle', true);
+                currentY += rotateLineHeight;
+            }
 
             gameCtx.restore();
             return;
         }
-        // else {
-            // starWarsCrawlStartTime = 0; // Reset als we niet in portrait mode zijn
-        // }
 
 
         // --- STAP 1: Teken UI (Score, Levens, Level) ---
