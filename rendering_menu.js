@@ -904,7 +904,7 @@ function createExplosion(x, y) { try { playSound('explosionSound', false, 0.4); 
 
 
 // --- START OF FILE rendering_menu.js ---
-// --- DEEL 3 van 3 dit code blok --- (Aangepast voor Portrait Message met specifieke opmaak en kleuren)
+// --- DEEL 3 van 3 dit code blok --- (Aangepast voor Portrait Message: strakke fonts en positionering)
 
 /** Rendert de actieve explosies op het game canvas. */
 function renderExplosions() { try { if (!gameCtx) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; explosions.forEach(explosion => { explosion.particles.forEach(p => { const drawAlpha = p.alpha * EXPLOSION_MAX_OPACITY; if (drawAlpha > 0.01) { gameCtx.beginPath(); gameCtx.arc(Math.round(p.x), Math.round(p.y), p.radius, 0, Math.PI * 2); gameCtx.fillStyle = `rgba(255, 200, 80, ${drawAlpha.toFixed(3)})`; gameCtx.fill(); } }); }); gameCtx.restore(); } catch (e) { console.error("Error rendering explosions:", e); } }
@@ -940,19 +940,18 @@ function renderGame() {
             gameCtx.save();
             const midX = gameCanvas.width / 2;
 
-            // Definieer fonts en kleuren per sectie
-            const disclaimerTitleFont = "bold 26px 'Press Start 2P'";
+            const cleanFontBaseSize = Math.min(22, gameCanvas.width / 35); // Basis grootte voor strakke font, afhankelijk van schermbreedte
+            const disclaimerTitleFont = `bold ${cleanFontBaseSize + 2}px Arial, sans-serif`; // Iets groter voor de titel
             const disclaimerTitleColor = "yellow";
-            const disclaimerTextFont = "bold 22px 'Press Start 2P'";
-            const disclaimerTextColor = "lime"; // Groen
-            const rotateFont = "bold 24px 'Press Start 2P'";
-            const rotateColor = "rgba(0, 191, 255, 0.9)"; // Cyaan
-            const platiniFont = "bold 18px 'Press Start 2P'";
+            const disclaimerTextFont = `normal ${cleanFontBaseSize}px Arial, sans-serif`; // Strakke font voor disclaimer body
+            const disclaimerTextColor = "lime";
+            const rotateFont = "bold 24px 'Press Start 2P'"; // Behoud voor "ROTATE"
+            const rotateColor = "rgba(0, 191, 255, 0.9)";
+            const platiniFont = `normal ${cleanFontBaseSize - 4}px Arial, sans-serif`; // Kleiner voor "Platini"
             const platiniColor = "red";
 
-            // Structuur van de berichten met hun styling
             const messageStructure = [
-                { text: "⚠️ Disclaimer", font: disclaimerTitleFont, color: disclaimerTitleColor, skipAfter: 0.5 },
+                { text: "⚠️ Disclaimer", font: disclaimerTitleFont, color: disclaimerTitleColor, skipAfter: 0.75 },
                 { text: "This is an unofficial", font: disclaimerTextFont, color: disclaimerTextColor },
                 { text: "fan remake of Galaga,", font: disclaimerTextFont, color: disclaimerTextColor, skipAfter: 1 },
                 { text: "Created out of love", font: disclaimerTextFont, color: disclaimerTextColor },
@@ -966,42 +965,43 @@ function renderGame() {
                 { text: "Written by Platini2000(c)", font: platiniFont, color: platiniColor }
             ];
 
-            // Bereken de hoogte van elke regel dynamisch op basis van de font
             let totalBlockHeight = 0;
-            const lineHeights = messageStructure.map(item => {
+            const lineHeightsInfo = messageStructure.map(item => {
                 gameCtx.font = item.font;
                 const metrics = gameCtx.measureText("M");
-                const height = (metrics.actualBoundingBoxAscent || parseInt(item.font, 10) * 1.2) + (metrics.actualBoundingBoxDescent || 0) + 8; // +8 voor marge
-                totalBlockHeight += height;
-                if (item.skipAfter) {
-                    // Gebruik een referentiehoogte voor skips, bijv. van de rotateFont
-                    gameCtx.font = rotateFont;
-                    const skipMetrics = gameCtx.measureText("M");
-                    const baseSkipLineHeight = (skipMetrics.actualBoundingBoxAscent || parseInt(rotateFont,10)*1.2) + (skipMetrics.actualBoundingBoxDescent || 0) + 5;
-                    totalBlockHeight += baseSkipLineHeight * item.skipAfter;
+                const height = (metrics.actualBoundingBoxAscent || parseInt(item.font, 10) * 1.2) + (metrics.actualBoundingBoxDescent || 0) + 8; // Basismarge
+                return { height: height, skip: item.skipAfter || 0 };
+            });
+
+            // Bereken de skip height op basis van een referentie (bijv. rotateFont)
+            gameCtx.font = rotateFont;
+            const refMetrics = gameCtx.measureText("M");
+            const referenceSkipLineHeight = (refMetrics.actualBoundingBoxAscent || parseInt(rotateFont,10)*1.2) + (refMetrics.actualBoundingBoxDescent || 0) + 5;
+
+            lineHeightsInfo.forEach(info => {
+                totalBlockHeight += info.height;
+                if (info.skip > 0) {
+                    totalBlockHeight += referenceSkipLineHeight * info.skip;
                 }
-                return height;
             });
 
             const topScreenMargin = gameCanvas.height * 0.05;
             const retroGridHorizonY = gameCanvas.height * GRID_HORIZON_Y_FACTOR;
-            const availableSpaceForText = retroGridHorizonY - topScreenMargin - (gameCanvas.height * 0.05);
+            const spaceAboveGrid = retroGridHorizonY - topScreenMargin;
+            const bottomPadding = gameCanvas.height * 0.05; // 5% padding vanaf de horizon
 
             let currentY = topScreenMargin;
-            if (totalBlockHeight < availableSpaceForText) {
-                currentY = topScreenMargin + (availableSpaceForText - totalBlockHeight) / 2;
-            } // Anders start het gewoon bij de topScreenMargin
+            if (totalBlockHeight < (spaceAboveGrid - bottomPadding)) {
+                currentY = topScreenMargin + ( (spaceAboveGrid - bottomPadding) - totalBlockHeight) / 2;
+            }
+            currentY = Math.max(currentY, topScreenMargin); // Zorg dat het niet te hoog komt
 
-            // Teken elke regel
             messageStructure.forEach((item, index) => {
-                const currentItemLineHeight = lineHeights[index];
-                drawCanvasText(item.text, midX, currentY + currentItemLineHeight / 2, item.font, item.color, 'center', 'middle', true);
-                currentY += currentItemLineHeight;
+                const itemLineHeight = lineHeightsInfo[index].height;
+                drawCanvasText(item.text, midX, currentY + itemLineHeight / 2, item.font, item.color, 'center', 'middle', true);
+                currentY += itemLineHeight;
                 if (item.skipAfter) {
-                    gameCtx.font = rotateFont; // Gebruik referentie voor skip hoogte
-                    const skipMetrics = gameCtx.measureText("M");
-                    const baseSkipLineHeight = (skipMetrics.actualBoundingBoxAscent || parseInt(rotateFont,10)*1.2) + (skipMetrics.actualBoundingBoxDescent || 0) +5;
-                    currentY += baseSkipLineHeight * item.skipAfter;
+                    currentY += referenceSkipLineHeight * item.skipAfter;
                 }
             });
 
