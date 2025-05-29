@@ -959,15 +959,25 @@ function renderGame() {
 
             gameCtx.font = portraitFont;
             const metrics = gameCtx.measureText("M");
-            const lineHeight = (metrics.actualBoundingBoxAscent || parseInt(portraitFont, 10) * 1.2) + (metrics.actualBoundingBoxDescent || 0) + 5; // +5 voor extra marge
+            const lineHeight = (metrics.actualBoundingBoxAscent || parseInt(portraitFont, 10) * 1.2) + (metrics.actualBoundingBoxDescent || 0) + 10; // +10 voor extra regelafstand
 
-            const gapAfterDisclaimer = lineHeight * 2;
+            const gapAfterDisclaimer = lineHeight * 2.5; // Iets grotere gap
 
             const totalDisclaimerHeight = disclaimerLines.length * lineHeight;
             const totalRotateHeight = rotateLines.length * lineHeight;
             const totalBlockHeight = totalDisclaimerHeight + gapAfterDisclaimer + totalRotateHeight;
 
-            let currentY = (gameCanvas.height - totalBlockHeight) / 2;
+            // Startpositie: 20% vanaf de bovenkant van het scherm, in plaats van strikt centreren
+            // Dit plaatst het tekstblok hoger, weg van de grid-horizon.
+            const topMarginFactor = 0.20; // 20% van de schermhoogte als bovenmarge
+            let currentY = gameCanvas.height * topMarginFactor;
+
+            // Als het totale blok te hoog is voor 20% marge, centreer het dan in de beschikbare ruimte boven de horizon
+            const availableHeightForText = (gameCanvas.height * GRID_HORIZON_Y_FACTOR) - (gameCanvas.height * 0.05); // 5% marge vanaf horizon
+            if (totalBlockHeight > availableHeightForText - (gameCanvas.height * topMarginFactor) ) {
+                 currentY = (availableHeightForText - totalBlockHeight) / 2 + (gameCanvas.height * 0.02); // Start iets lager dan de top als het niet past
+            }
+
 
             for (const line of disclaimerLines) {
                 drawCanvasText(line, midX, currentY + lineHeight / 2, portraitFont, textColor, 'center', 'middle', true);
