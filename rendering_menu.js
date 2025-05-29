@@ -906,23 +906,7 @@ function createExplosion(x, y) { try { playSound('explosionSound', false, 0.4); 
 // --- START OF FILE rendering_menu.js ---
 // --- DEEL 3 van 3 dit code blok --- (Aangepast voor Portrait Message & Vaste Portrait UI positionering)
 
-/** Rendert de actieve explosies op het game canvas. */
-function renderExplosions() { try { if (!gameCtx) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; explosions.forEach(explosion => { explosion.particles.forEach(p => { const drawAlpha = p.alpha * EXPLOSION_MAX_OPACITY; if (drawAlpha > 0.01) { gameCtx.beginPath(); gameCtx.arc(Math.round(p.x), Math.round(p.y), p.radius, 0, Math.PI * 2); gameCtx.fillStyle = `rgba(255, 200, 80, ${drawAlpha.toFixed(3)})`; gameCtx.fill(); } }); }); gameCtx.restore(); } catch (e) { console.error("Error rendering explosions:", e); } }
-
-/** Helper functie om tekst te tekenen op het canvas met opties. */
-function drawCanvasText(text, x, y, font, color, align = 'center', baseline = 'middle', shadow = false) { if (!gameCtx) return; gameCtx.save(); gameCtx.font = font; gameCtx.fillStyle = color; gameCtx.textAlign = align; gameCtx.textBaseline = baseline; if (shadow) { gameCtx.shadowColor = 'rgba(0, 0, 0, 0.8)'; gameCtx.shadowBlur = 8; gameCtx.shadowOffsetX = 3; gameCtx.shadowOffsetY = 3; } gameCtx.fillText(text, x, y); gameCtx.restore(); }
-
-/** Tekent een menuknop met hover state. */
-function drawCanvasButton(text, index, isSelected) { if (!gameCtx) return; const rect = getMenuButtonRect(index); if (!rect) return; gameCtx.save(); drawCanvasText( text, rect.x + rect.width / 2, rect.y + rect.height / 2, MENU_BUTTON_FONT, isSelected ? MENU_BUTTON_COLOR_HOVER : MENU_BUTTON_COLOR, 'center', 'middle' ); gameCtx.restore(); }
-
-/** Rendert de actieve floating score teksten op het game canvas. */
-function renderFloatingScores() { try { if (!gameCtx || !floatingScores || floatingScores.length === 0) return; const now = Date.now(); gameCtx.save(); gameCtx.globalAlpha = FLOATING_SCORE_OPACITY; floatingScores.forEach(fs => { if (now >= fs.displayStartTime) { drawCanvasText(fs.text, fs.x, fs.y, FLOATING_SCORE_FONT, fs.color, 'center', 'middle', false); } }); gameCtx.globalAlpha = 1.0; gameCtx.restore(); } catch (e) { console.error("Error rendering floatingScores:", e); } }
-
-/**
- * Rendert de hit spark particles (met nieuwe look)
- */
-function renderHitSparks() { if (!gameCtx || !hitSparks || hitSparks.length === 0) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; hitSparks.forEach(s => { if (s && s.alpha > 0.01) { gameCtx.fillStyle = s.color; gameCtx.globalAlpha = s.alpha; gameCtx.beginPath(); const currentSize = s.size * Math.sqrt(s.alpha); gameCtx.arc(Math.round(s.x), Math.round(s.y), Math.max(0.5, currentSize / 2), 0, Math.PI * 2); gameCtx.fill(); } }); gameCtx.globalAlpha = 1.0; gameCtx.restore(); }
-
+// ... (andere functies ongewijzigd: renderExplosions, drawCanvasText, drawCanvasButton, renderFloatingScores, renderHitSparks) ...
 
 /**
  * Tekent de volledige game scène.
@@ -974,12 +958,9 @@ function renderGame() {
                 return { height: height, skip: item.skipAfter || 0 };
             });
 
-            gameCtx.font = rotateFont;
+            gameCtx.font = rotateFont; // Gebruik rotateFont als referentie voor regelhoogte
             const refMetrics = gameCtx.measureText("M");
             const referenceSkipLineHeight = (refMetrics.actualBoundingBoxAscent || parseInt(rotateFont,10)*1.2) + (refMetrics.actualBoundingBoxDescent || 0) + 5;
-            // <<< GEWIJZIGD: "Twee regels" offset voor positionering >>>
-            const TWO_LINES_OFFSET_VERTICAL = referenceSkipLineHeight * 2.0;
-
 
             lineHeightsInfo.forEach(info => {
                 totalBlockHeight += info.height;
@@ -991,27 +972,31 @@ function renderGame() {
             const topScreenMargin = gameCanvas.height * 0.05;
             const retroGridHorizonY = gameCanvas.height * GRID_HORIZON_Y_FACTOR;
             const spaceAboveGrid = retroGridHorizonY - topScreenMargin;
-            const bottomPadding = gameCanvas.height * 0.05;
+            const bottomPaddingForDisclaimer = gameCanvas.height * 0.05;
 
-            let currentY = topScreenMargin;
-            if (totalBlockHeight < (spaceAboveGrid - bottomPadding)) {
-                currentY = topScreenMargin + ( (spaceAboveGrid - bottomPadding) - totalBlockHeight) / 2;
+            let disclaimerStartY = topScreenMargin;
+            if (totalBlockHeight < (spaceAboveGrid - bottomPaddingForDisclaimer)) {
+                disclaimerStartY = topScreenMargin + ( (spaceAboveGrid - bottomPaddingForDisclaimer) - totalBlockHeight) / 2;
             }
-            currentY = Math.max(currentY, topScreenMargin);
-            // <<< GEWIJZIGD: Disclaimer tekstblok twee regels omlaag >>>
-            currentY += TWO_LINES_OFFSET_VERTICAL;
+            disclaimerStartY = Math.max(disclaimerStartY, topScreenMargin);
 
+            // <<< GEWIJZIGD: Alleen de disclaimer/rotate/platini tekst zakt twee regels >>>
+            const DISCLAIMER_BLOCK_Y_OFFSET = referenceSkipLineHeight * 4.0; // dat is de waarde om de text te laten zakken voor portret mode
+            disclaimerStartY += DISCLAIMER_BLOCK_Y_OFFSET;
+            // <<< EINDE GEWIJZIGD >>>
+
+            let currentDisclaimerTextY = disclaimerStartY;
             messageStructure.forEach((item, index) => {
                 const itemLineHeight = lineHeightsInfo[index].height;
-                drawCanvasText(item.text, midX, currentY + itemLineHeight / 2, item.font, item.color, 'center', 'middle', true);
-                currentY += itemLineHeight;
+                drawCanvasText(item.text, midX, currentDisclaimerTextY + itemLineHeight / 2, item.font, item.color, 'center', 'middle', true);
+                currentDisclaimerTextY += itemLineHeight;
                 if (item.skipAfter) {
-                    currentY += referenceSkipLineHeight * item.skipAfter;
+                    currentDisclaimerTextY += referenceSkipLineHeight * item.skipAfter;
                 }
             });
-            gameCtx.restore();
+            gameCtx.restore(); // Einde disclaimer rendering
 
-            // --- BEGIN VASTE UI VOOR PORTRETMODUS ---
+            // --- BEGIN VASTE UI VOOR PORTRETMODUS (positionering is nu onafhankelijk van disclaimer) ---
             gameCtx.save();
             const PORTRAIT_UI_FONT = "20px 'Press Start 2P'";
             const PORTRAIT_LABEL_COLOR = "red";
@@ -1026,15 +1011,8 @@ function renderGame() {
             const PORTRAIT_ICON_MARGIN_BOTTOM_BASE = 10;
             const SCORE_EXTRA_Y_OFFSET = 3;
 
-            // <<< GEWIJZIGD: Bovenste UI nu ook beïnvloed door TWO_LINES_OFFSET_VERTICAL voor consistentie,
-            //      maar de "een regel lager" logica blijft relatief aan de disclaimer.
-            //      Als de disclaimer 2 regels zakt, en de UI daar 1 regel onder moet, is de netto UI offset 3 regels.
-            //      We gebruiken ONE_LINE_OFFSET_VERTICAL hier nog steeds als relatieve offset.
-            //      De disclaimer bepaalt de 'basislijn' voor de UI in portret.
-            //      Dus de topUiY is nu gewoon de basis marge plus de ONE_LINE_OFFSET_VERTICAL.
-            //>>>
-            const ONE_LINE_OFFSET_FOR_TOP_UI = referenceSkipLineHeight * 1.0; // Offset specifiek voor top UI tov absolute top
-            const topUiY = PORTRAIT_MARGIN_TOP_BASE + ONE_LINE_OFFSET_FOR_TOP_UI;
+            // Y-positie voor bovenste UI: één referentie-regel lager dan de basis topmarge
+            const topUiY = PORTRAIT_MARGIN_TOP_BASE + (referenceSkipLineHeight * 1.0);
             const topUiScoreY = topUiY + PORTRAIT_SCORE_OFFSET_Y + SCORE_EXTRA_Y_OFFSET;
 
             gameCtx.font = PORTRAIT_UI_FONT;
@@ -1065,9 +1043,8 @@ function renderGame() {
             gameCtx.fillText("0", gameCanvas.width - PORTRAIT_MARGIN_SIDE - (label2UPWidth / 2), topUiScoreY);
 
             if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
-                // Y-positie voor onderste iconen: een regel hoger dan de absolute onderkant.
-                const ONE_LINE_OFFSET_FOR_BOTTOM_UI = referenceSkipLineHeight * 1.0;
-                const portraitBottomIconY_Base = gameCanvas.height - PORTRAIT_ICON_MARGIN_BOTTOM_BASE - ONE_LINE_OFFSET_FOR_BOTTOM_UI;
+                // Y-positie voor onderste iconen: één referentie-regel hoger dan de basis ondermarge
+                const portraitBottomIconY_Base = gameCanvas.height - PORTRAIT_ICON_MARGIN_BOTTOM_BASE - (referenceSkipLineHeight * 1.0);
                 const portraitLifeLevelIconY = portraitBottomIconY_Base - PORTRAIT_BOTTOM_ICON_SIZE;
                 const portraitMidShipIconY = portraitBottomIconY_Base - PORTRAIT_MID_SHIP_HEIGHT;
 
@@ -1085,9 +1062,8 @@ function renderGame() {
                 }
             }
             gameCtx.restore();
-            return;
+            return; // Stop verdere rendering als de portrait message wordt getoond
         }
-
 
         // --- STAP 1: Teken UI (Score, Levens, Level) ---
         // ... (rest van de renderGame functie, die alleen wordt uitgevoerd in landscape modus) ...
