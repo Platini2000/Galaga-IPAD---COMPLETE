@@ -904,7 +904,7 @@ function createExplosion(x, y) { try { playSound('explosionSound', false, 0.4); 
 
 
 // --- START OF FILE rendering_menu.js ---
-// --- DEEL 3 van 3 dit code blok --- (Aangepast voor Star Wars Crawl in Portrait Message - Rechte Tekst)
+// --- DEEL 3 van 3 dit code blok --- (Aangepast voor stilstaande, gecentreerde Portrait Message)
 
 /** Rendert de actieve explosies op het game canvas. */
 function renderExplosions() { try { if (!gameCtx) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; explosions.forEach(explosion => { explosion.particles.forEach(p => { const drawAlpha = p.alpha * EXPLOSION_MAX_OPACITY; if (drawAlpha > 0.01) { gameCtx.beginPath(); gameCtx.arc(Math.round(p.x), Math.round(p.y), p.radius, 0, Math.PI * 2); gameCtx.fillStyle = `rgba(255, 200, 80, ${drawAlpha.toFixed(3)})`; gameCtx.fill(); } }); }); gameCtx.restore(); } catch (e) { console.error("Error rendering explosions:", e); } }
@@ -923,15 +923,15 @@ function renderFloatingScores() { try { if (!gameCtx || !floatingScores || float
  */
 function renderHitSparks() { if (!gameCtx || !hitSparks || hitSparks.length === 0) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; hitSparks.forEach(s => { if (s && s.alpha > 0.01) { gameCtx.fillStyle = s.color; gameCtx.globalAlpha = s.alpha; gameCtx.beginPath(); const currentSize = s.size * Math.sqrt(s.alpha); gameCtx.arc(Math.round(s.x), Math.round(s.y), Math.max(0.5, currentSize / 2), 0, Math.PI * 2); gameCtx.fill(); } }); gameCtx.globalAlpha = 1.0; gameCtx.restore(); }
 
-// Variabelen voor Star Wars Crawl
-let starWarsCrawlStartTime = 0;
-const STAR_WARS_CRAWL_TOTAL_DURATION = 28000; // Totale duur voor de crawl (iets langer voor meer tekst)
-const STAR_WARS_FONT_BASE_SIZE = 24;         // Basisgrootte van de font (pixels) bij start scroll
-const STAR_WARS_MAX_SCALE_AT_BOTTOM = 1.0;   // Schaal aan de onderkant van het scherm (waar het begint)
-const STAR_WARS_MIN_SCALE_AT_VANISH = 0.1;   // Schaal aan het "verdwijnpunt"
-const STAR_WARS_PERSPECTIVE_STRENGTH = 0.8;  // Hoe sterk het perspectief effect (0=geen, 1=sterk)
-const STAR_WARS_VANISHING_POINT_Y_FACTOR = 0.30; // Y-positie van het verdwijnpunt (factor van schermhoogte, hoger is "verder weg")
-const STAR_WARS_FADE_LENGTH_FACTOR = 0.3;      // Lengte van de fade zone (factor van afstand tot verdwijnpunt)
+// Variabelen voor Star Wars Crawl zijn hier niet meer nodig.
+// let starWarsCrawlStartTime = 0;
+// const STAR_WARS_CRAWL_TOTAL_DURATION = 28000;
+// const STAR_WARS_FONT_BASE_SIZE = 24;
+// const STAR_WARS_MAX_SCALE_AT_BOTTOM = 1.0;
+// const STAR_WARS_MIN_SCALE_AT_VANISH = 0.1;
+// const STAR_WARS_PERSPECTIVE_STRENGTH = 0.8;
+// const STAR_WARS_VANISHING_POINT_Y_FACTOR = 0.30;
+// const STAR_WARS_FADE_LENGTH_FACTOR = 0.3;
 
 /**
  * Tekent de volledige game scène.
@@ -948,99 +948,83 @@ function renderGame() {
         if (isShowingPortraitMessage) {
             gameCtx.save();
             const midX = gameCanvas.width / 2;
-            const portraitFontFamily = "'Press Start 2P'";
+            const portraitFont = "bold 24px 'Press Start 2P'";
             const textColor = "rgba(0, 191, 255, 0.9)"; // Cyaan
 
-            const allLines = [
-                "This is an unofficial",
-                "fan remake of Galaga,",
-                "Created out of love",
-                "for the original.",
-                "All rights to the",
-                "original Galaga concept,",
-                "Design, and sounds",
-                "belong to Bandai Namco.",
-                "", // Lege regel voor de gap
-                "", // Lege regel voor de gap
-                "ROTATE TO LANDSCAPE",
-                "TO PLAY GAME"
+            const messageBlocks = [
+                [
+                    "This is an unofficial",
+                    "fan remake of Galaga"
+                ],
+                [
+                    "Created out of love",
+                    "for the original."
+                ],
+                [
+                    "All rights to the",
+                    "original Galaga concept,"
+                ],
+                [
+                    "Design, and sounds",
+                    "belong to Bandai Namco."
+                ],
+                [ // Lege blokken voor de dubbele regel overslaan
+                ],
+                [
+                    "ROTATE TO LANDSCAPE",
+                    "TO PLAY GAME"
+                ]
             ];
 
-            if (starWarsCrawlStartTime === 0) {
-                starWarsCrawlStartTime = now;
-            }
-            const elapsedTime = now - starWarsCrawlStartTime;
-            let scrollProgress = elapsedTime / STAR_WARS_CRAWL_TOTAL_DURATION;
+            gameCtx.font = portraitFont;
+            const metrics = gameCtx.measureText("M");
+            const singleLineHeight = (metrics.actualBoundingBoxAscent || parseInt(portraitFont, 10) * 1.2) + (metrics.actualBoundingBoxDescent || 0) + 5; // +5 voor wat marge
+            const singleSkipHeight = singleLineHeight; // Hoogte voor 1 regel overslaan
+            const doubleSkipHeight = singleLineHeight * 2; // Hoogte voor 2 regels overslaan
 
-            if (scrollProgress >= 1.3) { // Reset na volledig uit beeld + marge
-                starWarsCrawlStartTime = 0; // Herstart de animatie
-                scrollProgress = 0;
-            }
-             scrollProgress = Math.min(1.3, scrollProgress);
-
-
-            const baseLineHeight = STAR_WARS_FONT_BASE_SIZE * 1.8; // Verhoogde regelafstand voor betere leesbaarheid
-            const totalBlockNominalHeight = allLines.length * baseLineHeight;
-
-            const blockStartInitialY = gameCanvas.height * 1.05; // Begin net onder het scherm
-            const blockEndScrollY = -totalBlockNominalHeight * 1.2; // Zorg dat het ver genoeg scrolt
-
-            const currentBlockBaseY = blockStartInitialY + (blockEndScrollY - blockStartInitialY) * scrollProgress;
-            const vanishingPointY = gameCanvas.height * STAR_WARS_VANISHING_POINT_Y_FACTOR;
-            const gridHorizonY = gameCanvas.height * GRID_HORIZON_Y_FACTOR; // Waar de grid begint
-
-            for (let i = 0; i < allLines.length; i++) {
-                const line = allLines[i];
-                if (line === "") continue;
-
-                const lineNominalY = currentBlockBaseY + i * baseLineHeight;
-
-                // Alleen tekenen als de lijn boven de grid horizon is
-                if (lineNominalY < gridHorizonY && lineNominalY > -baseLineHeight * 2) { // -baseLineHeight*2 om te zorgen dat het nog even vervaagt
-                    let perspectiveScale;
-                    // Bereken schaal gebaseerd op afstand tot verdwijnpunt
-                    const distToVanishing = Math.max(0, lineNominalY - vanishingPointY);
-                    const totalDistFromStartToVanish = gridHorizonY - vanishingPointY;
-
-                    if (totalDistFromStartToVanish <= 0 || lineNominalY <= vanishingPointY) {
-                        perspectiveScale = STAR_WARS_MIN_SCALE_AT_VANISH;
-                    } else {
-                        const t = distToVanishing / totalDistFromStartToVanish;
-                        perspectiveScale = STAR_WARS_MIN_SCALE_AT_VANISH + (STAR_WARS_MAX_SCALE_AT_BOTTOM - STAR_WARS_MIN_SCALE_AT_VANISH) * Math.pow(t, STAR_WARS_PERSPECTIVE_STRENGTH);
-                        perspectiveScale = Math.max(STAR_WARS_MIN_SCALE_AT_VANISH, Math.min(STAR_WARS_MAX_SCALE_AT_BOTTOM, perspectiveScale));
-                    }
-
-                    const actualFontSize = STAR_WARS_FONT_BASE_SIZE * perspectiveScale;
-                    if (actualFontSize < 3) continue; // Niet tekenen als te klein
-
-                    const currentFont = `bold ${actualFontSize.toFixed(0)}px ${portraitFontFamily}`;
-
-                    // Alpha voor fade-out
-                    let alpha = 1.0;
-                    const fadeDistance = totalDistFromStartToVanish * STAR_WARS_FADE_LENGTH_FACTOR;
-                    const fadeStartPoint = vanishingPointY + fadeDistance;
-
-                    if (lineNominalY < fadeStartPoint) {
-                        if (lineNominalY <= vanishingPointY) {
-                            alpha = 0;
-                        } else {
-                            alpha = (lineNominalY - vanishingPointY) / fadeDistance;
-                        }
-                    }
-                    alpha = Math.max(0, Math.min(1, alpha));
-
-                    if (alpha > 0.01) {
-                        gameCtx.globalAlpha = alpha;
-                        drawCanvasText(line, midX, lineNominalY, currentFont, textColor, 'center', 'middle', true);
-                        gameCtx.globalAlpha = 1.0;
-                    }
+            let totalBlockHeight = 0;
+            messageBlocks.forEach((block, index) => {
+                totalBlockHeight += block.length * singleLineHeight;
+                if (index === 0 || index === 1 || index === 2) { // Na eerste 3 blokken
+                    totalBlockHeight += singleSkipHeight;
+                } else if (index === 4) { // Na 5e blok (het lege blok na "Bandai Namco.")
+                    totalBlockHeight += doubleSkipHeight;
                 }
-            }
+            });
+
+            // Positioneer het hele blok zodat de ONDERKANT van "TO PLAY GAME"
+            // ruim boven de retro vloer horizon (GRID_HORIZON_Y_FACTOR) uitkomt.
+            // Laten we zeggen 10% van de schermhoogte boven de horizon.
+            const bottomMarginFromHorizon = gameCanvas.height * 0.10;
+            const retroGridHorizonY = gameCanvas.height * GRID_HORIZON_Y_FACTOR;
+            const desiredBottomOfText = retroGridHorizonY - bottomMarginFromHorizon;
+            let currentY = desiredBottomOfText - totalBlockHeight;
+
+            // Zorg ervoor dat de tekst niet te hoog begint als het scherm erg hoog is / tekstblok kort
+            const topScreenMargin = gameCanvas.height * 0.05; // Minimaal 5% marge van boven
+            currentY = Math.max(topScreenMargin, currentY);
+
+
+            messageBlocks.forEach((block, index) => {
+                for (const line of block) {
+                    if (line) { // Teken alleen als de regel niet leeg is (voor de lege blokken)
+                        drawCanvasText(line, midX, currentY + singleLineHeight / 2, portraitFont, textColor, 'center', 'middle', true);
+                    }
+                    currentY += singleLineHeight;
+                }
+                if (index === 0 || index === 1 || index === 2) {
+                    currentY += singleSkipHeight;
+                } else if (index === 4) {
+                    currentY += doubleSkipHeight;
+                }
+            });
+
             gameCtx.restore();
             return;
-        } else {
-            starWarsCrawlStartTime = 0;
         }
+        // else {
+            // starWarsCrawlStartTime = 0; // Reset als we niet in portrait mode zijn
+        // }
 
 
         // --- STAP 1: Teken UI (Score, Levens, Level) ---
