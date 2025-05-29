@@ -1015,7 +1015,7 @@ function renderGame() {
             const PORTRAIT_SCORE_COLOR = "white";
             const PORTRAIT_MARGIN_TOP_BASE = 15;
             const PORTRAIT_MARGIN_SIDE = 20;
-            const PORTRAIT_SCORE_OFFSET_Y = 23;
+            const PORTRAIT_SCORE_OFFSET_Y = 25;
             // <<< GEWIJZIGD: Gebruik SHIP_WIDTH en SHIP_HEIGHT voor het middelste schip >>>
             const PORTRAIT_BOTTOM_ICON_SIZE = Math.min(35, gameCanvas.width / 15); // Voor levens en level
             const PORTRAIT_MID_SHIP_WIDTH = SHIP_WIDTH;
