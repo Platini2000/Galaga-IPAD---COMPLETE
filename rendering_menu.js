@@ -939,9 +939,8 @@ function renderGame() {
         if (isShowingPortraitMessage) {
             gameCtx.save();
             const midX = gameCanvas.width / 2;
-            const disclaimerLineHeight = 25;
-            const rotateLineHeight = 35; // Iets groter voor de hoofd boodschap
-            const gapAfterDisclaimer = disclaimerLineHeight * 2; // 2 regels overslaan
+            const portraitFont = "bold 24px 'Press Start 2P'"; // Gebruik dezelfde font voor alles
+            const textColor = "rgba(0, 191, 255, 0.9)"; // Cyaan
 
             const disclaimerLines = [
                 "This is an unofficial fan remake of Galaga,",
@@ -954,20 +953,23 @@ function renderGame() {
                 "TO PLAY GAME"
             ];
 
-            const totalDisclaimerHeight = disclaimerLines.length * disclaimerLineHeight;
-            const totalRotateHeight = rotateLines.length * rotateLineHeight;
+            // Bepaal de hoogte van een regel tekst (ongeveer)
+            gameCtx.font = portraitFont; // Stel de font in om de hoogte correct te meten (of gebruik een vaste waarde)
+            const metrics = gameCtx.measureText("M"); // 'M' is vaak een goede letter voor hoogte
+            const lineHeight = (metrics.actualBoundingBoxAscent || parseInt(portraitFont, 10) * 1.2) + (metrics.actualBoundingBoxDescent || 0); // Inclusief wat marge
+
+            const gapAfterDisclaimer = lineHeight * 2; // 2 regels overslaan
+
+            const totalDisclaimerHeight = disclaimerLines.length * lineHeight;
+            const totalRotateHeight = rotateLines.length * lineHeight;
             const totalBlockHeight = totalDisclaimerHeight + gapAfterDisclaimer + totalRotateHeight;
 
             let currentY = (gameCanvas.height - totalBlockHeight) / 2; // Start Y voor het hele blok
 
-            const disclaimerFont = "18px 'Press Start 2P'";
-            const rotateFont = "bold 24px 'Press Start 2P'";
-            const textColor = "rgba(0, 191, 255, 0.9)"; // Cyaan
-
             // Teken disclaimer regels
             for (const line of disclaimerLines) {
-                drawCanvasText(line, midX, currentY + disclaimerLineHeight / 2, disclaimerFont, textColor, 'center', 'middle', true);
-                currentY += disclaimerLineHeight;
+                drawCanvasText(line, midX, currentY + lineHeight / 2, portraitFont, textColor, 'center', 'middle', true);
+                currentY += lineHeight;
             }
 
             // Voeg de gap toe
@@ -975,8 +977,8 @@ function renderGame() {
 
             // Teken "ROTATE TO LANDSCAPE" en "TO PLAY GAME"
             for (const line of rotateLines) {
-                drawCanvasText(line, midX, currentY + rotateLineHeight / 2, rotateFont, textColor, 'center', 'middle', true);
-                currentY += rotateLineHeight;
+                drawCanvasText(line, midX, currentY + lineHeight / 2, portraitFont, textColor, 'center', 'middle', true);
+                currentY += lineHeight;
             }
 
             gameCtx.restore();
