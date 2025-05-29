@@ -998,7 +998,7 @@ function renderGame() {
 
             // <<< GEWIJZIGD: Voeg een extra offset toe om alles een regel te laten zakken >>>
             // Gebruik de hoogte van de "ROTATE" tekst als referentie voor "een regel"
-            const oneLineOffset = referenceSkipLineHeight * 1.0; // Of een andere geschikte waarde
+            const oneLineOffset = referenceSkipLineHeight * 2.0; // Of een andere geschikte waarde
             currentY += oneLineOffset;
             // <<< EINDE GEWIJZIGD >>>
 
