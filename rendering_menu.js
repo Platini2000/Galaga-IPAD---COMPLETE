@@ -977,7 +977,9 @@ function renderGame() {
             gameCtx.font = rotateFont;
             const refMetrics = gameCtx.measureText("M");
             const referenceSkipLineHeight = (refMetrics.actualBoundingBoxAscent || parseInt(rotateFont,10)*1.2) + (refMetrics.actualBoundingBoxDescent || 0) + 5;
-            const ONE_LINE_OFFSET_VERTICAL = referenceSkipLineHeight * 1.0;
+            // <<< GEWIJZIGD: "Twee regels" offset voor positionering >>>
+            const TWO_LINES_OFFSET_VERTICAL = referenceSkipLineHeight * 2.0;
+
 
             lineHeightsInfo.forEach(info => {
                 totalBlockHeight += info.height;
@@ -996,7 +998,8 @@ function renderGame() {
                 currentY = topScreenMargin + ( (spaceAboveGrid - bottomPadding) - totalBlockHeight) / 2;
             }
             currentY = Math.max(currentY, topScreenMargin);
-            currentY += ONE_LINE_OFFSET_VERTICAL;
+            // <<< GEWIJZIGD: Disclaimer tekstblok twee regels omlaag >>>
+            currentY += TWO_LINES_OFFSET_VERTICAL;
 
             messageStructure.forEach((item, index) => {
                 const itemLineHeight = lineHeightsInfo[index].height;
@@ -1015,42 +1018,43 @@ function renderGame() {
             const PORTRAIT_SCORE_COLOR = "white";
             const PORTRAIT_MARGIN_TOP_BASE = 15;
             const PORTRAIT_MARGIN_SIDE = 20;
-            const PORTRAIT_SCORE_OFFSET_Y = 27;
-            // <<< GEWIJZIGD: Gebruik SHIP_WIDTH en SHIP_HEIGHT voor het middelste schip >>>
-            const PORTRAIT_BOTTOM_ICON_SIZE = Math.min(35, gameCanvas.width / 15); // Voor levens en level
+            const PORTRAIT_SCORE_OFFSET_Y = 20;
+            const PORTRAIT_BOTTOM_ICON_SIZE = Math.min(35, gameCanvas.width / 15);
             const PORTRAIT_MID_SHIP_WIDTH = SHIP_WIDTH;
             const PORTRAIT_MID_SHIP_HEIGHT = SHIP_HEIGHT;
-            // <<< EINDE GEWIJZIGD >>>
             const PORTRAIT_ICON_SPACING = 5;
             const PORTRAIT_ICON_MARGIN_BOTTOM_BASE = 10;
-            const SCORE_EXTRA_Y_OFFSET = 3; // <<< TOEGEVOEGD: Extra 3px zakken voor scores >>>
+            const SCORE_EXTRA_Y_OFFSET = 3;
 
-            const topUiY = PORTRAIT_MARGIN_TOP_BASE + ONE_LINE_OFFSET_VERTICAL;
-            const topUiScoreY = topUiY + PORTRAIT_SCORE_OFFSET_Y + SCORE_EXTRA_Y_OFFSET; // <<< GEWIJZIGD >>>
+            // <<< GEWIJZIGD: Bovenste UI nu ook beïnvloed door TWO_LINES_OFFSET_VERTICAL voor consistentie,
+            //      maar de "een regel lager" logica blijft relatief aan de disclaimer.
+            //      Als de disclaimer 2 regels zakt, en de UI daar 1 regel onder moet, is de netto UI offset 3 regels.
+            //      We gebruiken ONE_LINE_OFFSET_VERTICAL hier nog steeds als relatieve offset.
+            //      De disclaimer bepaalt de 'basislijn' voor de UI in portret.
+            //      Dus de topUiY is nu gewoon de basis marge plus de ONE_LINE_OFFSET_VERTICAL.
+            //>>>
+            const ONE_LINE_OFFSET_FOR_TOP_UI = referenceSkipLineHeight * 1.0; // Offset specifiek voor top UI tov absolute top
+            const topUiY = PORTRAIT_MARGIN_TOP_BASE + ONE_LINE_OFFSET_FOR_TOP_UI;
+            const topUiScoreY = topUiY + PORTRAIT_SCORE_OFFSET_Y + SCORE_EXTRA_Y_OFFSET;
 
             gameCtx.font = PORTRAIT_UI_FONT;
             gameCtx.textBaseline = "top";
 
-            // 1UP (linksboven)
             gameCtx.fillStyle = PORTRAIT_LABEL_COLOR;
             gameCtx.textAlign = "left";
             const label1UPText = "1UP";
             gameCtx.fillText(label1UPText, PORTRAIT_MARGIN_SIDE, topUiY);
             gameCtx.fillStyle = PORTRAIT_SCORE_COLOR;
-            // <<< GEWIJZIGD: Centreer "0" onder "1UP" label >>>
             const label1UPWidth = gameCtx.measureText(label1UPText).width;
             gameCtx.textAlign = "center";
             gameCtx.fillText("0", PORTRAIT_MARGIN_SIDE + (label1UPWidth / 2), topUiScoreY);
-            // <<< EINDE GEWIJZIGD >>>
 
-            // HI SCORE (midden boven)
             gameCtx.fillStyle = PORTRAIT_LABEL_COLOR;
             gameCtx.textAlign = "center";
             gameCtx.fillText("HI SCORE", midX, topUiY);
             gameCtx.fillStyle = PORTRAIT_SCORE_COLOR;
             gameCtx.fillText(String(highScore || 20000), midX, topUiScoreY);
 
-            // 2UP (rechtsboven)
             gameCtx.fillStyle = PORTRAIT_LABEL_COLOR;
             gameCtx.textAlign = "right";
             const label2UPText = "2UP";
@@ -1060,27 +1064,21 @@ function renderGame() {
             gameCtx.textAlign = "center";
             gameCtx.fillText("0", gameCanvas.width - PORTRAIT_MARGIN_SIDE - (label2UPWidth / 2), topUiScoreY);
 
-
-            // Onderste UI elementen
             if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
-                // <<< GEWIJZIGD: Y-positie voor onderste iconen een regel hoger, en gebruik correcte hoogte voor middelste schip >>>
-                const portraitBottomIconY_Base = gameCanvas.height - PORTRAIT_ICON_MARGIN_BOTTOM_BASE - ONE_LINE_OFFSET_VERTICAL;
+                // Y-positie voor onderste iconen: een regel hoger dan de absolute onderkant.
+                const ONE_LINE_OFFSET_FOR_BOTTOM_UI = referenceSkipLineHeight * 1.0;
+                const portraitBottomIconY_Base = gameCanvas.height - PORTRAIT_ICON_MARGIN_BOTTOM_BASE - ONE_LINE_OFFSET_FOR_BOTTOM_UI;
                 const portraitLifeLevelIconY = portraitBottomIconY_Base - PORTRAIT_BOTTOM_ICON_SIZE;
                 const portraitMidShipIconY = portraitBottomIconY_Base - PORTRAIT_MID_SHIP_HEIGHT;
-                // <<< EINDE GEWIJZIGD >>>
 
-
-                // Linksonder: 2 levensscheepjes
                 let currentIconX_P = PORTRAIT_MARGIN_SIDE;
                 gameCtx.drawImage(shipImage, Math.round(currentIconX_P), Math.round(portraitLifeLevelIconY), PORTRAIT_BOTTOM_ICON_SIZE, PORTRAIT_BOTTOM_ICON_SIZE);
                 currentIconX_P += PORTRAIT_BOTTOM_ICON_SIZE + PORTRAIT_ICON_SPACING;
                 gameCtx.drawImage(shipImage, Math.round(currentIconX_P), Math.round(portraitLifeLevelIconY), PORTRAIT_BOTTOM_ICON_SIZE, PORTRAIT_BOTTOM_ICON_SIZE);
 
-                // Midden onder: 1 schip (met game afmetingen)
                 const midShipX = midX - PORTRAIT_MID_SHIP_WIDTH / 2;
                 gameCtx.drawImage(shipImage, Math.round(midShipX), Math.round(portraitMidShipIconY), PORTRAIT_MID_SHIP_WIDTH, PORTRAIT_MID_SHIP_HEIGHT);
 
-                // Rechtsonder: 1 level icoon (Level 1)
                 if (typeof level1Image !== 'undefined' && level1Image.complete && level1Image.naturalHeight !== 0) {
                     const levelIconX_P = gameCanvas.width - PORTRAIT_MARGIN_SIDE - PORTRAIT_BOTTOM_ICON_SIZE;
                     gameCtx.drawImage(level1Image, Math.round(levelIconX_P), Math.round(portraitLifeLevelIconY), PORTRAIT_BOTTOM_ICON_SIZE, PORTRAIT_BOTTOM_ICON_SIZE);
