@@ -641,7 +641,10 @@ function playSound(soundId, loop = false, volume = 1) {
     }
 
     // <<< GEWIJZIGD: Als portrait message getoond wordt, blokkeer ALLE geluiden. >>>
-    if (isShowingPortraitMessage) return;
+    if (isShowingPortraitMessage) {
+        // console.log(`[playSound] Blocked sound '${soundId}' due to portrait mode.`); // Debug log
+        return;
+    }
 
     // Als gepauzeerd (en NIET in portrait mode, want dat is hierboven afgehandeld),
     // sta menu muziek toe maar blokkeer andere geluiden.
@@ -1214,16 +1217,26 @@ let soundPausedStates = {}; // Wordt niet meer gebruikt op dezelfde manier met W
 
 function pauseAllSounds() {
     if (audioContext && audioContext.state === 'running') {
-        audioContext.suspend().then(() => console.log("AudioContext suspended for pause.")).catch(e => console.error("Error suspending AudioContext:", e));
+        // audioContext.suspend().then(() => console.log("AudioContext suspended for pause.")).catch(e => console.error("Error suspending AudioContext:", e));
+        // Laten we audioContext.suspend() voor nu even uitcommentariëren om te zien of dat een probleem is.
+        // Het direct stoppen van sounds zou effectiever moeten zijn.
     }
-    stopSound('menuMusicSound'); // Specifiek menu muziek stoppen, niet alleen pauseren
+    // <<< GEWIJZIGD: Stop alle geluiden individueel, inclusief menu muziek, door te itereren over soundSources. >>>
+    for (const soundId in soundSources) {
+        if (Object.hasOwnProperty.call(soundSources, soundId)) { // Zeker zijn dat het een eigen property is
+            stopSound(soundId);
+        }
+    }
+    isGridSoundPlaying = false; // Reset de vlag voor grid geluid expliciet
+    // console.log("[pauseAllSounds] Called, attempting to stop all sounds."); // Debug log
 }
 
 function resumeAllSounds() {
     if (audioContext && audioContext.state === 'suspended') {
         audioContext.resume().then(() => console.log("AudioContext resumed from pause.")).catch(e => console.error("Error resuming AudioContext:", e));
     }
-    if (!isInGameState && audioContext && !isTouchActiveMenu) { // Als we terug in het menu zijn EN touch niet actief is, speel menu muziek
+    // <<< GEWIJZIGD: Voeg check voor isShowingPortraitMessage toe voordat menu muziek hervat wordt >>>
+    if (!isInGameState && audioContext && !isTouchActiveMenu && !isShowingPortraitMessage) {
         playSound('menuMusicSound', true, 0.2);
     }
     // Andere geluiden worden hervat wanneer ze opnieuw worden getriggerd door playSound
