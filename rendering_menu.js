@@ -904,7 +904,7 @@ function createExplosion(x, y) { try { playSound('explosionSound', false, 0.4); 
 
 
 // --- START OF FILE rendering_menu.js ---
-// --- DEEL 3 van 3 dit code blok --- (Aangepast voor 1P Normal Mode UI in Game Over/Results en Portrait Message met Star Wars Crawl)
+// --- DEEL 3 van 3 dit code blok --- (Aangepast voor Star Wars Crawl in Portrait Message - Rechte Tekst)
 
 /** Rendert de actieve explosies op het game canvas. */
 function renderExplosions() { try { if (!gameCtx) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; explosions.forEach(explosion => { explosion.particles.forEach(p => { const drawAlpha = p.alpha * EXPLOSION_MAX_OPACITY; if (drawAlpha > 0.01) { gameCtx.beginPath(); gameCtx.arc(Math.round(p.x), Math.round(p.y), p.radius, 0, Math.PI * 2); gameCtx.fillStyle = `rgba(255, 200, 80, ${drawAlpha.toFixed(3)})`; gameCtx.fill(); } }); }); gameCtx.restore(); } catch (e) { console.error("Error rendering explosions:", e); } }
@@ -923,13 +923,15 @@ function renderFloatingScores() { try { if (!gameCtx || !floatingScores || float
  */
 function renderHitSparks() { if (!gameCtx || !hitSparks || hitSparks.length === 0) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; hitSparks.forEach(s => { if (s && s.alpha > 0.01) { gameCtx.fillStyle = s.color; gameCtx.globalAlpha = s.alpha; gameCtx.beginPath(); const currentSize = s.size * Math.sqrt(s.alpha); gameCtx.arc(Math.round(s.x), Math.round(s.y), Math.max(0.5, currentSize / 2), 0, Math.PI * 2); gameCtx.fill(); } }); gameCtx.globalAlpha = 1.0; gameCtx.restore(); }
 
-// Variabele om de scroll-starttijd bij te houden voor het Star Wars-effect
+// Variabelen voor Star Wars Crawl
 let starWarsCrawlStartTime = 0;
-const STAR_WARS_CRAWL_DURATION = 20000; // 20 seconden voor de volledige crawl
-const STAR_WARS_PERSPECTIVE_ANGLE = -55 * (Math.PI / 180); // Hoek in radialen (bv. -55 graden)
-const STAR_WARS_FADE_START_Y_FACTOR = 0.3; // Wanneer de fade-out begint (factor van schermhoogte vanaf boven)
-const STAR_WARS_FADE_END_Y_FACTOR = 0.1;   // Wanneer de tekst volledig vervaagd is
-
+const STAR_WARS_CRAWL_TOTAL_DURATION = 28000; // Totale duur voor de crawl (iets langer voor meer tekst)
+const STAR_WARS_FONT_BASE_SIZE = 24;         // Basisgrootte van de font (pixels) bij start scroll
+const STAR_WARS_MAX_SCALE_AT_BOTTOM = 1.0;   // Schaal aan de onderkant van het scherm (waar het begint)
+const STAR_WARS_MIN_SCALE_AT_VANISH = 0.1;   // Schaal aan het "verdwijnpunt"
+const STAR_WARS_PERSPECTIVE_STRENGTH = 0.8;  // Hoe sterk het perspectief effect (0=geen, 1=sterk)
+const STAR_WARS_VANISHING_POINT_Y_FACTOR = 0.30; // Y-positie van het verdwijnpunt (factor van schermhoogte, hoger is "verder weg")
+const STAR_WARS_FADE_LENGTH_FACTOR = 0.3;      // Lengte van de fade zone (factor van afstand tot verdwijnpunt)
 
 /**
  * Tekent de volledige game scène.
@@ -946,7 +948,7 @@ function renderGame() {
         if (isShowingPortraitMessage) {
             gameCtx.save();
             const midX = gameCanvas.width / 2;
-            const portraitFont = "bold 24px 'Press Start 2P'";
+            const portraitFontFamily = "'Press Start 2P'";
             const textColor = "rgba(0, 191, 255, 0.9)"; // Cyaan
 
             const allLines = [
@@ -965,85 +967,79 @@ function renderGame() {
             ];
 
             if (starWarsCrawlStartTime === 0) {
-                starWarsCrawlStartTime = now; // Start de timer als die nog niet loopt
+                starWarsCrawlStartTime = now;
             }
             const elapsedTime = now - starWarsCrawlStartTime;
-            const scrollProgress = Math.min(1, elapsedTime / STAR_WARS_CRAWL_DURATION);
+            let scrollProgress = elapsedTime / STAR_WARS_CRAWL_TOTAL_DURATION;
 
-            if (elapsedTime >= STAR_WARS_CRAWL_DURATION + 2000) { // +2s om te zorgen dat het weg is
-                starWarsCrawlStartTime = 0; // Reset voor de volgende keer dat het bericht verschijnt
+            if (scrollProgress >= 1.3) { // Reset na volledig uit beeld + marge
+                starWarsCrawlStartTime = 0; // Herstart de animatie
+                scrollProgress = 0;
             }
+             scrollProgress = Math.min(1.3, scrollProgress);
 
 
-            gameCtx.font = portraitFont;
-            const metrics = gameCtx.measureText("M");
-            const baseLineHeight = (metrics.actualBoundingBoxAscent || parseInt(portraitFont, 10) * 1.2) + (metrics.actualBoundingBoxDescent || 0) + 15; // +15 voor extra regelafstand
+            const baseLineHeight = STAR_WARS_FONT_BASE_SIZE * 1.8; // Verhoogde regelafstand voor betere leesbaarheid
+            const totalBlockNominalHeight = allLines.length * baseLineHeight;
 
-            const totalBlockInitialHeight = allLines.length * baseLineHeight;
-            const startYOffset = gameCanvas.height * 1.1; // Start net onder het scherm
-            const endYOffset = -totalBlockInitialHeight * 2; // Scroll ver genoeg omhoog
+            const blockStartInitialY = gameCanvas.height * 1.05; // Begin net onder het scherm
+            const blockEndScrollY = -totalBlockNominalHeight * 1.2; // Zorg dat het ver genoeg scrolt
 
-            const currentBlockTopY = startYOffset + (endYOffset - startYOffset) * scrollProgress;
-
-            // Toepassen van perspectief transformatie
-            gameCtx.translate(midX, gameCanvas.height * 0.85); // Verplaats oorsprong naar onderkant midden voor rotatie
-            gameCtx.transform(1, 0, 0.0, 1, 0, 0); // Horizontale skew (licht perspectief)
-            gameCtx.rotate(STAR_WARS_PERSPECTIVE_ANGLE); // Roteer voor het 3D-effect
-            gameCtx.translate(-midX, 0); // Translate terug
-
+            const currentBlockBaseY = blockStartInitialY + (blockEndScrollY - blockStartInitialY) * scrollProgress;
+            const vanishingPointY = gameCanvas.height * STAR_WARS_VANISHING_POINT_Y_FACTOR;
+            const gridHorizonY = gameCanvas.height * GRID_HORIZON_Y_FACTOR; // Waar de grid begint
 
             for (let i = 0; i < allLines.length; i++) {
                 const line = allLines[i];
-                if (line === "") continue; // Sla lege regels over voor tekenen
+                if (line === "") continue;
 
-                const lineYPosOnBlock = i * baseLineHeight;
-                let y = currentBlockTopY + lineYPosOnBlock;
+                const lineNominalY = currentBlockBaseY + i * baseLineHeight;
 
-                // Verticale schaling en positie aanpassing voor perspectief
-                // Dit is een vereenvoudigde benadering.
-                // Hoe dichter bij de "verdwijnpunt" (bovenkant scherm), hoe kleiner en dichter bij elkaar.
-                let scaleFactor = 1 - ( (startYOffset - y) / (startYOffset * 2.5) ); // StartYOffset * X is een gok voor verdwijnpunt
-                scaleFactor = Math.max(0.1, Math.min(1, scaleFactor)); // Voorkom te klein/groot
+                // Alleen tekenen als de lijn boven de grid horizon is
+                if (lineNominalY < gridHorizonY && lineNominalY > -baseLineHeight * 2) { // -baseLineHeight*2 om te zorgen dat het nog even vervaagt
+                    let perspectiveScale;
+                    // Bereken schaal gebaseerd op afstand tot verdwijnpunt
+                    const distToVanishing = Math.max(0, lineNominalY - vanishingPointY);
+                    const totalDistFromStartToVanish = gridHorizonY - vanishingPointY;
 
-                let adjustedY = y * scaleFactor + (gameCanvas.height * 0.1 * (1 - scaleFactor)) ; // Beweeg naar boven als het kleiner wordt
-                let adjustedLineHeight = baseLineHeight * scaleFactor;
-
-
-                // Alpha voor fade-out naar de horizon
-                let alpha = 1.0;
-                const fadeStartY = gameCanvas.height * STAR_WARS_FADE_START_Y_FACTOR;
-                const fadeEndY = gameCanvas.height * STAR_WARS_FADE_END_Y_FACTOR;
-                const fadeRange = Math.max(1, fadeStartY - fadeEndY);
-
-                // We moeten de *werkelijke* positie op het scherm gebruiken voor de fade, niet de getransformeerde y
-                // Dit is lastig met de huidige transformaties. We doen een benadering.
-                // De `adjustedY` hier is al geschaald, wat het complex maakt.
-                // Laten we de fade baseren op de `y` *voordat* de schaling voor perspectief wordt toegepast.
-                const yForFade = y; // De Y positie binnen het "gescrollde blok"
-
-                if (yForFade < fadeStartY) {
-                    if (yForFade <= fadeEndY) {
-                        alpha = 0;
+                    if (totalDistFromStartToVanish <= 0 || lineNominalY <= vanishingPointY) {
+                        perspectiveScale = STAR_WARS_MIN_SCALE_AT_VANISH;
                     } else {
-                        alpha = (yForFade - fadeEndY) / fadeRange;
+                        const t = distToVanishing / totalDistFromStartToVanish;
+                        perspectiveScale = STAR_WARS_MIN_SCALE_AT_VANISH + (STAR_WARS_MAX_SCALE_AT_BOTTOM - STAR_WARS_MIN_SCALE_AT_VANISH) * Math.pow(t, STAR_WARS_PERSPECTIVE_STRENGTH);
+                        perspectiveScale = Math.max(STAR_WARS_MIN_SCALE_AT_VANISH, Math.min(STAR_WARS_MAX_SCALE_AT_BOTTOM, perspectiveScale));
+                    }
+
+                    const actualFontSize = STAR_WARS_FONT_BASE_SIZE * perspectiveScale;
+                    if (actualFontSize < 3) continue; // Niet tekenen als te klein
+
+                    const currentFont = `bold ${actualFontSize.toFixed(0)}px ${portraitFontFamily}`;
+
+                    // Alpha voor fade-out
+                    let alpha = 1.0;
+                    const fadeDistance = totalDistFromStartToVanish * STAR_WARS_FADE_LENGTH_FACTOR;
+                    const fadeStartPoint = vanishingPointY + fadeDistance;
+
+                    if (lineNominalY < fadeStartPoint) {
+                        if (lineNominalY <= vanishingPointY) {
+                            alpha = 0;
+                        } else {
+                            alpha = (lineNominalY - vanishingPointY) / fadeDistance;
+                        }
+                    }
+                    alpha = Math.max(0, Math.min(1, alpha));
+
+                    if (alpha > 0.01) {
+                        gameCtx.globalAlpha = alpha;
+                        drawCanvasText(line, midX, lineNominalY, currentFont, textColor, 'center', 'middle', true);
+                        gameCtx.globalAlpha = 1.0;
                     }
                 }
-                alpha = Math.max(0, Math.min(1, alpha));
-
-                if (alpha > 0.01 && scaleFactor > 0.05) {
-                     // Nieuwe font string met geschaalde grootte
-                    const scaledFontSize = Math.max(5, 24 * scaleFactor); // Min 5px, basis 24px
-                    const scaledFont = `bold ${scaledFontSize.toFixed(0)}px 'Press Start 2P'`;
-
-                    gameCtx.globalAlpha = alpha;
-                    drawCanvasText(line, midX, adjustedY + adjustedLineHeight / 2, scaledFont, textColor, 'center', 'middle', true);
-                    gameCtx.globalAlpha = 1.0;
-                }
             }
-            gameCtx.restore(); // Herstel de transformaties
+            gameCtx.restore();
             return;
         } else {
-            starWarsCrawlStartTime = 0; // Reset als we niet in portrait mode zijn
+            starWarsCrawlStartTime = 0;
         }
 
 
