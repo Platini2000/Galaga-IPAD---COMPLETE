@@ -1000,7 +1000,7 @@ function renderGame() {
             }
             disclaimerStartY = Math.max(disclaimerStartY, topScreenMargin);
 
-            const DISCLAIMER_BLOCK_Y_OFFSET = referenceSkipLineHeight * 4.0; // dat is de waarde om de text te laten zakken voor portret mode
+            const DISCLAIMER_BLOCK_Y_OFFSET = referenceSkipLineHeight * 4.0;
             disclaimerStartY += DISCLAIMER_BLOCK_Y_OFFSET;
 
             let currentDisclaimerTextY = disclaimerStartY;
