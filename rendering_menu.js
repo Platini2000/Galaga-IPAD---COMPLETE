@@ -904,7 +904,7 @@ function createExplosion(x, y) { try { playSound('explosionSound', false, 0.4); 
 
 
 // --- START OF FILE rendering_menu.js ---
-// --- DEEL 3 van 3 dit code blok --- (Correcties voor UI en ZICHTBAARHEID bericht in Portrait Mode)
+// --- DEEL 3 van 3 dit code blok --- (Correctie: High score niet onnodig laten knipperen in portrait)
 
 /** Rendert de actieve explosies op het game canvas. */
 function renderExplosions() { try { if (!gameCtx) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; explosions.forEach(explosion => { explosion.particles.forEach(p => { const drawAlpha = p.alpha * EXPLOSION_MAX_OPACITY; if (drawAlpha > 0.01) { gameCtx.beginPath(); gameCtx.arc(Math.round(p.x), Math.round(p.y), p.radius, 0, Math.PI * 2); gameCtx.fillStyle = `rgba(255, 200, 80, ${drawAlpha.toFixed(3)})`; gameCtx.fill(); } }); }); gameCtx.restore(); } catch (e) { console.error("Error rendering explosions:", e); } }
@@ -946,32 +946,38 @@ function renderGame() {
              let showLabel=true; let blinkOnDuration = UI_1UP_BLINK_ON_MS * 1.5; let blinkCycleDuration = UI_1UP_BLINK_CYCLE_MS * 1.5;
              let actualLabel = label;
 
-             if (isInGameState && !isShowingPortraitMessage) { // Alleen in-game labels voor DEMO/AI P2 aanpassen als NIET in portrait
+             if (isInGameState && !isShowingPortraitMessage) {
                  if (label === "1UP" && isCoopAIDemoActive) actualLabel = "DEMO-1";
                  else if (label === "1UP" && !isManualControl && !isCoopAIDemoActive && !isPlayerTwoAI) actualLabel = "DEMO";
                  else if (label === "2UP" && isCoopAIDemoActive) actualLabel = "DEMO-2";
                  else if (label === "2UP" && isPlayerTwoAI && selectedGameMode === 'coop') actualLabel = "AI P2";
                  else if (label === "2UP" && isPlayerTwoAI && selectedGameMode === 'normal') actualLabel = "AI P2";
-             } else if (isShowingPortraitMessage) { // In portrait, houd "1UP" en "2UP"
+             } else if (isShowingPortraitMessage) {
                  if (label === "1UP") actualLabel = "1UP";
                  if (label === "2UP") actualLabel = "2UP";
              }
-
 
              if (actualLabel === "DEMO" || actualLabel === "DEMO-1" || actualLabel === "DEMO-2" || actualLabel === "AI P2") {
                  blinkOnDuration = DEMO_TEXT_BLINK_ON_MS * 0.7; blinkCycleDuration = DEMO_TEXT_BLINK_CYCLE_MS;
              }
              else if (actualLabel === "HIGH SCORE") {
                  blinkOnDuration = UI_1UP_BLINK_ON_MS * 1.5; blinkCycleDuration = UI_1UP_BLINK_CYCLE_MS * 1.5;
-                 if ( (isInGameState && (!isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop')) && !isShowingPortraitMessage) || (isShowingPortraitMessage && highScore > 0) ) { // In portrait, high score knippert als > 0
+                 // Voor HIGH SCORE, als het een demo is (in-game of portrait), gebruik demo blink snelheid
+                 if ( (isInGameState && (!isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop'))) ||
+                      (isShowingPortraitMessage && (!isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop'))) // Check ook voor demo in portrait
+                    ) {
                       blinkOnDuration = DEMO_TEXT_BLINK_ON_MS * 0.7; blinkCycleDuration = DEMO_TEXT_BLINK_CYCLE_MS;
                  }
              }
              let isAnyPlayerGameOverMsgShowing = isShowingPlayerGameOverMessage || (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage));
+             // In portretmodus, geen blink voor UI elementen die niet "DEMO" of "HIGH SCORE" zijn (indien shouldBlink true is)
              const blockBlinkInPortraitNonDemoRelevant = isShowingPortraitMessage && actualLabel !== "DEMO" && actualLabel !== "DEMO-1" && actualLabel !== "DEMO-2" && actualLabel !== "AI P2" && actualLabel !== "HIGH SCORE";
 
-
              if(shouldBlink && !blockBlinkInPortraitNonDemoRelevant){ if(isPaused || gameOverSequenceStartTime > 0 || isAnyPlayerGameOverMsgShowing || !((now % blinkCycleDuration) < blinkOnDuration)){ showLabel=false; } }
+             else if (shouldBlink && blockBlinkInPortraitNonDemoRelevant && isShowingPortraitMessage) { // Voor 1UP/2UP in portrait, geen blink
+                showLabel = true;
+             }
+
 
              if(showLabel){ gameCtx.fillStyle=LABEL_COLOR; gameCtx.textAlign=labelAlign; gameCtx.fillText(actualLabel, labelX, MARGIN_TOP); }
              const labelWidthToMeasure = gameCtx.measureText(actualLabel).width;
@@ -1002,7 +1008,9 @@ function renderGame() {
                 score2PValue = (isInGameState && player2Score > 0) ? player2Score : 0;
             }
             sessionHighScore = Math.max(sessionHighScore, score1PValue, score2PValue);
-            highScoreConditionMet = true; // Toon high score altijd in portrait (blink wordt door drawTopUiElement afgehandeld)
+            // Conditie voor knipperen High Score in portrait: alleen als een van de scores de HS evenaart/overtreft EN de game niet volledig gestopt is.
+            // Of als het een demo mode is.
+            highScoreConditionMet = ((score1PValue >= sessionHighScore && score1PValue > 0) || (score2PValue >= sessionHighScore && score2PValue > 0)) && (isInGameState || !isManualControl);
             show1UPBlink = false;
             show2UPBlink = false;
         }
@@ -1073,10 +1081,9 @@ function renderGame() {
         }
 
         isHighScoreBlinkingNow = false;
-        if (highScoreConditionMet) {
-            // In portrait, high score knippert als de conditie (score >= highscore) waar is, ongeacht 1UP/2UP blink
+        if (highScoreConditionMet) { // highScoreConditionMet is nu correct ingesteld voor portrait
             if (isShowingPortraitMessage) {
-                isHighScoreBlinkingNow = (score1PValue >= sessionHighScore && score1PValue > 0) || (score2PValue >= sessionHighScore && score2PValue > 0);
+                 isHighScoreBlinkingNow = true; // High score altijd tonen/blinken in portrait indien conditie waar
             } else if (!isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop') ) {
                  isHighScoreBlinkingNow = (player1Score >= sessionHighScore && player1Score > 0 && show1UPBlink && !isPlayer1ShowingGameOverMessage) ||
                                        ((isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop')) && player2Score >= sessionHighScore && player2Score > 0 && show2UPBlink && !isPlayer2ShowingGameOverMessage);
@@ -1095,7 +1102,11 @@ function renderGame() {
         if(typeof MARGIN_SIDE!=='undefined' && typeof MARGIN_TOP!=='undefined' && typeof SCORE_OFFSET_Y!=='undefined'){
             drawTopUiElement(label1P, score1PValue, 'left', MARGIN_SIDE, show1UPBlink);
             drawTopUiElement("HIGH SCORE", sessionHighScore, 'center', gameCanvas.width / 2, isHighScoreBlinkingNow);
-            if (isEffectivelyTwoPlayerUI || (isPlayerSelectMode && selectedButtonIndex === 1) || (isFiringModeSelectMode && isPlayerTwoAI) || (isShowingPortraitMessage && (isTwoPlayerMode || isPlayerTwoAI))) {
+            // 2UP alleen tonen als effectief 2P modus OF in menu als P2 geselecteerd is OF in portrait als 2P modus
+            if ( (isEffectivelyTwoPlayerUI && (!isShowingPortraitMessage || isTwoPlayerMode)) ||
+                 (!isInGameState && !isShowingPortraitMessage && ((isPlayerSelectMode && selectedButtonIndex === 1) || (isFiringModeSelectMode && isPlayerTwoAI && (selectedGameMode === 'coop' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP')))) ||
+                 (isShowingPortraitMessage && isTwoPlayerMode) // Toon 2UP UI element in portrait als het een 2P game is
+                ) {
                  drawTopUiElement(label2P, score2PValue, 'right', gameCanvas.width - MARGIN_SIDE, show2UPBlink);
             }
         }
@@ -1109,7 +1120,6 @@ function renderGame() {
                 let livesP2ToDisplay = 0;
 
                 const is1PNormalMode = !isTwoPlayerMode && selectedGameMode === 'normal';
-                // In portrait, P1 levens zijn altijd defaultReserveLives (of 0 als geen levens)
                 const is1PNormalGameOverOrResultsOrPortrait = is1PNormalMode && (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || isShowingResultsScreen || isShowingPortraitMessage);
 
                 if (is1PNormalGameOverOrResultsOrPortrait) {
@@ -1118,7 +1128,7 @@ function renderGame() {
                     livesP1ToDisplay = player1Lives > 0 ? defaultReserveLives : 0;
                 } else if (!isInGameState || isShowingScoreScreen || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || gameOverSequenceStartTime > 0 || isShowingPortraitMessage ) {
                     livesP1ToDisplay = (player1Lives <= 0) ? 0 : defaultReserveLives;
-                } else { // In game, niet portrait
+                } else {
                     if (isTwoPlayerMode && selectedGameMode === 'coop') {
                         livesP1ToDisplay = player1Lives > 0 ? Math.max(0, player1Lives - 1) : 0;
                     } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
@@ -1138,38 +1148,40 @@ function renderGame() {
 
                 // P2 levens alleen in 2P landscape modi (niet in portrait, niet in 1P normal results)
                 if (!isShowingPortraitMessage && !inNormal2PResults && !is1PNormalGameOverOrResultsOrPortrait) {
-                    if (isEffectivelyTwoPlayerUI && isInGameState) {
-                         if (isTwoPlayerMode && selectedGameMode === 'coop') {
-                            livesP2ToDisplay = player2Lives > 0 ? Math.max(0, player2Lives - 1) : 0;
-                        } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
-                            if (currentPlayer === 2) livesP2ToDisplay = playerLives > 0 ? Math.max(0, playerLives - 1) : 0;
-                            else livesP2ToDisplay = player2Lives > 0 ? Math.max(0, player2Lives - 1) : 0;
+                     if (isEffectivelyTwoPlayerUI) {
+                        if (isInGameState) {
+                             if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                                livesP2ToDisplay = player2Lives > 0 ? Math.max(0, player2Lives - 1) : 0;
+                            } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                                if (currentPlayer === 2) livesP2ToDisplay = playerLives > 0 ? Math.max(0, playerLives - 1) : 0;
+                                else livesP2ToDisplay = player2Lives > 0 ? Math.max(0, player2Lives - 1) : 0;
+                            }
+                        } else if (!isInGameState || isShowingScoreScreen || isAnyCoopPlayerGameOver || gameOverSequenceStartTime > 0){
+                             livesP2ToDisplay = (player2Lives <= 0) ? 0 : defaultReserveLives;
                         }
-                    } else if (isEffectivelyTwoPlayerUI && (!isInGameState || isShowingScoreScreen || isAnyCoopPlayerGameOver || gameOverSequenceStartTime > 0)) {
-                         livesP2ToDisplay = (player2Lives <= 0) ? 0 : defaultReserveLives;
-                    }
 
-                     const p2LivesIconsToDraw = Math.min(livesP2ToDisplay, maxLivesIcons);
-                     const showP2LivesInMenuGeneral = (!isInGameState &&
-                                                ( (isPlayerSelectMode && selectedButtonIndex === 1) ||
-                                                  (isGameModeSelectMode && (selectedButtonIndex === 0 || selectedButtonIndex === 1)) ||
-                                                  (isFiringModeSelectMode && isTwoPlayerMode && !isPlayerTwoAI)
-                                                )
-                                               );
-                     const showP2LivesInMenuForAICoop = (!isInGameState &&
-                                                ( (isOnePlayerVsAIGameTypeSelectMode && selectedButtonIndex === 1) ||
-                                                  (isFiringModeSelectMode && isPlayerTwoAI && selectedGameMode === 'coop')
-                                                )
-                                               );
+                         const p2LivesIconsToDraw = Math.min(livesP2ToDisplay, maxLivesIcons);
+                         const showP2LivesInMenuGeneral = (!isInGameState &&
+                                                    ( (isPlayerSelectMode && selectedButtonIndex === 1) ||
+                                                      (isGameModeSelectMode && (selectedButtonIndex === 0 || selectedButtonIndex === 1)) ||
+                                                      (isFiringModeSelectMode && isTwoPlayerMode && !isPlayerTwoAI)
+                                                    )
+                                                   );
+                         const showP2LivesInMenuForAICoop = (!isInGameState &&
+                                                    ( (isOnePlayerVsAIGameTypeSelectMode && selectedButtonIndex === 1) ||
+                                                      (isFiringModeSelectMode && isPlayerTwoAI && selectedGameMode === 'coop')
+                                                    )
+                                                   );
 
-                     if (p2LivesIconsToDraw > 0 && ( (isEffectivelyTwoPlayerUI && isInGameState) || showP2LivesInMenuGeneral || showP2LivesInMenuForAICoop ) ) {
-                         const p2LivesTotalWidth = p2LivesIconsToDraw * LIFE_ICON_SIZE + Math.max(0, p2LivesIconsToDraw - 1) * LIFE_ICON_SPACING;
-                         const p2LivesStartX = gameCanvas.width - (typeof LEVEL_ICON_MARGIN_RIGHT !== 'undefined' ? LEVEL_ICON_MARGIN_RIGHT : MARGIN_SIDE) - p2LivesTotalWidth;
-                         for (let i = 0; i < p2LivesIconsToDraw; i++) {
-                             const currentIconX = p2LivesStartX + i * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
-                             gameCtx.drawImage(shipImage, Math.round(currentIconX), Math.round(lifeIconY), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
+                         if (p2LivesIconsToDraw > 0 && ( (isEffectivelyTwoPlayerUI && isInGameState) || showP2LivesInMenuGeneral || showP2LivesInMenuForAICoop ) ) {
+                             const p2LivesTotalWidth = p2LivesIconsToDraw * LIFE_ICON_SIZE + Math.max(0, p2LivesIconsToDraw - 1) * LIFE_ICON_SPACING;
+                             const p2LivesStartX = gameCanvas.width - (typeof LEVEL_ICON_MARGIN_RIGHT !== 'undefined' ? LEVEL_ICON_MARGIN_RIGHT : MARGIN_SIDE) - p2LivesTotalWidth;
+                             for (let i = 0; i < p2LivesIconsToDraw; i++) {
+                                 const currentIconX = p2LivesStartX + i * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
+                                 gameCtx.drawImage(shipImage, Math.round(currentIconX), Math.round(lifeIconY), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
+                             }
                          }
-                     }
+                    }
                 }
             }
         }
@@ -1177,17 +1189,20 @@ function renderGame() {
 
         const iconTypes = [ { val: 50, img: level50Image }, { val: 30, img: level30Image }, { val: 20, img: level20Image }, { val: 10, img: level10Image }, { val: 5, img: level5Image }, { val: 1, img: level1Image } ];
 
-        const drawLevelIcons = (levelValueToDisplay, isForLeftOrRight) => { // true for left (P1), false for right (P2/1P Game Over)
+        const drawLevelIcons = (levelValueToDisplay, isForLeftOrRight) => {
             const is1PNormalModeGameOverOrResultsOrPortrait = !isTwoPlayerMode && selectedGameMode === 'normal' &&
                                                 (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || isShowingResultsScreen || isShowingPortraitMessage);
 
-            if (inNormal2PResults && isForLeftOrRight) return; // P1 levels niet links in 2P normal results
-            if (is1PNormalModeGameOverOrResultsOrPortrait && isForLeftOrRight && !isShowingPortraitMessage) return; // P1 levels niet links in 1P normal game over/results (wel in portrait rechts)
-            if (isShowingPortraitMessage && !isForLeftOrRight) return; // In portrait, alleen P1 level rechts tonen
+            if ( (inNormal2PResults && isForLeftOrRight) ||
+                 (is1PNormalModeGameOverOrResultsOrPortrait && isForLeftOrRight && !isShowingPortraitMessage) ) {
+                return;
+            }
+            if (isShowingPortraitMessage && !isForLeftOrRight) {
+                return;
+            }
 
             let actualLevelValueForDisplay = Math.max(1, levelValueToDisplay);
             if (actualLevelValueForDisplay <= 0 || typeof LEVEL_ICON_MARGIN_BOTTOM === 'undefined' || typeof LEVEL_ICON_SIZE === 'undefined' || typeof LEVEL_ICON_MARGIN_RIGHT === 'undefined' || typeof LEVEL_ICON_SPACING === 'undefined') return;
-            // ... (rest van de logica voor het samenstellen van iconsToDrawList blijft hetzelfde) ...
             let remainingLevelVal = actualLevelValueForDisplay;
             let iconsToDrawList = [];
             let usedIconTypes = new Set();
@@ -1243,7 +1258,6 @@ function renderGame() {
             }
             if (iconsToDrawList.length === 0) return;
 
-
             const totalIcons = iconsToDrawList.length;
             const totalWidth = totalIcons * LEVEL_ICON_SIZE + Math.max(0, totalIcons - 1) * LEVEL_ICON_SPACING;
             const iconY = gameCanvas.height - LEVEL_ICON_MARGIN_BOTTOM - LEVEL_ICON_SIZE;
@@ -1258,19 +1272,19 @@ function renderGame() {
                                      (isPlayer2ShowingGameOverMessage && !isForLeftOrRight);
 
             if (!isInGameState || isShowingScoreScreen || isGameOverOrResultsOrPortrait) {
-                 if (is1PNormalModeGameOverOrResultsOrPortrait && isForLeftOrRight) { // P1 in 1P Normal Game Over/Results/Portrait (wordt rechts getekend)
-                    numLifeIconsDrawn = 0; // Levens links niet tonen
+                 if (is1PNormalModeGameOverOrResultsOrPortrait && isForLeftOrRight) {
+                    numLifeIconsDrawn = 0;
                 } else if (is1PNormalModeGameOverOrResultsOrPortrait && !isForLeftOrRight) { // P1 levens rechts in 1P portrait
                     numLifeIconsDrawn = player1Lives > 0 ? defaultReserveLives : 0;
-                } else if (inNormal2PResults && isForLeftOrRight) { // P1 in 2P Normal Results
+                } else if (inNormal2PResults && isForLeftOrRight) {
                     numLifeIconsDrawn = player1Lives > 0 ? defaultReserveLives : 0;
-                } else if (inNormal2PResults && !isForLeftOrRight) { // P2 in 2P Normal Results
+                } else if (inNormal2PResults && !isForLeftOrRight) {
                     numLifeIconsDrawn = player2Lives > 0 ? defaultReserveLives : 0;
                 } else {
                     numLifeIconsDrawn = (playerLivesForOffset <= 0) ? 0 : defaultReserveLives;
                 }
                  if(isShowingPortraitMessage && !isForLeftOrRight && !is1PNormalModeGameOverOrResultsOrPortrait) numLifeIconsDrawn = 0;
-            } else if (isInGameState) { // In-game, niet portrait
+            } else if (isInGameState) {
                  const actualPlayerLivesInGame = (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === currentActivePlayerForOffset) ? playerLives : playerLivesForOffset;
                  numLifeIconsDrawn = actualPlayerLivesInGame > 0 ? Math.max(0, actualPlayerLivesInGame - 1) : 0;
             }
@@ -1283,18 +1297,18 @@ function renderGame() {
                 livesWidthForOffset = -LIFE_ICON_SPACING;
             }
 
+
             if (isForLeftOrRight && !isShowingPortraitMessage) { // Links (P1), niet in portrait
                 const levelIconOffset = 15;
                 startX = LIFE_ICON_MARGIN_LEFT + livesWidthForOffset + levelIconOffset;
             } else { // Rechts (P2 of P1 in 1P/Portrait)
-                const levelIconOffset = isShowingPortraitMessage ? 0 : 15; // Geen extra offset in portrait voor level
-                 const p2LivesAreaWidth = (isShowingPortraitMessage || is1PNormalModeGameOverOrResultsOrPortrait) ? 0 : livesWidthForOffset; // Geen P2 levensruimte in 1P portrait
+                const levelIconOffset = isShowingPortraitMessage ? 0 : 15;
+                 const p2LivesAreaWidth = (isShowingPortraitMessage || is1PNormalModeGameOverOrResultsOrPortrait) ? 0 : livesWidthForOffset;
                 const p2LivesStartXArea = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - p2LivesAreaWidth;
                 startX = p2LivesStartXArea - totalWidth - levelIconOffset;
-                 if(isShowingPortraitMessage) startX = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - totalWidth; // Strak rechts voor P1 level in portrait
+                 if(isShowingPortraitMessage) startX = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - totalWidth;
 
             }
-
 
             let currentX = startX;
             for (const iconImage of iconsToDrawList) {
@@ -1345,7 +1359,7 @@ function renderGame() {
         gameCtx.save();
         const gameIsEffectivelyOverOrInMenuOrPortrait = !isInGameState || isShowingScoreScreen || isShowingResultsScreen || gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || isShowingPortraitMessage;
 
-        if (gameIsEffectivelyOverOrInMenuOrPortrait) { // Menu, Game Over, Results, OF Portrait
+        if (gameIsEffectivelyOverOrInMenuOrPortrait) {
             const menuShipX = Math.round(gameCanvas.width / 2 - SHIP_WIDTH / 2);
             const menuShipY = gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN;
             if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
@@ -1353,32 +1367,22 @@ function renderGame() {
             } else {
                 gameCtx.fillStyle = "blue"; gameCtx.fillRect(menuShipX, menuShipY, SHIP_WIDTH, SHIP_HEIGHT);
             }
-        } else if (isInGameState) { // Alleen in-game en niet portrait
-            // ... (bestaande logica voor game schepen tekenen)
-             if (isTwoPlayerMode && selectedGameMode === 'coop') {
+        } else if (isInGameState) { // Alleen in-game en niet portrait (portrait is al afgevangen door gameIsEffectivelyOverOrInMenuOrPortrait)
+            if (isTwoPlayerMode && selectedGameMode === 'coop') {
                 const p1ActiveAndAlive = ship1 && player1Lives > 0;
                 const p2ActiveAndAlive = ship2 && player2Lives > 0;
                 const isShowingCSBonusScreen = showCsBonusScoreMessage || showPerfectMessage;
-
                 if (p1ActiveAndAlive && (!isPlayer1ShipCaptured || (isPlayer1ShipCaptured && !isShowingCaptureMessage))) {
                     let shouldDrawP1 = true;
                     if ((isPlayer1Invincible || isPlayer1WaitingForRespawn) && !isShowingCoopPlayersReady && !isShowingCaptureMessage) {
                         const blinkCycleTime = INVINCIBILITY_BLINK_ON_MS + INVINCIBILITY_BLINK_OFF_MS;
                         if ((now % blinkCycleTime) >= INVINCIBILITY_BLINK_ON_MS) shouldDrawP1 = false;
                     }
-                    if (isShowingCSBonusScreen) {
-                        if (isCoopAIDemoActive && !p2ActiveAndAlive) {  }
-                        else if (isCoopAIDemoActive && p1ActiveAndAlive && p2ActiveAndAlive) {  }
-                        else if (isCoopAIDemoActive) { shouldDrawP1 = false; }
-                    }
-
-
+                    if (isShowingCSBonusScreen && isCoopAIDemoActive && !(p1ActiveAndAlive && !p2ActiveAndAlive)) { shouldDrawP1 = (p1ActiveAndAlive && p2ActiveAndAlive); }
                     if (shouldDrawP1) {
                         const shipDrawX = ship1.x; const shipDrawY = ship1.y;
-                        if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
-                            gameCtx.drawImage(shipImage, Math.round(shipDrawX), Math.round(shipDrawY), ship1.width, ship1.height);
-                            if (player1IsDualShipActive) { gameCtx.drawImage(shipImage, Math.round(shipDrawX + DUAL_SHIP_OFFSET_X), Math.round(shipDrawY), ship1.width, ship1.height); }
-                        } else { gameCtx.fillStyle = "blue"; gameCtx.fillRect(Math.round(shipDrawX), Math.round(shipDrawY), ship1.width, ship1.height); }
+                        if (typeof shipImage !== 'undefined' && shipImage.complete) gameCtx.drawImage(shipImage, Math.round(shipDrawX), Math.round(shipDrawY), ship1.width, ship1.height); else { gameCtx.fillStyle = "blue"; gameCtx.fillRect(Math.round(shipDrawX), Math.round(shipDrawY), ship1.width, ship1.height); }
+                        if (player1IsDualShipActive) gameCtx.drawImage(shipImage, Math.round(shipDrawX + DUAL_SHIP_OFFSET_X), Math.round(shipDrawY), ship1.width, ship1.height);
                     }
                 }
                 if (p2ActiveAndAlive && (!isPlayer2ShipCaptured || (isPlayer2ShipCaptured && !isShowingCaptureMessage))) {
@@ -1387,20 +1391,11 @@ function renderGame() {
                         const blinkCycleTime = INVINCIBILITY_BLINK_ON_MS + INVINCIBILITY_BLINK_OFF_MS;
                         if ((now % blinkCycleTime) >= INVINCIBILITY_BLINK_ON_MS) shouldDrawP2 = false;
                     }
-                    if (isShowingCSBonusScreen) {
-                        if (isCoopAIDemoActive) {
-                            if (!p1ActiveAndAlive) {  }
-                            else if (p1ActiveAndAlive && p2ActiveAndAlive) {  }
-                            else { shouldDrawP2 = false; }
-                        }
-                    }
-
+                    if (isShowingCSBonusScreen && isCoopAIDemoActive && !(!p1ActiveAndAlive && p2ActiveAndAlive)) { shouldDrawP2 = (p1ActiveAndAlive && p2ActiveAndAlive); }
                     if (shouldDrawP2) {
                         const shipDrawX = ship2.x; const shipDrawY = ship2.y;
-                        if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
-                            gameCtx.drawImage(shipImage, Math.round(shipDrawX), Math.round(shipDrawY), ship2.width, ship2.height);
-                            if (player2IsDualShipActive) { gameCtx.drawImage(shipImage, Math.round(shipDrawX + DUAL_SHIP_OFFSET_X), Math.round(shipDrawY), ship2.width, ship2.height); }
-                        } else { gameCtx.fillStyle = "green"; gameCtx.fillRect(Math.round(shipDrawX), Math.round(shipDrawY), ship2.width, ship2.height); }
+                        if (typeof shipImage !== 'undefined' && shipImage.complete) gameCtx.drawImage(shipImage, Math.round(shipDrawX), Math.round(shipDrawY), ship2.width, ship2.height); else { gameCtx.fillStyle = "green"; gameCtx.fillRect(Math.round(shipDrawX), Math.round(shipDrawY), ship2.width, ship2.height); }
+                        if (player2IsDualShipActive) gameCtx.drawImage(shipImage, Math.round(shipDrawX + DUAL_SHIP_OFFSET_X), Math.round(shipDrawY), ship2.width, ship2.height);
                     }
                 }
             } else { // 1P or 2P Normal
@@ -1414,31 +1409,90 @@ function renderGame() {
                      if (shouldDrawShip && !(isShowingCSBonusScreen && (!isManualControl || (isPlayerTwoAI && selectedGameMode==='normal') ) && !isCoopAIDemoActive )) {
                         let shipDrawX = ship.x;
                         let shouldCenterSingleShipIntro = (isShowingIntro && (!isManualControl || (isPlayerTwoAI && selectedGameMode === 'normal')) && selectedGameMode !== 'coop') && !isDualShipActive;
-                        if (shouldCenterSingleShipIntro) {
-                            shipDrawX = Math.round(gameCanvas.width / 2 - ship.width / 2);
-                        }
+                        if (shouldCenterSingleShipIntro) shipDrawX = Math.round(gameCanvas.width / 2 - ship.width / 2);
                         const shipDrawY = ship.y;
-                        if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
+                        if (typeof shipImage !== 'undefined' && shipImage.complete) {
                             gameCtx.drawImage(shipImage, Math.round(shipDrawX), Math.round(shipDrawY), ship.width, ship.height);
-                            if (isDualShipActive) {
-                                gameCtx.drawImage(shipImage, Math.round(shipDrawX + DUAL_SHIP_OFFSET_X), Math.round(shipDrawY), ship.width, ship.height);
-                            }
-                        } else {
-                            gameCtx.fillStyle = "blue"; gameCtx.fillRect(Math.round(shipDrawX), Math.round(shipDrawY), ship.width, ship.height);
-                        }
+                            if (isDualShipActive) gameCtx.drawImage(shipImage, Math.round(shipDrawX + DUAL_SHIP_OFFSET_X), Math.round(shipDrawY), ship.width, ship.height);
+                        } else { gameCtx.fillStyle = "blue"; gameCtx.fillRect(Math.round(shipDrawX), Math.round(shipDrawY), ship.width, ship.height); }
                     }
                 }
             }
         }
-        if (fallingShips.length > 0 && typeof shipImage !== 'undefined' && shipImage.complete && !isShowingPortraitMessage) { // Vallende schepen niet in portrait
+        if (fallingShips.length > 0 && typeof shipImage !== 'undefined' && shipImage.complete && !isShowingPortraitMessage) {
              fallingShips.forEach(fs => { if (fs) { gameCtx.save(); const centerX = fs.x + fs.width / 2; const centerY = fs.y + fs.height / 2; gameCtx.translate(centerX, centerY); gameCtx.rotate(fs.rotation || 0); const drawX = -fs.width / 2; const drawY = -fs.height / 2; const drawW = fs.width; const drawH = fs.height; gameCtx.drawImage(shipImage, drawX, drawY, drawW, drawH); if (typeof fs.tintProgress === 'number' && fs.tintProgress > 0.01) { gameCtx.save(); gameCtx.globalAlpha = fs.tintProgress; gameCtx.fillStyle = CAPTURED_SHIP_TINT_COLOR; gameCtx.globalCompositeOperation = 'source-atop'; gameCtx.fillRect(drawX, drawY, drawW, drawH); gameCtx.restore(); } gameCtx.restore(); } });
         }
         gameCtx.restore();
 
 
+        // --- STAP 0 (herhaald voor logica): Teken PORTRAIT bericht of GA VERDER met game/menu content ---
+        if (isShowingPortraitMessage) {
+            gameCtx.save();
+            const midX = gameCanvas.width / 2;
+            const disclaimerTitleFont = "bold 26px 'Press Start 2P'";
+            const disclaimerTitleColor = "yellow";
+            const disclaimerTextFont = "bold 22px 'Press Start 2P'";
+            const disclaimerTextColor = "lime";
+            const rotateFont = "bold 24px 'Press Start 2P'";
+            const rotateColor = "rgba(0, 191, 255, 0.9)";
+            const platiniFont = "bold 18px 'Press Start 2P'";
+            const platiniColor = "red";
+
+            const messageStructure = [
+                { text: "⚠️ Disclaimer", font: disclaimerTitleFont, color: disclaimerTitleColor, skipAfter: 0.75 },
+                { text: "This is an unofficial", font: disclaimerTextFont, color: disclaimerTextColor },
+                { text: "fan remake of Galaga,", font: disclaimerTextFont, color: disclaimerTextColor, skipAfter: 1 },
+                { text: "Created out of love", font: disclaimerTextFont, color: disclaimerTextColor },
+                { text: "for the original.", font: disclaimerTextFont, color: disclaimerTextColor, skipAfter: 1 },
+                { text: "All rights to the", font: disclaimerTextFont, color: disclaimerTextColor },
+                { text: "original Galaga concept,", font: disclaimerTextFont, color: disclaimerTextColor, skipAfter: 1 },
+                { text: "Design, and sounds", font: disclaimerTextFont, color: disclaimerTextColor },
+                { text: "belong to Bandai Namco.", font: disclaimerTextFont, color: disclaimerTextColor, skipAfter: 2 },
+                { text: "ROTATE TO LANDSCAPE", font: rotateFont, color: rotateColor },
+                { text: "TO PLAY GAME", font: rotateFont, color: rotateColor, skipAfter: 1.5 },
+                { text: "Written by Platini2000(c)", font: platiniFont, color: platiniColor }
+            ];
+
+            let totalBlockHeight = 0;
+            const lineHeightsInfo = messageStructure.map(item => {
+                gameCtx.font = item.font;
+                const metrics = gameCtx.measureText("M");
+                const height = (metrics.actualBoundingBoxAscent || parseInt(item.font, 10) * 1.2) + (metrics.actualBoundingBoxDescent || 0) + 8;
+                return { height: height, skip: item.skipAfter || 0 };
+            });
+
+            gameCtx.font = rotateFont;
+            const refMetrics = gameCtx.measureText("M");
+            const referenceSkipLineHeight = (refMetrics.actualBoundingBoxAscent || parseInt(rotateFont,10)*1.2) + (refMetrics.actualBoundingBoxDescent || 0) +5;
+
+            lineHeightsInfo.forEach(info => {
+                totalBlockHeight += info.height;
+                if (info.skip > 0) totalBlockHeight += referenceSkipLineHeight * info.skip;
+            });
+
+            const topScreenMargin = gameCanvas.height * 0.05;
+            const retroGridHorizonY = gameCanvas.height * GRID_HORIZON_Y_FACTOR;
+            const availableSpaceForText = retroGridHorizonY - topScreenMargin - (gameCanvas.height * 0.05);
+            let currentY = topScreenMargin;
+            if (totalBlockHeight < availableSpaceForText) {
+                currentY = topScreenMargin + (availableSpaceForText - totalBlockHeight) / 2;
+            }
+            currentY = Math.max(currentY, topScreenMargin);
+
+            messageStructure.forEach((item, index) => {
+                const itemLineHeight = lineHeightsInfo[index].height;
+                drawCanvasText(item.text, midX, currentY + itemLineHeight / 2, item.font, item.color, 'center', 'middle', true);
+                currentY += itemLineHeight;
+                if (item.skipAfter) {
+                    currentY += referenceSkipLineHeight * item.skipAfter;
+                }
+            });
+            gameCtx.restore();
+            // GEEN return hier, zodat de mainLoop doorgaat en de UI getekend blijft.
+        }
         // --- STAP 2: State-specifieke content (Menu / Game / Score) ---
         // Alleen tekenen als NIET in portrait mode
-        if (!isShowingPortraitMessage) {
+        else if (!isShowingPortraitMessage) {
             if (!isInGameState) {
                  if (isShowingScoreScreen) {
                     if (typeof LIFE_ICON_SIZE !== 'undefined') {
@@ -1717,15 +1771,15 @@ function mainLoop(timestamp) {
     try {
         drawStars(); if (retroGridCtx && retroGridCanvas) { drawRetroGrid(); } pollControllerForMenu();
 
-        if (isShowingPortraitMessage) { // Als portrait, teken UI en portrait bericht, dan stop
+        if (isShowingPortraitMessage) {
             if(typeof renderGame === 'function') {
-                renderGame();
+                renderGame(); // Tekent UI en Portrait bericht
             }
         } else if (isInGameState && !isPaused) {
             if (!isManualControl && connectedGamepadIndex !== null) { const gamepads = navigator.getGamepads(); if (gamepads?.[connectedGamepadIndex]) { const gamepad = gamepads[connectedGamepadIndex]; const currentDemoButtonStates = gamepad.buttons.map(b => b.pressed); let anyButtonPressedNow = false; for (let i = 0; i < currentDemoButtonStates.length; i++) { if (i === PS5_BUTTON_R1 || i === PS5_BUTTON_TRIANGLE) continue; if (currentDemoButtonStates[i] && !(previousDemoButtonStates[i] ?? false)) { anyButtonPressedNow = true; break; } } if (anyButtonPressedNow) { isCoopAIDemoActive = false; isPlayerTwoAI = false; showMenuState(); requestAnimationFrame(mainLoop); return; } previousDemoButtonStates = currentDemoButtonStates.slice(); } else { if(previousDemoButtonStates.length > 0) previousDemoButtonStates = []; } } else { if(previousDemoButtonStates.length > 0) previousDemoButtonStates = []; }
 
             if(typeof window.runSingleGameUpdate === 'function') {
-                window.runSingleGameUpdate(timestamp);
+                window.runSingleGameUpdate(timestamp); // Bevat renderGame()
             }
             else { console.error("FATAL: window.runSingleGameUpdate is not defined!"); if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; showMenuState(); requestAnimationFrame(mainLoop); return; }
 
@@ -1739,18 +1793,18 @@ function mainLoop(timestamp) {
                 renderGame();
             }
             const now = Date.now(); const elapsedTime = now - gameOverSequenceStartTime; const totalSequenceDuration = GAME_OVER_DURATION + RESULTS_SCREEN_DURATION; if (elapsedTime >= totalSequenceDuration) { showMenuState(); requestAnimationFrame(mainLoop); return; }
-        } else if (isInGameState && isPaused) {
+        } else if (isInGameState && isPaused) { // Inclusief pauze door portrait, maar portrait bericht heeft voorrang
             if(typeof renderGame === 'function') {
                 renderGame();
             }
         } else if (isInGameState && isCsCompletionDelayActive ) {
-            if(typeof window.runSingleGameUpdate === 'function') window.runSingleGameUpdate(timestamp);
+            if(typeof window.runSingleGameUpdate === 'function') window.runSingleGameUpdate(timestamp); // Bevat renderGame()
             else if (typeof renderGame === 'function') renderGame();
         } else if (isInGameState && (isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage) ) {
-            if(typeof window.runSingleGameUpdate === 'function') window.runSingleGameUpdate(timestamp);
+            if(typeof window.runSingleGameUpdate === 'function') window.runSingleGameUpdate(timestamp); // Bevat renderGame()
             else if (typeof renderGame === 'function') renderGame();
         }
-        else { // Menu state
+        else { // Menu state (niet portrait)
             if(typeof renderGame === 'function') {
                 renderGame();
             }
