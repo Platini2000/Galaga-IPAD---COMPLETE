@@ -640,16 +640,12 @@ function playSound(soundId, loop = false, volume = 1) {
         return;
     }
 
-    // <<< GEWIJZIGD: Als portrait message getoond wordt, blokkeer ALLE geluiden. >>>
     if (isShowingPortraitMessage) {
         // console.log(`[playSound] Blocked sound '${soundId}' due to portrait mode.`); // Debug log
         return;
     }
 
-    // Als gepauzeerd (en NIET in portrait mode, want dat is hierboven afgehandeld),
-    // sta menu muziek toe maar blokkeer andere geluiden.
     if (isPaused && soundId !== 'menuMusicSound') return;
-    // <<< EINDE GEWIJZIGD >>>
 
 
     // Stop any existing instance of this sound before playing a new one, unless it's music
@@ -670,17 +666,16 @@ function playSound(soundId, loop = false, volume = 1) {
         gainNode = audioContext.createGain();
         soundGainNodes[soundId] = gainNode;
     }
-    // Ensure volume is within a reasonable range (0.0 to 1.0 typical, but can be higher for gain)
-    const safeVolume = Math.max(0, Math.min(2, volume)); // Cap at 2 as an example
+    const safeVolume = Math.max(0, Math.min(2, volume));
     gainNode.gain.setValueAtTime(safeVolume, audioContext.currentTime);
     source.connect(gainNode);
     gainNode.connect(audioContext.destination);
 
     source.start(0);
-    soundSources[soundId] = source; // Store the source to allow stopping it
+    soundSources[soundId] = source;
 
     source.onended = () => {
-        if (soundSources[soundId] === source) { // Only delete if it's the current one
+        if (soundSources[soundId] === source) {
             delete soundSources[soundId];
         }
     };
@@ -689,13 +684,20 @@ function playSound(soundId, loop = false, volume = 1) {
 /** Safely attempts to stop a sound and reset its position. */
 function stopSound(soundId) {
     if (soundSources[soundId]) {
+        const sourceToStop = soundSources[soundId]; // Pak de referentie
+        delete soundSources[soundId]; // Verwijder direct uit de actieve lijst
+
         try {
-            soundSources[soundId].stop(0);
+            // Zet de onended listener op null om te voorkomen dat de oude onended
+            // probeert een al verwijderde property te benaderen als stop() asynchroon is
+            // of als onended om een andere reden getriggerd zou worden na de delete.
+            if (sourceToStop && typeof sourceToStop.onended === 'function') {
+                 sourceToStop.onended = null;
+            }
+            sourceToStop.stop(0);
         } catch (e) {
-            // Can throw if already stopped or not playing.
+            // console.warn(`Warning stopping sound ${soundId}:`, e.message);
         }
-        // Don't delete immediately, onended will handle it.
-        // delete soundSources[soundId]; // This was causing issues with rapidly replayed sounds
     }
 }
 
@@ -792,21 +794,35 @@ function resizeCanvases() {
         const height = window.innerHeight;
         if (width <= 0 || height <= 0) return;
 
-        // Portrait/Landscape detectie
         let isCurrentlyPortrait = height > width;
 
         if (isCurrentlyPortrait) {
-            isShowingPortraitMessage = true;
-            if (isInGameState && !isPaused) {
-                gameWasAutoPausedForPortrait = true;
-                togglePause(); // Auto-pause the game
+            if (!isShowingPortraitMessage) { // Alleen acties uitvoeren als de staat VERANDERT naar portrait
+                isShowingPortraitMessage = true;
+                // console.log("[resizeCanvases] Switched to Portrait. isShowingPortraitMessage = true."); // Debug
+                if (isInGameState && !isPaused) {
+                    gameWasAutoPausedForPortrait = true;
+                    togglePause(); // Dit roept pauseAllSounds() aan
+                } else if (!isInGameState || isPaused) {
+                    // Als we in het menu zijn, of al gepauzeerd,
+                    // roep pauseAllSounds direct aan om zeker te zijn dat alles stopt.
+                    // console.log("[resizeCanvases] In menu or already paused, calling pauseAllSounds() for portrait."); // Debug
+                    pauseAllSounds();
+                }
             }
         } else { // Landscape
-            isShowingPortraitMessage = false;
-            if (gameWasAutoPausedForPortrait && isPaused) {
-                togglePause(); // Auto-unpause the game
+            if (isShowingPortraitMessage) { // Alleen acties uitvoeren als de staat VERANDERT naar landscape
+                isShowingPortraitMessage = false;
+                // console.log("[resizeCanvases] Switched to Landscape. isShowingPortraitMessage = false."); // Debug
+                if (gameWasAutoPausedForPortrait && isPaused) {
+                    togglePause(); // Dit roept resumeAllSounds() aan
+                } else if (!isInGameState && !isPaused) {
+                    // Als we in het menu zijn en niet gepauzeerd, hervat menu muziek
+                    // console.log("[resizeCanvases] In menu and not paused, calling resumeAllSounds() for landscape."); // Debug
+                    resumeAllSounds();
+                }
+                gameWasAutoPausedForPortrait = false;
             }
-            gameWasAutoPausedForPortrait = false;
         }
 
 
