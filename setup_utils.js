@@ -599,8 +599,7 @@ function scaleValue(currentLevel, baseValue, maxValue) { const levelForCalc = Ma
 
 
 // --- START OF FILE setup_utils.js ---
-// --- DEEL 3      van 3 dit code blok    ---
-
+// --- DEEL 3      van 3 dit code blok    --- (Focus: Geluidslogica en Portrait Mode Checks)
 
 function setupInitialEventListeners() { /* ... ongewijzigd ... */ try { window.addEventListener("gamepadconnected", handleGamepadConnected); window.addEventListener("gamepaddisconnected", handleGamepadDisconnected); window.addEventListener('resize', resizeCanvases); } catch(e) { console.error("Error setting up initial event listeners:", e); } }
 
@@ -639,8 +638,9 @@ function playSound(soundId, loop = false, volume = 1) {
         // console.warn(`Cannot play sound: ${soundId}. Context suspended or buffer not ready.`);
         return;
     }
-    if (isPaused && soundId !== 'menuMusicSound' && !isShowingPortraitMessage) return; // Allow menu music if paused by portrait
-    if (isShowingPortraitMessage && soundId !== 'menuMusicSound') return; // Only allow menu music if portrait message showing
+    // <<< GEWIJZIGD: isShowingPortraitMessage check toegevoegd om *alle* geluiden te stoppen >>>
+    if (isShowingPortraitMessage) return;
+    if (isPaused && soundId !== 'menuMusicSound') return;
 
 
     // Stop any existing instance of this sound before playing a new one, unless it's music
@@ -722,10 +722,12 @@ function triggerFullscreen() {
             if (audioContext && audioContext.state === 'suspended') {
                 audioContext.resume().then(() => {
                     audioContextInitialized = true;
-                    playSound('menuMusicSound', true, 0.2);
+                    // <<< GEWIJZIGD: Portrait check voordat muziek start >>>
+                    if (!isShowingPortraitMessage) playSound('menuMusicSound', true, 0.2);
                 }).catch(e => console.error("Error resuming AudioContext for fullscreen music:", e));
             } else if (audioContext) {
-                playSound('menuMusicSound', true, 0.2);
+                // <<< GEWIJZIGD: Portrait check voordat muziek start >>>
+                if (!isShowingPortraitMessage) playSound('menuMusicSound', true, 0.2);
             }
         };
 
@@ -746,10 +748,12 @@ function triggerFullscreen() {
          if (audioContext && audioContext.state === 'suspended') {
             audioContext.resume().then(() => {
                 audioContextInitialized = true;
-                playSound('menuMusicSound', true, 0.2);
+                // <<< GEWIJZIGD: Portrait check voordat muziek start >>>
+                if (!isShowingPortraitMessage) playSound('menuMusicSound', true, 0.2);
             });
         } else if (audioContext) {
-            playSound('menuMusicSound', true, 0.2);
+            // <<< GEWIJZIGD: Portrait check voordat muziek start >>>
+            if (!isShowingPortraitMessage) playSound('menuMusicSound', true, 0.2);
         }
     }
 }
@@ -792,12 +796,27 @@ function resizeCanvases() {
                 gameWasAutoPausedForPortrait = true;
                 togglePause(); // Auto-pause the game
             }
+            // <<< GEWIJZIGD: Alle actieve geluiden stoppen als portretmodus wordt gedetecteerd >>>
+            if (typeof stopAllGameSoundsInternal === 'function') {
+                stopAllGameSoundsInternal(); // Stopt alle geluiden via sound ID's
+            } else {
+                // Fallback als stopAllGameSoundsInternal niet beschikbaar is (zou niet moeten gebeuren)
+                for (const soundId in soundSources) { stopSound(soundId); }
+                if (soundSources['menuMusicSound']) stopSound('menuMusicSound');
+                if (soundSources['gridBackgroundSound']) stopSound('gridBackgroundSound');
+            }
+            // <<< EINDE GEWIJZIGD >>>
         } else { // Landscape
             isShowingPortraitMessage = false;
             if (gameWasAutoPausedForPortrait && isPaused) {
                 togglePause(); // Auto-unpause the game
             }
             gameWasAutoPausedForPortrait = false;
+            // <<< GEWIJZIGD: Speel menu muziek als we naar landscape gaan en in het menu zijn >>>
+            if (!isInGameState && !isPaused) {
+                playSound('menuMusicSound', true, 0.2);
+            }
+            // <<< EINDE GEWIJZIGD >>>
         }
 
 
@@ -1221,14 +1240,18 @@ function pauseAllSounds() {
     if (audioContext && audioContext.state === 'running') {
         audioContext.suspend().then(() => console.log("AudioContext suspended for pause.")).catch(e => console.error("Error suspending AudioContext:", e));
     }
-    stopSound('menuMusicSound'); // Specifiek menu muziek stoppen, niet alleen pauseren
+    // <<< GEWIJZIGD: Zorg dat menu muziek ook stopt bij pauzeren (als niet door portrait mode) >>>
+    if (!isShowingPortraitMessage) {
+        stopSound('menuMusicSound');
+    }
 }
 
 function resumeAllSounds() {
     if (audioContext && audioContext.state === 'suspended') {
         audioContext.resume().then(() => console.log("AudioContext resumed from pause.")).catch(e => console.error("Error resuming AudioContext:", e));
     }
-    if (!isInGameState && audioContext && !isTouchActiveMenu) { // Als we terug in het menu zijn EN touch niet actief is, speel menu muziek
+    // <<< GEWIJZIGD: Alleen menu muziek hervatten als niet in portrait mode >>>
+    if (!isInGameState && audioContext && !isTouchActiveMenu && !isShowingPortraitMessage) {
         playSound('menuMusicSound', true, 0.2);
     }
     // Andere geluiden worden hervat wanneer ze opnieuw worden getriggerd door playSound
@@ -1287,7 +1310,9 @@ function triggerFinalGameOverSequence() {
         isGridSoundPlaying = false;
 
         const now = Date.now();
-        playSound('gameOverSound', false, 0.4);
+        // <<< GEWIJZIGD: Portrait check voordat geluid start >>>
+        if (!isShowingPortraitMessage) playSound('gameOverSound', false, 0.4);
+
 
         if ((isTwoPlayerMode && selectedGameMode === 'normal' && player1Lives <= 0 && player2Lives <= 0) ||
             (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && player1Lives <= 0 && player2Lives <= 0) ) {
