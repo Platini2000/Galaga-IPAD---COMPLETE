@@ -904,7 +904,7 @@ function createExplosion(x, y) { try { playSound('explosionSound', false, 0.4); 
 
 
 // --- START OF FILE rendering_menu.js ---
-// --- DEEL 3 van 3 dit code blok --- (Aangepast voor Portrait Message & Vaste Portrait UI)
+// --- DEEL 3 van 3 dit code blok --- (Aangepast voor Portrait Message & Vaste Portrait UI positionering)
 
 /** Rendert de actieve explosies op het game canvas. */
 function renderExplosions() { try { if (!gameCtx) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; explosions.forEach(explosion => { explosion.particles.forEach(p => { const drawAlpha = p.alpha * EXPLOSION_MAX_OPACITY; if (drawAlpha > 0.01) { gameCtx.beginPath(); gameCtx.arc(Math.round(p.x), Math.round(p.y), p.radius, 0, Math.PI * 2); gameCtx.fillStyle = `rgba(255, 200, 80, ${drawAlpha.toFixed(3)})`; gameCtx.fill(); } }); }); gameCtx.restore(); } catch (e) { console.error("Error rendering explosions:", e); } }
@@ -977,6 +977,9 @@ function renderGame() {
             gameCtx.font = rotateFont;
             const refMetrics = gameCtx.measureText("M");
             const referenceSkipLineHeight = (refMetrics.actualBoundingBoxAscent || parseInt(rotateFont,10)*1.2) + (refMetrics.actualBoundingBoxDescent || 0) + 5;
+             // <<< GEWIJZIGD: "Eén regel" offset voor positionering >>>
+            const ONE_LINE_OFFSET_VERTICAL = referenceSkipLineHeight * 1.0;
+
 
             lineHeightsInfo.forEach(info => {
                 totalBlockHeight += info.height;
@@ -995,8 +998,7 @@ function renderGame() {
                 currentY = topScreenMargin + ( (spaceAboveGrid - bottomPadding) - totalBlockHeight) / 2;
             }
             currentY = Math.max(currentY, topScreenMargin);
-            const oneLineOffset = referenceSkipLineHeight * 1.0;
-            currentY += oneLineOffset;
+            currentY += ONE_LINE_OFFSET_VERTICAL; // Disclaimer een regel omlaag
 
             messageStructure.forEach((item, index) => {
                 const itemLineHeight = lineHeightsInfo[index].height;
@@ -1006,46 +1008,58 @@ function renderGame() {
                     currentY += referenceSkipLineHeight * item.skipAfter;
                 }
             });
-            gameCtx.restore(); // Einde disclaimer rendering
+            gameCtx.restore();
 
             // --- BEGIN VASTE UI VOOR PORTRETMODUS ---
             gameCtx.save();
             const PORTRAIT_UI_FONT = "20px 'Press Start 2P'";
             const PORTRAIT_LABEL_COLOR = "red";
-            const PORTRAIT_SCORE_COLOR = "white"; // HI SCORE is een score, dus wit
-            const PORTRAIT_MARGIN_TOP = 15; // Iets minder marge dan normaal
+            const PORTRAIT_SCORE_COLOR = "white";
+            const PORTRAIT_MARGIN_TOP_BASE = 15;
             const PORTRAIT_MARGIN_SIDE = 20;
-            const PORTRAIT_SCORE_OFFSET_Y = 20;
-            const PORTRAIT_ICON_SIZE = Math.min(35, gameCanvas.width / 15); // Kleinere iconen in portret
+            const PORTRAIT_SCORE_OFFSET_Y = 20; // Relatief aan het label
+            const PORTRAIT_ICON_SIZE = Math.min(35, gameCanvas.width / 15);
             const PORTRAIT_ICON_SPACING = 5;
-            const PORTRAIT_ICON_MARGIN_BOTTOM = 10;
+            const PORTRAIT_ICON_MARGIN_BOTTOM_BASE = 10;
 
-            // Bovenste UI elementen
+            // <<< GEWIJZIGD: Bovenste UI een regel lager >>>
+            const topUiY = PORTRAIT_MARGIN_TOP_BASE + ONE_LINE_OFFSET_VERTICAL;
+            const topUiScoreY = topUiY + PORTRAIT_SCORE_OFFSET_Y;
+
             gameCtx.font = PORTRAIT_UI_FONT;
             gameCtx.textBaseline = "top";
 
             // 1UP (linksboven)
             gameCtx.fillStyle = PORTRAIT_LABEL_COLOR;
             gameCtx.textAlign = "left";
-            gameCtx.fillText("1UP", PORTRAIT_MARGIN_SIDE, PORTRAIT_MARGIN_TOP);
-            // Geen score voor 1UP in deze vaste UI
+            gameCtx.fillText("1UP", PORTRAIT_MARGIN_SIDE, topUiY);
+            gameCtx.fillStyle = PORTRAIT_SCORE_COLOR;
+            gameCtx.fillText("0", PORTRAIT_MARGIN_SIDE, topUiScoreY);
+
 
             // HI SCORE (midden boven)
             gameCtx.fillStyle = PORTRAIT_LABEL_COLOR;
             gameCtx.textAlign = "center";
-            gameCtx.fillText("HI SCORE", midX, PORTRAIT_MARGIN_TOP);
+            gameCtx.fillText("HI SCORE", midX, topUiY);
             gameCtx.fillStyle = PORTRAIT_SCORE_COLOR;
-            gameCtx.fillText(String(highScore || 20000), midX, PORTRAIT_MARGIN_TOP + PORTRAIT_SCORE_OFFSET_Y);
+            gameCtx.fillText(String(highScore || 20000), midX, topUiScoreY); // Behoud 20000 als default voor HI-SCORE
 
             // 2UP (rechtsboven)
             gameCtx.fillStyle = PORTRAIT_LABEL_COLOR;
             gameCtx.textAlign = "right";
-            gameCtx.fillText("2UP", gameCanvas.width - PORTRAIT_MARGIN_SIDE, PORTRAIT_MARGIN_TOP);
-            // Geen score voor 2UP
+            gameCtx.fillText("2UP", gameCanvas.width - PORTRAIT_MARGIN_SIDE, topUiY);
+            gameCtx.fillStyle = PORTRAIT_SCORE_COLOR;
+            // Tekst rechts uitlijnen, dus x is rechterrand voor label, en score moet daaronder passen.
+            // We meten de breedte van "2UP" om de score er netjes onder te centreren.
+            const label2UPWidth = gameCtx.measureText("2UP").width;
+            gameCtx.textAlign = "center"; // Center de score onder het midden van het "2UP" label
+            gameCtx.fillText("0", gameCanvas.width - PORTRAIT_MARGIN_SIDE - (label2UPWidth / 2), topUiScoreY);
+
 
             // Onderste UI elementen
             if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
-                const portraitLifeIconY = gameCanvas.height - PORTRAIT_ICON_MARGIN_BOTTOM - PORTRAIT_ICON_SIZE;
+                // <<< GEWIJZIGD: Onderste UI een regel hoger >>>
+                const portraitLifeIconY = gameCanvas.height - PORTRAIT_ICON_MARGIN_BOTTOM_BASE - PORTRAIT_ICON_SIZE - ONE_LINE_OFFSET_VERTICAL;
 
                 // Linksonder: 2 levensscheepjes
                 let currentIconX_P = PORTRAIT_MARGIN_SIDE;
@@ -1053,20 +1067,18 @@ function renderGame() {
                 currentIconX_P += PORTRAIT_ICON_SIZE + PORTRAIT_ICON_SPACING;
                 gameCtx.drawImage(shipImage, Math.round(currentIconX_P), Math.round(portraitLifeIconY), PORTRAIT_ICON_SIZE, PORTRAIT_ICON_SIZE);
 
-                // Midden onder: 1 schip (het "actieve" schip van de disclaimer)
+                // Midden onder: 1 schip
                 const midShipX = midX - PORTRAIT_ICON_SIZE / 2;
                 gameCtx.drawImage(shipImage, Math.round(midShipX), Math.round(portraitLifeIconY), PORTRAIT_ICON_SIZE, PORTRAIT_ICON_SIZE);
 
-                // Rechtsonder: 1 level icoon (bijv. Level 1)
+                // Rechtsonder: 1 level icoon (Level 1)
                 if (typeof level1Image !== 'undefined' && level1Image.complete && level1Image.naturalHeight !== 0) {
                     const levelIconX_P = gameCanvas.width - PORTRAIT_MARGIN_SIDE - PORTRAIT_ICON_SIZE;
                     gameCtx.drawImage(level1Image, Math.round(levelIconX_P), Math.round(portraitLifeIconY), PORTRAIT_ICON_SIZE, PORTRAIT_ICON_SIZE);
                 }
             }
-            gameCtx.restore(); // Einde vaste portrait UI
-            // --- EINDE VASTE UI VOOR PORTRETMODUS ---
-
-            return; // Stop verdere rendering als de portrait message wordt getoond
+            gameCtx.restore();
+            return;
         }
 
 
@@ -1481,7 +1493,6 @@ function renderGame() {
                                             (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || isShowingResultsScreen);
 
         if (is1PNormalModeGameOverOrResults) {
-            // In 1P Normal Game Over/Results, P1's levels worden rechts getoond (alsof het P2 is)
             drawLevelIcons(Math.max(1, player1MaxLevelReached), false);
         }
         else if (isEffectivelyTwoPlayerUI || isTwoPlayerMode) {
