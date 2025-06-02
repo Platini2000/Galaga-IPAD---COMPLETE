@@ -175,6 +175,7 @@ function resetGameInternal() {
     score = 0;
     level = 1;
     playerLives = 3;
+    window.highScoreHolderId = null; // << GEWIJZIGD: Reset highScoreHolderId
 
     if (isTwoPlayerMode) {
         player1Lives = 3;
@@ -490,30 +491,38 @@ function generateWaveDefinitionInternal(level) {
     const waveType = getWaveTypeInternal(level);
 
     if (typeof waveEntrancePatterns === 'undefined' || !Array.isArray(waveEntrancePatterns) || waveEntrancePatterns.length < 2) {
+        console.error("CRITICAL: waveEntrancePatterns not defined or insufficient for wave generation.");
         return [];
     }
 
     if (waveType === 'challenging_stage') {
-        waveDef = [];
+        waveDef = []; // Specifieke CS logica handelt dit af in startChallengingStageSequence
     } else if (waveType === 'full_grid') {
-        currentWavePatternIndex = 0;
+        currentWavePatternIndex = 0; // Gebruik altijd het eerste patroon voor full grid
         const selectedPattern = waveEntrancePatterns[0];
         if (!selectedPattern || selectedPattern.length === 0) {
+            console.error("CRITICAL: Full grid wave pattern (index 0) is missing or empty.");
             waveDef = [];
         } else {
             try {
+                // Diepe kopie om te voorkomen dat originele data wordt gewijzigd
                 waveDef = JSON.parse(JSON.stringify(selectedPattern), (key, value) => {
+                    // Zorg ervoor dat nieuwe bazen standaard geen gevangen schip hebben
                     if (value && typeof value === 'object' && value.type === ENEMY3_TYPE && typeof value.hasCapturedShip === 'undefined') {
                         value.hasCapturedShip = false;
                     }
                     return value;
                 });
-            } catch (e) { waveDef = []; }
+            } catch (e) {
+                console.error("Error cloning full grid wave pattern:", e);
+                waveDef = [];
+            }
         }
     } else if (waveType === 'entrance_flight_1') {
-        currentWavePatternIndex = 0;
+        currentWavePatternIndex = 0; // Gebruik het eerste patroon
         const selectedPattern = waveEntrancePatterns[0];
          if (!selectedPattern || selectedPattern.length === 0) {
+            console.error("CRITICAL: Entrance flight 1 wave pattern (index 0) is missing or empty.");
             waveDef = [];
         } else {
             try {
@@ -523,12 +532,16 @@ function generateWaveDefinitionInternal(level) {
                     }
                     return value;
                 });
-            } catch (e) { waveDef = []; }
+            } catch (e) {
+                console.error("Error cloning entrance flight 1 wave pattern:", e);
+                waveDef = [];
+            }
         }
     } else if (waveType === 'entrance_flight_2') {
-        currentWavePatternIndex = 1;
+        currentWavePatternIndex = 1; // Gebruik het tweede patroon
         const selectedPattern = waveEntrancePatterns[1];
         if (!selectedPattern || selectedPattern.length === 0) {
+            console.error("CRITICAL: Entrance flight 2 wave pattern (index 1) is missing or empty.");
             waveDef = [];
         } else {
             try {
@@ -538,19 +551,26 @@ function generateWaveDefinitionInternal(level) {
                     }
                     return value;
                 });
-            } catch (e) { waveDef = []; }
+            } catch (e) {
+                console.error("Error cloning entrance flight 2 wave pattern:", e);
+                waveDef = [];
+            }
         }
     } else {
+        console.warn(`Unknown wave type for level ${level}: ${waveType}`);
         waveDef = [];
     }
 
+    // Valideer paden voor niet-CS waves
     if (waveType !== 'challenging_stage') {
         if (typeof normalWaveEntrancePaths === 'undefined' || Object.keys(normalWaveEntrancePaths).length === 0) {
-             return waveDef;
+             console.error("CRITICAL: normalWaveEntrancePaths not defined or empty. Cannot assign paths to squadrons.");
+             return waveDef; // Geef terug wat we hebben, maar het zal waarschijnlijk problemen veroorzaken.
         }
         for (let i = waveDef.length - 1; i >= 0; i--) {
             const squadron = waveDef[i];
             if (!normalWaveEntrancePaths?.[squadron.pathId]) {
+                // console.warn(`Squadron ${i} in wave ${level} has invalid pathId '${squadron.pathId}'. Removing squadron.`);
                 waveDef.splice(i, 1);
                 continue;
             }
@@ -558,16 +578,20 @@ function generateWaveDefinitionInternal(level) {
                 for (let j = squadron.enemies.length - 1; j >= 0; j--) {
                     const enemy = squadron.enemies[j];
                     if (!enemy || !normalWaveEntrancePaths?.[enemy.entrancePathId]) {
+                        // console.warn(`Enemy ${j} in squadron ${i} (wave ${level}) has invalid entrancePathId '${enemy?.entrancePathId}'. Removing enemy.`);
                         squadron.enemies.splice(j, 1);
                     }
+                    // Zorg ervoor dat bazen in de definitie correct geïnitialiseerd zijn
                     if (enemy && enemy.type === ENEMY3_TYPE && typeof enemy.hasCapturedShip === 'undefined') {
                         enemy.hasCapturedShip = false;
                     }
                 }
                 if (squadron.enemies.length === 0) {
+                    // console.warn(`Squadron ${i} in wave ${level} has no valid enemies after path validation. Removing squadron.`);
                     waveDef.splice(i, 1);
                 }
             } else {
+                //  console.warn(`Squadron ${i} in wave ${level} has no 'enemies' array or it's not an array. Removing squadron.`);
                  waveDef.splice(i, 1);
             }
         }
@@ -1065,7 +1089,7 @@ function renderGame() {
 
 
 // --- START OF FILE game_logic.js ---
-// --- DEEL 4      van 8 dit code blok    ---
+// --- DEEL 4      van 8 dit code blok    --- (Focus: Aangescherpte high score sound logic in handleEnemyHit)
 
 function handleEnemyHit(enemy, shootingPlayerId = null) {
     if (!enemy) return { destroyed: false, pointsAwarded: 0 };
@@ -1077,7 +1101,7 @@ function handleEnemyHit(enemy, shootingPlayerId = null) {
     const bossHadDimensionsInitially = enemy.type === ENEMY3_TYPE && enemy.capturedShipDimensions;
 
     let wasPartnershipCapturedByThisBoss = false;
-    let partnerWhoWasCapturedId = null; // Houd bij WIE gevangen was door DEZE boss
+    let partnerWhoWasCapturedId = null;
 
     if (bossHadCapturedShipInitially) {
         if (isTwoPlayerMode && selectedGameMode === 'coop') {
@@ -1090,10 +1114,8 @@ function handleEnemyHit(enemy, shootingPlayerId = null) {
             }
         } else if (!isTwoPlayerMode && isShipCaptured && capturedBossIdWithMessage === enemy.id) {
             wasPartnershipCapturedByThisBoss = true;
-            // In 1P, de "partner" is de speler zelf. shootingPlayerId is relevant.
         }
     }
-
 
     const sparkX = enemy.x + enemyWidthForCalc / 2; const sparkY = enemy.y + enemyHeightForCalc * 0.2;
     createHitSparks(sparkX, sparkY);
@@ -1108,41 +1130,34 @@ function handleEnemyHit(enemy, shootingPlayerId = null) {
 
         if (bossHadCapturedShipInitially && bossHadDimensionsInitially) {
             let fallingShipTargetPlayerId = null;
-
-            // Priority 1: Return ship to its original owner if a specific partnership was involved
             if (wasPartnershipCapturedByThisBoss && partnerWhoWasCapturedId) {
                 fallingShipTargetPlayerId = partnerWhoWasCapturedId;
             } else {
-                // Priority 2: AI Dual ship gives neutral/other's ship to its partner
                 let assignedByAIDualRule = false;
                 if (isCoopAIDemoActive) {
                     if (shootingPlayerId === 'player1' && player1IsDualShipActive) {
-                        fallingShipTargetPlayerId = 'player2'; // AI P1 dual shot, ship goes to AI P2
+                        fallingShipTargetPlayerId = 'player2';
                         assignedByAIDualRule = true;
                     } else if (shootingPlayerId === 'player2' && player2IsDualShipActive) {
-                        fallingShipTargetPlayerId = 'player1'; // AI P2 dual shot, ship goes to AI P1
+                        fallingShipTargetPlayerId = 'player1';
                         assignedByAIDualRule = true;
                     }
                 } else if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
                     if (shootingPlayerId === 'ai_p2' && player2IsDualShipActive) {
-                        fallingShipTargetPlayerId = 'player1'; // AI P2 dual shot, ship goes to Human P1
+                        fallingShipTargetPlayerId = 'player1';
                         assignedByAIDualRule = true;
-                    } else if (shootingPlayerId === 'player1' && player1IsDualShipActive) { // Human P1 is dual
-                        fallingShipTargetPlayerId = 'ai_p2'; // Human P1 dual shot, ship goes to AI P2
+                    } else if (shootingPlayerId === 'player1' && player1IsDualShipActive) {
+                        fallingShipTargetPlayerId = 'ai_p2';
                         assignedByAIDualRule = true;
                     }
                 }
-
                 if (!assignedByAIDualRule) {
-                    // Priority 3: Default to the shooter if no other rules applied for neutral ship
                     fallingShipTargetPlayerId = shootingPlayerId;
                 }
             }
-            // Fallback if no target was assigned (should ideally not happen if shootingPlayerId is valid)
             if (fallingShipTargetPlayerId === null && shootingPlayerId) {
                 fallingShipTargetPlayerId = shootingPlayerId;
             }
-
 
             if (enemy.capturedShipDimensions) {
                 const capturedW = enemy.capturedShipDimensions.width;
@@ -1152,17 +1167,10 @@ function handleEnemyHit(enemy, shootingPlayerId = null) {
                 const alreadyFalling = fallingShips.some(fs => Math.abs(fs.x - fallingShipX) < 1 && Math.abs(fs.y - fallingShipY) < 1);
                 if (!alreadyFalling) {
                     fallingShips.push({
-                        x: fallingShipX,
-                        y: fallingShipY,
-                        width: capturedW,
-                        height: capturedH,
-                        creationTime: now,
-                        tintProgress: 1.0,
-                        rotation: 0,
+                        x: fallingShipX, y: fallingShipY, width: capturedW, height: capturedH,
+                        creationTime: now, tintProgress: 1.0, rotation: 0,
                         rotationDirection: (Math.random() < 0.5 ? -1 : 1),
-                        totalRotation: 0,
-                        rotationCompleted: false,
-                        targetPlayerId: fallingShipTargetPlayerId
+                        totalRotation: 0, rotationCompleted: false, targetPlayerId: fallingShipTargetPlayerId
                     });
                 }
             } else { console.error("[handleEnemyHit] CRITICAL: Boss destroyed, had ship initially but dimensions missing!"); }
@@ -1173,6 +1181,7 @@ function handleEnemyHit(enemy, shootingPlayerId = null) {
         }
 
         if (isChallengingStage) {
+            // ... (CS scoring logic remains the same) ...
             let baseScore = 100;
             const previousLastHitTime = csLastHitTime;
             csLastHitTime = now;
@@ -1190,8 +1199,8 @@ function handleEnemyHit(enemy, shootingPlayerId = null) {
             csCurrentChainScore += points;
             scoreEarnedThisCS += points;
             playHitSoundId = 'explosionSound'; playHitSoundVolume = 0.4;
-        }
-        else {
+        } else {
+            // ... (Normal wave scoring logic remains the same) ...
             if (enemy.state === 'in_grid') {
                 points = (enemy.type === ENEMY1_TYPE) ? 50 : (enemy.type === ENEMY2_TYPE ? 80 : 0);
                 if (enemy.type === ENEMY3_TYPE) { points = 150; }
@@ -1208,11 +1217,11 @@ function handleEnemyHit(enemy, shootingPlayerId = null) {
                         points = 400;
                         playHitSoundId = 'bossHit2Sound'; playHitSoundVolume = 0.4;
                     } else {
-                        points = 0; // Boss destroyed on first hit while attacking (shouldn't happen with 2 HP)
+                        points = 0;
                         console.warn(`[Destroyed Boss Score - Attack] Boss destroyed on first hit? Awarding ${points} points. Health was: ${enemy.health + 1}`);
                         playHitSoundId = 'explosionSound'; playHitSoundVolume = 0.4;
                     }
-                } else { // Bee or Butterfly destroyed while attacking
+                } else {
                     playHitSoundId = 'explosionSound'; playHitSoundVolume = 0.4;
                 }
                 if (destroyed && points > 0) {
@@ -1238,84 +1247,140 @@ function handleEnemyHit(enemy, shootingPlayerId = null) {
 
         if (points > 0) {
             let playerSpecificEnemiesHitIncrementer = null;
+            let playerLocalScore = 0;
+            let playerLocalIdentifier = shootingPlayerId; // Default to shooter ID
 
-            if (isCoopAIDemoActive) { // COOP AI DEMO
+            // <<< START GEWIJZIGDE High Score Logica >>>
+            let oldHighScore = highScore;
+            let oldHighScoreHolderId = highScoreHolderId;
+            let newHighScoreAchievedByCurrentShooter = false;
+            let newHighScoreHolderSetThisHit = false;
+            // <<< EINDE GEWIJZIGDE High Score Logica >>>
+
+            if (isCoopAIDemoActive) {
                 if (shootingPlayerId === 'player1') {
-                    player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
-                    if (player1Score > highScore) { highScore = player1Score; if (!player1TriggeredHighScoreSound) { player1TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); } }
+                    player1Score += points; playerLocalScore = player1Score;
+                    playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    if (player1Score > highScore) {
+                        highScore = player1Score; highScoreHolderId = 'player1'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                    } else if (player1Score === highScore && highScoreHolderId !== 'player1' && highScore > 0) {
+                        highScoreHolderId = 'player1'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                    }
                     checkAndAwardExtraLife(1);
                 } else if (shootingPlayerId === 'player2') {
-                    player2Score += points; playerSpecificEnemiesHitIncrementer = () => player2EnemiesHit++;
-                    if (player2Score > highScore) { highScore = player2Score; if (!player2TriggeredHighScoreSound) { player2TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); } }
+                    player2Score += points; playerLocalScore = player2Score;
+                    playerSpecificEnemiesHitIncrementer = () => player2EnemiesHit++;
+                    if (player2Score > highScore) {
+                        highScore = player2Score; highScoreHolderId = 'player2'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                    } else if (player2Score === highScore && highScoreHolderId !== 'player2' && highScore > 0) {
+                        highScoreHolderId = 'player2'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                    }
                     checkAndAwardExtraLife(2);
-                } else { // Fallback for CO-OP AI demo if shooterId is somehow null
-                    player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
-                    if (player1Score > highScore) highScore = player1Score;
+                } else {
+                    player1Score += points; playerLocalScore = player1Score;
+                    playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    if (player1Score > highScore) { highScore = player1Score; highScoreHolderId = 'player1'; newHighScoreHolderSetThisHit = true; }
                     checkAndAwardExtraLife(1);
                 }
-            } else if (!isManualControl) { // Standaard 1P AI Demo (niet COOP AI Demo)
-                score += points;
-                player1Score = score;
+            } else if (!isManualControl) { // 1P AI Demo
+                score += points; player1Score = score; playerLocalScore = score; playerLocalIdentifier = 'player1';
                 playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
                 if (score > highScore) {
-                    highScore = score;
-                    if (!player1TriggeredHighScoreSound) { player1TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }
+                    highScore = score; highScoreHolderId = 'player1'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                } else if (score === highScore && highScoreHolderId !== 'player1' && highScore > 0) {
+                    highScoreHolderId = 'player1'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
                 }
                 checkAndAwardExtraLife(1);
-            } else if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { // 1P vs AI COOP
-                if (shootingPlayerId === 'player1') { // P1 (mens) schoot
-                    player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
-                    if (player1Score > highScore) { highScore = player1Score; if (!player1TriggeredHighScoreSound) { player1TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }}
+            } else if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+                if (shootingPlayerId === 'player1') {
+                    player1Score += points; playerLocalScore = player1Score;
+                    playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    if (player1Score > highScore) {
+                        highScore = player1Score; highScoreHolderId = 'player1'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                    } else if (player1Score === highScore && highScoreHolderId !== 'player1' && highScore > 0) {
+                        highScoreHolderId = 'player1'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                    }
                     checkAndAwardExtraLife(1);
-                } else if (shootingPlayerId === 'ai_p2') { // AI P2 schoot
-                    player2Score += points; playerSpecificEnemiesHitIncrementer = () => player2EnemiesHit++;
-                    if (player2Score > highScore) { highScore = player2Score; if (!player2TriggeredHighScoreSound) { player2TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }}
+                } else if (shootingPlayerId === 'ai_p2') {
+                    player2Score += points; playerLocalScore = player2Score; playerLocalIdentifier = 'ai_p2';
+                    playerSpecificEnemiesHitIncrementer = () => player2EnemiesHit++;
+                    if (player2Score > highScore) {
+                        highScore = player2Score; highScoreHolderId = 'ai_p2'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                    } else if (player2Score === highScore && highScoreHolderId !== 'ai_p2' && highScore > 0) {
+                        highScoreHolderId = 'ai_p2'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                    }
                     checkAndAwardExtraLife(2);
-                } else { // Fallback als shooterId onbekend is in 1P vs AI COOP
-                    player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
-                    if (player1Score > highScore) highScore = player1Score;
+                } else {
+                    player1Score += points; playerLocalScore = player1Score;
+                    playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    if (player1Score > highScore) { highScore = player1Score; highScoreHolderId = 'player1'; newHighScoreHolderSetThisHit = true; }
                     checkAndAwardExtraLife(1);
                 }
-            } else if (isTwoPlayerMode && selectedGameMode === 'coop') { // Manual CO-OP (Human P1 & Human P2)
+            } else if (isTwoPlayerMode && selectedGameMode === 'coop') { // Human CO-OP
                 if (shootingPlayerId === 'player1') {
-                    player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
-                    if (player1Score > highScore) { highScore = player1Score; if (!player1TriggeredHighScoreSound) { player1TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }}
+                    player1Score += points; playerLocalScore = player1Score;
+                    playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    if (player1Score > highScore) {
+                        highScore = player1Score; highScoreHolderId = 'player1'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                    } else if (player1Score === highScore && highScoreHolderId !== 'player1' && highScore > 0) {
+                        highScoreHolderId = 'player1'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                    }
                     checkAndAwardExtraLife(1);
                 } else if (shootingPlayerId === 'player2') {
-                    player2Score += points; playerSpecificEnemiesHitIncrementer = () => player2EnemiesHit++;
-                    if (player2Score > highScore) { highScore = player2Score; if (!player2TriggeredHighScoreSound) { player2TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }}
+                    player2Score += points; playerLocalScore = player2Score;
+                    playerSpecificEnemiesHitIncrementer = () => player2EnemiesHit++;
+                    if (player2Score > highScore) {
+                        highScore = player2Score; highScoreHolderId = 'player2'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                    } else if (player2Score === highScore && highScoreHolderId !== 'player2' && highScore > 0) {
+                        highScoreHolderId = 'player2'; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                    }
                     checkAndAwardExtraLife(2);
-                } else { // Fallback voor manual CO-OP als shooterId null is
-                    player1Score += points; playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
-                    if (player1Score > highScore) { highScore = player1Score; if (!player1TriggeredHighScoreSound) { player1TriggeredHighScoreSound = true; playSound('hiScoreSound', false, 0.2); }}
+                } else {
+                    player1Score += points; playerLocalScore = player1Score;
+                    playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
+                    if (player1Score > highScore) { highScore = player1Score; highScoreHolderId = 'player1'; newHighScoreHolderSetThisHit = true; }
                     checkAndAwardExtraLife(1);
                 }
             } else { // 1P Classic, 1P_VS_AI_NORMAL (Alternating), 2P_NORMAL (Alternating)
                 score += points;
-                let playerSpecificScore = score;
-                let setPlayerSpecificHSTriggerFlag = null;
-                let playerNumForLifeCheck = currentPlayer;
-
+                playerLocalScore = score;
                 if (currentPlayer === 1 || !isTwoPlayerMode) {
-                    player1Score = score;
+                    player1Score = score; playerLocalIdentifier = 'player1';
                     playerSpecificEnemiesHitIncrementer = () => player1EnemiesHit++;
-                    setPlayerSpecificHSTriggerFlag = () => { player1TriggeredHighScoreSound = true; };
                 } else { // currentPlayer === 2
-                    player2Score = score;
+                    player2Score = score; playerLocalIdentifier = isPlayerTwoAI ? 'ai_p2' : 'player2';
                     playerSpecificEnemiesHitIncrementer = () => player2EnemiesHit++;
-                    setPlayerSpecificHSTriggerFlag = () => { player2TriggeredHighScoreSound = true; };
                 }
 
-                if (playerSpecificScore > highScore) {
-                    highScore = playerSpecificScore;
-                    const currentHSTriggerFlag = (currentPlayer === 1 || !isTwoPlayerMode) ? player1TriggeredHighScoreSound : player2TriggeredHighScoreSound;
-                    if (!currentHSTriggerFlag && setPlayerSpecificHSTriggerFlag) {
-                        setPlayerSpecificHSTriggerFlag();
-                        playSound('hiScoreSound', false, 0.2);
-                    }
+                if (score > highScore) {
+                    highScore = score; highScoreHolderId = playerLocalIdentifier; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
+                } else if (score === highScore && highScoreHolderId !== playerLocalIdentifier && highScore > 0) {
+                    highScoreHolderId = playerLocalIdentifier; newHighScoreAchievedByCurrentShooter = true; newHighScoreHolderSetThisHit = true;
                 }
-                checkAndAwardExtraLife(playerNumForLifeCheck);
+                checkAndAwardExtraLife(currentPlayer);
             }
+
+            // <<< START GEWIJZIGDE High Score Geluidslogica >>>
+            // Speel geluid als de high score is verbeterd OF als de houder is veranderd (en het niet de eerste keer is dat HS is gezet)
+            if (newHighScoreAchievedByCurrentShooter || (newHighScoreHolderSetThisHit && oldHighScore > 0 && highScoreHolderId !== oldHighScoreHolderId) ) {
+                 let previouslyTriggeredFlag = false;
+                 if (highScoreHolderId === 'player1') previouslyTriggeredFlag = player1TriggeredHighScoreSound;
+                 else if (highScoreHolderId === 'player2' || highScoreHolderId === 'ai_p2') previouslyTriggeredFlag = player2TriggeredHighScoreSound;
+
+                 // Alleen spelen als deze specifieke speler het geluid nog niet getriggerd heeft *voor deze score reeks*
+                 // OF als de houder is veranderd (wat impliceert dat iemand anders de score heeft gepakt/geëvenaard)
+                 if (!previouslyTriggeredFlag || (highScoreHolderId !== oldHighScoreHolderId && oldHighScore > 0)) {
+                    playSound('hiScoreSound', false, 0.2);
+                    if (highScoreHolderId === 'player1') player1TriggeredHighScoreSound = true;
+                    else if (highScoreHolderId === 'player2' || highScoreHolderId === 'ai_p2') player2TriggeredHighScoreSound = true;
+                 }
+            }
+            // Reset vlaggen als iemand anders de HS pakt
+            if (newHighScoreHolderSetThisHit && highScoreHolderId !== oldHighScoreHolderId && oldHighScore > 0) {
+                if (oldHighScoreHolderId === 'player1') player1TriggeredHighScoreSound = false;
+                else if (oldHighScoreHolderId === 'player2' || oldHighScoreHolderId === 'ai_p2') player2TriggeredHighScoreSound = false;
+            }
+            // <<< EINDE GEWIJZIGDE High Score Geluidslogica >>>
 
 
             if (playerSpecificEnemiesHitIncrementer && !isChallengingStage) {
@@ -1341,7 +1406,6 @@ function handleEnemyHit(enemy, shootingPlayerId = null) {
         }
         else { // Bee or Butterfly hit but not destroyed (should not happen with 1 HP)
             points = 0;
-             // For bees/butterflies, if they are somehow hit but not destroyed, play their specific hit sound
             if (enemy.type === ENEMY1_TYPE) { playHitSoundId = 'beeHitSound'; playHitSoundVolume = 0.3; }
             else if (enemy.type === ENEMY2_TYPE) { playHitSoundId = 'butterflyHitSound'; playHitSoundVolume = 0.3; }
         }
@@ -1395,22 +1459,19 @@ function moveEntities() {
  */
 function switchPlayerTurn() {
     if (!isTwoPlayerMode || selectedGameMode === 'coop') return false; // Niet voor CO-OP
-    stopSound('hiScoreSound');
+    // stopSound('hiScoreSound'); // Verplaatst naar binnen de high score logica
 
     // Sla de staat van de Zojuist Geëindigde Speler op.
-    // 'level' is hier het level waarop de vorige speler zijn beurt eindigde.
-    // Belangrijk: playerXMaxLevelReached wordt hier bijgewerkt VOORDAT 'level' mogelijk verandert
-    // door de logica in runSingleGameUpdate (als beide spelers het level hebben voltooid).
     if (currentPlayer === 1) {
         player1Score = score;
         player1IsDualShipActive = isDualShipActive;
         player1MaxLevelReached = Math.max(player1MaxLevelReached, level);
-        if (player1Score > highScore) highScore = player1Score;
+        // High score check hier is al gedaan in handleEnemyHit en runSingleGameUpdate (CS bonus)
     } else { // currentPlayer === 2
         player2Score = score;
         player2IsDualShipActive = isDualShipActive;
         player2MaxLevelReached = Math.max(player2MaxLevelReached, level);
-        if (player2Score > highScore) highScore = player2Score;
+        // High score check hier is al gedaan in handleEnemyHit en runSingleGameUpdate (CS bonus)
     }
 
     const nextPlayer = (currentPlayer === 1) ? 2 : 1;
@@ -1423,19 +1484,14 @@ function switchPlayerTurn() {
             return false;
         } else {
             forceCenterShipNextReset = false;
-            return false; // Geen succesvolle wissel, huidige speler gaat door (indien nog levens)
+            return false; 
         }
     }
 
-    // Wissel naar de volgende speler
     currentPlayer = nextPlayer;
     score = (currentPlayer === 1) ? player1Score : player2Score;
     playerLives = (currentPlayer === 1) ? player1Lives : player2Lives;
     isDualShipActive = (currentPlayer === 1) ? player1IsDualShipActive : player2IsDualShipActive;
-
-    // Het 'level' (de globale variabele) blijft ongewijzigd hier.
-    // resetWaveInternal zal het correcte intro tonen voor het huidige `level`.
-    // De logica in runSingleGameUpdate (na een succesvolle wave) bepaalt of `level` omhoog gaat.
 
     forceCenterShipNextReset = true;
     scoreEarnedThisCS = 0;
