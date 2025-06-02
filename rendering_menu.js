@@ -1,1 +1,1968 @@
-const _0x391e46=_0x25e3;(function(_0x4653d3,_0x298303){const _0x43934b=_0x25e3,_0x48b1de=_0x4653d3();while(!![]){try{const _0x32817c=-parseInt(_0x43934b(0x202))/0x1*(parseInt(_0x43934b(0x283))/0x2)+parseInt(_0x43934b(0x28e))/0x3+-parseInt(_0x43934b(0x291))/0x4+parseInt(_0x43934b(0x1e5))/0x5+parseInt(_0x43934b(0x26d))/0x6+-parseInt(_0x43934b(0x228))/0x7+-parseInt(_0x43934b(0x245))/0x8;if(_0x32817c===_0x298303)break;else _0x48b1de['push'](_0x48b1de['shift']());}catch(_0xaa7ddb){_0x48b1de['push'](_0x48b1de['shift']());}}}(_0x28af,0xdb23d));const MENU_LOGO_APPROX_HEIGHT=0x55,MENU_SUBTITLE_TEXT=_0x391e46(0x1fa),MENU_SUBTITLE_FONT=_0x391e46(0x2ba),MENU_SUBTITLE_COLOR='red',MENU_BUTTON_FONT=_0x391e46(0x24a),MENU_BUTTON_COLOR=_0x391e46(0x209),MENU_BUTTON_COLOR_HOVER='rgba(0,\x20191,\x20255,\x200.9)',MENU_BUTTON_WIDTH=0x12c,MENU_BUTTON_HEIGHT=0x37,MENU_LOGO_BOTTOM_TO_START_GAP=0x5,MENU_BUTTON_V_GAP=-0xf,MENU_BUTTON_SUBTITLE_V_GAP=-0x0,MENU_SCORE_FONT='20px\x20\x27Press\x20Start\x202P\x27',MENU_SCORE_COLOR=_0x391e46(0x209),MENU_SCORE_LABEL_COLOR=_0x391e46(0x259),GAME_OVER_FONT=_0x391e46(0x20b),GAME_OVER_COLOR=_0x391e46(0x28b),GAME_OVER_SHADOW=!![],DEMO_TEXT_LINE1_FONT='bold\x2018px\x20\x27Press\x20Start\x202P\x27',DEMO_TEXT_COLOR=_0x391e46(0x28b),DEMO_TEXT_BLINK_ON_MS=0x3e8,DEMO_TEXT_BLINK_OFF_MS=0x3e8,DEMO_TEXT_BLINK_CYCLE_MS=DEMO_TEXT_BLINK_ON_MS+DEMO_TEXT_BLINK_OFF_MS,LOGO_SCALE_FACTOR=0.45,MENU_LOGO_EXTRA_Y_OFFSET=0x0,MENU_GENERAL_Y_OFFSET=0x32,INTRO_TEXT_FONT=_0x391e46(0x20b),INTRO_TEXT_COLOR_NORMAL=_0x391e46(0x28b),INTRO_TEXT_COLOR_DARK_YELLOW='yellow',INTRO_TEXT_COLOR_CS_TEXT=INTRO_TEXT_COLOR_NORMAL,PERFECT_TEXT_COLOR=_0x391e46(0x259),EXTRA_LIFE_TEXT_COLOR=INTRO_TEXT_COLOR_NORMAL,READY_TEXT_COLOR=INTRO_TEXT_COLOR_NORMAL,CS_BONUS_SCORE_TEXT_COLOR=INTRO_TEXT_COLOR_DARK_YELLOW,CS_CLEAR_TEXT_COLOR=INTRO_TEXT_COLOR_NORMAL,CS_HITS_TEXT_COLOR=INTRO_TEXT_COLOR_NORMAL,CS_CLEAR_SCORE_TEXT_COLOR=INTRO_TEXT_COLOR_NORMAL,PAUSE_TEXT_FONT=INTRO_TEXT_FONT,PAUSE_TEXT_COLOR=INTRO_TEXT_COLOR_NORMAL,PAUSE_TEXT_SHADOW=!![],RESULTS_SCREEN_DURATION=0x4e20,PLAYER_GAME_OVER_MESSAGE_DURATION=0x1388,SCORE_SCREEN_TEXT_FONT=INTRO_TEXT_FONT,SCORE_SCREEN_TEXT_COLOR_TOP=INTRO_TEXT_COLOR_NORMAL,SCORE_SCREEN_TEXT_COLOR_BONUS=INTRO_TEXT_COLOR_DARK_YELLOW,SCORE_SCREEN_LINE_V_SPACING=0x28,SCORE_SCREEN_ICON_TEXT_H_SPACING=0xf,SCORE_SCREEN_VERTICAL_OFFSET=0x4b,RESULTS_HEADER_COLOR=_0x391e46(0x259),RESULTS_VALUE_COLOR_YELLOW=INTRO_TEXT_COLOR_DARK_YELLOW,RESULTS_LABEL_COLOR=_0x391e46(0x209),RESULTS_VALUE_COLOR_CYAN=INTRO_TEXT_COLOR_NORMAL,RESULTS_LINE_V_SPACING_SINGLE=0x23,RESULTS_LINE_V_SPACING_DOUBLE=0x5a,RESULTS_START_Y=0xaf,RESULTS_FOOTER_FONT=MENU_SUBTITLE_FONT,RESULTS_FOOTER_COLOR=RESULTS_HEADER_COLOR,CS_MESSAGE_VERTICAL_OFFSET=0x1e;function getSubtitleApproxHeight(_0xcc107c){const _0x134b37=_0xcc107c['match'](/(\d+)px/);return _0x134b37?.[0x1]?parseInt(_0x134b37[0x1],0xa):0x19;}function _0x25e3(_0x399da6,_0x5076b4){const _0x28af71=_0x28af();return _0x25e3=function(_0x25e339,_0x4ff884){_0x25e339=_0x25e339-0x1e5;let _0x42c14a=_0x28af71[_0x25e339];return _0x42c14a;},_0x25e3(_0x399da6,_0x5076b4);}function formatMillisecondsToMMSS(_0x4448a8){const _0x37922d=_0x391e46;if(_0x4448a8<=0x0||typeof _0x4448a8!==_0x37922d(0x22d)||!isFinite(_0x4448a8))return _0x37922d(0x1fe);const _0x188595=Math[_0x37922d(0x276)](_0x4448a8/0x3e8),_0x541052=Math[_0x37922d(0x276)](_0x188595/0x3c),_0x619b4b=_0x188595%0x3c,_0x5be6e0=String(_0x541052)[_0x37922d(0x26b)](0x2,'0'),_0x341992=String(_0x619b4b)['padStart'](0x2,'0');return _0x5be6e0+':'+_0x341992;}let isTransitioningToDemoViaScoreScreen=![];function getMenuButtonRect(_0x5d2adf){const _0x27be12=_0x391e46;if(!gameCtx||!gameCanvas||gameCanvas[_0x27be12(0x1fc)]===0x0||gameCanvas[_0x27be12(0x279)]===0x0)return null;const _0x511c9c=gameCanvas[_0x27be12(0x1fc)],_0x36f634=gameCanvas[_0x27be12(0x279)],_0x140a82=_0x511c9c/0x2-MENU_BUTTON_WIDTH/0x2-0x1;let _0x582402=MENU_LOGO_APPROX_HEIGHT;typeof logoImage!=='undefined'&&logoImage[_0x27be12(0x2b6)]&&logoImage[_0x27be12(0x1ed)]!==0x0&&(_0x582402=logoImage['naturalHeight']*LOGO_SCALE_FACTOR);const _0x4a2c8c=getSubtitleApproxHeight(MENU_SUBTITLE_FONT),_0x52fb45=0x2,_0x1d6d1d=_0x582402+MENU_LOGO_BOTTOM_TO_START_GAP+_0x52fb45*MENU_BUTTON_HEIGHT+(_0x52fb45-0x1)*MENU_BUTTON_V_GAP+MENU_BUTTON_SUBTITLE_V_GAP+_0x4a2c8c;let _0x4fb2cf=(_0x36f634-_0x1d6d1d)/0x2-0x46;_0x4fb2cf+=MENU_GENERAL_Y_OFFSET;const _0x472198=_0x4fb2cf+_0x582402+MENU_LOGO_BOTTOM_TO_START_GAP,_0x3c502c=_0x472198+_0x5d2adf*(MENU_BUTTON_HEIGHT+MENU_BUTTON_V_GAP);if(_0x5d2adf===0x0||_0x5d2adf===0x1)return{'x':_0x140a82,'y':Math['round'](_0x3c502c),'width':MENU_BUTTON_WIDTH,'height':MENU_BUTTON_HEIGHT};return null;}function pollControllerForMenu(){const _0x2c1afa=_0x391e46;try{audioContext&&audioContext[_0x2c1afa(0x28a)]==='suspended'&&(connectedGamepadIndex!==null||connectedGamepadIndexP2!==null)&&audioContext[_0x2c1afa(0x20e)]()[_0x2c1afa(0x28f)](()=>{const _0x2960f4=_0x2c1afa;audioContextInitialized=!![],console[_0x2960f4(0x2a4)](_0x2960f4(0x2c9));});if(connectedGamepadIndex===null&&connectedGamepadIndexP2===null){joystickMovedVerticallyLastFrame=![];if(previousButtonStates[_0x2c1afa(0x21a)]>0x0)previousButtonStates=[];if(previousGameButtonStates[_0x2c1afa(0x21a)]>0x0)previousGameButtonStates=[];if(previousGameButtonStatesP2['length']>0x0)previousGameButtonStatesP2=[];return;}let _0x4cbc04=connectedGamepadIndex!==null?connectedGamepadIndex:connectedGamepadIndexP2;if(_0x4cbc04===null)return;const _0x370a0b=navigator[_0x2c1afa(0x1eb)]();if(!_0x370a0b?.[_0x4cbc04])return;const _0x4db2ed=_0x370a0b[_0x4cbc04],_0x56bd3e=_0x4db2ed[_0x2c1afa(0x247)]['map'](_0x1f5426=>_0x1f5426[_0x2c1afa(0x277)]),_0x1d5257=_0x56bd3e,_0x42fd87=_0x56bd3e;let _0x1116f6=![];const _0x4863c7=Date['now']();let _0x5aad6b=![];(isShowingPlayerGameOverMessage||gameOverSequenceStartTime>0x0)&&(_0x5aad6b=!![]);if(_0x5aad6b){connectedGamepadIndex!==null&&(previousButtonStates=_0x1d5257[_0x2c1afa(0x27f)](),previousGameButtonStates=_0x42fd87['slice']());if(connectedGamepadIndexP2!==null){const _0x176615=navigator[_0x2c1afa(0x1eb)]();_0x176615?.[connectedGamepadIndexP2]&&(previousGameButtonStatesP2=_0x176615[connectedGamepadIndexP2][_0x2c1afa(0x247)][_0x2c1afa(0x1f8)](_0x584d8f=>_0x584d8f[_0x2c1afa(0x277)]));}return;}if(isInGameState&&gameOverSequenceStartTime===0x0&&!isShowingPlayerGameOverMessage){const _0xff58c7=_0x42fd87[PS5_BUTTON_TRIANGLE],_0x1951d7=previousGameButtonStates[PS5_BUTTON_TRIANGLE]??![];if(_0xff58c7&&!_0x1951d7){if(typeof stopGameAndShowMenu===_0x2c1afa(0x294))stopGameAndShowMenu();_0x1116f6=!![];}if(!_0x1116f6){const _0x2d467f=_0x42fd87[PS5_BUTTON_R1],_0x42238b=previousGameButtonStates[PS5_BUTTON_R1]??![];if(_0x2d467f&&!_0x42238b){if(typeof togglePause===_0x2c1afa(0x294))togglePause();_0x1116f6=!![];}}}if(!_0x1116f6){const _0x34ee36=isShowingScoreScreen&&!isTransitioningToDemoViaScoreScreen;if(_0x34ee36){let _0x5bba5b=![];for(let _0x1d4bbf=0x0;_0x1d4bbf<_0x1d5257[_0x2c1afa(0x21a)];_0x1d4bbf++){if(_0x1d4bbf===PS5_BUTTON_R1||_0x1d4bbf===PS5_BUTTON_TRIANGLE)continue;const _0x4a95f2=previousButtonStates[_0x1d4bbf]??![];if(_0x1d5257[_0x1d4bbf]&&!_0x4a95f2){_0x5bba5b=!![];break;}}if(_0x5bba5b){if(typeof showMenuState===_0x2c1afa(0x294))showMenuState();_0x1116f6=!![];}}else{if(!isInGameState&&!_0x1116f6){const _0x1ba65c=_0x1d5257[PS5_BUTTON_CROSS],_0x20bf71=previousButtonStates[PS5_BUTTON_CROSS]??![],_0xd76c25=_0x1d5257[PS5_BUTTON_CIRCLE],_0x14b462=previousButtonStates[PS5_BUTTON_CIRCLE]??![],_0x4580f6=_0x4db2ed[_0x2c1afa(0x25f)][PS5_LEFT_STICK_Y]??0x0,_0x4902f0=_0x1d5257[PS5_DPAD_UP],_0x42c819=_0x1d5257[PS5_DPAD_DOWN];let _0x4c1761=0x0;if(_0x4580f6<-AXIS_DEAD_ZONE_MENU||_0x4902f0)_0x4c1761=-0x1;else{if(_0x4580f6>AXIS_DEAD_ZONE_MENU||_0x42c819)_0x4c1761=0x1;}let _0x10ebcf=_0x4c1761!==0x0;if(_0x10ebcf&&!joystickMovedVerticallyLastFrame){let _0x5ce4fc=selectedButtonIndex;const _0x4f5fd5=0x2;_0x5ce4fc===-0x1?_0x5ce4fc=_0x4c1761===0x1?0x0:_0x4f5fd5-0x1:_0x5ce4fc+=_0x4c1761;if(_0x5ce4fc<0x0)_0x5ce4fc=_0x4f5fd5-0x1;if(_0x5ce4fc>=_0x4f5fd5)_0x5ce4fc=0x0;_0x5ce4fc!==selectedButtonIndex&&(selectedButtonIndex=_0x5ce4fc,startAutoDemoTimer());}joystickMovedVerticallyLastFrame=_0x10ebcf;if(_0x1ba65c&&!_0x20bf71){stopAutoDemoTimer();if(isPlayerSelectMode)selectedButtonIndex===0x0?(isPlayerSelectMode=![],isOnePlayerGameTypeSelectMode=!![],selectedButtonIndex=0x0):(isPlayerSelectMode=![],isGameModeSelectMode=!![],isTwoPlayerMode=!![],selectedButtonIndex=0x0);else{if(isOnePlayerGameTypeSelectMode)selectedButtonIndex===0x0?(isOnePlayerGameTypeSelectMode=![],isFiringModeSelectMode=!![],selectedOnePlayerGameVariant=_0x2c1afa(0x2c0),isTwoPlayerMode=![],isPlayerTwoAI=![],selectedButtonIndex=0x0):(isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=!![],selectedButtonIndex=0x0);else{if(isOnePlayerVsAIGameTypeSelectMode)selectedButtonIndex===0x0?(selectedOnePlayerGameVariant=_0x2c1afa(0x26f),selectedGameMode=_0x2c1afa(0x27c)):(selectedOnePlayerGameVariant=_0x2c1afa(0x207),selectedGameMode=_0x2c1afa(0x297)),isOnePlayerVsAIGameTypeSelectMode=![],isFiringModeSelectMode=!![],isTwoPlayerMode=!![],isPlayerTwoAI=!![],selectedButtonIndex=0x0;else{if(isGameModeSelectMode)selectedButtonIndex===0x0?selectedGameMode='normal':selectedGameMode='coop',isGameModeSelectMode=![],isFiringModeSelectMode=!![],isTwoPlayerMode=!![],isPlayerTwoAI=![],selectedButtonIndex=0x0;else{if(isFiringModeSelectMode)selectedButtonIndex===0x0?selectedFiringMode='rapid':selectedFiringMode=_0x2c1afa(0x285),baseStartGame(!![]);else{if(selectedButtonIndex===0x0)isPlayerSelectMode=!![],selectedButtonIndex=0x0;else selectedButtonIndex===0x1&&exitGame();}}}}}_0x1116f6=!![],startAutoDemoTimer();}if(!_0x1116f6&&_0xd76c25&&!_0x14b462){stopAutoDemoTimer();if(isFiringModeSelectMode){isFiringModeSelectMode=![];if(selectedOnePlayerGameVariant===_0x2c1afa(0x2c0))isOnePlayerGameTypeSelectMode=!![],selectedButtonIndex=0x0;else{if(selectedOnePlayerGameVariant===_0x2c1afa(0x26f)||selectedOnePlayerGameVariant===_0x2c1afa(0x207))isOnePlayerVsAIGameTypeSelectMode=!![],selectedButtonIndex=selectedOnePlayerGameVariant===_0x2c1afa(0x207)?0x1:0x0;else isTwoPlayerMode&&!isPlayerTwoAI?(isGameModeSelectMode=!![],selectedButtonIndex=selectedGameMode===_0x2c1afa(0x297)?0x1:0x0):(isPlayerSelectMode=![],isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=![],isGameModeSelectMode=![],selectedButtonIndex=0x0);}selectedOnePlayerGameVariant='',isPlayerTwoAI=![];}else{if(isOnePlayerVsAIGameTypeSelectMode)isOnePlayerVsAIGameTypeSelectMode=![],isOnePlayerGameTypeSelectMode=!![],selectedButtonIndex=0x1;else{if(isOnePlayerGameTypeSelectMode)isOnePlayerGameTypeSelectMode=![],isPlayerSelectMode=!![],selectedButtonIndex=0x0;else{if(isGameModeSelectMode)isGameModeSelectMode=![],isPlayerSelectMode=!![],selectedButtonIndex=0x1;else isPlayerSelectMode?(isPlayerSelectMode=![],selectedButtonIndex=0x0):triggerFullscreen();}}}_0x1116f6=!![],startAutoDemoTimer();}}}}connectedGamepadIndex!==null&&(previousButtonStates=_0x1d5257[_0x2c1afa(0x27f)](),previousGameButtonStates=_0x42fd87[_0x2c1afa(0x27f)]());if(connectedGamepadIndexP2!==null){const _0x4bd5fe=navigator[_0x2c1afa(0x1eb)]();_0x4bd5fe?.[connectedGamepadIndexP2]&&(previousGameButtonStatesP2=_0x4bd5fe[connectedGamepadIndexP2][_0x2c1afa(0x247)]['map'](_0x3c86cb=>_0x3c86cb[_0x2c1afa(0x277)]));}}catch(_0x65c0ce){console[_0x2c1afa(0x230)](_0x2c1afa(0x2bb),_0x65c0ce),previousButtonStates=[],previousGameButtonStates=[],previousGameButtonStatesP2=[],selectedButtonIndex=-0x1,joystickMovedVerticallyLastFrame=![];}}function initiateScoreScreenThenDemo(){!isInGameState&&!isShowingScoreScreen&&!isTransitioningToDemoViaScoreScreen?(isTransitioningToDemoViaScoreScreen=!![],showScoreScreen(),autoStartTimerId&&(clearTimeout(autoStartTimerId),autoStartTimerId=null),autoStartTimerId=setTimeout(()=>{if(isShowingScoreScreen){isPlayerSelectMode=![],isFiringModeSelectMode=![],isGameModeSelectMode=![],isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=![],selectedOnePlayerGameVariant='',isPlayerTwoAI=![],demoModeCounter++;if(demoModeCounter%0x2===0x1){if(typeof startCoopAIDemo==='function')startCoopAIDemo();else startAIDemo();}else startAIDemo();}isTransitioningToDemoViaScoreScreen=![];},SCORE_SCREEN_DURATION)):(autoStartTimerId&&(clearTimeout(autoStartTimerId),autoStartTimerId=null),isTransitioningToDemoViaScoreScreen=![]);}function startAutoDemoTimer(){const _0xd8085=_0x391e46;try{stopAutoDemoTimer(),isTransitioningToDemoViaScoreScreen=![],autoStartTimerId=setTimeout(()=>{initiateScoreScreenThenDemo();},MENU_INACTIVITY_TIMEOUT);}catch(_0x339950){console[_0xd8085(0x230)]('Error\x20starting\x20auto\x20demo\x20timer:',_0x339950),isTransitioningToDemoViaScoreScreen=![];}}function stopAutoDemoTimer(){const _0x26d8d3=_0x391e46;try{autoStartTimerId&&(clearTimeout(autoStartTimerId),autoStartTimerId=null),isTransitioningToDemoViaScoreScreen=![];}catch(_0x1e606f){console[_0x26d8d3(0x230)](_0x26d8d3(0x278),_0x1e606f);}}function showMenuState(){const _0x2fcd9c=_0x391e46;try{wasLastGameAIDemo&&(highScore=0x4e20);wasLastGameAIDemo=![],isCoopAIDemoActive=![],aiPlayerActivelySeekingCaptureById=null,initialGameStartSoundPlayedThisSession=![],coopStartSoundPlayedThisSession=![],gameJustStartedAndWaveLaunched=![],isInGameState=![],isShowingScoreScreen=![],scoreScreenStartTime=0x0,isManualControl=![],isShowingDemoText=![],isPaused=![],isPlayerSelectMode=![],isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=![],isGameModeSelectMode=![],isFiringModeSelectMode=![],selectedOnePlayerGameVariant='',isPlayerTwoAI=![],selectedFiringMode=_0x2fcd9c(0x2cc),selectedGameMode=_0x2fcd9c(0x27c),isTwoPlayerMode=![],currentPlayer=0x1,showCsHitsMessage=![],csHitsMessageStartTime=0x0,showPerfectMessage=![],perfectMessageStartTime=0x0,showCsBonusScoreMessage=![],csBonusScoreMessageStartTime=0x0,showCSClearMessage=![],csClearMessageStartTime=0x0,showCsHitsForClearMessage=![],showCsScoreForClearMessage=![],showExtraLifeMessage=![],extraLifeMessageStartTime=0x0,showReadyMessage=![],readyMessageStartTime=0x0,readyForNextWave=![],readyForNextWaveReset=![],isCsCompletionDelayActive=![],csCompletionDelayStartTime=0x0,csCompletionResultIsPerfect=![],csIntroSoundPlayed=![],isShowingPlayerGameOverMessage=![],playerGameOverMessageStartTime=0x0,playerWhoIsGameOver=0x0,nextActionAfterPlayerGameOver='',player1TriggeredHighScoreSound=![],player2TriggeredHighScoreSound=![],isShowingCoopPlayersReady=![],coopPlayersReadyStartTime=0x0,isTransitioningToDemoViaScoreScreen=![],stopAllGameSoundsInternal(),isGridSoundPlaying=![],playerLives=0x3,score=0x0,level=0x1,player1Lives=0x3,player2Lives=0x3,player1Score=0x0,player2Score=0x0,player1ShotsFired=0x0,player2ShotsFired=0x0,player1EnemiesHit=0x0,player2EnemiesHit=0x0,player1MaxLevelReached=0x1,player2MaxLevelReached=0x1,scoreEarnedThisCS=0x0,enemies=[],bullets=[],enemyBullets=[],explosions=[],isShowingIntro=![],introStep=0x0,isChallengingStage=![],challengingStageEnemiesHit=0x0,currentGridOffsetX=0x0,gridMoveDirection=0x1,currentWaveDefinition=null,isEntrancePhaseActive=![],totalEnemiesScheduledForWave=0x0,enemiesSpawnedThisWave=0x0;typeof enemySpawnTimeouts!=='undefined'&&Array[_0x2fcd9c(0x2cb)](enemySpawnTimeouts)&&enemySpawnTimeouts[_0x2fcd9c(0x22e)](clearTimeout);enemySpawnTimeouts=[],lastEnemyDetachTime=0x0,selectedButtonIndex=0x0,joystickMovedVerticallyLastFrame=![],previousButtonStates=[],previousGameButtonStates=[],previousDemoButtonStates=[],previousGameButtonStatesP2=[],isShowingResultsScreen=![],gameOverSequenceStartTime=0x0,gameStartTime=0x0,forceCenterShipNextReset=![],player1CompletedLevel=-0x1,p1JustFiredSingle=![],p2JustFiredSingle=![],p1FireInputWasDown=![],p2FireInputWasDown=![];if(ship&&typeof ship==='object'&&ship[_0x2fcd9c(0x222)]('x')&&gameCanvas&&gameCanvas[_0x2fcd9c(0x1fc)]>0x0&&gameCanvas[_0x2fcd9c(0x279)]>0x0)ship['x']=Math[_0x2fcd9c(0x1fb)](gameCanvas['width']/0x2-SHIP_WIDTH/0x2),ship[_0x2fcd9c(0x29b)]=ship['x'],ship['y']=gameCanvas[_0x2fcd9c(0x279)]-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN;else{if(ship!==null){}}clearTimeout(mouseIdleTimerId),mouseIdleTimerId=setTimeout(hideCursor,0x7d0),playSound(_0x2fcd9c(0x258),!![],0.2),startAutoDemoTimer();}catch(_0x35b126){console[_0x2fcd9c(0x230)](_0x2fcd9c(0x2a5),_0x35b126),gameJustStartedAndWaveLaunched=![],wasLastGameAIDemo=![],initialGameStartSoundPlayedThisSession=![],isInGameState=![],isShowingScoreScreen=![],isPaused=![],isPlayerSelectMode=![],isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=![],isGameModeSelectMode=![],isFiringModeSelectMode=![],selectedGameMode='normal',selectedOnePlayerGameVariant='',isPlayerTwoAI=![],isTwoPlayerMode=![],currentPlayer=0x1,isShowingPlayerGameOverMessage=![],isCoopAIDemoActive=![],aiPlayerActivelySeekingCaptureById=null,coopStartSoundPlayedThisSession=![],player1TriggeredHighScoreSound=![],player2TriggeredHighScoreSound=![],isShowingCoopPlayersReady=![],coopPlayersReadyStartTime=0x0,isTransitioningToDemoViaScoreScreen=![],clearTimeout(mouseIdleTimerId),mouseIdleTimerId=null;if(mainLoopId)cancelAnimationFrame(mainLoopId);mainLoopId=null,alert(_0x2fcd9c(0x2b0)),document['body']['innerHTML']=_0x2fcd9c(0x1fd);}}function startAIDemo(){const _0x4697c4=_0x391e46;if(isInGameState)return;stopSound(_0x4697c4(0x258)),isShowingScoreScreen=![],isPlayerSelectMode=![],isFiringModeSelectMode=![],isGameModeSelectMode=![],isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=![],selectedOnePlayerGameVariant='',isPlayerTwoAI=![],selectedFiringMode=_0x4697c4(0x2cc),isTwoPlayerMode=![],selectedGameMode=_0x4697c4(0x27c),isManualControl=![],isShowingDemoText=!![],isCoopAIDemoActive=![],aiPlayerActivelySeekingCaptureById=null,wasLastGameAIDemo=!![],coopStartSoundPlayedThisSession=![],baseStartGame(![]),gameJustStarted=!![];}function startCoopAIDemo(){const _0x25b2d2=_0x391e46;if(isInGameState)return;stopSound('menuMusicSound'),isShowingScoreScreen=![],isPlayerSelectMode=![],isFiringModeSelectMode=![],isGameModeSelectMode=![],isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=![],selectedOnePlayerGameVariant='',isPlayerTwoAI=![],selectedFiringMode=_0x25b2d2(0x2cc),isTwoPlayerMode=!![],selectedGameMode='coop',isManualControl=![],isShowingDemoText=!![],isCoopAIDemoActive=!![],aiPlayerActivelySeekingCaptureById=null,wasLastGameAIDemo=!![],baseStartGame(![]),gameJustStarted=!![];}function startGame1P(){const _0x3d01bc=_0x391e46;if(isInGameState)return;isPlayerSelectMode=![],isOnePlayerGameTypeSelectMode=!![],isGameModeSelectMode=![],isFiringModeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=![],selectedOnePlayerGameVariant='',isPlayerTwoAI=![],isTwoPlayerMode=![],selectedGameMode=_0x3d01bc(0x27c),isCoopAIDemoActive=![],aiPlayerActivelySeekingCaptureById=null,selectedButtonIndex=0x0,coopStartSoundPlayedThisSession=![],startAutoDemoTimer();}function startGame2P(){const _0x577881=_0x391e46;if(isInGameState)return;isPlayerSelectMode=![],isGameModeSelectMode=!![],isFiringModeSelectMode=![],isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=![],selectedOnePlayerGameVariant='',isPlayerTwoAI=![],isTwoPlayerMode=!![],selectedGameMode=_0x577881(0x27c),isCoopAIDemoActive=![],aiPlayerActivelySeekingCaptureById=null,selectedButtonIndex=0x0,coopStartSoundPlayedThisSession=![],startAutoDemoTimer();}function baseStartGame(_0x44355a){const _0x37a9ac=_0x391e46;try{if(!gameCanvas||!gameCtx){console['error']('Cannot\x20start\x20game\x20-\x20canvas\x20not\x20ready.'),showMenuState();return;}_0x44355a&&stopSound(_0x37a9ac(0x258));stopAutoDemoTimer(),isInGameState=!![],isShowingScoreScreen=![],isPlayerSelectMode=![],isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=![],isGameModeSelectMode=![],isFiringModeSelectMode=![],gameJustStartedAndWaveLaunched=![],isTransitioningToDemoViaScoreScreen=![],isManualControl=_0x44355a,isShowingDemoText=!_0x44355a,isPaused=![],previousButtonStates=[],previousGameButtonStates=[],previousDemoButtonStates=[],previousGameButtonStatesP2=[],p1JustFiredSingle=![],p2JustFiredSingle=![],p1FireInputWasDown=![],p2FireInputWasDown=![];_0x44355a?(wasLastGameAIDemo=![],selectedOnePlayerGameVariant===_0x37a9ac(0x207)?isCoopAIDemoActive=![]:isCoopAIDemoActive=![],aiPlayerActivelySeekingCaptureById=null):(isPlayerTwoAI=![],selectedOnePlayerGameVariant='');clearTimeout(mouseIdleTimerId),mouseIdleTimerId=setTimeout(hideCursor,0x7d0);if(typeof window[_0x37a9ac(0x248)]==='function')window[_0x37a9ac(0x248)]();else{console[_0x37a9ac(0x230)](_0x37a9ac(0x218)),alert(_0x37a9ac(0x2ab)),showMenuState();return;}isShowingCoopPlayersReady=![];const _0x1df39a=level===0x1&&!initialGameStartSoundPlayedThisSession;let _0x17e2af=![];if(isManualControl){if(selectedOnePlayerGameVariant===_0x37a9ac(0x2c0)){if(_0x1df39a)_0x17e2af=!![];}else{if(selectedOnePlayerGameVariant==='1P_VS_AI_NORMAL'||selectedOnePlayerGameVariant===_0x37a9ac(0x207)){if(_0x1df39a)_0x17e2af=!![];selectedOnePlayerGameVariant===_0x37a9ac(0x207)&&(isShowingCoopPlayersReady=!![],coopPlayersReadyStartTime=Date[_0x37a9ac(0x2d0)]());}else{if(isTwoPlayerMode&&!isPlayerTwoAI&&selectedGameMode===_0x37a9ac(0x27c)){if(_0x1df39a)_0x17e2af=!![];}else{if(isTwoPlayerMode&&!isPlayerTwoAI&&selectedGameMode===_0x37a9ac(0x297)){if(_0x1df39a&&!coopStartSoundPlayedThisSession)_0x17e2af=!![];isShowingCoopPlayersReady=!![],coopPlayersReadyStartTime=Date['now']();}}}}}else{if(_0x1df39a)_0x17e2af=!![];isCoopAIDemoActive&&(isShowingCoopPlayersReady=!![],coopPlayersReadyStartTime=Date[_0x37a9ac(0x2d0)]());}_0x17e2af&&(playSound('startSound',![],0.4),initialGameStartSoundPlayedThisSession=!![],(selectedGameMode==='coop'||isCoopAIDemoActive||selectedOnePlayerGameVariant===_0x37a9ac(0x207))&&(coopStartSoundPlayedThisSession=!![]));gameStartTime=Date[_0x37a9ac(0x2d0)](),leftPressed=![],rightPressed=![],shootPressed=![],p2LeftPressed=![],p2RightPressed=![],p2ShootPressed=![],keyboardP1LeftDown=![],keyboardP1RightDown=![],keyboardP1ShootDown=![],keyboardP2LeftDown=![],keyboardP2RightDown=![],keyboardP2ShootDown=![],selectedButtonIndex=-0x1;if(mainLoopId===null){if(typeof window['startMainLoop']===_0x37a9ac(0x294))window[_0x37a9ac(0x224)]();else startMainLoop();}}catch(_0x557e89){console[_0x37a9ac(0x230)]('Error\x20in\x20baseStartGame:',_0x557e89),gameJustStartedAndWaveLaunched=![],wasLastGameAIDemo=![],initialGameStartSoundPlayedThisSession=![],isCoopAIDemoActive=![],aiPlayerActivelySeekingCaptureById=null,isPlayerTwoAI=![],coopStartSoundPlayedThisSession=![],isShowingCoopPlayersReady=![],coopPlayersReadyStartTime=0x0,isTransitioningToDemoViaScoreScreen=![],clearTimeout(mouseIdleTimerId),mouseIdleTimerId=null,alert('Critical\x20error\x20starting\x20game!'),showMenuState();}}function stopGameAndShowMenu(){const _0x85d2a7=_0x391e46;isPaused=![];if(isManualControl){if(typeof window['saveHighScore']===_0x85d2a7(0x294))window['saveHighScore']();else saveHighScore();}showMenuState();}function _0x28af(){const _0x1568a9=['<p\x20style=\x22color:white;\x22>CRITICAL\x20LOOP\x20ERROR.\x20Please\x20refresh.</p>','getGamepads','textAlign','naturalHeight','font','PLAYER\x202','original\x20Galaga\x20concept,','keydown','capturedShipDimensions','lime','explosionSound','color','size','lighter','map','2UP','Written\x20By\x20Platini2000(c)','round','width','<p\x20style=\x22color:white;\x22>Error\x20returning\x20to\x20menu.\x20Please\x20refresh.</p>','00:00','suspended','addColorStop','push','1GxRrjP','PLAYER\x20','<div\x20style=\x22color:white;\x20padding:\x2020px;\x20font-family:\x20sans-serif;\x22><h1>Fatal\x20Initialization\x20Error</h1><p>The\x20game\x20could\x20not\x20be\x20started.\x20Please\x20check\x20the\x20browser\x20console\x20(F12)\x20for\x20details.</p><p>Error:\x20','SPECIAL\x20BONUS\x2010000\x20PTS','runSingleGameUpdate','1P_VS_AI_COOP','SHOTS\x20FIRED','white','click','bold\x2018px\x20\x27Press\x20Start\x202P\x27','FATAL\x20RENDER\x20ERROR.','text','resume','bold\x2024px\x20\x27Press\x20Start\x202P\x27','grey','type','PUSH\x20START\x20BUTTON','LOGO','measureText','sin','Cannot\x20add\x20canvas\x20listeners:\x20gameCanvas\x20not\x20found\x20during\x20init.','fan\x20remake\x20of\x20Galaga,','FATAL:\x20window.resetGame\x20function\x20is\x20not\x20defined\x20or\x20not\x20a\x20function!\x20Cannot\x20start\x20game\x20properly.','gamepaddisconnected','length','clientX','mouse','fillStyle','val','rgba(0,\x200,\x200,\x200.8)','end','atan2','hasOwnProperty','source-over','startMainLoop','CHALLENGING\x20STAGE','triggerFinalGameOverSequence','!!!\x20CRITICAL\x20ERROR\x20IN\x20mainLoop:','6354985ieTOct','resizeCanvases\x20not\x20found!','Created\x20out\x20of\x20love','saveHighScore','NORMAL\x20GAME','number','forEach','Written\x20by\x20Platini2000(c)','error','addEventListener','following_bezier_path','has','STAGE','mousemove','rotate','drawImage','EASY','toString','rgba(0,\x200,\x20139,\x200.5)','\x20PTS','add','none','startsWith','skipAfter','rgba(255,\x20200,\x2080,\x20','lineTo','arc','TO\x20PLAY\x20GAME','purple','11584984yksqbn','innerHTML','buttons','resetGame','pointer','22px\x20\x27Arial\x20Black\x27,\x20Gadget,\x20sans-serif','gamepadconnected','PLAYER\x201','particles','fillText','defineNormalWaveEntrancePaths','globalCompositeOperation','alpha','img','HIGH\x20SCORE','STAGE\x20','20px\x20\x27Press\x20Start\x202P\x27','px\x20Arial,\x20sans-serif','velocityX','menuMusicSound','red','PLAYERS\x20READY!','warn','closePath','restore','PLAYER\x20&\x20AI\x20READY!','axes','textBaseline','NUMBER\x20OF\x20HITS','loadHighScore','radius','default','stack','GAME\x20EXIT','beginPath','NORMAL','capturedShipX','ROTATE\x20TO\x20LANDSCAPE','padStart','save','8998884OxtqIG','tintProgress','1P_VS_AI_NORMAL','toUpperCase','start','PAUSED','Error\x20rendering\x20explosions:','find','READY?','floor','pressed','Error\x20stopping\x20auto\x20demo\x20timer:','height','captureAnimationRotation','AI\x20P2','normal','shadowColor','clearRect','slice','AudioContext\x20resumed\x20by\x20canvas\x20click.','green','20px\x20sans-serif','189110FsDPwY','FATAL:\x20window.runSingleGameUpdate\x20is\x20not\x20defined!','single','shadowOffsetX','orange','showing_capture_message','cursor','state','rgba(0,\x20191,\x20255,\x200.9)','30px\x20Arial','shadowBlur','1756620KQZUTA','then','touches','1635176nHpnEX','body','source-atop','function','for\x20the\x20original.','center','coop','changedTouches','Error\x20in\x20renderGame:','DEMO','targetX','touch','capturedShipY','Error\x20creating\x20explosion:','FIGHTER\x20CAPTURED','CO-OP\x20GAME','following_entrance_path','max','clientY','log','Error\x20in\x20showMenuState:','fill','middle','initializeDOMElements\x20function\x20not\x20found!','HI\x20SCORE','\x20EXT\x20LIFE\x20FOR\x20EVERY\x20','Critical\x20error:\x20Game\x20logic\x20(window.resetGame)\x20not\x20loaded\x20correctly!','style','yellow','DEMO-1','\x201ST\x20LIFE\x20BONUS\x20FOR\x20','Error\x20returning\x20to\x20menu.\x20Please\x20refresh\x20the\x20page.','getBoundingClientRect','velocityY','DOM\x20element\x20initialization\x20failed.','translate','random','complete','move','naturalWidth','globalAlpha','18px\x20\x27Arial\x20Black\x27,\x20Gadget,\x20sans-serif','Error\x20in\x20pollControllerForMenu:','min','left','DEMO\x20PLAYERS\x20READY!','entranceSound','CLASSIC_1P','loadHighScore\x20function\x20not\x20found.','right','actualBoundingBoxAscent','toFixed','Design,\x20and\x20sounds','fillRect','top','GAME\x20OVER','AudioContext\x20resumed\x20by\x20controller\x20interaction.','defineChallengingStagePaths','isArray','rapid','START\x20GAME','skip','moveTo','now','keyup','NUMBER\x20OF\x20HITS\x20','⚠️\x20Disclaimer','Failed\x20to\x20return\x20to\x20menu\x20after\x20loop\x20error:','blue','DEMO-2','actualBoundingBoxDescent','undefined','\x202ND\x20LIFE\x20BONUS\x20FOR\x20','load','createLinearGradient','8357850JyJCzb','AI\x20PLAYER\x202','BONUS\x20','1UP','shadowOffsetY'];_0x28af=function(){return _0x1568a9;};return _0x28af();}function exitGame(){const _0x9b87ae=_0x391e46;isPaused=![],stopAutoDemoTimer();if(typeof window[_0x9b87ae(0x22b)]===_0x9b87ae(0x294))window[_0x9b87ae(0x22b)]();else saveHighScore();isInGameState=![],isPlayerSelectMode=![],isFiringModeSelectMode=![],isGameModeSelectMode=![],isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=![],selectedOnePlayerGameVariant='',isPlayerTwoAI=![],showMenuState();try{window['close'](),setTimeout(()=>{if(!isInGameState)showMenuState();},0xc8);}catch(_0x4c8b73){console[_0x9b87ae(0x230)]('window.close()\x20failed:',_0x4c8b73),showMenuState();}}function triggerGameOver(){const _0x2a0f91=_0x391e46;if(typeof window[_0x2a0f91(0x226)]===_0x2a0f91(0x294))window[_0x2a0f91(0x226)]();else triggerFinalGameOverSequence();}function showScoreScreen(){if(isInGameState||isShowingScoreScreen)return;isShowingScoreScreen=!![],isPlayerSelectMode=![],isFiringModeSelectMode=![],isGameModeSelectMode=![],isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=![],selectedOnePlayerGameVariant='',isPlayerTwoAI=![],scoreScreenStartTime=Date['now'](),selectedButtonIndex=-0x1,clearTimeout(mouseIdleTimerId),mouseIdleTimerId=setTimeout(hideCursor,0x7d0);}function goBackInMenu(){const _0x86b52b=_0x391e46;if(isFiringModeSelectMode){isFiringModeSelectMode=![];if(selectedOnePlayerGameVariant==='CLASSIC_1P')isOnePlayerGameTypeSelectMode=!![],selectedButtonIndex=0x0;else{if(selectedOnePlayerGameVariant===_0x86b52b(0x26f)||selectedOnePlayerGameVariant===_0x86b52b(0x207))isOnePlayerVsAIGameTypeSelectMode=!![],selectedButtonIndex=selectedOnePlayerGameVariant===_0x86b52b(0x207)?0x1:0x0;else isTwoPlayerMode&&!isPlayerTwoAI?(isGameModeSelectMode=!![],selectedButtonIndex=selectedGameMode===_0x86b52b(0x297)?0x1:0x0):(isPlayerSelectMode=!![],selectedButtonIndex=0x0);}selectedOnePlayerGameVariant='',isPlayerTwoAI=![],selectedGameMode=_0x86b52b(0x27c);}else{if(isOnePlayerVsAIGameTypeSelectMode)isOnePlayerVsAIGameTypeSelectMode=![],isOnePlayerGameTypeSelectMode=!![],selectedButtonIndex=0x1;else{if(isOnePlayerGameTypeSelectMode)isOnePlayerGameTypeSelectMode=![],isPlayerSelectMode=!![],selectedButtonIndex=0x0;else{if(isGameModeSelectMode)isGameModeSelectMode=![],isPlayerSelectMode=!![],selectedButtonIndex=0x1;else isPlayerSelectMode?(isPlayerSelectMode=![],selectedButtonIndex=0x0):triggerFullscreen();}}}startAutoDemoTimer();}function handleCanvasTouch(_0x2dbd55,_0x127833,_0x1ccec1=![]){const _0x1b5bc5=_0x391e46;if(!gameCanvas)return;let _0xcd0330,_0x467902;if(_0x2dbd55['type'][_0x1b5bc5(0x23e)](_0x1b5bc5(0x29c))){if(_0x2dbd55['touches']&&_0x2dbd55[_0x1b5bc5(0x290)]['length']>0x0)_0xcd0330=_0x2dbd55[_0x1b5bc5(0x290)][0x0][_0x1b5bc5(0x21b)],_0x467902=_0x2dbd55[_0x1b5bc5(0x290)][0x0][_0x1b5bc5(0x2a3)];else{if(_0x2dbd55[_0x1b5bc5(0x298)]&&_0x2dbd55['changedTouches'][_0x1b5bc5(0x21a)]>0x0)_0xcd0330=_0x2dbd55['changedTouches'][0x0][_0x1b5bc5(0x21b)],_0x467902=_0x2dbd55[_0x1b5bc5(0x298)][0x0][_0x1b5bc5(0x2a3)];else return;}}else{if(_0x2dbd55[_0x1b5bc5(0x211)][_0x1b5bc5(0x23e)](_0x1b5bc5(0x21c)))_0xcd0330=_0x2dbd55[_0x1b5bc5(0x21b)],_0x467902=_0x2dbd55[_0x1b5bc5(0x2a3)];else return;}const _0x33aec3=gameCanvas['getBoundingClientRect'](),_0x30ebc5=gameCanvas['width']/_0x33aec3[_0x1b5bc5(0x1fc)],_0x137b8c=gameCanvas[_0x1b5bc5(0x279)]/_0x33aec3[_0x1b5bc5(0x279)],_0x4efbb1=(_0xcd0330-_0x33aec3[_0x1b5bc5(0x2bd)])*_0x30ebc5,_0x419d97=(_0x467902-_0x33aec3[_0x1b5bc5(0x2c7)])*_0x137b8c,_0x1d9388=Date['now']();if(isShowingPlayerGameOverMessage||gameOverSequenceStartTime>0x0){touchedMenuButtonIndex=-0x1;return;}if(isInGameState){}else{if(isShowingScoreScreen&&!isTransitioningToDemoViaScoreScreen){if(_0x127833===_0x1b5bc5(0x220)&&_0x1ccec1){if(typeof showMenuState===_0x1b5bc5(0x294))showMenuState();}}else{if(!isShowingScoreScreen){stopAutoDemoTimer();const _0xc8e8f8=getMenuButtonRect(0x0),_0x35aff7=getMenuButtonRect(0x1);let _0x497714=-0x1;if(_0xc8e8f8&&checkCollision({'x':_0x4efbb1,'y':_0x419d97,'width':0x1,'height':0x1},_0xc8e8f8))_0x497714=0x0;else _0x35aff7&&checkCollision({'x':_0x4efbb1,'y':_0x419d97,'width':0x1,'height':0x1},_0x35aff7)&&(_0x497714=0x1);if(_0x127833===_0x1b5bc5(0x271))isTouchActiveMenu=!![],touchedMenuButtonIndex=_0x497714,selectedButtonIndex=_0x497714;else{if(_0x127833==='move'){if(_0x2dbd55[_0x1b5bc5(0x211)]==='mousemove')selectedButtonIndex=_0x497714;else{if(touchedMenuButtonIndex!==-0x1&&_0x497714!==touchedMenuButtonIndex)selectedButtonIndex=-0x1;else touchedMenuButtonIndex!==-0x1&&(selectedButtonIndex=_0x497714);}}else{if(_0x127833==='end'&&_0x2dbd55['type'][_0x1b5bc5(0x23e)](_0x1b5bc5(0x29c))){isTouchActiveMenu=![];if(_0x1ccec1&&_0x497714!==-0x1&&_0x497714===touchedMenuButtonIndex){selectedButtonIndex=_0x497714;if(isPlayerSelectMode)selectedButtonIndex===0x0?startGame1P():startGame2P();else{if(isOnePlayerGameTypeSelectMode)selectedButtonIndex===0x0?(isOnePlayerGameTypeSelectMode=![],isFiringModeSelectMode=!![],selectedOnePlayerGameVariant='CLASSIC_1P',selectedGameMode=_0x1b5bc5(0x27c),isTwoPlayerMode=![],isPlayerTwoAI=![],selectedButtonIndex=0x0):(isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=!![],selectedButtonIndex=0x0);else{if(isOnePlayerVsAIGameTypeSelectMode)selectedButtonIndex===0x0?(selectedOnePlayerGameVariant=_0x1b5bc5(0x26f),selectedGameMode=_0x1b5bc5(0x27c)):(selectedOnePlayerGameVariant=_0x1b5bc5(0x207),selectedGameMode=_0x1b5bc5(0x297)),isOnePlayerVsAIGameTypeSelectMode=![],isFiringModeSelectMode=!![],isTwoPlayerMode=!![],isPlayerTwoAI=!![],selectedButtonIndex=0x0;else{if(isGameModeSelectMode)selectedButtonIndex===0x0?selectedGameMode=_0x1b5bc5(0x27c):selectedGameMode=_0x1b5bc5(0x297),isGameModeSelectMode=![],isFiringModeSelectMode=!![],isTwoPlayerMode=!![],isPlayerTwoAI=![],selectedButtonIndex=0x0;else{if(isFiringModeSelectMode)selectedButtonIndex===0x0?selectedFiringMode=_0x1b5bc5(0x2cc):selectedFiringMode=_0x1b5bc5(0x285),baseStartGame(!![]);else{if(selectedButtonIndex===0x0)isPlayerSelectMode=!![],selectedButtonIndex=0x0;else{if(selectedButtonIndex===0x1){if(typeof exitGame==='function')exitGame();}}}}}}}}else _0x1ccec1&&_0x497714===-0x1&&touchedMenuButtonIndex===-0x1&&goBackInMenu();touchedMenuButtonIndex=-0x1;}}}if(_0x127833!=='end'&&_0x497714!==-0x1)stopAutoDemoTimer();else(_0x127833===_0x1b5bc5(0x220)||_0x127833===_0x1b5bc5(0x2b7)&&_0x497714===-0x1)&&startAutoDemoTimer();}}}}function handleCanvasClick(_0x5c27b1){const _0x118129=_0x391e46;if(!gameCanvas)return;audioContext&&audioContext['state']===_0x118129(0x1ff)&&audioContext[_0x118129(0x20e)]()[_0x118129(0x28f)](()=>{const _0x1b1aae=_0x118129;audioContextInitialized=!![],console[_0x1b1aae(0x2a4)](_0x1b1aae(0x280));});if(isInGameState){if(isPaused){if(typeof togglePause===_0x118129(0x294))togglePause();return;}}else{if(isShowingScoreScreen&&!isTransitioningToDemoViaScoreScreen){if(typeof showMenuState==='function')showMenuState();}else{if(!isShowingScoreScreen){stopAutoDemoTimer();const _0x523ec0=gameCanvas[_0x118129(0x2b1)](),_0x1f6706=gameCanvas['width']/_0x523ec0['width'],_0x384ad6=gameCanvas[_0x118129(0x279)]/_0x523ec0[_0x118129(0x279)],_0x549e08=(_0x5c27b1[_0x118129(0x21b)]-_0x523ec0[_0x118129(0x2bd)])*_0x1f6706,_0x1c6842=(_0x5c27b1[_0x118129(0x2a3)]-_0x523ec0[_0x118129(0x2c7)])*_0x384ad6;let _0x3be52e=-0x1;const _0x316d7a=getMenuButtonRect(0x0),_0x2b434e=getMenuButtonRect(0x1);if(_0x316d7a&&checkCollision({'x':_0x549e08,'y':_0x1c6842,'width':0x1,'height':0x1},_0x316d7a))_0x3be52e=0x0;else _0x2b434e&&checkCollision({'x':_0x549e08,'y':_0x1c6842,'width':0x1,'height':0x1},_0x2b434e)&&(_0x3be52e=0x1);if(_0x3be52e!==-0x1){selectedButtonIndex=_0x3be52e;if(isPlayerSelectMode)selectedButtonIndex===0x0?startGame1P():startGame2P();else{if(isOnePlayerGameTypeSelectMode)selectedButtonIndex===0x0?(isOnePlayerGameTypeSelectMode=![],isFiringModeSelectMode=!![],selectedOnePlayerGameVariant=_0x118129(0x2c0),selectedGameMode=_0x118129(0x27c),isTwoPlayerMode=![],isPlayerTwoAI=![],selectedButtonIndex=0x0):(isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=!![],selectedButtonIndex=0x0);else{if(isOnePlayerVsAIGameTypeSelectMode)selectedButtonIndex===0x0?(selectedOnePlayerGameVariant=_0x118129(0x26f),selectedGameMode=_0x118129(0x27c)):(selectedOnePlayerGameVariant=_0x118129(0x207),selectedGameMode='coop'),isOnePlayerVsAIGameTypeSelectMode=![],isFiringModeSelectMode=!![],isTwoPlayerMode=!![],isPlayerTwoAI=!![],selectedButtonIndex=0x0;else{if(isGameModeSelectMode)selectedButtonIndex===0x0?selectedGameMode=_0x118129(0x27c):selectedGameMode=_0x118129(0x297),isGameModeSelectMode=![],isFiringModeSelectMode=!![],isTwoPlayerMode=!![],isPlayerTwoAI=![],selectedButtonIndex=0x0;else{if(isFiringModeSelectMode)selectedButtonIndex===0x0?selectedFiringMode=_0x118129(0x2cc):selectedFiringMode=_0x118129(0x285),baseStartGame(!![]);else{if(selectedButtonIndex===0x0)isPlayerSelectMode=!![],selectedButtonIndex=0x0;else{if(selectedButtonIndex===0x1){if(typeof exitGame===_0x118129(0x294))exitGame();}}}}}}}}else goBackInMenu();startAutoDemoTimer();}}}}function createExplosion(_0x232b3a,_0x59667c){const _0x31cdaa=_0x391e46;try{playSound(_0x31cdaa(0x1f4),![],0.4);let _0x126c4c=[];for(let _0x2489a0=0x0;_0x2489a0<EXPLOSION_PARTICLE_COUNT;_0x2489a0++){const _0xf8539d=Math[_0x31cdaa(0x2b5)]()*Math['PI']*0x2,_0x142832=Math[_0x31cdaa(0x2b5)]()*(EXPLOSION_MAX_SPEED-EXPLOSION_MIN_SPEED)+EXPLOSION_MIN_SPEED;_0x126c4c[_0x31cdaa(0x201)]({'x':_0x232b3a,'y':_0x59667c,'vx':Math['cos'](_0xf8539d)*_0x142832,'vy':Math[_0x31cdaa(0x215)](_0xf8539d)*_0x142832,'radius':EXPLOSION_PARTICLE_RADIUS,'alpha':0x1});}explosions[_0x31cdaa(0x201)]({'creationTime':Date[_0x31cdaa(0x2d0)](),'duration':EXPLOSION_DURATION,'particles':_0x126c4c});}catch(_0x614164){console['error'](_0x31cdaa(0x29e),_0x614164);}}function drawCanvasText(_0x5c1b2a,_0x1abfbe,_0xdcbd76,_0x5d68e7,_0x172263,_0x29cedd=_0x391e46(0x296),_0x2678d4=_0x391e46(0x2a7),_0x3549aa=![]){const _0x360dec=_0x391e46;if(!gameCtx)return;gameCtx[_0x360dec(0x26c)](),gameCtx[_0x360dec(0x1ee)]=_0x5d68e7,gameCtx[_0x360dec(0x21d)]=_0x172263,gameCtx[_0x360dec(0x1ec)]=_0x29cedd,gameCtx[_0x360dec(0x260)]=_0x2678d4,_0x3549aa&&(gameCtx[_0x360dec(0x27d)]=_0x360dec(0x21f),gameCtx[_0x360dec(0x28d)]=0x8,gameCtx[_0x360dec(0x286)]=0x3,gameCtx[_0x360dec(0x1e9)]=0x3),gameCtx[_0x360dec(0x24e)](_0x5c1b2a,_0x1abfbe,_0xdcbd76),gameCtx[_0x360dec(0x25d)]();}function drawCanvasButton(_0x590004,_0x3a3f7b,_0x25bdc1){const _0x36bce1=_0x391e46;if(!gameCtx)return;const _0x2fe5dc=getMenuButtonRect(_0x3a3f7b);if(!_0x2fe5dc)return;gameCtx[_0x36bce1(0x26c)](),drawCanvasText(_0x590004,_0x2fe5dc['x']+_0x2fe5dc[_0x36bce1(0x1fc)]/0x2,_0x2fe5dc['y']+_0x2fe5dc['height']/0x2,MENU_BUTTON_FONT,_0x25bdc1?MENU_BUTTON_COLOR_HOVER:MENU_BUTTON_COLOR,_0x36bce1(0x296),_0x36bce1(0x2a7)),gameCtx[_0x36bce1(0x25d)]();}function renderExplosions(){const _0x498832=_0x391e46;try{if(!gameCtx)return;gameCtx[_0x498832(0x26c)](),gameCtx[_0x498832(0x250)]=_0x498832(0x1f7),explosions[_0x498832(0x22e)](_0x3249fa=>{const _0x525fe5=_0x498832;_0x3249fa[_0x525fe5(0x24d)]['forEach'](_0x59321a=>{const _0x74997f=_0x525fe5,_0x1c73da=_0x59321a[_0x74997f(0x251)]*EXPLOSION_MAX_OPACITY;_0x1c73da>0.01&&(gameCtx[_0x74997f(0x267)](),gameCtx[_0x74997f(0x242)](Math[_0x74997f(0x1fb)](_0x59321a['x']),Math[_0x74997f(0x1fb)](_0x59321a['y']),_0x59321a[_0x74997f(0x263)],0x0,Math['PI']*0x2),gameCtx['fillStyle']=_0x74997f(0x240)+_0x1c73da[_0x74997f(0x2c4)](0x3)+')',gameCtx[_0x74997f(0x2a6)]());});}),gameCtx[_0x498832(0x25d)]();}catch(_0x135136){console['error'](_0x498832(0x273),_0x135136);}}function renderFloatingScores(){const _0x4a018d=_0x391e46;try{if(!gameCtx||!floatingScores||floatingScores[_0x4a018d(0x21a)]===0x0)return;const _0x5bdd4c=Date[_0x4a018d(0x2d0)]();gameCtx[_0x4a018d(0x26c)](),gameCtx['globalAlpha']=FLOATING_SCORE_OPACITY,floatingScores[_0x4a018d(0x22e)](_0x362b5d=>{const _0x82ecd6=_0x4a018d;_0x5bdd4c>=_0x362b5d['displayStartTime']&&drawCanvasText(_0x362b5d[_0x82ecd6(0x20d)],_0x362b5d['x'],_0x362b5d['y'],FLOATING_SCORE_FONT,_0x362b5d[_0x82ecd6(0x1f5)],_0x82ecd6(0x296),'middle',![]);}),gameCtx[_0x4a018d(0x2b9)]=0x1,gameCtx[_0x4a018d(0x25d)]();}catch(_0x44d1e7){console[_0x4a018d(0x230)]('Error\x20rendering\x20floatingScores:',_0x44d1e7);}}function renderHitSparks(){const _0x5a23da=_0x391e46;if(!gameCtx||!hitSparks||hitSparks[_0x5a23da(0x21a)]===0x0)return;gameCtx[_0x5a23da(0x26c)](),gameCtx[_0x5a23da(0x250)]='lighter',hitSparks[_0x5a23da(0x22e)](_0x7d1058=>{const _0x2cd9ca=_0x5a23da;if(_0x7d1058&&_0x7d1058['alpha']>0.01){gameCtx[_0x2cd9ca(0x21d)]=_0x7d1058[_0x2cd9ca(0x1f5)],gameCtx[_0x2cd9ca(0x2b9)]=_0x7d1058[_0x2cd9ca(0x251)],gameCtx[_0x2cd9ca(0x267)]();const _0x18c328=_0x7d1058[_0x2cd9ca(0x1f6)]*Math['sqrt'](_0x7d1058[_0x2cd9ca(0x251)]);gameCtx[_0x2cd9ca(0x242)](Math['round'](_0x7d1058['x']),Math[_0x2cd9ca(0x1fb)](_0x7d1058['y']),Math[_0x2cd9ca(0x2a2)](0.5,_0x18c328/0x2),0x0,Math['PI']*0x2),gameCtx[_0x2cd9ca(0x2a6)]();}}),gameCtx[_0x5a23da(0x2b9)]=0x1,gameCtx[_0x5a23da(0x25d)]();}function renderGame(){const _0x385e72=_0x391e46;try{if(!gameCtx||!gameCanvas){if(mainLoopId)cancelAnimationFrame(mainLoopId);mainLoopId=null;return;}gameCtx[_0x385e72(0x27e)](0x0,0x0,gameCanvas['width'],gameCanvas['height']);const _0x143c66=Date[_0x385e72(0x2d0)]();if(isShowingPortraitMessage){gameCtx[_0x385e72(0x26c)]();const _0x22b0fc=gameCanvas[_0x385e72(0x1fc)]/0x2,_0x580b68=Math[_0x385e72(0x2bc)](0x16,gameCanvas[_0x385e72(0x1fc)]/0x23),_0x5493de='bold\x20'+(_0x580b68+0x2)+_0x385e72(0x256),_0x445e5f='yellow',_0x319dad='normal\x20'+_0x580b68+_0x385e72(0x256),_0x58768a=_0x385e72(0x1f3),_0x52a468=_0x385e72(0x20f),_0x17add1=_0x385e72(0x28b),_0x3c88db='normal\x20'+(_0x580b68-0x4)+_0x385e72(0x256),_0x43a9e0=_0x385e72(0x259),_0x45d862=[{'text':_0x385e72(0x2d3),'font':_0x5493de,'color':_0x445e5f,'skipAfter':0.75},{'text':'This\x20is\x20an\x20unofficial','font':_0x319dad,'color':_0x58768a},{'text':_0x385e72(0x217),'font':_0x319dad,'color':_0x58768a,'skipAfter':0x1},{'text':_0x385e72(0x22a),'font':_0x319dad,'color':_0x58768a},{'text':_0x385e72(0x295),'font':_0x319dad,'color':_0x58768a,'skipAfter':0x1},{'text':'All\x20rights\x20to\x20the','font':_0x319dad,'color':_0x58768a},{'text':_0x385e72(0x1f0),'font':_0x319dad,'color':_0x58768a,'skipAfter':0x1},{'text':_0x385e72(0x2c5),'font':_0x319dad,'color':_0x58768a},{'text':'belong\x20to\x20Bandai\x20Namco.','font':_0x319dad,'color':_0x58768a,'skipAfter':0x2},{'text':_0x385e72(0x26a),'font':_0x52a468,'color':_0x17add1},{'text':_0x385e72(0x243),'font':_0x52a468,'color':_0x17add1,'skipAfter':1.5},{'text':_0x385e72(0x22f),'font':_0x3c88db,'color':_0x43a9e0}];let _0x3460ab=0x0;const _0x2795d1=_0x45d862[_0x385e72(0x1f8)](_0xd60982=>{const _0x2dfb6a=_0x385e72;gameCtx[_0x2dfb6a(0x1ee)]=_0xd60982[_0x2dfb6a(0x1ee)];const _0xf111cd=gameCtx['measureText']('M'),_0x2ff819=(_0xf111cd[_0x2dfb6a(0x2c3)]||parseInt(_0xd60982['font'],0xa)*1.2)+(_0xf111cd[_0x2dfb6a(0x2d7)]||0x0)+0x8;return{'height':_0x2ff819,'skip':_0xd60982[_0x2dfb6a(0x23f)]||0x0};});gameCtx[_0x385e72(0x1ee)]=_0x52a468;const _0xfa3318=gameCtx[_0x385e72(0x214)]('M'),_0x5a09eb=(_0xfa3318[_0x385e72(0x2c3)]||parseInt(_0x52a468,0xa)*1.2)+(_0xfa3318['actualBoundingBoxDescent']||0x0)+0x5;_0x2795d1[_0x385e72(0x22e)](_0x239e44=>{const _0x4c980d=_0x385e72;_0x3460ab+=_0x239e44['height'],_0x239e44[_0x4c980d(0x2ce)]>0x0&&(_0x3460ab+=_0x5a09eb*_0x239e44[_0x4c980d(0x2ce)]);});const _0x12b57a=gameCanvas[_0x385e72(0x279)]*0.05,_0x55eb25=gameCanvas[_0x385e72(0x279)]*GRID_HORIZON_Y_FACTOR,_0xc2f0b1=_0x55eb25-_0x12b57a,_0x4b74ad=gameCanvas[_0x385e72(0x279)]*0.05;let _0x49b0f5=_0x12b57a;_0x3460ab<_0xc2f0b1-_0x4b74ad&&(_0x49b0f5=_0x12b57a+(_0xc2f0b1-_0x4b74ad-_0x3460ab)/0x2);_0x49b0f5=Math[_0x385e72(0x2a2)](_0x49b0f5,_0x12b57a);const _0x378c93=_0x5a09eb*0x4;_0x49b0f5+=_0x378c93;let _0x4ec954=_0x49b0f5;_0x45d862[_0x385e72(0x22e)]((_0x6eda65,_0x35a6c4)=>{const _0x55bd43=_0x385e72,_0x317f37=_0x2795d1[_0x35a6c4]['height'];drawCanvasText(_0x6eda65[_0x55bd43(0x20d)],_0x22b0fc,_0x4ec954+_0x317f37/0x2,_0x6eda65[_0x55bd43(0x1ee)],_0x6eda65[_0x55bd43(0x1f5)],'center',_0x55bd43(0x2a7),!![]),_0x4ec954+=_0x317f37,_0x6eda65['skipAfter']&&(_0x4ec954+=_0x5a09eb*_0x6eda65['skipAfter']);}),gameCtx['restore'](),gameCtx[_0x385e72(0x26c)]();const _0x4c808a='20px\x20\x27Press\x20Start\x202P\x27',_0x36b10a=_0x385e72(0x259),_0x2c0fd4=_0x385e72(0x209),_0x5712c6=0xf,_0x260221=0x14,_0x3d66e3=0x14,_0x42158c=Math[_0x385e72(0x2bc)](0x23,gameCanvas[_0x385e72(0x1fc)]/0xf),_0x5b24e4=SHIP_WIDTH,_0x141049=SHIP_HEIGHT,_0x492025=0x5,_0x35ba30=0xa,_0x27e9d0=0x3,_0x1eda2c=_0x5712c6+_0x5a09eb*0x1,_0x385da8=_0x1eda2c+_0x3d66e3+_0x27e9d0;gameCtx['font']=_0x4c808a,gameCtx[_0x385e72(0x260)]=_0x385e72(0x2c7),gameCtx[_0x385e72(0x21d)]=_0x36b10a,gameCtx[_0x385e72(0x1ec)]=_0x385e72(0x2bd);const _0x580191='1UP';gameCtx[_0x385e72(0x24e)](_0x580191,_0x260221,_0x1eda2c),gameCtx[_0x385e72(0x21d)]=_0x2c0fd4;const _0x5a5d1e=gameCtx[_0x385e72(0x214)](_0x580191)[_0x385e72(0x1fc)];gameCtx[_0x385e72(0x1ec)]=_0x385e72(0x296),gameCtx[_0x385e72(0x24e)]('0',_0x260221+_0x5a5d1e/0x2,_0x385da8),gameCtx[_0x385e72(0x21d)]=_0x36b10a,gameCtx['textAlign']=_0x385e72(0x296),gameCtx[_0x385e72(0x24e)](_0x385e72(0x2a9),_0x22b0fc,_0x1eda2c),gameCtx[_0x385e72(0x21d)]=_0x2c0fd4,gameCtx[_0x385e72(0x24e)](String(highScore||0x4e20),_0x22b0fc,_0x385da8),gameCtx[_0x385e72(0x21d)]=_0x36b10a,gameCtx[_0x385e72(0x1ec)]='right';const _0x28b104=_0x385e72(0x1f9);gameCtx[_0x385e72(0x24e)](_0x28b104,gameCanvas[_0x385e72(0x1fc)]-_0x260221,_0x1eda2c),gameCtx[_0x385e72(0x21d)]=_0x2c0fd4;const _0x49fe4c=gameCtx[_0x385e72(0x214)](_0x28b104)[_0x385e72(0x1fc)];gameCtx[_0x385e72(0x1ec)]=_0x385e72(0x296),gameCtx[_0x385e72(0x24e)]('0',gameCanvas['width']-_0x260221-_0x49fe4c/0x2,_0x385da8);if(typeof shipImage!==_0x385e72(0x2d8)&&shipImage[_0x385e72(0x2b6)]&&shipImage[_0x385e72(0x1ed)]!==0x0){const _0x1f8f42=gameCanvas[_0x385e72(0x279)]-_0x35ba30-_0x5a09eb*0x1,_0x1e7c21=_0x1f8f42-_0x42158c,_0x305a11=_0x1f8f42-_0x141049;let _0x554686=_0x260221;gameCtx[_0x385e72(0x237)](shipImage,Math['round'](_0x554686),Math[_0x385e72(0x1fb)](_0x1e7c21),_0x42158c,_0x42158c),_0x554686+=_0x42158c+_0x492025,gameCtx['drawImage'](shipImage,Math[_0x385e72(0x1fb)](_0x554686),Math[_0x385e72(0x1fb)](_0x1e7c21),_0x42158c,_0x42158c);const _0x4ac3e9=_0x22b0fc-_0x5b24e4/0x2;gameCtx['drawImage'](shipImage,Math[_0x385e72(0x1fb)](_0x4ac3e9),Math[_0x385e72(0x1fb)](_0x305a11),_0x5b24e4,_0x141049);if(typeof level1Image!==_0x385e72(0x2d8)&&level1Image['complete']&&level1Image[_0x385e72(0x1ed)]!==0x0){const _0x41ba10=gameCanvas['width']-_0x260221-_0x42158c;gameCtx[_0x385e72(0x237)](level1Image,Math['round'](_0x41ba10),Math['round'](_0x1e7c21),_0x42158c,_0x42158c);}}gameCtx[_0x385e72(0x25d)]();return;}gameCtx[_0x385e72(0x26c)]();const _0x5943f3=_0x385e72(0x255),_0x296ce3=_0x385e72(0x259),_0x402177=_0x385e72(0x209),_0x3a8898=0x5,_0x2e794b=0x2;gameCtx['font']=_0x5943f3,gameCtx[_0x385e72(0x260)]=_0x385e72(0x2c7);const _0x43f2b1=(_0x19bce5,_0x4d771c,_0x5e525c,_0x57fbb8,_0x4b7fe5=![])=>{const _0x4860da=_0x385e72;let _0x3ca08a=!![],_0x1f8d86=UI_1UP_BLINK_ON_MS*1.5,_0x164607=UI_1UP_BLINK_CYCLE_MS*1.5;if(_0x19bce5===_0x4860da(0x29a)||_0x19bce5===_0x4860da(0x2ae)||_0x19bce5===_0x4860da(0x2d6)||_0x19bce5===_0x4860da(0x27b))_0x1f8d86=DEMO_TEXT_BLINK_ON_MS*0.7,_0x164607=DEMO_TEXT_BLINK_CYCLE_MS;else _0x19bce5===_0x4860da(0x253)&&(_0x1f8d86=UI_1UP_BLINK_ON_MS*1.5,_0x164607=UI_1UP_BLINK_CYCLE_MS*1.5,isInGameState&&(!isManualControl||isCoopAIDemoActive||isPlayerTwoAI&&selectedGameMode===_0x4860da(0x297))&&(_0x1f8d86=DEMO_TEXT_BLINK_ON_MS*0.7,_0x164607=DEMO_TEXT_BLINK_CYCLE_MS));let _0x4fe7c7=isShowingPlayerGameOverMessage||isTwoPlayerMode&&selectedGameMode===_0x4860da(0x297)&&(isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage);_0x4b7fe5&&((isPaused||gameOverSequenceStartTime>0x0||_0x4fe7c7||!(_0x143c66%_0x164607<_0x1f8d86))&&(_0x3ca08a=![]));_0x3ca08a&&(gameCtx['fillStyle']=_0x296ce3,gameCtx[_0x4860da(0x1ec)]=_0x5e525c,gameCtx[_0x4860da(0x24e)](_0x19bce5,_0x57fbb8,MARGIN_TOP));const _0x59e822=gameCtx[_0x4860da(0x214)](_0x19bce5)[_0x4860da(0x1fc)];let _0x341b1d;if(_0x5e525c==='left')_0x341b1d=_0x57fbb8+_0x59e822/0x2;else{if(_0x5e525c===_0x4860da(0x2c2))_0x341b1d=_0x57fbb8-_0x59e822/0x2;else _0x341b1d=_0x57fbb8;}gameCtx['fillStyle']=_0x402177,gameCtx[_0x4860da(0x1ec)]=_0x4860da(0x296);let _0x4de6e0=MARGIN_TOP+SCORE_OFFSET_Y+0x5;_0x19bce5===_0x4860da(0x253)&&(_0x341b1d=_0x57fbb8);const _0x3723ee=typeof _0x4d771c===_0x4860da(0x22d)?_0x4d771c['toFixed'](0x0):String(_0x4d771c);gameCtx[_0x4860da(0x24e)](_0x3723ee,_0x341b1d,_0x4de6e0);};let _0x27e748,_0x3b1639,_0x4b0f29,_0x84b997,_0x12a5bd='2UP',_0x35f0c5=![],_0x457733=![],_0x2ff820=![],_0x4618cc=isTwoPlayerMode&&selectedGameMode===_0x385e72(0x297)&&(isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage);_0x3b1639=0x0;const _0x337715=isTwoPlayerMode||isPlayerTwoAI&&selectedGameMode===_0x385e72(0x297);if(_0x337715){if(selectedGameMode===_0x385e72(0x297)&&isInGameState){_0x3b1639=player2Score;if(isCoopAIDemoActive)_0x12a5bd=_0x385e72(0x2d6);else{if(isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x385e72(0x207))_0x12a5bd=_0x385e72(0x27b);else _0x12a5bd=_0x385e72(0x1f9);}}else{if(selectedGameMode===_0x385e72(0x27c)&&isInGameState)_0x3b1639=currentPlayer===0x2?score:player2Score,isPlayerTwoAI&&(_0x12a5bd=_0x385e72(0x27b));else{if(isShowingResultsScreen||gameOverSequenceStartTime>0x0&&!isShowingPlayerGameOverMessage&&!_0x4618cc||isShowingPlayerGameOverMessage||_0x4618cc){_0x3b1639=player2Score||0x0;if(isCoopAIDemoActive&&wasLastGameAIDemo)_0x12a5bd=_0x385e72(0x2d6);else{if(isPlayerTwoAI&&wasLastGameAIDemo&&selectedGameMode===_0x385e72(0x297))_0x12a5bd=_0x385e72(0x27b);else{if(isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x385e72(0x207)&&!wasLastGameAIDemo)_0x12a5bd=_0x385e72(0x27b);else{if(isPlayerTwoAI&&wasLastGameAIDemo)_0x12a5bd='AI\x20P2';else isPlayerTwoAI&&!wasLastGameAIDemo&&(_0x12a5bd=_0x385e72(0x27b));}}}}else{if(!isInGameState){_0x3b1639=0x0;if(isPlayerSelectMode&&selectedButtonIndex===0x1)_0x12a5bd=_0x385e72(0x1f9);else{if(isOnePlayerVsAIGameTypeSelectMode&&selectedButtonIndex===0x1||isFiringModeSelectMode&&isPlayerTwoAI&&selectedGameMode===_0x385e72(0x297))_0x12a5bd=_0x385e72(0x27b);else{if(isOnePlayerVsAIGameTypeSelectMode&&selectedButtonIndex===0x0&&isFiringModeSelectMode&&isPlayerTwoAI||isFiringModeSelectMode&&isPlayerTwoAI&&selectedGameMode===_0x385e72(0x27c))_0x12a5bd=_0x385e72(0x27b);else _0x12a5bd=_0x385e72(0x1f9);}}}}}}}else _0x12a5bd=_0x385e72(0x1f9),_0x3b1639=0x0;if(isShowingResultsScreen){_0x27e748=player1Score||0x0,_0x4b0f29=highScore||0x4e20,_0x4b0f29=Math[_0x385e72(0x2a2)](_0x4b0f29,_0x27e748,_0x3b1639);if(selectedOnePlayerGameVariant===_0x385e72(0x207))_0x84b997=_0x385e72(0x1e8);else{if(isCoopAIDemoActive)_0x84b997=_0x385e72(0x2ae);else{if(isPlayerTwoAI&&selectedGameMode===_0x385e72(0x27c)&&!isCoopAIDemoActive)_0x84b997=_0x385e72(0x1e8);else wasLastGameAIDemo&&!isCoopAIDemoActive&&!isPlayerTwoAI?_0x84b997=_0x385e72(0x29a):_0x84b997=_0x385e72(0x1e8);}}_0x2ff820=![],_0x35f0c5=![],_0x457733=![];}else{if(gameOverSequenceStartTime>0x0&&!isShowingPlayerGameOverMessage&&!_0x4618cc){_0x27e748=player1Score||0x0,_0x4b0f29=highScore||0x4e20,_0x4b0f29=Math[_0x385e72(0x2a2)](_0x4b0f29,_0x27e748,_0x3b1639);if(selectedOnePlayerGameVariant===_0x385e72(0x207))_0x84b997=_0x385e72(0x1e8);else{if(isCoopAIDemoActive)_0x84b997='DEMO-1';else{if(isPlayerTwoAI&&selectedGameMode==='normal'&&!isCoopAIDemoActive)_0x84b997=_0x385e72(0x1e8);else wasLastGameAIDemo&&!isCoopAIDemoActive&&!isPlayerTwoAI?_0x84b997=_0x385e72(0x29a):_0x84b997=_0x385e72(0x1e8);}}_0x2ff820=![],_0x35f0c5=![],_0x457733=![];}else{if(isShowingPlayerGameOverMessage||_0x4618cc){_0x27e748=player1Score||0x0,_0x4b0f29=highScore||0x4e20,_0x4b0f29=Math['max'](_0x4b0f29,_0x27e748,_0x3b1639);if(selectedOnePlayerGameVariant===_0x385e72(0x207))_0x84b997='1UP';else{if(isCoopAIDemoActive)_0x84b997=_0x385e72(0x2ae);else{if(isPlayerTwoAI&&selectedGameMode==='normal'&&!isCoopAIDemoActive)_0x84b997=_0x385e72(0x1e8);else wasLastGameAIDemo&&!isCoopAIDemoActive&&!isPlayerTwoAI?_0x84b997='DEMO':_0x84b997=_0x385e72(0x1e8);}}_0x2ff820=![],_0x35f0c5=![],_0x457733=![];}else{if(!isInGameState)_0x27e748=0x0,_0x4b0f29=highScore||0x4e20,_0x84b997=_0x385e72(0x1e8),_0x2ff820=![],_0x35f0c5=![],_0x457733=![];else{_0x4b0f29=highScore||0x0;const _0x1c8aa7=!isPaused&&!isShowingCoopPlayersReady;if(isCoopAIDemoActive){_0x27e748=player1Score,_0x4b0f29=Math[_0x385e72(0x2a2)](highScore,player1Score,player2Score),_0x84b997='DEMO-1',_0x35f0c5=_0x1c8aa7&&!isShowingIntro&&player1Lives>0x0&&ship1&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn&&!isPlayer1ShowingGameOverMessage,_0x457733=_0x1c8aa7&&!isShowingIntro&&player2Lives>0x0&&ship2&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn&&!isPlayer2ShowingGameOverMessage;if(player1Score>=_0x4b0f29&&player1Score>0x0&&!isPlayer1ShowingGameOverMessage)_0x2ff820=_0x35f0c5;if(player2Score>=_0x4b0f29&&player2Score>0x0&&player2Score>=player1Score&&!isPlayer2ShowingGameOverMessage)_0x2ff820=_0x457733;}else{if(!isManualControl)_0x27e748=score,_0x4b0f29=Math[_0x385e72(0x2a2)](_0x4b0f29,score),_0x84b997=_0x385e72(0x29a),_0x35f0c5=_0x1c8aa7&&!isShowingIntro&&!isShipCaptured&&playerLives>0x0&&!_0x4618cc,_0x2ff820=_0x1c8aa7&&!isShowingIntro&&score>0x0&&_0x4b0f29>0x0&&score>=_0x4b0f29&&!_0x4618cc;else{_0x84b997=_0x385e72(0x1e8);if(isTwoPlayerMode&&selectedGameMode===_0x385e72(0x297)){_0x27e748=player1Score,_0x4b0f29=Math[_0x385e72(0x2a2)](highScore,player1Score,player2Score),_0x35f0c5=_0x1c8aa7&&!isShowingIntro&&player1Lives>0x0&&ship1&&!isPlayer1ShipCaptured&&!isPlayer1WaitingForRespawn&&!isPlayer1ShowingGameOverMessage,_0x457733=_0x1c8aa7&&!isShowingIntro&&player2Lives>0x0&&ship2&&!isPlayer2ShipCaptured&&!isPlayer2WaitingForRespawn&&!isPlayer2ShowingGameOverMessage&&(isPlayerTwoAI?player2Lives>0x0:!![]);if(player1Score>=_0x4b0f29&&player1Score>0x0&&!isPlayer1ShowingGameOverMessage)_0x2ff820=_0x35f0c5;if(player2Score>=_0x4b0f29&&player2Score>0x0&&player2Score>=player1Score&&!isPlayer2ShowingGameOverMessage&&(isPlayerTwoAI?player2Lives>0x0:!![]))_0x2ff820=_0x457733;}else isTwoPlayerMode&&selectedGameMode==='normal'?(_0x27e748=currentPlayer===0x1?score:player1Score,_0x4b0f29=Math[_0x385e72(0x2a2)](highScore,player1Score,player2Score,score),_0x35f0c5=_0x1c8aa7&&!isShowingIntro&&currentPlayer===0x1&&playerLives>0x0&&!isShipCaptured&&!isWaitingForRespawn&&!isShowingPlayerGameOverMessage,_0x457733=_0x1c8aa7&&!isShowingIntro&&currentPlayer===0x2&&playerLives>0x0&&!isShipCaptured&&!isWaitingForRespawn&&!isShowingPlayerGameOverMessage&&(isPlayerTwoAI?playerLives>0x0:!![]),_0x2ff820=_0x1c8aa7&&!isShowingIntro&&score>0x0&&_0x4b0f29>0x0&&score>=_0x4b0f29&&!isShowingPlayerGameOverMessage):(_0x27e748=score,_0x4b0f29=Math[_0x385e72(0x2a2)](_0x4b0f29,score),_0x35f0c5=_0x1c8aa7&&!isShowingIntro&&playerLives>0x0&&!isShipCaptured&&!isWaitingForRespawn&&!isShowingPlayerGameOverMessage,_0x2ff820=_0x1c8aa7&&!isShowingIntro&&score>0x0&&_0x4b0f29>0x0&&score>=_0x4b0f29&&!isShowingPlayerGameOverMessage);}}}}}}isHighScoreBlinkingNow=![];if(_0x2ff820){if(!isManualControl||isCoopAIDemoActive||isPlayerTwoAI&&selectedGameMode===_0x385e72(0x297)){isHighScoreBlinkingNow=player1Score>=_0x4b0f29&&player1Score>0x0&&_0x35f0c5&&!isPlayer1ShowingGameOverMessage||(isCoopAIDemoActive||isPlayerTwoAI&&selectedGameMode==='coop')&&player2Score>=_0x4b0f29&&player2Score>0x0&&_0x457733&&!isPlayer2ShowingGameOverMessage;if(!isCoopAIDemoActive&&!isManualControl&&!isPlayerTwoAI)isHighScoreBlinkingNow=_0x35f0c5;}else{if(isTwoPlayerMode&&selectedGameMode==='coop')isHighScoreBlinkingNow=player1Score>=_0x4b0f29&&player1Score>0x0&&_0x35f0c5&&!isPlayer1ShowingGameOverMessage||player2Score>=_0x4b0f29&&player2Score>0x0&&_0x457733&&!isPlayer2ShowingGameOverMessage;else isTwoPlayerMode&&selectedGameMode===_0x385e72(0x27c)?isHighScoreBlinkingNow=score>=_0x4b0f29&&score>0x0&&(currentPlayer===0x1&&_0x35f0c5||currentPlayer===0x2&&_0x457733&&(!isPlayerTwoAI||isPlayerTwoAI&&playerLives>0x0))&&!isShowingPlayerGameOverMessage:isHighScoreBlinkingNow=_0x35f0c5;}}typeof MARGIN_SIDE!==_0x385e72(0x2d8)&&typeof MARGIN_TOP!=='undefined'&&typeof SCORE_OFFSET_Y!==_0x385e72(0x2d8)&&(_0x43f2b1(_0x84b997,_0x27e748,_0x385e72(0x2bd),MARGIN_SIDE,_0x35f0c5),_0x43f2b1(_0x385e72(0x253),_0x4b0f29,_0x385e72(0x296),gameCanvas[_0x385e72(0x1fc)]/0x2,isHighScoreBlinkingNow),_0x43f2b1(_0x12a5bd,_0x3b1639,'right',gameCanvas['width']-MARGIN_SIDE,_0x457733));const _0x97700b=isShowingResultsScreen&&isTwoPlayerMode&&selectedGameMode===_0x385e72(0x27c);if(typeof shipImage!==_0x385e72(0x2d8)&&typeof LIFE_ICON_MARGIN_BOTTOM!==_0x385e72(0x2d8)&&typeof LIFE_ICON_SIZE!==_0x385e72(0x2d8)&&typeof LIFE_ICON_MARGIN_LEFT!==_0x385e72(0x2d8)&&typeof LIFE_ICON_SPACING!==_0x385e72(0x2d8)){if(shipImage['complete']&&shipImage[_0x385e72(0x1ed)]!==0x0){const _0x192c35=gameCanvas[_0x385e72(0x279)]-LIFE_ICON_MARGIN_BOTTOM-LIFE_ICON_SIZE;let _0x55eb0b=0x0,_0x43300e=0x0;const _0x396e95=!isTwoPlayerMode&&selectedGameMode==='normal',_0x4d09ab=_0x396e95&&(isShowingPlayerGameOverMessage||gameOverSequenceStartTime>0x0||isShowingResultsScreen);if(_0x4d09ab)_0x55eb0b=_0x2e794b;else{if(_0x97700b)_0x55eb0b=_0x2e794b;else{if(!isInGameState||isShowingScoreScreen||isShowingPlayerGameOverMessage||isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage||gameOverSequenceStartTime>0x0)_0x55eb0b=player1Lives<=0x0?0x0:_0x2e794b;else{if(isTwoPlayerMode&&selectedGameMode===_0x385e72(0x297))_0x55eb0b=player1Lives>0x0?Math[_0x385e72(0x2a2)](0x0,player1Lives-0x1):0x0;else isTwoPlayerMode&&selectedGameMode===_0x385e72(0x27c)?currentPlayer===0x1?_0x55eb0b=playerLives>0x0?Math['max'](0x0,playerLives-0x1):0x0:_0x55eb0b=player1Lives>0x0?Math['max'](0x0,player1Lives-0x1):0x0:_0x55eb0b=playerLives>0x0?Math[_0x385e72(0x2a2)](0x0,playerLives-0x1):0x0;}}}if(_0x55eb0b>0x0){let _0x4c882c=LIFE_ICON_MARGIN_LEFT;for(let _0x4c03f3=0x0;_0x4c03f3<Math[_0x385e72(0x2bc)](_0x55eb0b,_0x3a8898);_0x4c03f3++){const _0x32046d=_0x4c882c+_0x4c03f3*(LIFE_ICON_SIZE+LIFE_ICON_SPACING);gameCtx[_0x385e72(0x237)](shipImage,Math[_0x385e72(0x1fb)](_0x32046d),Math['round'](_0x192c35),LIFE_ICON_SIZE,LIFE_ICON_SIZE);}}if(!_0x97700b){if(!isInGameState||isShowingScoreScreen||isShowingPlayerGameOverMessage||isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage||gameOverSequenceStartTime>0x0)(_0x337715||!isInGameState&&(!isPlayerSelectMode||selectedButtonIndex===0x1))&&(_0x43300e=player2Lives<=0x0?0x0:_0x2e794b);else{if(isTwoPlayerMode&&selectedGameMode==='coop')_0x43300e=player2Lives>0x0?Math[_0x385e72(0x2a2)](0x0,player2Lives-0x1):0x0;else isTwoPlayerMode&&selectedGameMode==='normal'&&(currentPlayer===0x2?_0x43300e=playerLives>0x0?Math[_0x385e72(0x2a2)](0x0,playerLives-0x1):0x0:_0x43300e=player2Lives>0x0?Math['max'](0x0,player2Lives-0x1):0x0);}const _0x22c197=Math[_0x385e72(0x2bc)](_0x43300e,_0x3a8898),_0x3052ee=!isInGameState&&(isPlayerSelectMode&&selectedButtonIndex===0x1||isGameModeSelectMode&&(selectedButtonIndex===0x0||selectedButtonIndex===0x1)||isFiringModeSelectMode&&isTwoPlayerMode&&!isPlayerTwoAI),_0x46efd7=!isInGameState&&(isOnePlayerVsAIGameTypeSelectMode&&selectedButtonIndex===0x1||isFiringModeSelectMode&&isPlayerTwoAI&&selectedGameMode==='coop');if(_0x22c197>0x0&&(_0x337715&&isInGameState||_0x3052ee||_0x46efd7)){const _0x2139bb=_0x22c197*LIFE_ICON_SIZE+Math[_0x385e72(0x2a2)](0x0,_0x22c197-0x1)*LIFE_ICON_SPACING,_0x481ea6=gameCanvas[_0x385e72(0x1fc)]-(typeof LEVEL_ICON_MARGIN_RIGHT!==_0x385e72(0x2d8)?LEVEL_ICON_MARGIN_RIGHT:MARGIN_SIDE)-_0x2139bb;for(let _0x43c033=0x0;_0x43c033<_0x22c197;_0x43c033++){const _0x406e93=_0x481ea6+_0x43c033*(LIFE_ICON_SIZE+LIFE_ICON_SPACING);gameCtx[_0x385e72(0x237)](shipImage,Math[_0x385e72(0x1fb)](_0x406e93),Math[_0x385e72(0x1fb)](_0x192c35),LIFE_ICON_SIZE,LIFE_ICON_SIZE);}}}}}const _0x1c4035=[{'val':0x32,'img':level50Image},{'val':0x1e,'img':level30Image},{'val':0x14,'img':level20Image},{'val':0xa,'img':level10Image},{'val':0x5,'img':level5Image},{'val':0x1,'img':level1Image}],_0x125125=(_0x2d2ee4,_0x5be917)=>{const _0x318bd9=_0x385e72,_0x3daecc=!isTwoPlayerMode&&selectedGameMode===_0x318bd9(0x27c)&&(isShowingPlayerGameOverMessage||gameOverSequenceStartTime>0x0||isShowingResultsScreen);if(_0x97700b&&_0x5be917||_0x3daecc&&_0x5be917)return;let _0x68b120=Math[_0x318bd9(0x2a2)](0x1,_0x2d2ee4);if(_0x68b120<=0x0||typeof LEVEL_ICON_MARGIN_BOTTOM===_0x318bd9(0x2d8)||typeof LEVEL_ICON_SIZE===_0x318bd9(0x2d8)||typeof LEVEL_ICON_MARGIN_RIGHT===_0x318bd9(0x2d8)||typeof LEVEL_ICON_SPACING===_0x318bd9(0x2d8))return;let _0x2d84ba=_0x68b120,_0x21cd09=[],_0x1f9664=new Set();const _0x1318a2=(_0x421cf1,_0x4c9818,_0x4b0ce9)=>{const _0x5ab637=_0x318bd9;let _0x5dacff=_0x421cf1,_0x48037e=new Set(_0x4b0ce9);for(let _0xb9b260=_0x4c9818;_0xb9b260<_0x1c4035[_0x5ab637(0x21a)];_0xb9b260++){const _0x21179b=_0x1c4035[_0xb9b260]['val'];if(_0x5dacff>=_0x21179b){const _0x1ffa2c=_0x48037e[_0x5ab637(0x1f6)]>=0x3&&!_0x48037e[_0x5ab637(0x233)](_0x21179b);if(!_0x1ffa2c||_0x21179b===0x1){const _0x90ed46=Math[_0x5ab637(0x276)](_0x5dacff/_0x21179b);_0x5dacff-=_0x90ed46*_0x21179b,_0x48037e[_0x5ab637(0x23c)](_0x21179b);if(_0x5dacff===0x0)return!![];}}}return _0x5dacff===0x0;};for(let _0x1939fa=0x0;_0x1939fa<_0x1c4035['length']-0x1;_0x1939fa++){const _0xcc5eb1=_0x1c4035[_0x1939fa],_0x233c7d=_0xcc5eb1[_0x318bd9(0x21e)],_0x3aa64d=_0xcc5eb1[_0x318bd9(0x252)];if(_0x2d84ba>=_0x233c7d){const _0x54c919=Math[_0x318bd9(0x276)](_0x2d84ba/_0x233c7d);for(let _0x1a4112=_0x54c919;_0x1a4112>=0x1;_0x1a4112--){const _0x1111a1=_0x2d84ba-_0x1a4112*_0x233c7d;let _0x3431b8=new Set(_0x1f9664);_0x3431b8[_0x318bd9(0x23c)](_0x233c7d);if(_0x3431b8[_0x318bd9(0x1f6)]<=0x3||_0x3431b8[_0x318bd9(0x1f6)]>0x3&&_0x3431b8[_0x318bd9(0x233)](0x1)&&_0x233c7d===0x1){if(_0x1318a2(_0x1111a1,_0x1939fa+0x1,_0x3431b8)){for(let _0xb7d438=0x0;_0xb7d438<_0x1a4112;_0xb7d438++){_0x21cd09[_0x318bd9(0x201)](_0x3aa64d);}_0x2d84ba=_0x1111a1,_0x1f9664[_0x318bd9(0x23c)](_0x233c7d);break;}}}}if(_0x2d84ba===0x0)break;}if(_0x2d84ba>0x0){for(let _0x2a26ef=0x0;_0x2a26ef<_0x2d84ba;_0x2a26ef++){_0x21cd09[_0x318bd9(0x201)](level1Image);}_0x2d84ba=0x0;}if(_0x21cd09[_0x318bd9(0x21a)]===0x0&&_0x68b120>0x0){for(let _0x3d1b6a=0x0;_0x3d1b6a<_0x68b120;_0x3d1b6a++)_0x21cd09['push'](level1Image);}if(_0x21cd09[_0x318bd9(0x21a)]===0x0)return;const _0x5efb5c=_0x21cd09['length'],_0x2a9b94=_0x5efb5c*LEVEL_ICON_SIZE+Math[_0x318bd9(0x2a2)](0x0,_0x5efb5c-0x1)*LEVEL_ICON_SPACING,_0x1e7a81=gameCanvas[_0x318bd9(0x279)]-LEVEL_ICON_MARGIN_BOTTOM-LEVEL_ICON_SIZE;let _0x9b0339,_0x4dfabd=0x0;const _0x4481e4=_0x5be917?player1Lives:player2Lives,_0x3258c9=_0x5be917?0x1:0x2;let _0x4dff9f=0x0;const _0x430614=gameOverSequenceStartTime>0x0||isShowingResultsScreen||isShowingPlayerGameOverMessage&&playerWhoIsGameOver===_0x3258c9||isPlayer1ShowingGameOverMessage&&_0x5be917||isPlayer2ShowingGameOverMessage&&!_0x5be917;if(!isInGameState||isShowingScoreScreen||_0x430614){if(_0x3daecc&&_0x5be917)_0x4dff9f=_0x2e794b;else{if(_0x97700b&&_0x5be917)_0x4dff9f=_0x2e794b;else _0x97700b&&!_0x5be917?_0x4dff9f=0x0:_0x4dff9f=_0x4481e4<=0x0?0x0:_0x2e794b;}}else{if(isInGameState){const _0x4d0e40=isTwoPlayerMode&&selectedGameMode===_0x318bd9(0x27c)&&currentPlayer===_0x3258c9?playerLives:_0x4481e4;_0x4dff9f=_0x4d0e40>0x0?Math[_0x318bd9(0x2a2)](0x0,_0x4d0e40-0x1):0x0;}}_0x4dff9f=Math[_0x318bd9(0x2bc)](_0x4dff9f,_0x3a8898);_0x4dff9f>0x0?_0x4dfabd=_0x4dff9f*LIFE_ICON_SIZE+(_0x4dff9f-0x1)*LIFE_ICON_SPACING:_0x4dfabd=-LIFE_ICON_SPACING;if(isTwoPlayerMode&&selectedGameMode===_0x318bd9(0x297)){const _0x3cd682=0xf;if(_0x5be917)_0x9b0339=LIFE_ICON_MARGIN_LEFT+_0x4dfabd+_0x3cd682;else{const _0x1ef6e0=gameCanvas['width']-LEVEL_ICON_MARGIN_RIGHT-_0x4dfabd;_0x9b0339=_0x1ef6e0-_0x2a9b94-_0x3cd682;}}else{if(isTwoPlayerMode&&selectedGameMode==='normal'){const _0x51b4c1=0xf;if(_0x5be917)_0x9b0339=LIFE_ICON_MARGIN_LEFT+_0x4dfabd+_0x51b4c1;else{const _0x686463=gameCanvas[_0x318bd9(0x1fc)]-LEVEL_ICON_MARGIN_RIGHT-_0x4dfabd;_0x9b0339=_0x686463-_0x2a9b94-_0x51b4c1;}}else _0x9b0339=gameCanvas[_0x318bd9(0x1fc)]-LEVEL_ICON_MARGIN_RIGHT-_0x2a9b94;}let _0x1a058a=_0x9b0339;for(const _0x1ba5ca of _0x21cd09){_0x1ba5ca&&_0x1ba5ca[_0x318bd9(0x2b6)]&&_0x1ba5ca[_0x318bd9(0x1ed)]!==0x0&&gameCtx[_0x318bd9(0x237)](_0x1ba5ca,Math[_0x318bd9(0x1fb)](_0x1a058a),Math['round'](_0x1e7a81),LEVEL_ICON_SIZE,LEVEL_ICON_SIZE),_0x1a058a+=LEVEL_ICON_SIZE+LEVEL_ICON_SPACING;}};let _0x3bfaaf,_0x32667f;if(isInGameState&&!isShowingPlayerGameOverMessage&&!isPlayer1ShowingGameOverMessage&&!isPlayer2ShowingGameOverMessage&&gameOverSequenceStartTime===0x0){if(isTwoPlayerMode&&selectedGameMode===_0x385e72(0x27c))_0x3bfaaf=currentPlayer===0x1?level:player1MaxLevelReached,_0x32667f=currentPlayer===0x2?level:player2MaxLevelReached;else isTwoPlayerMode&&selectedGameMode===_0x385e72(0x297)?(_0x3bfaaf=player1Lives>0x0?level:player1MaxLevelReached,_0x32667f=player2Lives>0x0?level:player2MaxLevelReached):_0x3bfaaf=level;}else _0x3bfaaf=player1MaxLevelReached,(_0x337715||isTwoPlayerMode)&&(_0x32667f=player2MaxLevelReached);_0x125125(Math['max'](0x1,_0x3bfaaf),!![]);const _0x3c0ecb=!isTwoPlayerMode&&selectedGameMode==='normal'&&(isShowingPlayerGameOverMessage||gameOverSequenceStartTime>0x0||isShowingResultsScreen);if(_0x3c0ecb)_0x125125(Math[_0x385e72(0x2a2)](0x1,player1MaxLevelReached),![]);else{if(_0x337715||isTwoPlayerMode){if(typeof _0x32667f==='number'&&_0x32667f>0x0)_0x125125(Math[_0x385e72(0x2a2)](0x1,_0x32667f),![]);else player2MaxLevelReached>0x0&&_0x125125(Math[_0x385e72(0x2a2)](0x1,player2MaxLevelReached),![]);}}gameCtx[_0x385e72(0x25d)](),gameCtx[_0x385e72(0x26c)]();let _0x44e26f=![],_0x1ebc50=!isInGameState||isShowingScoreScreen||isShowingResultsScreen||gameOverSequenceStartTime>0x0||isShowingPlayerGameOverMessage||isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage;_0x1ebc50&&(_0x44e26f=!![]);const _0x45cd15=showCsBonusScoreMessage||showPerfectMessage;if(_0x44e26f){const _0x53811d=Math[_0x385e72(0x1fb)](gameCanvas['width']/0x2-SHIP_WIDTH/0x2),_0x26e95e=gameCanvas[_0x385e72(0x279)]-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN;typeof shipImage!=='undefined'&&shipImage[_0x385e72(0x2b6)]&&shipImage[_0x385e72(0x1ed)]!==0x0?gameCtx[_0x385e72(0x237)](shipImage,_0x53811d,_0x26e95e,SHIP_WIDTH,SHIP_HEIGHT):(gameCtx[_0x385e72(0x21d)]=_0x385e72(0x2d5),gameCtx['fillRect'](_0x53811d,_0x26e95e,SHIP_WIDTH,SHIP_HEIGHT));}else{if(isInGameState&&!isShowingPlayerGameOverMessage&&!isPlayer1ShowingGameOverMessage&&!isPlayer2ShowingGameOverMessage&&gameOverSequenceStartTime===0x0){if(isTwoPlayerMode&&selectedGameMode===_0x385e72(0x297)){const _0x2cd7ad=ship1&&player1Lives>0x0,_0x5ef890=ship2&&player2Lives>0x0;if(_0x2cd7ad&&(!isPlayer1ShipCaptured||isPlayer1ShipCaptured&&!isShowingCaptureMessage)){let _0xa6837b=!![];if((isPlayer1Invincible||isPlayer1WaitingForRespawn)&&!isShowingCoopPlayersReady&&!isShowingCaptureMessage){const _0x2a14da=INVINCIBILITY_BLINK_ON_MS+INVINCIBILITY_BLINK_OFF_MS;if(_0x143c66%_0x2a14da>=INVINCIBILITY_BLINK_ON_MS)_0xa6837b=![];}if(_0x45cd15){if(isCoopAIDemoActive&&!_0x5ef890){}else{if(isCoopAIDemoActive&&_0x2cd7ad&&_0x5ef890){}else isCoopAIDemoActive&&(_0xa6837b=![]);}}if(_0xa6837b){const _0x7a793c=ship1['x'],_0x5509e7=ship1['y'];typeof shipImage!=='undefined'&&shipImage[_0x385e72(0x2b6)]&&shipImage[_0x385e72(0x1ed)]!==0x0?(gameCtx[_0x385e72(0x237)](shipImage,Math[_0x385e72(0x1fb)](_0x7a793c),Math[_0x385e72(0x1fb)](_0x5509e7),ship1[_0x385e72(0x1fc)],ship1[_0x385e72(0x279)]),player1IsDualShipActive&&gameCtx[_0x385e72(0x237)](shipImage,Math[_0x385e72(0x1fb)](_0x7a793c+DUAL_SHIP_OFFSET_X),Math['round'](_0x5509e7),ship1['width'],ship1[_0x385e72(0x279)])):(gameCtx['fillStyle']=_0x385e72(0x2d5),gameCtx[_0x385e72(0x2c6)](Math[_0x385e72(0x1fb)](_0x7a793c),Math[_0x385e72(0x1fb)](_0x5509e7),ship1[_0x385e72(0x1fc)],ship1[_0x385e72(0x279)]));}}if(_0x5ef890&&(!isPlayer2ShipCaptured||isPlayer2ShipCaptured&&!isShowingCaptureMessage)){let _0xcf3735=!![];if((isPlayer2Invincible||isPlayer2WaitingForRespawn)&&!isShowingCoopPlayersReady&&!isShowingCaptureMessage){const _0x433c5b=INVINCIBILITY_BLINK_ON_MS+INVINCIBILITY_BLINK_OFF_MS;if(_0x143c66%_0x433c5b>=INVINCIBILITY_BLINK_ON_MS)_0xcf3735=![];}if(_0x45cd15){if(isCoopAIDemoActive){if(!_0x2cd7ad){}else{if(_0x2cd7ad&&_0x5ef890){}else _0xcf3735=![];}}}if(_0xcf3735){const _0x106f18=ship2['x'],_0x4c1d08=ship2['y'];typeof shipImage!=='undefined'&&shipImage[_0x385e72(0x2b6)]&&shipImage[_0x385e72(0x1ed)]!==0x0?(gameCtx[_0x385e72(0x237)](shipImage,Math[_0x385e72(0x1fb)](_0x106f18),Math['round'](_0x4c1d08),ship2[_0x385e72(0x1fc)],ship2[_0x385e72(0x279)]),player2IsDualShipActive&&gameCtx[_0x385e72(0x237)](shipImage,Math[_0x385e72(0x1fb)](_0x106f18+DUAL_SHIP_OFFSET_X),Math[_0x385e72(0x1fb)](_0x4c1d08),ship2[_0x385e72(0x1fc)],ship2[_0x385e72(0x279)])):(gameCtx[_0x385e72(0x21d)]=_0x385e72(0x281),gameCtx[_0x385e72(0x2c6)](Math[_0x385e72(0x1fb)](_0x106f18),Math[_0x385e72(0x1fb)](_0x4c1d08),ship2['width'],ship2[_0x385e72(0x279)]));}}}else{if(ship&&playerLives>0x0&&!isShipCaptured&&!isShowingCaptureMessage){let _0x3e9473=!![];if(isInvincible||isWaitingForRespawn){const _0x4f0c08=INVINCIBILITY_BLINK_ON_MS+INVINCIBILITY_BLINK_OFF_MS;if(_0x143c66%_0x4f0c08>=INVINCIBILITY_BLINK_ON_MS)_0x3e9473=![];}if(_0x3e9473&&!(_0x45cd15&&(!isManualControl||isPlayerTwoAI&&selectedGameMode==='normal')&&!isCoopAIDemoActive)){let _0x48c96c=ship['x'],_0x3e0502=isShowingIntro&&(!isManualControl||isPlayerTwoAI&&selectedGameMode===_0x385e72(0x27c))&&selectedGameMode!=='coop'&&!isDualShipActive;_0x3e0502&&(_0x48c96c=Math['round'](gameCanvas[_0x385e72(0x1fc)]/0x2-ship[_0x385e72(0x1fc)]/0x2));const _0x256a19=ship['y'];typeof shipImage!==_0x385e72(0x2d8)&&shipImage[_0x385e72(0x2b6)]&&shipImage[_0x385e72(0x1ed)]!==0x0?(gameCtx[_0x385e72(0x237)](shipImage,Math[_0x385e72(0x1fb)](_0x48c96c),Math[_0x385e72(0x1fb)](_0x256a19),ship[_0x385e72(0x1fc)],ship['height']),isDualShipActive&&gameCtx[_0x385e72(0x237)](shipImage,Math[_0x385e72(0x1fb)](_0x48c96c+DUAL_SHIP_OFFSET_X),Math[_0x385e72(0x1fb)](_0x256a19),ship[_0x385e72(0x1fc)],ship['height'])):(gameCtx[_0x385e72(0x21d)]=_0x385e72(0x2d5),gameCtx[_0x385e72(0x2c6)](Math[_0x385e72(0x1fb)](_0x48c96c),Math[_0x385e72(0x1fb)](_0x256a19),ship[_0x385e72(0x1fc)],ship[_0x385e72(0x279)]));}}}}}fallingShips[_0x385e72(0x21a)]>0x0&&typeof shipImage!==_0x385e72(0x2d8)&&shipImage[_0x385e72(0x2b6)]&&fallingShips[_0x385e72(0x22e)](_0xd0970a=>{const _0x4b583e=_0x385e72;if(_0xd0970a){gameCtx[_0x4b583e(0x26c)]();const _0x5d992e=_0xd0970a['x']+_0xd0970a[_0x4b583e(0x1fc)]/0x2,_0x42b06d=_0xd0970a['y']+_0xd0970a[_0x4b583e(0x279)]/0x2;gameCtx[_0x4b583e(0x2b4)](_0x5d992e,_0x42b06d),gameCtx['rotate'](_0xd0970a['rotation']||0x0);const _0x274043=-_0xd0970a['width']/0x2,_0x41cf45=-_0xd0970a[_0x4b583e(0x279)]/0x2,_0x435efa=_0xd0970a[_0x4b583e(0x1fc)],_0x513923=_0xd0970a[_0x4b583e(0x279)];gameCtx['drawImage'](shipImage,_0x274043,_0x41cf45,_0x435efa,_0x513923),typeof _0xd0970a[_0x4b583e(0x26e)]==='number'&&_0xd0970a['tintProgress']>0.01&&(gameCtx[_0x4b583e(0x26c)](),gameCtx[_0x4b583e(0x2b9)]=_0xd0970a[_0x4b583e(0x26e)],gameCtx['fillStyle']=CAPTURED_SHIP_TINT_COLOR,gameCtx[_0x4b583e(0x250)]=_0x4b583e(0x293),gameCtx['fillRect'](_0x274043,_0x41cf45,_0x435efa,_0x513923),gameCtx[_0x4b583e(0x25d)]()),gameCtx[_0x4b583e(0x25d)]();}});gameCtx[_0x385e72(0x25d)]();if(!isInGameState){if(isShowingScoreScreen){if(typeof LIFE_ICON_SIZE!==_0x385e72(0x2d8)){gameCtx[_0x385e72(0x26c)]();const _0x38f9ab=gameCanvas[_0x385e72(0x1fc)]/0x2;let _0x21b735=gameCanvas[_0x385e72(0x279)]*0.25+SCORE_SCREEN_VERTICAL_OFFSET+SCORE_SCREEN_LINE_V_SPACING,_0xfc4863=0x0,_0xb4ae6e=_0x21b735+0x0;drawCanvasText(_0x385e72(0x212),_0x38f9ab,_0xb4ae6e-0x1e,SCORE_SCREEN_TEXT_FONT,SCORE_SCREEN_TEXT_COLOR_TOP,_0x385e72(0x296),'middle',!![]);let _0x2b510c=_0xb4ae6e+SCORE_SCREEN_LINE_V_SPACING*1.8;const _0x4f00a2=_0x385e72(0x2af)+EXTRA_LIFE_THRESHOLD_1+_0x385e72(0x23b);gameCtx[_0x385e72(0x1ee)]=SCORE_SCREEN_TEXT_FONT;const _0x2c9816=gameCtx[_0x385e72(0x214)](_0x4f00a2)[_0x385e72(0x1fc)],_0x12693c=LIFE_ICON_SIZE+SCORE_SCREEN_ICON_TEXT_H_SPACING+_0x2c9816;_0xfc4863=_0x38f9ab-_0x12693c/0x2-0x1e;typeof shipImage!==_0x385e72(0x2d8)&&shipImage[_0x385e72(0x2b6)]&&shipImage[_0x385e72(0x1ed)]!==0x0&&gameCtx[_0x385e72(0x237)](shipImage,Math[_0x385e72(0x1fb)](_0xfc4863),Math['round'](_0x2b510c-LIFE_ICON_SIZE/0x2-0x5),LIFE_ICON_SIZE,LIFE_ICON_SIZE);drawCanvasText(_0x4f00a2,_0xfc4863+LIFE_ICON_SIZE+SCORE_SCREEN_ICON_TEXT_H_SPACING,_0x2b510c,SCORE_SCREEN_TEXT_FONT,SCORE_SCREEN_TEXT_COLOR_BONUS,'left','middle',![]);let _0x316460=_0x2b510c+SCORE_SCREEN_LINE_V_SPACING*0x1;const _0x4dfc6f=_0x385e72(0x2d9)+EXTRA_LIFE_THRESHOLD_2+_0x385e72(0x23b);typeof shipImage!==_0x385e72(0x2d8)&&shipImage[_0x385e72(0x2b6)]&&shipImage[_0x385e72(0x1ed)]!==0x0&&gameCtx[_0x385e72(0x237)](shipImage,Math[_0x385e72(0x1fb)](_0xfc4863),Math['round'](_0x316460-LIFE_ICON_SIZE/0x2-0x5),LIFE_ICON_SIZE,LIFE_ICON_SIZE);drawCanvasText(_0x4dfc6f,_0xfc4863+LIFE_ICON_SIZE+SCORE_SCREEN_ICON_TEXT_H_SPACING,_0x316460,SCORE_SCREEN_TEXT_FONT,SCORE_SCREEN_TEXT_COLOR_BONUS,_0x385e72(0x2bd),_0x385e72(0x2a7),![]);let _0xe8cc48=_0x316460+SCORE_SCREEN_LINE_V_SPACING*0x1;const _0xeae5c5=_0x385e72(0x2aa)+RECURRING_EXTRA_LIFE_INTERVAL+_0x385e72(0x23b);typeof shipImage!==_0x385e72(0x2d8)&&shipImage[_0x385e72(0x2b6)]&&shipImage[_0x385e72(0x1ed)]!==0x0&&gameCtx[_0x385e72(0x237)](shipImage,Math[_0x385e72(0x1fb)](_0xfc4863),Math[_0x385e72(0x1fb)](_0xe8cc48-LIFE_ICON_SIZE/0x2-0x5),LIFE_ICON_SIZE,LIFE_ICON_SIZE);drawCanvasText(_0xeae5c5,_0xfc4863+LIFE_ICON_SIZE+SCORE_SCREEN_ICON_TEXT_H_SPACING,_0xe8cc48,SCORE_SCREEN_TEXT_FONT,SCORE_SCREEN_TEXT_COLOR_BONUS,_0x385e72(0x2bd),'middle',![]);let _0x42fda2=_0xe8cc48+SCORE_SCREEN_LINE_V_SPACING*1.8;drawCanvasText('2025\x20\x20\x20Platini2000(c)\x20\x20\x20LTD',_0x38f9ab-0xa,_0x42fda2+0x1e,MENU_SUBTITLE_FONT,MENU_SUBTITLE_COLOR,'center','middle',![]),gameCtx[_0x385e72(0x25d)]();}}else{gameCtx[_0x385e72(0x26c)]();const _0x1acb65=gameCanvas[_0x385e72(0x1fc)],_0x50f511=gameCanvas['height'],_0x5a4860=_0x1acb65/0x2;selectedButtonIndex===-0x1&&(isPlayerSelectMode||isOnePlayerGameTypeSelectMode||isOnePlayerVsAIGameTypeSelectMode||isGameModeSelectMode||isFiringModeSelectMode||!isPlayerSelectMode&&!isOnePlayerGameTypeSelectMode&&!isOnePlayerVsAIGameTypeSelectMode&&!isGameModeSelectMode&&!isFiringModeSelectMode)&&(selectedButtonIndex=0x0);let _0x176a65=MENU_LOGO_APPROX_HEIGHT,_0x243343=_0x176a65*(logoImage['naturalWidth']/logoImage[_0x385e72(0x1ed)]||0x1);typeof logoImage!==_0x385e72(0x2d8)&&logoImage[_0x385e72(0x2b6)]&&logoImage['naturalHeight']!==0x0&&(_0x176a65=logoImage[_0x385e72(0x1ed)]*LOGO_SCALE_FACTOR,_0x243343=logoImage[_0x385e72(0x2b8)]*LOGO_SCALE_FACTOR);const _0x8747d6=getSubtitleApproxHeight(MENU_SUBTITLE_FONT),_0xd5220=_0x176a65+MENU_LOGO_BOTTOM_TO_START_GAP+0x2*MENU_BUTTON_HEIGHT+MENU_BUTTON_V_GAP+MENU_BUTTON_SUBTITLE_V_GAP+_0x8747d6;let _0x416373=(_0x50f511-_0xd5220)/0x2-0x46;_0x416373+=MENU_GENERAL_Y_OFFSET;const _0x1278fd=_0x5a4860-_0x243343/0x2,_0x1d46e8=_0x416373+MENU_LOGO_EXTRA_Y_OFFSET;typeof logoImage!==_0x385e72(0x2d8)&&logoImage[_0x385e72(0x2b6)]&&logoImage[_0x385e72(0x1ed)]!==0x0?gameCtx[_0x385e72(0x237)](logoImage,Math[_0x385e72(0x1fb)](_0x1278fd),Math[_0x385e72(0x1fb)](_0x1d46e8),_0x243343,_0x176a65):drawCanvasText(_0x385e72(0x213),_0x5a4860,_0x1d46e8+_0x176a65/0x2,_0x385e72(0x28c),_0x385e72(0x210));if(isPlayerSelectMode)drawCanvasButton(_0x385e72(0x24c),0x0,selectedButtonIndex===0x0),drawCanvasButton(_0x385e72(0x1ef),0x1,selectedButtonIndex===0x1);else{if(isOnePlayerGameTypeSelectMode)drawCanvasButton('NORMAL\x20GAME',0x0,selectedButtonIndex===0x0),drawCanvasButton('GAME\x20Vs\x20AI',0x1,selectedButtonIndex===0x1);else{if(isOnePlayerVsAIGameTypeSelectMode)drawCanvasButton(_0x385e72(0x22c),0x0,selectedButtonIndex===0x0),drawCanvasButton(_0x385e72(0x2a0),0x1,selectedButtonIndex===0x1);else{if(isGameModeSelectMode)drawCanvasButton(_0x385e72(0x22c),0x0,selectedButtonIndex===0x0),drawCanvasButton(_0x385e72(0x2a0),0x1,selectedButtonIndex===0x1);else isFiringModeSelectMode?(drawCanvasButton(_0x385e72(0x238),0x0,selectedButtonIndex===0x0),drawCanvasButton(_0x385e72(0x268),0x1,selectedButtonIndex===0x1)):(drawCanvasButton(_0x385e72(0x2cd),0x0,selectedButtonIndex===0x0),drawCanvasButton(_0x385e72(0x266),0x1,selectedButtonIndex===0x1));}}}const _0x4fcb53=getMenuButtonRect(0x1);let _0x48012a;_0x4fcb53?_0x48012a=_0x4fcb53['y']+_0x4fcb53[_0x385e72(0x279)]+MENU_BUTTON_SUBTITLE_V_GAP+_0x8747d6/0x2:_0x48012a=_0x416373+_0x176a65+MENU_LOGO_BOTTOM_TO_START_GAP+0x2*MENU_BUTTON_HEIGHT+MENU_BUTTON_V_GAP+MENU_BUTTON_SUBTITLE_V_GAP+_0x8747d6/0x2,drawCanvasText(MENU_SUBTITLE_TEXT,_0x5a4860-0x1,Math[_0x385e72(0x1fb)](_0x48012a),MENU_SUBTITLE_FONT,MENU_SUBTITLE_COLOR,_0x385e72(0x296),_0x385e72(0x2a7),!![]),gameCtx['restore']();}}else{const _0x5188cf=gameOverSequenceStartTime===0x0&&!isShowingPlayerGameOverMessage&&!isShowingResultsScreen;if(_0x5188cf||_0x4618cc){gameCtx[_0x385e72(0x26c)]();let _0x18bf93=!showReadyMessage&&!showCsHitsMessage&&!showPerfectMessage&&!showCsBonusScoreMessage&&!showCSClearMessage&&!isCsCompletionDelayActive&&!isShowingIntro&&!isShowingCaptureMessage&&!isShowingCoopPlayersReady&&!_0x4618cc;_0x18bf93&&(bullets[_0x385e72(0x22e)](_0x3f5a26=>{const _0x5cf6d4=_0x385e72;_0x3f5a26&&(typeof bulletImage!==_0x5cf6d4(0x2d8)&&bulletImage[_0x5cf6d4(0x2b6)]?gameCtx[_0x5cf6d4(0x237)](bulletImage,Math[_0x5cf6d4(0x1fb)](_0x3f5a26['x']),Math[_0x5cf6d4(0x1fb)](_0x3f5a26['y']),_0x3f5a26[_0x5cf6d4(0x1fc)],_0x3f5a26['height']):(gameCtx[_0x5cf6d4(0x21d)]=_0x5cf6d4(0x2ad),gameCtx[_0x5cf6d4(0x2c6)](Math[_0x5cf6d4(0x1fb)](_0x3f5a26['x']),Math[_0x5cf6d4(0x1fb)](_0x3f5a26['y']),_0x3f5a26[_0x5cf6d4(0x1fc)],_0x3f5a26['height'])));}),enemyBullets[_0x385e72(0x22e)](_0x5d459e=>{const _0x45bba2=_0x385e72;_0x5d459e&&(typeof enemyBulletImage!=='undefined'&&enemyBulletImage['complete']&&enemyBulletImage['naturalWidth']>0x0?gameCtx[_0x45bba2(0x237)](enemyBulletImage,Math[_0x45bba2(0x1fb)](_0x5d459e['x']),Math[_0x45bba2(0x1fb)](_0x5d459e['y']),_0x5d459e['width'],_0x5d459e['height']):(gameCtx[_0x45bba2(0x21d)]=_0x45bba2(0x209),gameCtx[_0x45bba2(0x2c6)](Math[_0x45bba2(0x1fb)](_0x5d459e['x']),Math[_0x45bba2(0x1fb)](_0x5d459e['y']),_0x5d459e[_0x45bba2(0x1fc)],_0x5d459e['height'])));}));!isShowingCoopPlayersReady&&enemies[_0x385e72(0x22e)](_0x256f11=>{const _0x3cc6ad=_0x385e72;if(_0x256f11&&_0x256f11['y']<gameCanvas[_0x3cc6ad(0x279)]+_0x256f11['height']*0x2&&_0x256f11['y']>-_0x256f11[_0x3cc6ad(0x279)]*0x2){gameCtx['save']();try{let _0x31cd30=null,_0x47bc95=_0x3cc6ad(0x210);const _0x21f9c2=!isPaused&&_0x143c66%(ENEMY_ANIMATION_INTERVAL_MS*0x2)>=ENEMY_ANIMATION_INTERVAL_MS;if(_0x256f11[_0x3cc6ad(0x211)]===ENEMY3_TYPE)_0x31cd30=_0x21f9c2?bossGalagaImage2:bossGalagaImage,_0x47bc95=_0x3cc6ad(0x244);else _0x256f11[_0x3cc6ad(0x211)]===ENEMY2_TYPE?(_0x31cd30=_0x21f9c2?butterflyImage2:butterflyImage,_0x47bc95='cyan'):(_0x31cd30=_0x21f9c2?beeImage2:beeImage,_0x47bc95='red');const _0x3bc25b=Math[_0x3cc6ad(0x1fb)](_0x256f11['x']),_0x1c16b7=Math['round'](_0x256f11['y']),_0x58e33f=_0x256f11['width'],_0x4b9323=_0x256f11[_0x3cc6ad(0x279)],_0x331d76=_0x256f11[_0x3cc6ad(0x211)]===ENEMY3_TYPE&&_0x256f11['isDamaged'],_0x59893f=!isPaused&&(_0x256f11[_0x3cc6ad(0x28a)]==='attacking'||_0x256f11[_0x3cc6ad(0x28a)]===_0x3cc6ad(0x232)||_0x256f11[_0x3cc6ad(0x28a)]===_0x3cc6ad(0x2a1))&&_0x256f11['y']>-_0x256f11['height']*0.5&&(Math['abs'](_0x256f11['velocityX'])>0.1||Math['abs'](_0x256f11[_0x3cc6ad(0x2b2)])>0.1),_0x1e2d04=_0x256f11['state']===_0x3cc6ad(0x288)&&_0x256f11['type']===ENEMY3_TYPE&&_0x256f11['hasCapturedShip']&&_0x256f11[_0x3cc6ad(0x1f2)]&&typeof _0x256f11[_0x3cc6ad(0x269)]==='number'&&typeof _0x256f11[_0x3cc6ad(0x29d)]===_0x3cc6ad(0x22d)&&typeof _0x256f11[_0x3cc6ad(0x27a)]===_0x3cc6ad(0x22d),_0x5dbb7b=_0x256f11['state']!==_0x3cc6ad(0x288)&&_0x256f11['type']===ENEMY3_TYPE&&_0x256f11['hasCapturedShip']&&_0x256f11[_0x3cc6ad(0x1f2)],_0x345668=_0x1e2d04||_0x5dbb7b?_0x256f11[_0x3cc6ad(0x1f2)][_0x3cc6ad(0x1fc)]:0x0,_0x3e9b24=_0x1e2d04||_0x5dbb7b?_0x256f11[_0x3cc6ad(0x1f2)]['height']:0x0;let _0x134d5f=0x0,_0x338e53=0x0;if(_0x1e2d04)_0x134d5f=Math[_0x3cc6ad(0x1fb)](_0x256f11[_0x3cc6ad(0x269)]),_0x338e53=Math['round'](_0x256f11[_0x3cc6ad(0x29d)]);else _0x5dbb7b&&(_0x134d5f=Math[_0x3cc6ad(0x1fb)](_0x256f11['x']+CAPTURED_SHIP_OFFSET_X),_0x338e53=Math['round'](_0x256f11['y']+CAPTURED_SHIP_OFFSET_Y));const _0x324120=(_0x62dd37,_0x3092de,_0xa07136,_0x52c31b)=>{const _0x111f9f=_0x3cc6ad;typeof _0x31cd30!==_0x111f9f(0x2d8)&&_0x31cd30[_0x111f9f(0x2b6)]&&_0x31cd30[_0x111f9f(0x1ed)]!==0x0?gameCtx[_0x111f9f(0x237)](_0x31cd30,_0x62dd37,_0x3092de,_0xa07136,_0x52c31b):(gameCtx['fillStyle']=_0x47bc95,gameCtx[_0x111f9f(0x2c6)](_0x62dd37,_0x3092de,_0xa07136,_0x52c31b)),_0x331d76&&(gameCtx['globalCompositeOperation']='source-atop',gameCtx[_0x111f9f(0x21d)]=_0x111f9f(0x23a),gameCtx['fillRect'](_0x62dd37,_0x3092de,_0xa07136,_0x52c31b),gameCtx[_0x111f9f(0x250)]=_0x111f9f(0x223));};if(_0x59893f){const _0x394e9c=_0x3bc25b+_0x58e33f/0x2,_0x260d3c=_0x1c16b7+_0x4b9323/0x2;gameCtx[_0x3cc6ad(0x2b4)](_0x394e9c,_0x260d3c);let _0x48a451=Math[_0x3cc6ad(0x221)](_0x256f11[_0x3cc6ad(0x2b2)],_0x256f11[_0x3cc6ad(0x257)])+Math['PI']/0x2;if(_0x256f11[_0x3cc6ad(0x211)]===ENEMY3_TYPE&&_0x256f11['state']==='attacking')_0x48a451+=Math['PI'];gameCtx[_0x3cc6ad(0x236)](_0x48a451),_0x324120(-_0x58e33f/0x2,-_0x4b9323/0x2,_0x58e33f,_0x4b9323);if(_0x5dbb7b&&typeof shipImage!==_0x3cc6ad(0x2d8)&&shipImage[_0x3cc6ad(0x2b6)]){gameCtx[_0x3cc6ad(0x2b9)]=0.8;const _0x89fb92=CAPTURED_SHIP_OFFSET_X,_0x4ae749=CAPTURED_SHIP_OFFSET_Y;gameCtx[_0x3cc6ad(0x237)](shipImage,_0x89fb92-_0x345668/0x2,_0x4ae749-_0x3e9b24/0x2,_0x345668,_0x3e9b24),gameCtx[_0x3cc6ad(0x2b9)]=0x1,gameCtx['save'](),gameCtx[_0x3cc6ad(0x21d)]=CAPTURED_SHIP_TINT_COLOR,gameCtx['globalCompositeOperation']=_0x3cc6ad(0x293),gameCtx['fillRect'](_0x89fb92-_0x345668/0x2,_0x4ae749-_0x3e9b24/0x2,_0x345668,_0x3e9b24),gameCtx[_0x3cc6ad(0x25d)]();}gameCtx[_0x3cc6ad(0x236)](-_0x48a451),gameCtx[_0x3cc6ad(0x2b4)](-_0x394e9c,-_0x260d3c);}else _0x324120(_0x3bc25b,_0x1c16b7,_0x58e33f,_0x4b9323),_0x5dbb7b&&typeof shipImage!==_0x3cc6ad(0x2d8)&&shipImage['complete']&&(gameCtx[_0x3cc6ad(0x2b9)]=0.8,gameCtx[_0x3cc6ad(0x237)](shipImage,_0x134d5f,_0x338e53,_0x345668,_0x3e9b24),gameCtx[_0x3cc6ad(0x2b9)]=0x1,gameCtx['save'](),gameCtx['fillStyle']=CAPTURED_SHIP_TINT_COLOR,gameCtx[_0x3cc6ad(0x250)]=_0x3cc6ad(0x293),gameCtx[_0x3cc6ad(0x2c6)](_0x134d5f,_0x338e53,_0x345668,_0x3e9b24),gameCtx[_0x3cc6ad(0x25d)]());if(_0x1e2d04&&typeof shipImage!==_0x3cc6ad(0x2d8)&&shipImage[_0x3cc6ad(0x2b6)]){gameCtx[_0x3cc6ad(0x26c)]();const _0x26b927=_0x134d5f+_0x345668/0x2,_0x2258b6=_0x338e53+_0x3e9b24/0x2;gameCtx[_0x3cc6ad(0x2b4)](_0x26b927,_0x2258b6),gameCtx[_0x3cc6ad(0x236)](_0x256f11['captureAnimationRotation']),gameCtx[_0x3cc6ad(0x2b9)]=0.8,gameCtx['drawImage'](shipImage,-_0x345668/0x2,-_0x3e9b24/0x2,_0x345668,_0x3e9b24),gameCtx['globalAlpha']=0x1,gameCtx[_0x3cc6ad(0x26c)](),gameCtx[_0x3cc6ad(0x21d)]=CAPTURED_SHIP_TINT_COLOR,gameCtx['globalCompositeOperation']=_0x3cc6ad(0x293),gameCtx[_0x3cc6ad(0x2c6)](-_0x345668/0x2,-_0x3e9b24/0x2,_0x345668,_0x3e9b24),gameCtx[_0x3cc6ad(0x25d)](),gameCtx[_0x3cc6ad(0x25d)]();}}catch(_0x389147){console[_0x3cc6ad(0x230)]('Error\x20drawing\x20enemy:',_0x389147),gameCtx['fillStyle']=_0x3cc6ad(0x287),gameCtx[_0x3cc6ad(0x2c6)](Math[_0x3cc6ad(0x1fb)](_0x256f11['x']),Math[_0x3cc6ad(0x1fb)](_0x256f11['y']),_0x256f11['width'],_0x256f11[_0x3cc6ad(0x279)]);}finally{gameCtx['restore']();}}});if(captureBeamActive&&capturingBossId&&captureBeamProgress>0x0&&!isShowingCoopPlayersReady){gameCtx[_0x385e72(0x26c)]();const _0x462cda=0.4+(Math[_0x385e72(0x215)](_0x143c66*CAPTURE_BEAM_PULSE_SPEED)+0x1)/0x2*0.6,_0x209987=captureBeamProgress;gameCtx[_0x385e72(0x2b9)]=_0x209987*_0x462cda;const _0x57704b=enemies[_0x385e72(0x274)](_0x5991e8=>_0x5991e8['id']===capturingBossId);if(_0x57704b){const _0x2628b2=_0x57704b['x']+BOSS_WIDTH/0x2,_0x279292=_0x57704b['y']+BOSS_HEIGHT,_0x4620b2=gameCanvas[_0x385e72(0x279)]-LIFE_ICON_MARGIN_BOTTOM-LIFE_ICON_SIZE-0xa,_0x570f85=BOSS_WIDTH*CAPTURE_BEAM_WIDTH_TOP_FACTOR,_0x3333b2=SHIP_WIDTH*CAPTURE_BEAM_WIDTH_BOTTOM_FACTOR;if(_0x279292<_0x4620b2){const _0xa32e10=gameCtx[_0x385e72(0x2db)](_0x2628b2,_0x279292,_0x2628b2,_0x4620b2);_0xa32e10['addColorStop'](0x0,CAPTURE_BEAM_COLOR_START),_0xa32e10[_0x385e72(0x200)](0x1,CAPTURE_BEAM_COLOR_END),gameCtx['fillStyle']=_0xa32e10,gameCtx[_0x385e72(0x267)](),gameCtx[_0x385e72(0x2cf)](_0x2628b2-_0x570f85/0x2,_0x279292),gameCtx[_0x385e72(0x241)](_0x2628b2+_0x570f85/0x2,_0x279292),gameCtx['lineTo'](_0x2628b2+_0x3333b2/0x2,_0x4620b2),gameCtx[_0x385e72(0x241)](_0x2628b2-_0x3333b2/0x2,_0x4620b2),gameCtx[_0x385e72(0x25c)](),gameCtx[_0x385e72(0x2a6)]();}}gameCtx[_0x385e72(0x25d)]();}!isShowingCoopPlayersReady&&(renderExplosions(),renderFloatingScores(),renderHitSparks());let _0x39fec8=![];const _0xc98798=gameCanvas[_0x385e72(0x279)]/0x2,_0x3094b1=gameCanvas[_0x385e72(0x1fc)]/0x2,_0x2b2747=_0x385e72(0x2d2)+challengingStageEnemiesHit,_0x2f1bfc=_0x385e72(0x1e7)+scoreEarnedThisCS,_0xb52c3e=RESULTS_LINE_V_SPACING_SINGLE;if(isPaused)drawCanvasText(_0x385e72(0x272),_0x3094b1,_0xc98798,PAUSE_TEXT_FONT,PAUSE_TEXT_COLOR,_0x385e72(0x296),_0x385e72(0x2a7),PAUSE_TEXT_SHADOW),_0x39fec8=!![];else{if(isTwoPlayerMode&&selectedGameMode===_0x385e72(0x297)&&(isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage)){const _0x21d965=gameCanvas[_0x385e72(0x279)]*0.45;if(isPlayer1ShowingGameOverMessage&&!isPlayer2ShowingGameOverMessage){const _0x154f74=isCoopAIDemoActive?'DEMO-1':isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_COOP'?_0x385e72(0x24c):_0x385e72(0x24c);drawCanvasText(_0x154f74[_0x385e72(0x270)](),_0x3094b1,_0x21d965-_0xb52c3e/0x2,INTRO_TEXT_FONT,INTRO_TEXT_COLOR_NORMAL,'center',_0x385e72(0x2a7),!![]),drawCanvasText(_0x385e72(0x2c8),_0x3094b1,_0x21d965+_0xb52c3e/0x2,INTRO_TEXT_FONT,INTRO_TEXT_COLOR_NORMAL,_0x385e72(0x296),_0x385e72(0x2a7),!![]),_0x39fec8=!![];}else{if(isPlayer2ShowingGameOverMessage&&!isPlayer1ShowingGameOverMessage){const _0x35ad53=isCoopAIDemoActive?_0x385e72(0x2d6):isPlayerTwoAI?'AI\x20PLAYER\x202':_0x385e72(0x1ef);drawCanvasText(_0x35ad53[_0x385e72(0x270)](),_0x3094b1,_0x21d965-_0xb52c3e/0x2,INTRO_TEXT_FONT,INTRO_TEXT_COLOR_NORMAL,_0x385e72(0x296),'middle',!![]),drawCanvasText(_0x385e72(0x2c8),_0x3094b1,_0x21d965+_0xb52c3e/0x2,INTRO_TEXT_FONT,INTRO_TEXT_COLOR_NORMAL,'center',_0x385e72(0x2a7),!![]),_0x39fec8=!![];}}}else{if(isShowingCoopPlayersReady){const _0xfe3fac=isCoopAIDemoActive?_0x385e72(0x2be):isPlayerTwoAI&&selectedGameMode===_0x385e72(0x297)?_0x385e72(0x25e):_0x385e72(0x25a);drawCanvasText(_0xfe3fac,_0x3094b1,_0xc98798,INTRO_TEXT_FONT,INTRO_TEXT_COLOR_NORMAL,_0x385e72(0x296),'middle',!![]),_0x39fec8=!![];}else{if(isShowingCaptureMessage)drawCanvasText(_0x385e72(0x29f),_0x3094b1,_0xc98798,INTRO_TEXT_FONT,_0x385e72(0x259),'center',_0x385e72(0x2a7),!![]),_0x39fec8=!![];else{if(!isManualControl&&isInGameState&&isShowingDemoText){const _0xf7725e=isShowingIntro||showCsBonusScoreMessage||showPerfectMessage||showCsHitsMessage||showCSClearMessage||showExtraLifeMessage||showReadyMessage||isCsCompletionDelayActive;if(!_0xf7725e){const _0x41c4e4=DEMO_TEXT_BLINK_CYCLE_MS,_0x88a787=DEMO_TEXT_BLINK_ON_MS;_0x143c66%_0x41c4e4<_0x88a787&&(drawCanvasText(_0x385e72(0x212),_0x3094b1,_0xc98798,DEMO_TEXT_LINE1_FONT,DEMO_TEXT_COLOR,_0x385e72(0x296),_0x385e72(0x2a7),!![]),_0x39fec8=!![]);}}}}}}if(!_0x39fec8){if(showCsBonusScoreMessage||showPerfectMessage||showCsHitsMessage)drawCanvasText(_0x2b2747,_0x3094b1,_0xc98798,INTRO_TEXT_FONT,CS_HITS_TEXT_COLOR,'center',_0x385e72(0x2a7),!![]),_0x39fec8=!![],(showCsBonusScoreMessage||showPerfectMessage)&&drawCanvasText('PERFECT\x20!',_0x3094b1,_0xc98798-CS_MESSAGE_VERTICAL_OFFSET,INTRO_TEXT_FONT,PERFECT_TEXT_COLOR,'center',_0x385e72(0x2a7),!![]),showCsBonusScoreMessage&&drawCanvasText(_0x385e72(0x205),_0x3094b1,_0xc98798+CS_MESSAGE_VERTICAL_OFFSET,INTRO_TEXT_FONT,CS_BONUS_SCORE_TEXT_COLOR,_0x385e72(0x296),_0x385e72(0x2a7),!![]);else{if(showCSClearMessage)drawCanvasText('STAGE\x20CLEARED',_0x3094b1,_0xc98798-CS_MESSAGE_VERTICAL_OFFSET,INTRO_TEXT_FONT,CS_CLEAR_TEXT_COLOR,_0x385e72(0x296),_0x385e72(0x2a7),!![]),_0x39fec8=!![],showCsHitsForClearMessage&&drawCanvasText(_0x2b2747,_0x3094b1,_0xc98798,INTRO_TEXT_FONT,CS_HITS_TEXT_COLOR,_0x385e72(0x296),_0x385e72(0x2a7),!![]),showCsScoreForClearMessage&&drawCanvasText(_0x2f1bfc,_0x3094b1,_0xc98798+CS_MESSAGE_VERTICAL_OFFSET,INTRO_TEXT_FONT,CS_CLEAR_SCORE_TEXT_COLOR,_0x385e72(0x296),_0x385e72(0x2a7),!![]);else{if(showExtraLifeMessage)drawCanvasText('EXTRA\x20LIFE',_0x3094b1,_0xc98798,INTRO_TEXT_FONT,EXTRA_LIFE_TEXT_COLOR,'center','middle',!![]),_0x39fec8=!![];else{if(isShowingIntro&&!isShowingCoopPlayersReady){let _0x2c94aa='',_0x338916=INTRO_TEXT_COLOR_NORMAL;if(introStep===0x1){if(!(selectedGameMode===_0x385e72(0x297)&&level===0x1)){_0x2c94aa=!isManualControl&&!isCoopAIDemoActive&&!isPlayerTwoAI?_0x385e72(0x29a):isCoopAIDemoActive?'DEMO-1':isTwoPlayerMode&&selectedGameMode===_0x385e72(0x27c)&&!isPlayerTwoAI?_0x385e72(0x203)+currentPlayer:isPlayerTwoAI&&selectedOnePlayerGameVariant==='1P_VS_AI_NORMAL'?_0x385e72(0x203)+currentPlayer:_0x385e72(0x24c);if(isManualControl&&isPlayerTwoAI&&selectedGameMode===_0x385e72(0x27c)&&currentPlayer===0x2)_0x2c94aa='AI\x20PLAYER\x202';}}else{if(introStep===0x2)_0x2c94aa=_0x385e72(0x254)+level;else introStep===0x3&&(_0x2c94aa=_0x385e72(0x225),_0x338916=INTRO_TEXT_COLOR_CS_TEXT,!csIntroSoundPlayed&&(playSound(_0x385e72(0x2bf),![],0.4),csIntroSoundPlayed=!![]));}_0x2c94aa&&(drawCanvasText(_0x2c94aa,_0x3094b1,_0xc98798,INTRO_TEXT_FONT,_0x338916,_0x385e72(0x296),_0x385e72(0x2a7),!![]),_0x39fec8=!![]);}else showReadyMessage&&(drawCanvasText(_0x385e72(0x275),_0x3094b1,_0xc98798,INTRO_TEXT_FONT,READY_TEXT_COLOR,_0x385e72(0x296),'middle',!![]),_0x39fec8=!![]);}}}}gameCtx[_0x385e72(0x25d)]();}else{if(isShowingPlayerGameOverMessage&&selectedGameMode==='normal'){const _0x2da795=isPlayerTwoAI&&playerWhoIsGameOver===0x2?'AI\x20PLAYER\x202':_0x385e72(0x203)+playerWhoIsGameOver,_0x439f8a=RESULTS_LINE_V_SPACING_SINGLE,_0x3adc68=gameCanvas[_0x385e72(0x279)]*0.45;drawCanvasText(_0x2da795,gameCanvas[_0x385e72(0x1fc)]/0x2,_0x3adc68-_0x439f8a/0x2,INTRO_TEXT_FONT,INTRO_TEXT_COLOR_NORMAL,_0x385e72(0x296),_0x385e72(0x2a7),!![]),drawCanvasText(_0x385e72(0x2c8),gameCanvas[_0x385e72(0x1fc)]/0x2,_0x3adc68+_0x439f8a/0x2,INTRO_TEXT_FONT,INTRO_TEXT_COLOR_NORMAL,_0x385e72(0x296),_0x385e72(0x2a7),!![]);}else{if(gameOverSequenceStartTime>0x0){const _0x35e746=_0x143c66-gameOverSequenceStartTime,_0x94bdc1=_0x35e746<GAME_OVER_DURATION,_0x5eaf97=_0x35e746>=GAME_OVER_DURATION;if(_0x94bdc1&&!isTwoPlayerMode&&!isCoopAIDemoActive&&!isPlayerTwoAI&&selectedGameMode!=='coop')drawCanvasText(_0x385e72(0x2c8),gameCanvas[_0x385e72(0x1fc)]/0x2,gameCanvas[_0x385e72(0x279)]/0x2,GAME_OVER_FONT,GAME_OVER_COLOR,_0x385e72(0x296),_0x385e72(0x2a7),GAME_OVER_SHADOW);else{if(_0x94bdc1&&isCoopAIDemoActive&&player1Lives<=0x0&&player2Lives<=0x0)drawCanvasText('GAME\x20OVER',gameCanvas[_0x385e72(0x1fc)]/0x2,gameCanvas['height']/0x2,GAME_OVER_FONT,GAME_OVER_COLOR,_0x385e72(0x296),_0x385e72(0x2a7),GAME_OVER_SHADOW);else{if(_0x5eaf97){gameCtx[_0x385e72(0x26c)]();const _0x2e049e=gameCanvas[_0x385e72(0x1fc)]/0x2,_0x1051f2=gameCanvas[_0x385e72(0x1fc)];let _0x5b541c=RESULTS_START_Y+RESULTS_LINE_V_SPACING_SINGLE;const _0x50e7d4=(_0x125580,_0x49e160,_0x22d907,_0x38c1d5,_0x956248,_0x13cc80,_0x2fdc4d,_0x309958)=>{const _0x425b71=_0x385e72;let _0x336ea9=_0x309958;const _0x58235f=RESULTS_VALUE_COLOR_YELLOW,_0x55e450=RESULTS_VALUE_COLOR_CYAN;drawCanvasText('-\x20RESULTS\x20-',_0x2fdc4d,_0x336ea9,INTRO_TEXT_FONT,RESULTS_HEADER_COLOR,'center',_0x425b71(0x2c7),!![]),_0x336ea9+=getSubtitleApproxHeight(INTRO_TEXT_FONT)+RESULTS_LINE_V_SPACING_SINGLE,drawCanvasText(_0x125580,_0x2fdc4d,_0x336ea9,INTRO_TEXT_FONT,_0x425b71(0x209),_0x425b71(0x296),'middle',![]),_0x336ea9+=RESULTS_LINE_V_SPACING_SINGLE,drawCanvasText(_0x425b71(0x234),_0x2fdc4d,_0x336ea9,INTRO_TEXT_FONT,_0x58235f,_0x425b71(0x296),_0x425b71(0x2a7),![]),_0x336ea9+=RESULTS_LINE_V_SPACING_SINGLE*0.8,drawCanvasText(_0x13cc80[_0x425b71(0x239)](),_0x2fdc4d,_0x336ea9,INTRO_TEXT_FONT,_0x55e450,'center',_0x425b71(0x2a7),![]),_0x336ea9+=RESULTS_LINE_V_SPACING_SINGLE,drawCanvasText('SCORE',_0x2fdc4d,_0x336ea9,INTRO_TEXT_FONT,RESULTS_VALUE_COLOR_YELLOW,_0x425b71(0x296),'middle',![]),_0x336ea9+=RESULTS_LINE_V_SPACING_SINGLE*0.8,drawCanvasText(_0x49e160[_0x425b71(0x239)](),_0x2fdc4d,_0x336ea9,INTRO_TEXT_FONT,RESULTS_VALUE_COLOR_CYAN,'center',_0x425b71(0x2a7),![]),_0x336ea9+=RESULTS_LINE_V_SPACING_SINGLE,drawCanvasText(_0x425b71(0x208),_0x2fdc4d,_0x336ea9,INTRO_TEXT_FONT,RESULTS_VALUE_COLOR_YELLOW,_0x425b71(0x296),_0x425b71(0x2a7),![]),_0x336ea9+=RESULTS_LINE_V_SPACING_SINGLE*0.8,drawCanvasText(_0x22d907[_0x425b71(0x239)](),_0x2fdc4d,_0x336ea9,INTRO_TEXT_FONT,RESULTS_VALUE_COLOR_CYAN,_0x425b71(0x296),_0x425b71(0x2a7),![]),_0x336ea9+=RESULTS_LINE_V_SPACING_SINGLE,drawCanvasText(_0x425b71(0x261),_0x2fdc4d,_0x336ea9,INTRO_TEXT_FONT,RESULTS_VALUE_COLOR_YELLOW,'center','middle',![]),_0x336ea9+=RESULTS_LINE_V_SPACING_SINGLE*0.8,drawCanvasText(_0x38c1d5[_0x425b71(0x239)](),_0x2fdc4d,_0x336ea9,INTRO_TEXT_FONT,RESULTS_VALUE_COLOR_CYAN,'center',_0x425b71(0x2a7),![]),_0x336ea9+=RESULTS_LINE_V_SPACING_SINGLE,drawCanvasText('HIT-MISS-RATIO',_0x2fdc4d,_0x336ea9,INTRO_TEXT_FONT,RESULTS_VALUE_COLOR_YELLOW,_0x425b71(0x296),'middle',![]),_0x336ea9+=RESULTS_LINE_V_SPACING_SINGLE*0.8,drawCanvasText(_0x956248,_0x2fdc4d,_0x336ea9,INTRO_TEXT_FONT,RESULTS_VALUE_COLOR_CYAN,_0x425b71(0x296),'middle',![]),_0x336ea9+=RESULTS_LINE_V_SPACING_SINGLE*1.5-0xa,drawCanvasText('Platini2000(c)\x20LTD',_0x2fdc4d,_0x336ea9,RESULTS_FOOTER_FONT,RESULTS_FOOTER_COLOR,'center','middle',![]);};if(isTwoPlayerMode||wasLastGameAIDemo&&isPlayerTwoAI){const _0x46811b=player1ShotsFired||0x0,_0x17d6d5=player1EnemiesHit||0x0,_0x58a81c=_0x46811b>0x0?Math[_0x385e72(0x1fb)](_0x17d6d5/_0x46811b*0x64)+'%':'0%',_0x2c08b8=player2ShotsFired||0x0,_0x1b0651=player2EnemiesHit||0x0,_0x53d333=_0x2c08b8>0x0?Math[_0x385e72(0x1fb)](_0x1b0651/_0x2c08b8*0x64)+'%':'0%',_0x54c68f=_0x1051f2*0.4,_0x33f948=_0x1051f2*0.1,_0x3948f2=_0x2e049e-_0x33f948/0x2-_0x54c68f/0x2+_0x54c68f*0.1,_0x53b854=_0x2e049e+_0x33f948/0x2+_0x54c68f/0x2-_0x54c68f*0.1;let _0x51a063;if(selectedOnePlayerGameVariant===_0x385e72(0x207)&&!wasLastGameAIDemo)_0x51a063='PLAYER\x201';else{if(isCoopAIDemoActive&&wasLastGameAIDemo)_0x51a063='DEMO-1';else!isManualControl&&wasLastGameAIDemo&&!isCoopAIDemoActive&&!isPlayerTwoAI?_0x51a063='DEMO':_0x51a063=_0x385e72(0x24c);}let _0x159c56=_0x385e72(0x1ef);if(isCoopAIDemoActive&&wasLastGameAIDemo)_0x159c56=_0x385e72(0x2d6);else{if(isPlayerTwoAI&&selectedOnePlayerGameVariant===_0x385e72(0x207)&&!wasLastGameAIDemo)_0x159c56=_0x385e72(0x1e6);else{if(isPlayerTwoAI&&wasLastGameAIDemo)_0x159c56=_0x385e72(0x1e6);else isPlayerTwoAI&&!wasLastGameAIDemo&&(_0x159c56=_0x385e72(0x1e6));}}_0x50e7d4(_0x51a063,player1Score,_0x46811b,_0x17d6d5,_0x58a81c,player1MaxLevelReached,_0x3948f2,_0x5b541c),_0x50e7d4(_0x159c56,player2Score,_0x2c08b8,_0x1b0651,_0x53d333,player2MaxLevelReached,_0x53b854,_0x5b541c);let _0x23a372=0x0,_0x377107='';if(player1Score>player2Score)_0x23a372=0x1,_0x377107=_0x51a063;else player2Score>player1Score&&(_0x23a372=0x2,_0x377107=_0x159c56);if(_0x23a372>0x0){let _0x57bcbd=_0x5b541c+getSubtitleApproxHeight(INTRO_TEXT_FONT)+RESULTS_LINE_V_SPACING_SINGLE*0x2;drawCanvasText(_0x377107,_0x2e049e,_0x57bcbd,INTRO_TEXT_FONT,_0x385e72(0x209),_0x385e72(0x296),_0x385e72(0x2a7),!![]),drawCanvasText('WINS',_0x2e049e,_0x57bcbd+RESULTS_LINE_V_SPACING_SINGLE,INTRO_TEXT_FONT,RESULTS_VALUE_COLOR_CYAN,'center',_0x385e72(0x2a7),!![]);}}else{const _0xf49251=player1ShotsFired||0x0,_0x531f10=player1EnemiesHit||0x0,_0x5b8628=!isManualControl&&wasLastGameAIDemo&&!isCoopAIDemoActive&&!isPlayerTwoAI?score:player1Score,_0x27c4f8=!isManualControl&&wasLastGameAIDemo&&!isCoopAIDemoActive&&!isPlayerTwoAI?level:player1MaxLevelReached,_0x416333=_0xf49251>0x0?Math[_0x385e72(0x1fb)](_0x531f10/_0xf49251*0x64)+'%':'0%',_0x4ad903=!isManualControl&&wasLastGameAIDemo&&!isCoopAIDemoActive&&!isPlayerTwoAI?'DEMO':_0x385e72(0x24c);_0x50e7d4(_0x4ad903,_0x5b8628,_0xf49251,_0x531f10,_0x416333,_0x27c4f8,_0x2e049e,_0x5b541c);}gameCtx['restore']();}}}}}}}}catch(_0x297962){console[_0x385e72(0x230)](_0x385e72(0x299),_0x297962,_0x297962['stack']);if(mainLoopId)cancelAnimationFrame(mainLoopId);mainLoopId=null;try{gameCtx&&gameCanvas&&(gameCtx[_0x385e72(0x21d)]=_0x385e72(0x259),gameCtx[_0x385e72(0x1ee)]=_0x385e72(0x282),gameCtx[_0x385e72(0x1ec)]=_0x385e72(0x296),gameCtx[_0x385e72(0x24e)](_0x385e72(0x20c),gameCanvas[_0x385e72(0x1fc)]/0x2,gameCanvas[_0x385e72(0x279)]/0x2));}catch(_0x135bb0){}try{showMenuState();}catch(_0x22f4cc){}}}function hideCursor(){const _0x1dbc6e=_0x391e46;gameCanvas&&(gameCanvas[_0x1dbc6e(0x2ac)][_0x1dbc6e(0x289)]=_0x1dbc6e(0x23d)),mouseIdleTimerId=null;}function handleCanvasMouseMove(_0x14ca31){const _0x16987c=_0x391e46;if(!gameCanvas)return;if(isTouchActiveGame&&isInGameState)return;clearTimeout(mouseIdleTimerId),mouseIdleTimerId=null;let _0x415955=_0x16987c(0x264);const _0x1921b3=!isInGameState&&!isShowingScoreScreen;_0x1921b3?(typeof handleCanvasTouch===_0x16987c(0x294)&&handleCanvasTouch(_0x14ca31,_0x16987c(0x2b7)),selectedButtonIndex!==-0x1&&(_0x415955=_0x16987c(0x249))):selectedButtonIndex=-0x1;gameCanvas[_0x16987c(0x2ac)]['cursor']=_0x415955,mouseIdleTimerId=setTimeout(hideCursor,0x7d0);if(!isInGameState){const _0x41c46b=Date[_0x16987c(0x2d0)]();_0x41c46b-lastMouseMoveResetTime>0x1f4&&(typeof startAutoDemoTimer==='function'&&selectedButtonIndex===-0x1&&startAutoDemoTimer(),lastMouseMoveResetTime=_0x41c46b);}}function mainLoop(_0x384f63){const _0x2539be=_0x391e46;try{drawStars();retroGridCtx&&retroGridCanvas&&drawRetroGrid();pollControllerForMenu();if(isInGameState&&!isPaused&&!isShowingPortraitMessage){if(!isManualControl&&connectedGamepadIndex!==null){const _0x3d7353=navigator[_0x2539be(0x1eb)]();if(_0x3d7353?.[connectedGamepadIndex]){const _0x58f8fe=_0x3d7353[connectedGamepadIndex],_0x5863c8=_0x58f8fe['buttons']['map'](_0xa86ea4=>_0xa86ea4[_0x2539be(0x277)]);let _0x20eab6=![];for(let _0x475bd8=0x0;_0x475bd8<_0x5863c8[_0x2539be(0x21a)];_0x475bd8++){if(_0x475bd8===PS5_BUTTON_R1||_0x475bd8===PS5_BUTTON_TRIANGLE)continue;if(_0x5863c8[_0x475bd8]&&!(previousDemoButtonStates[_0x475bd8]??![])){_0x20eab6=!![];break;}}if(_0x20eab6){isCoopAIDemoActive=![],isPlayerTwoAI=![],showMenuState(),requestAnimationFrame(mainLoop);return;}previousDemoButtonStates=_0x5863c8['slice']();}else{if(previousDemoButtonStates['length']>0x0)previousDemoButtonStates=[];}}else{if(previousDemoButtonStates[_0x2539be(0x21a)]>0x0)previousDemoButtonStates=[];}if(typeof window[_0x2539be(0x206)]===_0x2539be(0x294))window['runSingleGameUpdate'](_0x384f63);else{console[_0x2539be(0x230)](_0x2539be(0x284));if(mainLoopId)cancelAnimationFrame(mainLoopId);mainLoopId=null,showMenuState(),requestAnimationFrame(mainLoop);return;}if(gameOverSequenceStartTime>0x0){const _0x2a3d53=Date[_0x2539be(0x2d0)](),_0x16f6ff=_0x2a3d53-gameOverSequenceStartTime,_0x3367f4=GAME_OVER_DURATION+RESULTS_SCREEN_DURATION;if(_0x16f6ff>=_0x3367f4){showMenuState(),requestAnimationFrame(mainLoop);return;}}}else{if(isShowingScoreScreen&&!isShowingPortraitMessage)typeof renderGame===_0x2539be(0x294)&&renderGame();else{if(isInGameState&&gameOverSequenceStartTime>0x0&&!isShowingPortraitMessage){typeof renderGame===_0x2539be(0x294)&&renderGame();const _0x117ef0=Date[_0x2539be(0x2d0)](),_0x53e02a=_0x117ef0-gameOverSequenceStartTime,_0x146f39=GAME_OVER_DURATION+RESULTS_SCREEN_DURATION;if(_0x53e02a>=_0x146f39){showMenuState(),requestAnimationFrame(mainLoop);return;}}else{if(isInGameState&&(isPaused||isShowingPortraitMessage))typeof renderGame===_0x2539be(0x294)&&renderGame();else{if(isInGameState&&isCsCompletionDelayActive&&!isShowingPortraitMessage){if(typeof window['runSingleGameUpdate']===_0x2539be(0x294))window[_0x2539be(0x206)](_0x384f63);else{if(typeof renderGame===_0x2539be(0x294))renderGame();}}else{if(isInGameState&&(isShowingPlayerGameOverMessage||isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage)&&!isShowingPortraitMessage){if(typeof window[_0x2539be(0x206)]==='function')window[_0x2539be(0x206)](_0x384f63);else{if(typeof renderGame===_0x2539be(0x294))renderGame();}}else typeof renderGame===_0x2539be(0x294)&&renderGame();}}}}}mainLoopId=requestAnimationFrame(mainLoop);}catch(_0x5e4a2d){console['error'](_0x2539be(0x227),_0x5e4a2d,_0x5e4a2d['stack']);if(mainLoopId)cancelAnimationFrame(mainLoopId);mainLoopId=null,isPaused=![],stopAllGameSoundsInternal(),isGridSoundPlaying=![];try{showMenuState();}catch(_0x1077d6){console[_0x2539be(0x230)](_0x2539be(0x2d4),_0x1077d6),document[_0x2539be(0x292)][_0x2539be(0x246)]=_0x2539be(0x1ea);}}}function startMainLoop(){if(mainLoopId===null)gridOffsetY=0x0,mainLoop();else{}}function initializeGame(){const _0xb5a69b=_0x391e46;try{if(typeof initializeDOMElements===_0xb5a69b(0x294)){if(!initializeDOMElements()){console[_0xb5a69b(0x230)](_0xb5a69b(0x2b3));return;}}else{console[_0xb5a69b(0x230)](_0xb5a69b(0x2a8));return;}if(typeof window[_0xb5a69b(0x262)]==='function')window[_0xb5a69b(0x262)]();else{if(typeof loadHighScore===_0xb5a69b(0x294))loadHighScore();else console[_0xb5a69b(0x25b)](_0xb5a69b(0x2c1));}if(typeof window[_0xb5a69b(0x24f)]==='function')window[_0xb5a69b(0x24f)]();else{if(typeof defineNormalWaveEntrancePaths==='function')defineNormalWaveEntrancePaths();else console[_0xb5a69b(0x230)]('defineNormalWaveEntrancePaths\x20not\x20found!');}if(typeof window[_0xb5a69b(0x2ca)]===_0xb5a69b(0x294))window[_0xb5a69b(0x2ca)]();else{if(typeof defineChallengingStagePaths===_0xb5a69b(0x294))defineChallengingStagePaths();else console[_0xb5a69b(0x230)]('defineChallengingStagePaths\x20not\x20found!');}window['addEventListener'](_0xb5a69b(0x1f1),handleKeyDown),window['addEventListener'](_0xb5a69b(0x2d1),handleKeyUp);gameCanvas?(gameCanvas[_0xb5a69b(0x231)](_0xb5a69b(0x20a),handleCanvasClick),gameCanvas[_0xb5a69b(0x231)](_0xb5a69b(0x235),handleCanvasMouseMove)):console[_0xb5a69b(0x230)](_0xb5a69b(0x216));window[_0xb5a69b(0x231)](_0xb5a69b(0x24b),handleGamepadConnected),window[_0xb5a69b(0x231)](_0xb5a69b(0x219),handleGamepadDisconnected),window['addEventListener']('resize',resizeCanvases),showMenuState();if(typeof resizeCanvases===_0xb5a69b(0x294))resizeCanvases();else console[_0xb5a69b(0x230)](_0xb5a69b(0x229));startMainLoop();}catch(_0x27fdf2){console[_0xb5a69b(0x230)]('FATAL\x20INITIALIZATION\x20ERROR:',_0x27fdf2,_0x27fdf2[_0xb5a69b(0x265)]),document['body']['innerHTML']=_0xb5a69b(0x204)+_0x27fdf2['message']+'</p></div>',mainLoopId&&(cancelAnimationFrame(mainLoopId),mainLoopId=null);}}window[_0x391e46(0x231)](_0x391e46(0x2da),initializeGame);
+// --- START OF FILE rendering_menu.js ---
+// --- DEEL 1      van 3 dit code blok    ---
+
+// --- Menu/UI Constanten ---
+const MENU_LOGO_APPROX_HEIGHT = 85;
+const MENU_SUBTITLE_TEXT = "Written By Platini2000(c)";
+const MENU_SUBTITLE_FONT = "18px 'Arial Black', Gadget, sans-serif"; // Groter
+const MENU_SUBTITLE_COLOR = "red"; // Aangepaste kleur
+const MENU_BUTTON_FONT = "22px 'Arial Black', Gadget, sans-serif";
+const MENU_BUTTON_COLOR = "white";
+const MENU_BUTTON_COLOR_HOVER = 'rgba(0, 191, 255, 0.9)'; // Deep sky blue hover
+const MENU_BUTTON_WIDTH = 300;
+const MENU_BUTTON_HEIGHT = 55;
+const MENU_LOGO_BOTTOM_TO_START_GAP = 5;
+const MENU_BUTTON_V_GAP = -15;
+const MENU_BUTTON_SUBTITLE_V_GAP = -0;
+const MENU_SCORE_FONT = "20px 'Press Start 2P'";
+const MENU_SCORE_COLOR = "white";
+const MENU_SCORE_LABEL_COLOR = "red";
+const GAME_OVER_FONT = "bold 18px 'Press Start 2P'";
+const GAME_OVER_COLOR = "rgba(0, 191, 255, 0.9)"; // Cyaan
+const GAME_OVER_SHADOW = true;
+const DEMO_TEXT_LINE1_FONT = "bold 18px 'Press Start 2P'";
+const DEMO_TEXT_COLOR = "rgba(0, 191, 255, 0.9)"; // Cyaan
+const DEMO_TEXT_BLINK_ON_MS = 1000;
+const DEMO_TEXT_BLINK_OFF_MS = 1000;
+const DEMO_TEXT_BLINK_CYCLE_MS = DEMO_TEXT_BLINK_ON_MS + DEMO_TEXT_BLINK_OFF_MS;
+const LOGO_SCALE_FACTOR = 0.45;
+const MENU_LOGO_EXTRA_Y_OFFSET = 0;
+const MENU_GENERAL_Y_OFFSET = 50;
+const INTRO_TEXT_FONT = "bold 18px 'Press Start 2P'";
+const INTRO_TEXT_COLOR_NORMAL = "rgba(0, 191, 255, 0.9)"; // Cyaan
+const INTRO_TEXT_COLOR_DARK_YELLOW = "yellow";
+const INTRO_TEXT_COLOR_CS_TEXT = INTRO_TEXT_COLOR_NORMAL;
+const PERFECT_TEXT_COLOR = "red";
+const EXTRA_LIFE_TEXT_COLOR = INTRO_TEXT_COLOR_NORMAL;
+const READY_TEXT_COLOR = INTRO_TEXT_COLOR_NORMAL;
+const CS_BONUS_SCORE_TEXT_COLOR = INTRO_TEXT_COLOR_DARK_YELLOW;
+const CS_CLEAR_TEXT_COLOR = INTRO_TEXT_COLOR_NORMAL;
+const CS_HITS_TEXT_COLOR = INTRO_TEXT_COLOR_NORMAL;
+const CS_CLEAR_SCORE_TEXT_COLOR = INTRO_TEXT_COLOR_NORMAL;
+const PAUSE_TEXT_FONT = INTRO_TEXT_FONT;
+const PAUSE_TEXT_COLOR = INTRO_TEXT_COLOR_NORMAL;
+const PAUSE_TEXT_SHADOW = true;
+
+// GAME_OVER_DURATION is defined in setup_utils.js
+const RESULTS_SCREEN_DURATION = 20000;
+const PLAYER_GAME_OVER_MESSAGE_DURATION = 5000;
+
+// --- Score Screen Constanten ---
+const SCORE_SCREEN_TEXT_FONT = INTRO_TEXT_FONT;
+const SCORE_SCREEN_TEXT_COLOR_TOP = INTRO_TEXT_COLOR_NORMAL;
+const SCORE_SCREEN_TEXT_COLOR_BONUS = INTRO_TEXT_COLOR_DARK_YELLOW;
+const SCORE_SCREEN_LINE_V_SPACING = 40;
+const SCORE_SCREEN_ICON_TEXT_H_SPACING = 15;
+const SCORE_SCREEN_VERTICAL_OFFSET = 75;
+
+// --- Resultaten Scherm Kleuren & Layout ---
+const RESULTS_HEADER_COLOR = "red";
+const RESULTS_VALUE_COLOR_YELLOW = INTRO_TEXT_COLOR_DARK_YELLOW;
+const RESULTS_LABEL_COLOR = "white";
+const RESULTS_VALUE_COLOR_CYAN = INTRO_TEXT_COLOR_NORMAL;
+const RESULTS_LINE_V_SPACING_SINGLE = 35;
+const RESULTS_LINE_V_SPACING_DOUBLE = 90;
+const RESULTS_START_Y = 175;
+const RESULTS_FOOTER_FONT = MENU_SUBTITLE_FONT;
+const RESULTS_FOOTER_COLOR = RESULTS_HEADER_COLOR;
+
+// --- Verticale Offset voor CS berichten ---
+const CS_MESSAGE_VERTICAL_OFFSET = 30;
+
+// --- Helper Functie voor Hoogte ---
+function getSubtitleApproxHeight(font) { const sizeMatch = font.match(/(\d+)px/); return sizeMatch?.[1] ? parseInt(sizeMatch[1], 10) : 25; }
+
+// --- Helper Functie voor Tijd Formattering ---
+/** Formatteert milliseconden naar een "MM:SS" string. */
+function formatMillisecondsToMMSS(ms) { if (ms <= 0 || typeof ms !== 'number' || !isFinite(ms)) { return "00:00"; } const totalSeconds = Math.floor(ms / 1000); const minutes = Math.floor(totalSeconds / 60); const seconds = totalSeconds % 60; const paddedMinutes = String(minutes).padStart(2, '0'); const paddedSeconds = String(seconds).padStart(2, '0'); return `${paddedMinutes}:${paddedSeconds}`; }
+
+// --- Menu State & Interactie ---
+let isTransitioningToDemoViaScoreScreen = false;
+
+/** Berekent de rechthoek (positie en grootte) voor een menuknop.
+ *  Layout is altijd gebaseerd op het hoofdmenu met 2 knoppen.
+ *  De tekst binnen deze knoppen verandert, niet hun positie.
+ */
+function getMenuButtonRect(buttonIndex) {
+    if (!gameCtx || !gameCanvas || gameCanvas.width === 0 || gameCanvas.height === 0) return null;
+    const canvasWidth = gameCanvas.width; const canvasHeight = gameCanvas.height;
+    const buttonX = (canvasWidth / 2 - MENU_BUTTON_WIDTH / 2) - 1;
+
+    let actualLogoHeight = MENU_LOGO_APPROX_HEIGHT;
+    if (typeof logoImage !== 'undefined' && logoImage.complete && logoImage.naturalHeight !== 0) {
+        actualLogoHeight = logoImage.naturalHeight * LOGO_SCALE_FACTOR;
+    }
+    const subtitleHeight = getSubtitleApproxHeight(MENU_SUBTITLE_FONT);
+
+    const numberOfButtons = 2; // Altijd 2 knoppen qua layout
+    const totalContentHeight = actualLogoHeight + MENU_LOGO_BOTTOM_TO_START_GAP +
+                             (numberOfButtons * MENU_BUTTON_HEIGHT) + ((numberOfButtons - 1) * MENU_BUTTON_V_GAP) +
+                             MENU_BUTTON_SUBTITLE_V_GAP + subtitleHeight;
+
+    let groupStartY = (canvasHeight - totalContentHeight) / 2 - 70;
+    groupStartY += MENU_GENERAL_Y_OFFSET;
+
+    const firstButtonTopY = groupStartY + actualLogoHeight + MENU_LOGO_BOTTOM_TO_START_GAP;
+    const buttonY = firstButtonTopY + buttonIndex * (MENU_BUTTON_HEIGHT + MENU_BUTTON_V_GAP);
+
+    if (buttonIndex === 0 || buttonIndex === 1) {
+        return { x: buttonX, y: Math.round(buttonY), width: MENU_BUTTON_WIDTH, height: MENU_BUTTON_HEIGHT };
+    }
+    return null;
+}
+
+
+/**
+ * Verwerkt controller input in het menu, score screen, of game over/results sequence.
+ */
+function pollControllerForMenu() {
+    try {
+        if (audioContext && audioContext.state === 'suspended' && (connectedGamepadIndex !== null || connectedGamepadIndexP2 !== null) ) {
+             audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by controller interaction."); });
+        }
+        if (connectedGamepadIndex === null && connectedGamepadIndexP2 === null) { joystickMovedVerticallyLastFrame = false; if(previousButtonStates.length > 0) previousButtonStates = []; if(previousGameButtonStates.length > 0) previousGameButtonStates = []; if(previousGameButtonStatesP2.length > 0) previousGameButtonStatesP2 = []; return; }
+        let primaryGamepadIndex = connectedGamepadIndex !== null ? connectedGamepadIndex : connectedGamepadIndexP2;
+        if (primaryGamepadIndex === null) return;
+        const gamepads = navigator.getGamepads();
+        if (!gamepads?.[primaryGamepadIndex]) return;
+        const gamepad = gamepads[primaryGamepadIndex];
+        const currentButtonStates = gamepad.buttons.map(b => b.pressed);
+        const currentGeneralButtonStates = currentButtonStates;
+        const currentGameButtonStates = currentButtonStates;
+        let actionTakenThisFrame = false;
+        const now = Date.now();
+        let blockAllMenuInput = false;
+        if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0) { blockAllMenuInput = true; }
+        if (blockAllMenuInput) { if (connectedGamepadIndex !== null) { previousButtonStates = currentGeneralButtonStates.slice(); previousGameButtonStates = currentGameButtonStates.slice(); } if (connectedGamepadIndexP2 !== null) { const gamepadsP2 = navigator.getGamepads(); if (gamepadsP2?.[connectedGamepadIndexP2]) { previousGameButtonStatesP2 = gamepadsP2[connectedGamepadIndexP2].buttons.map(b => b.pressed); } } return; }
+
+        if (isInGameState && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage) {
+            const trianglePressedNow = currentGameButtonStates[PS5_BUTTON_TRIANGLE];
+            const trianglePressedLast = previousGameButtonStates[PS5_BUTTON_TRIANGLE] ?? false;
+            if (trianglePressedNow && !trianglePressedLast) {
+                if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu();
+                actionTakenThisFrame = true;
+            }
+
+            if (!actionTakenThisFrame) {
+                const r1PressedNow = currentGameButtonStates[PS5_BUTTON_R1];
+                const r1PressedLast = previousGameButtonStates[PS5_BUTTON_R1] ?? false;
+                if (r1PressedNow && !r1PressedLast) {
+                    if(typeof togglePause === 'function') togglePause();
+                    actionTakenThisFrame = true;
+                }
+            }
+        }
+
+        if (!actionTakenThisFrame) {
+             const canConsiderReturningToMenu = isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen;
+            if (canConsiderReturningToMenu) {
+                let anyButtonPressedNow = false;
+                for (let i = 0; i < currentGeneralButtonStates.length; i++) {
+                    if (i === PS5_BUTTON_R1 || i === PS5_BUTTON_TRIANGLE) continue;
+                    const wasPressedLast = previousButtonStates[i] ?? false;
+                    if (currentGeneralButtonStates[i] && !wasPressedLast) {
+                        anyButtonPressedNow = true;
+                        break;
+                    }
+                }
+                if (anyButtonPressedNow) {
+                    if(typeof showMenuState === 'function') showMenuState(); // Gaat direct naar hoofdmenu
+                    actionTakenThisFrame = true;
+                }
+            }
+            else if (!isInGameState && !actionTakenThisFrame) {
+                const crossPressedNow = currentGeneralButtonStates[PS5_BUTTON_CROSS];
+                const crossPressedLast = previousButtonStates[PS5_BUTTON_CROSS] ?? false;
+                const circlePressedNow = currentGeneralButtonStates[PS5_BUTTON_CIRCLE];
+                const circlePressedLast = previousButtonStates[PS5_BUTTON_CIRCLE] ?? false;
+                const axisY = gamepad.axes[PS5_LEFT_STICK_Y] ?? 0;
+                const dpadUp = currentGeneralButtonStates[PS5_DPAD_UP];
+                const dpadDown = currentGeneralButtonStates[PS5_DPAD_DOWN];
+                let verticalInput = 0;
+                if (axisY < -AXIS_DEAD_ZONE_MENU || dpadUp) verticalInput = -1;
+                else if (axisY > AXIS_DEAD_ZONE_MENU || dpadDown) verticalInput = 1;
+                let currentJoystickMoved = (verticalInput !== 0);
+                if (currentJoystickMoved && !joystickMovedVerticallyLastFrame) { let newIndex = selectedButtonIndex; const numButtons = 2; if (newIndex === -1) { newIndex = (verticalInput === 1) ? 0 : numButtons - 1; } else { newIndex += verticalInput; } if (newIndex < 0) newIndex = numButtons - 1; if (newIndex >= numButtons) newIndex = 0; if (newIndex !== selectedButtonIndex) { selectedButtonIndex = newIndex; startAutoDemoTimer(); } }
+                joystickMovedVerticallyLastFrame = currentJoystickMoved;
+                 if (crossPressedNow && !crossPressedLast) {
+                     stopAutoDemoTimer();
+                     if (isPlayerSelectMode) {
+                        if (selectedButtonIndex === 0) { // P1
+                            isPlayerSelectMode = false;
+                            isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0;
+                        } else { // P2
+                            isPlayerSelectMode = false;
+                            isGameModeSelectMode = true; isTwoPlayerMode = true; selectedButtonIndex = 0;
+                        }
+                     } else if (isOnePlayerGameTypeSelectMode) { // 1P: Kiezen tussen "NORMAL GAME" en "GAME Vs AI"
+                        if (selectedButtonIndex === 0) { // "NORMAL GAME" (1P Klassiek) gekozen
+                            isOnePlayerGameTypeSelectMode = false;
+                            isFiringModeSelectMode = true; // Direct naar firing mode
+                            selectedOnePlayerGameVariant = 'CLASSIC_1P';
+                            isTwoPlayerMode = false; isPlayerTwoAI = false; selectedButtonIndex = 0;
+                        } else { // "GAME Vs AI" (1P) gekozen
+                            isOnePlayerGameTypeSelectMode = false;
+                            isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = 0; // Naar Normal/Coop selectie voor vs AI
+                        }
+                     } else if (isOnePlayerVsAIGameTypeSelectMode) { // Nieuwe state: 1P -> GAME Vs AI -> Kies Normal/Coop
+                        if (selectedButtonIndex === 0) { // "NORMAL GAME" (vs AI)
+                            selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL';
+                            selectedGameMode = 'normal'; // <<<< TOEGEVOEGD
+                        } else { // "CO-OP GAME" (vs AI)
+                            selectedOnePlayerGameVariant = '1P_VS_AI_COOP';
+                            selectedGameMode = 'coop';   // <<<< TOEGEVOEGD
+                        }
+                        isOnePlayerVsAIGameTypeSelectMode = false;
+                        isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = true; selectedButtonIndex = 0;
+                     } else if (isGameModeSelectMode) { // 2P (Human): NORMAL GAME / CO-OP GAME
+                        if (selectedButtonIndex === 0) { selectedGameMode = 'normal'; }
+                        else { selectedGameMode = 'coop'; }
+                        isGameModeSelectMode = false;
+                        isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = false; selectedButtonIndex = 0;
+                     } else if (isFiringModeSelectMode) { // Firing mode
+                         if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; }
+                         baseStartGame(true);
+                     } else { // Hoofdmenu
+                         if (selectedButtonIndex === 0) { // START GAME
+                            isPlayerSelectMode = true; selectedButtonIndex = 0;
+                        }
+                         else if (selectedButtonIndex === 1) { exitGame(); }
+                     }
+                    actionTakenThisFrame = true; startAutoDemoTimer();
+                 }
+                 if (!actionTakenThisFrame && circlePressedNow && !circlePressedLast) { // Terugknop (Circle)
+                      stopAutoDemoTimer();
+                      if (isFiringModeSelectMode) {
+                        isFiringModeSelectMode = false;
+                        if (selectedOnePlayerGameVariant === 'CLASSIC_1P') { // Van klassiek 1P firing mode terug
+                            isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0; // Terug naar 1P: Normal/GameVsAI (Normal geselecteerd)
+                        } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+                            isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0); // Terug naar vsAI type selectie
+                        } else if (isTwoPlayerMode && !isPlayerTwoAI) { // Was 2P Human
+                            isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0); // Terug naar 2P game mode selectie
+                        } else { // Fallback
+                             isPlayerSelectMode = false; isOnePlayerGameTypeSelectMode = false; isOnePlayerVsAIGameTypeSelectMode = false; isGameModeSelectMode = false; selectedButtonIndex = 0;
+                        }
+                        selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; // Reset variant en AI vlag bij teruggaan
+                      } else if (isOnePlayerVsAIGameTypeSelectMode) { // Van 1P vs AI (Normal/Coop) terug
+                        isOnePlayerVsAIGameTypeSelectMode = false;
+                        isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1; // Terug naar 1P: Normal/GameVsAI (GameVsAI geselecteerd)
+                      } else if (isOnePlayerGameTypeSelectMode) { // Van 1P: Normal/GameVsAI terug
+                        isOnePlayerGameTypeSelectMode = false;
+                        isPlayerSelectMode = true; selectedButtonIndex = 0; // Terug naar P1/P2 (P1 geselecteerd)
+                      } else if (isGameModeSelectMode) { // 2P Normal/Coop selectie
+                        isGameModeSelectMode = false;
+                        isPlayerSelectMode = true; selectedButtonIndex = 1; // Terug naar P1/P2 (P2 geselecteerd)
+                      } else if (isPlayerSelectMode) { // P1/P2 selectie
+                        isPlayerSelectMode = false; selectedButtonIndex = 0; // Terug naar hoofdmenu
+                      } else { triggerFullscreen(); } // Hoofdmenu -> fullscreen (playSound('menuMusicSound') gebeurt in triggerFullscreen)
+                      actionTakenThisFrame = true; startAutoDemoTimer();
+                 }
+            }
+        }
+         if (connectedGamepadIndex !== null) { previousButtonStates = currentGeneralButtonStates.slice(); previousGameButtonStates = currentGameButtonStates.slice(); }
+         if (connectedGamepadIndexP2 !== null) { const gamepadsP2 = navigator.getGamepads(); if (gamepadsP2?.[connectedGamepadIndexP2]) { previousGameButtonStatesP2 = gamepadsP2[connectedGamepadIndexP2].buttons.map(b => b.pressed); } }
+    } catch (e) { console.error("Error in pollControllerForMenu:", e); previousButtonStates = []; previousGameButtonStates = []; previousGameButtonStatesP2 = []; selectedButtonIndex = -1; joystickMovedVerticallyLastFrame = false; }
+}
+
+
+/** Start de timer die naar het score screen leidt, of een van de demo's. */
+function initiateScoreScreenThenDemo() {
+    if (!isInGameState && !isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
+        isTransitioningToDemoViaScoreScreen = true;
+        showScoreScreen();
+
+        if (autoStartTimerId) {
+            clearTimeout(autoStartTimerId);
+            autoStartTimerId = null;
+        }
+
+        autoStartTimerId = setTimeout(() => {
+            if (isShowingScoreScreen) {
+                isPlayerSelectMode = false;
+                isFiringModeSelectMode = false;
+                isGameModeSelectMode = false;
+                isOnePlayerGameTypeSelectMode = false;
+                // isOnePlayerNormalGameSubTypeSelectMode is verwijderd
+                isOnePlayerVsAIGameTypeSelectMode = false;
+                selectedOnePlayerGameVariant = '';
+                isPlayerTwoAI = false;
+
+                demoModeCounter++;
+                if (demoModeCounter % 2 === 1) {
+                    if (typeof startCoopAIDemo === 'function') startCoopAIDemo();
+                    else startAIDemo();
+                } else {
+                    startAIDemo();
+                }
+            }
+            isTransitioningToDemoViaScoreScreen = false;
+        }, SCORE_SCREEN_DURATION);
+    } else {
+         if (autoStartTimerId) {
+            clearTimeout(autoStartTimerId);
+            autoStartTimerId = null;
+         }
+         isTransitioningToDemoViaScoreScreen = false;
+    }
+}
+
+function startAutoDemoTimer() {
+    try {
+        stopAutoDemoTimer();
+        isTransitioningToDemoViaScoreScreen = false;
+
+        autoStartTimerId = setTimeout(() => {
+            initiateScoreScreenThenDemo();
+        }, MENU_INACTIVITY_TIMEOUT);
+    } catch (e) {
+        console.error("Error starting auto demo timer:", e);
+        isTransitioningToDemoViaScoreScreen = false;
+    }
+}
+
+
+/** Stopt de timer voor menu inactiviteit / score screen. */
+function stopAutoDemoTimer() {
+    try {
+        if (autoStartTimerId) {
+            clearTimeout(autoStartTimerId);
+            autoStartTimerId = null;
+        }
+        isTransitioningToDemoViaScoreScreen = false;
+    } catch (e) {
+        console.error("Error stopping auto demo timer:", e);
+    }
+}
+
+// --- EINDE deel 1      van 3 dit codeblok ---
+// --- END OF rendering_menu.js ---
+
+
+
+
+
+
+// --- START OF FILE rendering_menu.js ---
+// --- DEEL 2      van 3 dit code blok    ---
+
+function showMenuState() {
+    try {
+       if (wasLastGameAIDemo) {
+           highScore = 20000;
+       }
+       wasLastGameAIDemo = false;
+       isCoopAIDemoActive = false;
+       aiPlayerActivelySeekingCaptureById = null;
+
+       initialGameStartSoundPlayedThisSession = false;
+       coopStartSoundPlayedThisSession = false;
+       gameJustStartedAndWaveLaunched = false;
+
+       isInGameState = false;
+       isShowingScoreScreen = false; scoreScreenStartTime = 0;
+       isManualControl = false; isShowingDemoText = false;
+       isPaused = false;
+
+       isPlayerSelectMode = false;
+       isOnePlayerGameTypeSelectMode = false;
+       isOnePlayerVsAIGameTypeSelectMode = false;
+       isGameModeSelectMode = false;
+       isFiringModeSelectMode = false;
+       selectedOnePlayerGameVariant = '';
+       isPlayerTwoAI = false;
+
+       selectedFiringMode = 'rapid';
+       selectedGameMode = 'normal';
+       isTwoPlayerMode = false; currentPlayer = 1;
+       showCsHitsMessage = false; csHitsMessageStartTime = 0; showPerfectMessage = false; perfectMessageStartTime = 0; showCsBonusScoreMessage = false; csBonusScoreMessageStartTime = 0; showCSClearMessage = false; csClearMessageStartTime = 0; showCsHitsForClearMessage = false; showCsScoreForClearMessage = false; showExtraLifeMessage = false; extraLifeMessageStartTime = 0;
+       showReadyMessage = false; readyMessageStartTime = 0; readyForNextWave = false; readyForNextWaveReset = false; isCsCompletionDelayActive = false; csCompletionDelayStartTime = 0; csCompletionResultIsPerfect = false; csIntroSoundPlayed = false; isShowingPlayerGameOverMessage = false; playerGameOverMessageStartTime = 0; playerWhoIsGameOver = 0; nextActionAfterPlayerGameOver = '';
+       player1TriggeredHighScoreSound = false;
+       player2TriggeredHighScoreSound = false;
+       isShowingCoopPlayersReady = false;
+       coopPlayersReadyStartTime = 0;
+       isTransitioningToDemoViaScoreScreen = false;
+
+
+       stopAllGameSoundsInternal();
+       isGridSoundPlaying = false;
+
+       playerLives = 3; score = 0; level = 1;
+       player1Lives = 3; player2Lives = 3; player1Score = 0; player2Score = 0; player1ShotsFired = 0; player2ShotsFired = 0; player1EnemiesHit = 0; player2EnemiesHit = 0; player1MaxLevelReached = 1; player2MaxLevelReached = 1;
+       scoreEarnedThisCS = 0; enemies = []; bullets = []; enemyBullets = []; explosions = []; isShowingIntro = false; introStep = 0; isChallengingStage = false; challengingStageEnemiesHit = 0; currentGridOffsetX = 0; gridMoveDirection = 1; currentWaveDefinition = null; isEntrancePhaseActive = false; totalEnemiesScheduledForWave = 0; enemiesSpawnedThisWave = 0; if(typeof enemySpawnTimeouts !== 'undefined' && Array.isArray(enemySpawnTimeouts)){ enemySpawnTimeouts.forEach(clearTimeout); } enemySpawnTimeouts = []; lastEnemyDetachTime = 0; selectedButtonIndex = 0;
+       joystickMovedVerticallyLastFrame = false; previousButtonStates = []; previousGameButtonStates = []; previousDemoButtonStates = []; previousGameButtonStatesP2 = [];
+       isShowingResultsScreen = false;
+       gameOverSequenceStartTime = 0; gameStartTime = 0; forceCenterShipNextReset = false; player1CompletedLevel = -1;
+       p1JustFiredSingle = false; p2JustFiredSingle = false;
+       p1FireInputWasDown = false; p2FireInputWasDown = false;
+
+       if (ship && typeof ship === 'object' && ship.hasOwnProperty('x') && gameCanvas && gameCanvas.width > 0 && gameCanvas.height > 0) {
+            ship.x = Math.round(gameCanvas.width / 2 - SHIP_WIDTH / 2);
+            ship.targetX = ship.x;
+            ship.y = gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN;
+       } else if (ship !== null) {
+       }
+
+
+       clearTimeout(mouseIdleTimerId);
+       mouseIdleTimerId = setTimeout(hideCursor, 2000);
+
+       playSound('menuMusicSound', true, 0.2);
+       startAutoDemoTimer();
+   } catch(e) {
+       console.error("Error in showMenuState:", e);
+       gameJustStartedAndWaveLaunched = false;
+       wasLastGameAIDemo = false; initialGameStartSoundPlayedThisSession = false; isInGameState = false; isShowingScoreScreen = false; isPaused = false;
+       isPlayerSelectMode = false; isOnePlayerGameTypeSelectMode = false; isOnePlayerVsAIGameTypeSelectMode = false; isGameModeSelectMode = false; isFiringModeSelectMode = false;
+       selectedGameMode = 'normal'; selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false;
+       isTwoPlayerMode = false; currentPlayer = 1; isShowingPlayerGameOverMessage = false;
+       isCoopAIDemoActive = false; aiPlayerActivelySeekingCaptureById = null;
+       coopStartSoundPlayedThisSession = false;
+       player1TriggeredHighScoreSound = false;
+       player2TriggeredHighScoreSound = false;
+       isShowingCoopPlayersReady = false; coopPlayersReadyStartTime = 0;
+       isTransitioningToDemoViaScoreScreen = false;
+       clearTimeout(mouseIdleTimerId); mouseIdleTimerId = null;
+       if(mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null;
+       alert("Error returning to menu. Please refresh the page."); document.body.innerHTML = '<p style="color:white;">Error returning to menu. Please refresh.</p>';
+   }
+}
+
+/** Start de AI demo modus. */
+function startAIDemo() {
+    if (isInGameState) return;
+    stopSound('menuMusicSound');
+    isShowingScoreScreen = false;
+    isPlayerSelectMode = false;
+    isFiringModeSelectMode = false;
+    isGameModeSelectMode = false;
+    isOnePlayerGameTypeSelectMode = false;
+    isOnePlayerVsAIGameTypeSelectMode = false;
+    selectedOnePlayerGameVariant = '';
+    isPlayerTwoAI = false;
+    selectedFiringMode = 'rapid';
+
+    isTwoPlayerMode = false;
+    selectedGameMode = 'normal';
+    isManualControl = false;
+    isShowingDemoText = true;
+    isCoopAIDemoActive = false;
+    aiPlayerActivelySeekingCaptureById = null;
+    wasLastGameAIDemo = true;
+    coopStartSoundPlayedThisSession = false;
+
+    baseStartGame(false);
+    gameJustStarted = true;
+}
+
+/** Start de CO-OP AI demo modus. */
+function startCoopAIDemo() {
+    if (isInGameState) return;
+    stopSound('menuMusicSound');
+    isShowingScoreScreen = false;
+    isPlayerSelectMode = false;
+    isFiringModeSelectMode = false;
+    isGameModeSelectMode = false;
+    isOnePlayerGameTypeSelectMode = false;
+    isOnePlayerVsAIGameTypeSelectMode = false;
+    selectedOnePlayerGameVariant = '';
+    isPlayerTwoAI = false;
+    selectedFiringMode = 'rapid';
+
+    isTwoPlayerMode = true;
+    selectedGameMode = 'coop';
+    isManualControl = false;
+    isShowingDemoText = true;
+    isCoopAIDemoActive = true; 
+    aiPlayerActivelySeekingCaptureById = null;
+    wasLastGameAIDemo = true;
+
+    baseStartGame(false);
+    gameJustStarted = true;
+}
+
+
+function startGame1P() {
+    if (isInGameState) return;
+    isPlayerSelectMode = false;
+    isOnePlayerGameTypeSelectMode = true;
+    isGameModeSelectMode = false;
+    isFiringModeSelectMode = false;
+    isOnePlayerVsAIGameTypeSelectMode = false;
+    selectedOnePlayerGameVariant = '';
+    isPlayerTwoAI = false;
+
+    isTwoPlayerMode = false;
+    selectedGameMode = 'normal'; 
+    isCoopAIDemoActive = false;
+    aiPlayerActivelySeekingCaptureById = null;
+    selectedButtonIndex = 0;
+    coopStartSoundPlayedThisSession = false;
+    startAutoDemoTimer();
+}
+
+function startGame2P() {
+    if (isInGameState) return;
+    isPlayerSelectMode = false;
+    isGameModeSelectMode = true; 
+    isFiringModeSelectMode = false;
+    isOnePlayerGameTypeSelectMode = false;
+    isOnePlayerVsAIGameTypeSelectMode = false;
+    selectedOnePlayerGameVariant = '';
+    isPlayerTwoAI = false;
+
+    isTwoPlayerMode = true; 
+    selectedGameMode = 'normal'; 
+    isCoopAIDemoActive = false;
+    aiPlayerActivelySeekingCaptureById = null;
+    selectedButtonIndex = 0;
+    coopStartSoundPlayedThisSession = false;
+    startAutoDemoTimer();
+}
+
+
+function baseStartGame(setManualControl) {
+    try {
+        if (!gameCanvas || !gameCtx) { console.error("Cannot start game - canvas not ready."); showMenuState(); return; }
+        if (setManualControl) {
+            stopSound('menuMusicSound');
+        }
+        stopAutoDemoTimer();
+        isInGameState = true; isShowingScoreScreen = false;
+        isPlayerSelectMode = false;
+        isOnePlayerGameTypeSelectMode = false;
+        isOnePlayerVsAIGameTypeSelectMode = false;
+        isGameModeSelectMode = false;
+        isFiringModeSelectMode = false;
+
+        gameJustStartedAndWaveLaunched = false;
+        isTransitioningToDemoViaScoreScreen = false;
+
+
+        isManualControl = setManualControl;
+        isShowingDemoText = !setManualControl;
+        isPaused = false;
+        previousButtonStates = []; previousGameButtonStates = []; previousDemoButtonStates = []; previousGameButtonStatesP2 = [];
+        p1JustFiredSingle = false; p2JustFiredSingle = false;
+        p1FireInputWasDown = false; p2FireInputWasDown = false;
+
+        if (setManualControl) {
+            wasLastGameAIDemo = false;
+            if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+                isCoopAIDemoActive = false; 
+            } else {
+                isCoopAIDemoActive = false; 
+            }
+            aiPlayerActivelySeekingCaptureById = null;
+        } else { 
+            isPlayerTwoAI = false; 
+            selectedOnePlayerGameVariant = ''; 
+        }
+
+
+        clearTimeout(mouseIdleTimerId);
+        mouseIdleTimerId = setTimeout(hideCursor, 2000);
+
+        if (typeof window.resetGame === 'function') {
+            window.resetGame();
+        } else {
+            console.error("FATAL: window.resetGame function is not defined or not a function! Cannot start game properly.");
+            alert("Critical error: Game logic (window.resetGame) not loaded correctly!");
+            showMenuState();
+            return;
+        }
+
+        isShowingCoopPlayersReady = false;
+
+        const needsL1StartSound = level === 1 && !initialGameStartSoundPlayedThisSession;
+        let playStartSoundForThisGame = false;
+
+        if (isManualControl) {
+            if (selectedOnePlayerGameVariant === 'CLASSIC_1P') {
+                if (needsL1StartSound) playStartSoundForThisGame = true;
+            } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+                 if (needsL1StartSound) playStartSoundForThisGame = true;
+                 if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { 
+                    isShowingCoopPlayersReady = true; coopPlayersReadyStartTime = Date.now();
+                 }
+            } else if (isTwoPlayerMode && !isPlayerTwoAI && selectedGameMode === 'normal') {
+                if (needsL1StartSound) playStartSoundForThisGame = true;
+            } else if (isTwoPlayerMode && !isPlayerTwoAI && selectedGameMode === 'coop') {
+                if (needsL1StartSound && !coopStartSoundPlayedThisSession) playStartSoundForThisGame = true;
+                isShowingCoopPlayersReady = true; coopPlayersReadyStartTime = Date.now();
+            }
+        } else { 
+            if (needsL1StartSound) playStartSoundForThisGame = true;
+            if (isCoopAIDemoActive) { 
+                 isShowingCoopPlayersReady = true; coopPlayersReadyStartTime = Date.now();
+            }
+        }
+
+        if (playStartSoundForThisGame) {
+            playSound('startSound', false, 0.4);
+            initialGameStartSoundPlayedThisSession = true;
+            if (selectedGameMode === 'coop' || isCoopAIDemoActive || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+                coopStartSoundPlayedThisSession = true;
+            }
+        }
+
+
+        gameStartTime = Date.now();
+        leftPressed = false; rightPressed = false; shootPressed = false;
+        p2LeftPressed = false; p2RightPressed = false; p2ShootPressed = false;
+        keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false;
+        keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false;
+        selectedButtonIndex = -1;
+
+
+        if (mainLoopId === null) {
+             if (typeof window.startMainLoop === 'function') window.startMainLoop(); else startMainLoop();
+        }
+    } catch (e) {
+        console.error("Error in baseStartGame:", e);
+        gameJustStartedAndWaveLaunched = false;
+        wasLastGameAIDemo = false; initialGameStartSoundPlayedThisSession = false;
+        isCoopAIDemoActive = false; aiPlayerActivelySeekingCaptureById = null;
+        isPlayerTwoAI = false;
+        coopStartSoundPlayedThisSession = false;
+        isShowingCoopPlayersReady = false; coopPlayersReadyStartTime = 0;
+        isTransitioningToDemoViaScoreScreen = false;
+        clearTimeout(mouseIdleTimerId); mouseIdleTimerId = null;
+        alert("Critical error starting game!"); showMenuState();
+    }
+}
+function stopGameAndShowMenu() {
+    isPaused = false;
+    if (isManualControl) {
+        if (typeof window.saveHighScore === 'function') window.saveHighScore(); else saveHighScore();
+    }
+    showMenuState(); 
+}
+function exitGame() {
+    isPaused = false;
+    stopAutoDemoTimer();
+    if (typeof window.saveHighScore === 'function') window.saveHighScore(); else saveHighScore();
+    isInGameState = false;
+    isPlayerSelectMode = false;
+    isFiringModeSelectMode = false;
+    isGameModeSelectMode = false;
+    isOnePlayerGameTypeSelectMode = false;
+    isOnePlayerVsAIGameTypeSelectMode = false;
+    selectedOnePlayerGameVariant = '';
+    isPlayerTwoAI = false;
+    showMenuState(); 
+    try {
+        window.close();
+        setTimeout(() => { if(!isInGameState) showMenuState(); }, 200);
+    } catch(e) {
+        console.error("window.close() failed:", e);
+        showMenuState();
+    }
+}
+function triggerGameOver() { if (typeof window.triggerFinalGameOverSequence === 'function') window.triggerFinalGameOverSequence(); else triggerFinalGameOverSequence(); }
+
+
+/** Activeert de score screen state. */
+function showScoreScreen() {
+    if (isInGameState || isShowingScoreScreen) return;
+
+    isShowingScoreScreen = true;
+    isPlayerSelectMode = false;
+    isFiringModeSelectMode = false;
+    isGameModeSelectMode = false;
+    isOnePlayerGameTypeSelectMode = false;
+    isOnePlayerVsAIGameTypeSelectMode = false;
+    selectedOnePlayerGameVariant = '';
+    isPlayerTwoAI = false;
+    scoreScreenStartTime = Date.now();
+    selectedButtonIndex = -1;
+
+    clearTimeout(mouseIdleTimerId);
+    mouseIdleTimerId = setTimeout(hideCursor, 2000);
+}
+
+
+// --- Canvas Event Handlers ---
+
+/**
+ * Helper functie om een stap terug te gaan in het menu.
+ */
+function goBackInMenu() {
+    if (isFiringModeSelectMode) {
+        isFiringModeSelectMode = false;
+        if (selectedOnePlayerGameVariant === 'CLASSIC_1P') {
+            isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 0;
+        } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+            isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = (selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? 1 : 0);
+        } else if (isTwoPlayerMode && !isPlayerTwoAI) { // Human 2P
+            isGameModeSelectMode = true; selectedButtonIndex = (selectedGameMode === 'coop' ? 1 : 0);
+        } else { // Fallback naar player select als de vorige staat onduidelijk is
+            isPlayerSelectMode = true; selectedButtonIndex = 0; // Ga naar P1/P2 selectie, P1 geselecteerd
+        }
+        selectedOnePlayerGameVariant = ''; isPlayerTwoAI = false; selectedGameMode = 'normal'; // Reset
+    } else if (isOnePlayerVsAIGameTypeSelectMode) {
+        isOnePlayerVsAIGameTypeSelectMode = false; isOnePlayerGameTypeSelectMode = true; selectedButtonIndex = 1; // Terug naar 1P: Normal/GameVsAI (GameVsAI geselecteerd)
+    } else if (isOnePlayerGameTypeSelectMode) {
+        isOnePlayerGameTypeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 0; // Terug naar P1/P2 (P1 geselecteerd)
+    } else if (isGameModeSelectMode) {
+        isGameModeSelectMode = false; isPlayerSelectMode = true; selectedButtonIndex = 1; // Terug naar P1/P2 (P2 geselecteerd)
+    } else if (isPlayerSelectMode) {
+        isPlayerSelectMode = false; selectedButtonIndex = 0; // Terug naar hoofdmenu
+    } else { // In hoofdmenu: klik/tap naast knoppen triggert fullscreen
+        triggerFullscreen();
+    }
+    startAutoDemoTimer(); // Reset inactiviteitstimer
+}
+
+
+/**
+ * Handles touch events on the canvas, routing them to menu or game logic.
+ * @param {Event} event - The touch or mouse event.
+ * @param {'start'|'move'|'end'} type - The type of event.
+ * @param {boolean} [isTap=false] - True if the 'end' event is considered a tap (relevant for touchend).
+ */
+function handleCanvasTouch(event, type, isTap = false) {
+    if (!gameCanvas) return;
+
+    let clientX, clientY;
+    if (event.type.startsWith('touch')) {
+        if (event.touches && event.touches.length > 0) {
+            clientX = event.touches[0].clientX;
+            clientY = event.touches[0].clientY;
+        } else if (event.changedTouches && event.changedTouches.length > 0) {
+            clientX = event.changedTouches[0].clientX;
+            clientY = event.changedTouches[0].clientY;
+        } else {
+            return; 
+        }
+    } else if (event.type.startsWith('mouse')) { // Muis event
+        clientX = event.clientX;
+        clientY = event.clientY;
+    } else {
+        return;
+    }
+
+    const rect = gameCanvas.getBoundingClientRect();
+    const scaleX = gameCanvas.width / rect.width;
+    const scaleY = gameCanvas.height / rect.height;
+    const interactionX = (clientX - rect.left) * scaleX;
+    const interactionY = (clientY - rect.top) * scaleY;
+
+    const now = Date.now();
+    if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0) {
+        touchedMenuButtonIndex = -1;
+        return;
+    }
+
+    if (isInGameState) {
+        // Game-specifieke touch/muis logica in game_logic.js
+    } else if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
+        if (type === 'end' && isTap) { 
+            if (typeof showMenuState === 'function') showMenuState();
+        }
+    } else if (!isShowingScoreScreen) { // Menu
+        stopAutoDemoTimer();
+        const button0Rect = getMenuButtonRect(0);
+        const button1Rect = getMenuButtonRect(1);
+        let currentHoverButton = -1;
+
+        if (button0Rect && checkCollision({ x: interactionX, y: interactionY, width: 1, height: 1 }, button0Rect)) {
+            currentHoverButton = 0;
+        } else if (button1Rect && checkCollision({ x: interactionX, y: interactionY, width: 1, height: 1 }, button1Rect)) {
+            currentHoverButton = 1;
+        }
+
+        if (type === 'start') { 
+            isTouchActiveMenu = true; 
+            touchedMenuButtonIndex = currentHoverButton;
+            selectedButtonIndex = currentHoverButton;
+        } else if (type === 'move') { 
+            if (event.type === 'mousemove') { 
+                selectedButtonIndex = currentHoverButton; 
+            } else { 
+                if (touchedMenuButtonIndex !== -1 && currentHoverButton !== touchedMenuButtonIndex) {
+                    selectedButtonIndex = -1;
+                } else if (touchedMenuButtonIndex !== -1) { 
+                    selectedButtonIndex = currentHoverButton;
+                }
+            }
+        } else if (type === 'end' && event.type.startsWith('touch')) { 
+            isTouchActiveMenu = false; 
+            if (isTap && currentHoverButton !== -1 && currentHoverButton === touchedMenuButtonIndex) {
+                selectedButtonIndex = currentHoverButton; 
+                if (isPlayerSelectMode) {
+                    if (selectedButtonIndex === 0) { startGame1P(); } else { startGame2P(); }
+                } else if (isOnePlayerGameTypeSelectMode) {
+                    if (selectedButtonIndex === 0) { isOnePlayerGameTypeSelectMode = false; isFiringModeSelectMode = true; selectedOnePlayerGameVariant = 'CLASSIC_1P'; selectedGameMode = 'normal'; isTwoPlayerMode = false; isPlayerTwoAI = false; selectedButtonIndex = 0; }
+                    else { isOnePlayerGameTypeSelectMode = false; isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = 0; }
+                } else if (isOnePlayerVsAIGameTypeSelectMode) {
+                    if (selectedButtonIndex === 0) { selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL'; selectedGameMode = 'normal'; }
+                    else { selectedOnePlayerGameVariant = '1P_VS_AI_COOP'; selectedGameMode = 'coop'; }
+                    isOnePlayerVsAIGameTypeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = true; selectedButtonIndex = 0;
+                } else if (isGameModeSelectMode) {
+                    if (selectedButtonIndex === 0) { selectedGameMode = 'normal'; } else { selectedGameMode = 'coop'; }
+                    isGameModeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = false; selectedButtonIndex = 0;
+                } else if (isFiringModeSelectMode) {
+                    if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; }
+                    baseStartGame(true);
+                } else { 
+                    if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0; }
+                    else if (selectedButtonIndex === 1) { if (typeof exitGame === 'function') exitGame(); }
+                }
+            } else if (isTap && currentHoverButton === -1 && touchedMenuButtonIndex === -1) {
+                // <<< GEWIJZIGD: Roep goBackInMenu aan bij tap naast knoppen >>>
+                goBackInMenu();
+                // <<< EINDE GEWIJZIGD >>>
+            }
+            touchedMenuButtonIndex = -1; 
+        }
+        
+        if (type !== 'end' && currentHoverButton !== -1) { 
+             stopAutoDemoTimer();
+        } else if (type === 'end' || (type === 'move' && currentHoverButton === -1)) { 
+             startAutoDemoTimer();
+        }
+    }
+}
+
+/**
+ * Handles click events on the canvas.
+ */
+function handleCanvasClick(event) {
+    if (!gameCanvas) return;
+     if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by canvas click."); });
+    }
+
+    if (isInGameState) {
+        if (isPaused) { if(typeof togglePause === 'function') togglePause(); return; }
+    } else if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
+        if (typeof showMenuState === 'function') showMenuState();
+    } else if (!isShowingScoreScreen) { // Menu
+        stopAutoDemoTimer();
+
+        const rect = gameCanvas.getBoundingClientRect();
+        const scaleX = gameCanvas.width / rect.width;
+        const scaleY = gameCanvas.height / rect.height;
+        const clickX = (event.clientX - rect.left) * scaleX;
+        const clickY = (event.clientY - rect.top) * scaleY;
+
+        let clickedButton = -1;
+        const button0Rect = getMenuButtonRect(0);
+        const button1Rect = getMenuButtonRect(1);
+
+        if (button0Rect && checkCollision({ x: clickX, y: clickY, width: 1, height: 1 }, button0Rect)) {
+            clickedButton = 0;
+        } else if (button1Rect && checkCollision({ x: clickX, y: clickY, width: 1, height: 1 }, button1Rect)) {
+            clickedButton = 1;
+        }
+
+        if (clickedButton !== -1) {
+            selectedButtonIndex = clickedButton; 
+
+            if (isPlayerSelectMode) {
+                if (selectedButtonIndex === 0) { startGame1P(); } else { startGame2P(); }
+            } else if (isOnePlayerGameTypeSelectMode) {
+                if (selectedButtonIndex === 0) { isOnePlayerGameTypeSelectMode = false; isFiringModeSelectMode = true; selectedOnePlayerGameVariant = 'CLASSIC_1P'; selectedGameMode = 'normal'; isTwoPlayerMode = false; isPlayerTwoAI = false; selectedButtonIndex = 0; }
+                else { isOnePlayerGameTypeSelectMode = false; isOnePlayerVsAIGameTypeSelectMode = true; selectedButtonIndex = 0; }
+            } else if (isOnePlayerVsAIGameTypeSelectMode) {
+                if (selectedButtonIndex === 0) { selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL'; selectedGameMode = 'normal'; }
+                else { selectedOnePlayerGameVariant = '1P_VS_AI_COOP'; selectedGameMode = 'coop'; }
+                isOnePlayerVsAIGameTypeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = true; selectedButtonIndex = 0;
+            } else if (isGameModeSelectMode) {
+                if (selectedButtonIndex === 0) { selectedGameMode = 'normal'; } else { selectedGameMode = 'coop'; }
+                isGameModeSelectMode = false; isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = false; selectedButtonIndex = 0;
+            } else if (isFiringModeSelectMode) {
+                if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; }
+                baseStartGame(true);
+            } else { 
+                if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0; }
+                else if (selectedButtonIndex === 1) { if (typeof exitGame === 'function') exitGame(); }
+            }
+        } else { 
+            // <<< GEWIJZIGD: Roep goBackInMenu aan bij klik naast knoppen >>>
+            goBackInMenu();
+            // <<< EINDE GEWIJZIGD >>>
+        }
+        startAutoDemoTimer(); 
+    }
+}
+
+
+// --- Rendering Functies ---
+function createExplosion(x, y) { try { playSound('explosionSound', false, 0.4); let particles = []; for (let i = 0; i < EXPLOSION_PARTICLE_COUNT; i++) { const angle = Math.random() * Math.PI * 2; const speed = Math.random() * (EXPLOSION_MAX_SPEED - EXPLOSION_MIN_SPEED) + EXPLOSION_MIN_SPEED; particles.push({ x: x, y: y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, radius: EXPLOSION_PARTICLE_RADIUS, alpha: 1.0 }); } explosions.push({ creationTime: Date.now(), duration: EXPLOSION_DURATION, particles: particles }); } catch (e) { console.error("Error creating explosion:", e); } }
+
+
+// --- EINDE deel 2      van 3 dit codeblok ---
+// --- END OF rendering_menu.js ---
+
+
+
+
+
+
+
+
+// --- START OF FILE rendering_menu.js ---
+// --- DEEL 3 van 3 dit code blok --- (Aangepast voor Portrait Message & Vaste Portrait UI positionering)
+
+// <<< VERPLAATST: Helper functies nu BOVEN renderGame >>>
+
+/** Helper functie om tekst te tekenen op het canvas met opties. */
+function drawCanvasText(text, x, y, font, color, align = 'center', baseline = 'middle', shadow = false) { if (!gameCtx) return; gameCtx.save(); gameCtx.font = font; gameCtx.fillStyle = color; gameCtx.textAlign = align; gameCtx.textBaseline = baseline; if (shadow) { gameCtx.shadowColor = 'rgba(0, 0, 0, 0.8)'; gameCtx.shadowBlur = 8; gameCtx.shadowOffsetX = 3; gameCtx.shadowOffsetY = 3; } gameCtx.fillText(text, x, y); gameCtx.restore(); }
+
+/** Tekent een menuknop met hover state. */
+function drawCanvasButton(text, index, isSelected) { if (!gameCtx) return; const rect = getMenuButtonRect(index); if (!rect) return; gameCtx.save(); drawCanvasText( text, rect.x + rect.width / 2, rect.y + rect.height / 2, MENU_BUTTON_FONT, isSelected ? MENU_BUTTON_COLOR_HOVER : MENU_BUTTON_COLOR, 'center', 'middle' ); gameCtx.restore(); }
+
+/** Rendert de actieve explosies op het game canvas. */
+function renderExplosions() { try { if (!gameCtx) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; explosions.forEach(explosion => { explosion.particles.forEach(p => { const drawAlpha = p.alpha * EXPLOSION_MAX_OPACITY; if (drawAlpha > 0.01) { gameCtx.beginPath(); gameCtx.arc(Math.round(p.x), Math.round(p.y), p.radius, 0, Math.PI * 2); gameCtx.fillStyle = `rgba(255, 200, 80, ${drawAlpha.toFixed(3)})`; gameCtx.fill(); } }); }); gameCtx.restore(); } catch (e) { console.error("Error rendering explosions:", e); } }
+
+/** Rendert de actieve floating score teksten op het game canvas. */
+function renderFloatingScores() { try { if (!gameCtx || !floatingScores || floatingScores.length === 0) return; const now = Date.now(); gameCtx.save(); gameCtx.globalAlpha = FLOATING_SCORE_OPACITY; floatingScores.forEach(fs => { if (now >= fs.displayStartTime) { drawCanvasText(fs.text, fs.x, fs.y, FLOATING_SCORE_FONT, fs.color, 'center', 'middle', false); } }); gameCtx.globalAlpha = 1.0; gameCtx.restore(); } catch (e) { console.error("Error rendering floatingScores:", e); } }
+
+/**
+ * Rendert de hit spark particles (met nieuwe look)
+ */
+function renderHitSparks() { if (!gameCtx || !hitSparks || hitSparks.length === 0) return; gameCtx.save(); gameCtx.globalCompositeOperation = 'lighter'; hitSparks.forEach(s => { if (s && s.alpha > 0.01) { gameCtx.fillStyle = s.color; gameCtx.globalAlpha = s.alpha; gameCtx.beginPath(); const currentSize = s.size * Math.sqrt(s.alpha); gameCtx.arc(Math.round(s.x), Math.round(s.y), Math.max(0.5, currentSize / 2), 0, Math.PI * 2); gameCtx.fill(); } }); gameCtx.globalAlpha = 1.0; gameCtx.restore(); }
+
+// <<< EINDE VERPLAATSTE HELPER FUNCTIES >>>
+
+
+/**
+ * Tekent de volledige game scène.
+ */
+function renderGame() {
+    try {
+        if (!gameCtx || !gameCanvas) {
+            if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; return;
+        }
+        gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+        const now = Date.now();
+
+        // --- STAP 0: Teken "Rotate Device" bericht EN VASTE PORTRAIT UI indien nodig ---
+        if (isShowingPortraitMessage) {
+            gameCtx.save();
+            const midX = gameCanvas.width / 2;
+
+            // Disclaimer Tekst Logica
+            const cleanFontBaseSize = Math.min(22, gameCanvas.width / 35);
+            const disclaimerTitleFont = `bold ${cleanFontBaseSize + 2}px Arial, sans-serif`;
+            const disclaimerTitleColor = "yellow";
+            const disclaimerTextFont = `normal ${cleanFontBaseSize}px Arial, sans-serif`;
+            const disclaimerTextColor = "lime";
+            const rotateFont = "bold 24px 'Press Start 2P'";
+            const rotateColor = "rgba(0, 191, 255, 0.9)";
+            const platiniFont = `normal ${cleanFontBaseSize - 4}px Arial, sans-serif`;
+            const platiniColor = "red";
+
+            const messageStructure = [
+                { text: "⚠️ Disclaimer", font: disclaimerTitleFont, color: disclaimerTitleColor, skipAfter: 0.75 },
+                { text: "This is an unofficial", font: disclaimerTextFont, color: disclaimerTextColor },
+                { text: "fan remake of Galaga,", font: disclaimerTextFont, color: disclaimerTextColor, skipAfter: 1 },
+                { text: "Created out of love", font: disclaimerTextFont, color: disclaimerTextColor },
+                { text: "for the original.", font: disclaimerTextFont, color: disclaimerTextColor, skipAfter: 1 },
+                { text: "All rights to the", font: disclaimerTextFont, color: disclaimerTextColor },
+                { text: "original Galaga concept,", font: disclaimerTextFont, color: disclaimerTextColor, skipAfter: 1 },
+                { text: "Design, and sounds", font: disclaimerTextFont, color: disclaimerTextColor },
+                { text: "belong to Bandai Namco.", font: disclaimerTextFont, color: disclaimerTextColor, skipAfter: 2 },
+                { text: "ROTATE TO LANDSCAPE", font: rotateFont, color: rotateColor },
+                { text: "TO PLAY GAME", font: rotateFont, color: rotateColor, skipAfter: 1.5 },
+                { text: "Written by Platini2000(c)", font: platiniFont, color: platiniColor }
+            ];
+
+            let totalBlockHeight = 0;
+            const lineHeightsInfo = messageStructure.map(item => {
+                gameCtx.font = item.font;
+                const metrics = gameCtx.measureText("M");
+                const height = (metrics.actualBoundingBoxAscent || parseInt(item.font, 10) * 1.2) + (metrics.actualBoundingBoxDescent || 0) + 8;
+                return { height: height, skip: item.skipAfter || 0 };
+            });
+
+            gameCtx.font = rotateFont;
+            const refMetrics = gameCtx.measureText("M");
+            const referenceSkipLineHeight = (refMetrics.actualBoundingBoxAscent || parseInt(rotateFont,10)*1.2) + (refMetrics.actualBoundingBoxDescent || 0) + 5;
+
+            lineHeightsInfo.forEach(info => {
+                totalBlockHeight += info.height;
+                if (info.skip > 0) {
+                    totalBlockHeight += referenceSkipLineHeight * info.skip;
+                }
+            });
+
+            const topScreenMargin = gameCanvas.height * 0.05;
+            const retroGridHorizonY = gameCanvas.height * GRID_HORIZON_Y_FACTOR;
+            const spaceAboveGrid = retroGridHorizonY - topScreenMargin;
+            const bottomPaddingForDisclaimer = gameCanvas.height * 0.05;
+
+            let disclaimerStartY = topScreenMargin;
+            if (totalBlockHeight < (spaceAboveGrid - bottomPaddingForDisclaimer)) {
+                disclaimerStartY = topScreenMargin + ( (spaceAboveGrid - bottomPaddingForDisclaimer) - totalBlockHeight) / 2;
+            }
+            disclaimerStartY = Math.max(disclaimerStartY, topScreenMargin);
+
+            const DISCLAIMER_BLOCK_Y_OFFSET = referenceSkipLineHeight * 4.0;
+            disclaimerStartY += DISCLAIMER_BLOCK_Y_OFFSET;
+
+            let currentDisclaimerTextY = disclaimerStartY;
+            messageStructure.forEach((item, index) => {
+                const itemLineHeight = lineHeightsInfo[index].height;
+                drawCanvasText(item.text, midX, currentDisclaimerTextY + itemLineHeight / 2, item.font, item.color, 'center', 'middle', true);
+                currentDisclaimerTextY += itemLineHeight;
+                if (item.skipAfter) {
+                    currentDisclaimerTextY += referenceSkipLineHeight * item.skipAfter;
+                }
+            });
+            gameCtx.restore();
+
+            // --- BEGIN VASTE UI VOOR PORTRETMODUS ---
+            gameCtx.save();
+            const PORTRAIT_UI_FONT = "20px 'Press Start 2P'";
+            const PORTRAIT_LABEL_COLOR = "red";
+            const PORTRAIT_SCORE_COLOR = "white";
+            const PORTRAIT_MARGIN_TOP_BASE = 15;
+            const PORTRAIT_MARGIN_SIDE = 20;
+            const PORTRAIT_SCORE_OFFSET_Y = 20;
+            const PORTRAIT_BOTTOM_ICON_SIZE = Math.min(35, gameCanvas.width / 15);
+            const PORTRAIT_MID_SHIP_WIDTH = SHIP_WIDTH;
+            const PORTRAIT_MID_SHIP_HEIGHT = SHIP_HEIGHT;
+            const PORTRAIT_ICON_SPACING = 5;
+            const PORTRAIT_ICON_MARGIN_BOTTOM_BASE = 10;
+            const SCORE_EXTRA_Y_OFFSET = 3;
+
+            const topUiY = PORTRAIT_MARGIN_TOP_BASE + (referenceSkipLineHeight * 1.0);
+            const topUiScoreY = topUiY + PORTRAIT_SCORE_OFFSET_Y + SCORE_EXTRA_Y_OFFSET;
+
+            gameCtx.font = PORTRAIT_UI_FONT;
+            gameCtx.textBaseline = "top";
+
+            gameCtx.fillStyle = PORTRAIT_LABEL_COLOR;
+            gameCtx.textAlign = "left";
+            const label1UPText = "1UP";
+            gameCtx.fillText(label1UPText, PORTRAIT_MARGIN_SIDE, topUiY);
+            gameCtx.fillStyle = PORTRAIT_SCORE_COLOR;
+            const label1UPWidth = gameCtx.measureText(label1UPText).width;
+            gameCtx.textAlign = "center";
+            gameCtx.fillText("0", PORTRAIT_MARGIN_SIDE + (label1UPWidth / 2), topUiScoreY);
+
+            gameCtx.fillStyle = PORTRAIT_LABEL_COLOR;
+            gameCtx.textAlign = "center";
+            gameCtx.fillText("HI SCORE", midX, topUiY);
+            gameCtx.fillStyle = PORTRAIT_SCORE_COLOR;
+            gameCtx.fillText(String(highScore || 20000), midX, topUiScoreY);
+
+            gameCtx.fillStyle = PORTRAIT_LABEL_COLOR;
+            gameCtx.textAlign = "right";
+            const label2UPText = "2UP";
+            gameCtx.fillText(label2UPText, gameCanvas.width - PORTRAIT_MARGIN_SIDE, topUiY);
+            gameCtx.fillStyle = PORTRAIT_SCORE_COLOR;
+            const label2UPWidth = gameCtx.measureText(label2UPText).width;
+            gameCtx.textAlign = "center";
+            gameCtx.fillText("0", gameCanvas.width - PORTRAIT_MARGIN_SIDE - (label2UPWidth / 2), topUiScoreY);
+
+            if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
+                const portraitBottomIconY_Base = gameCanvas.height - PORTRAIT_ICON_MARGIN_BOTTOM_BASE - (referenceSkipLineHeight * 1.0);
+                const portraitLifeLevelIconY = portraitBottomIconY_Base - PORTRAIT_BOTTOM_ICON_SIZE;
+                const portraitMidShipIconY = portraitBottomIconY_Base - PORTRAIT_MID_SHIP_HEIGHT;
+
+                let currentIconX_P = PORTRAIT_MARGIN_SIDE;
+                gameCtx.drawImage(shipImage, Math.round(currentIconX_P), Math.round(portraitLifeLevelIconY), PORTRAIT_BOTTOM_ICON_SIZE, PORTRAIT_BOTTOM_ICON_SIZE);
+                currentIconX_P += PORTRAIT_BOTTOM_ICON_SIZE + PORTRAIT_ICON_SPACING;
+                gameCtx.drawImage(shipImage, Math.round(currentIconX_P), Math.round(portraitLifeLevelIconY), PORTRAIT_BOTTOM_ICON_SIZE, PORTRAIT_BOTTOM_ICON_SIZE);
+
+                const midShipX = midX - PORTRAIT_MID_SHIP_WIDTH / 2;
+                gameCtx.drawImage(shipImage, Math.round(midShipX), Math.round(portraitMidShipIconY), PORTRAIT_MID_SHIP_WIDTH, PORTRAIT_MID_SHIP_HEIGHT);
+
+                if (typeof level1Image !== 'undefined' && level1Image.complete && level1Image.naturalHeight !== 0) {
+                    const levelIconX_P = gameCanvas.width - PORTRAIT_MARGIN_SIDE - PORTRAIT_BOTTOM_ICON_SIZE;
+                    gameCtx.drawImage(level1Image, Math.round(levelIconX_P), Math.round(portraitLifeLevelIconY), PORTRAIT_BOTTOM_ICON_SIZE, PORTRAIT_BOTTOM_ICON_SIZE);
+                }
+            }
+            gameCtx.restore();
+            return;
+        }
+
+
+        // --- STAP 1: Teken UI (Score, Levens, Level) ---
+        // ... (rest van de renderGame functie, die alleen wordt uitgevoerd in landscape modus) ...
+        gameCtx.save();
+        const UI_FONT="20px 'Press Start 2P'"; const LABEL_COLOR="red"; const SCORE_COLOR="white";
+        const maxLivesIcons = 5;
+        const defaultReserveLives = 2;
+        gameCtx.font=UI_FONT; gameCtx.textBaseline="top";
+
+        const drawTopUiElement=(label, scoreValue, labelAlign, labelX, shouldBlink = false)=>{
+             let showLabel=true; let blinkOnDuration = UI_1UP_BLINK_ON_MS * 1.5; let blinkCycleDuration = UI_1UP_BLINK_CYCLE_MS * 1.5;
+             if (label === "DEMO" || label === "DEMO-1" || label === "DEMO-2" || label === "AI P2") {
+                 blinkOnDuration = DEMO_TEXT_BLINK_ON_MS * 0.7; blinkCycleDuration = DEMO_TEXT_BLINK_CYCLE_MS;
+             }
+             else if (label === "HIGH SCORE") {
+                 blinkOnDuration = UI_1UP_BLINK_ON_MS * 1.5; blinkCycleDuration = UI_1UP_BLINK_CYCLE_MS * 1.5;
+                 if (isInGameState && (!isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop'))) {
+                      blinkOnDuration = DEMO_TEXT_BLINK_ON_MS * 0.7; blinkCycleDuration = DEMO_TEXT_BLINK_CYCLE_MS;
+                 }
+             }
+             let isAnyPlayerGameOverMsgShowing = isShowingPlayerGameOverMessage || (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage));
+             if(shouldBlink){ if(isPaused || gameOverSequenceStartTime > 0 || isAnyPlayerGameOverMsgShowing || !((now % blinkCycleDuration) < blinkOnDuration)){ showLabel=false; } }
+
+             if(showLabel){ gameCtx.fillStyle=LABEL_COLOR; gameCtx.textAlign=labelAlign; gameCtx.fillText(label, labelX, MARGIN_TOP); }
+             const labelWidth=gameCtx.measureText(label).width;
+             let scoreCenterX;
+             if(labelAlign==='left')scoreCenterX=labelX+labelWidth/2;
+             else if(labelAlign==='right')scoreCenterX=labelX-labelWidth/2;
+             else scoreCenterX=labelX;
+             gameCtx.fillStyle=SCORE_COLOR; gameCtx.textAlign='center';
+             let scoreOffsetY=MARGIN_TOP+SCORE_OFFSET_Y+5;
+             if(label==="HIGH SCORE"){scoreCenterX=labelX;}
+             const scoreText = (typeof scoreValue === 'number') ? scoreValue.toFixed(0) : String(scoreValue);
+             gameCtx.fillText(scoreText, scoreCenterX, scoreOffsetY);
+        };
+
+        let score1PValue, score2PValue, sessionHighScore, label1P, label2P = "2UP";
+        let show1UPBlink = false, show2UPBlink = false, highScoreConditionMet = false;
+        let isAnyCoopPlayerGameOver = isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage);
+
+
+        score2PValue = 0;
+        const isEffectivelyTwoPlayerUI = isTwoPlayerMode || (isPlayerTwoAI && selectedGameMode === 'coop');
+
+        if (isEffectivelyTwoPlayerUI) {
+            if (selectedGameMode === 'coop' && isInGameState) {
+                score2PValue = player2Score;
+                if (isCoopAIDemoActive) label2P = "DEMO-2";
+                else if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') label2P = "AI P2";
+                else label2P = "2UP";
+            }
+            else if (selectedGameMode === 'normal' && isInGameState) {
+                score2PValue = (currentPlayer === 2) ? score : player2Score;
+                if (isPlayerTwoAI) {
+                    label2P = "AI P2";
+                }
+            }
+            else if (isShowingResultsScreen || (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage && !isAnyCoopPlayerGameOver) || isShowingPlayerGameOverMessage || isAnyCoopPlayerGameOver) {
+                score2PValue = player2Score || 0;
+                if (isCoopAIDemoActive && wasLastGameAIDemo) label2P = "DEMO-2";
+                else if (isPlayerTwoAI && wasLastGameAIDemo && selectedGameMode === 'coop') {
+                    label2P = "AI P2";
+                } else if (isPlayerTwoAI && wasLastGameAIDemo) {
+                    label2P = "AI P2";
+                } else if (isPlayerTwoAI && !wasLastGameAIDemo && selectedGameMode === 'coop') {
+                    label2P = "AI P2";
+                } else if (isPlayerTwoAI && !wasLastGameAIDemo) {
+                    label2P = "AI P2";
+                }
+            } else if (!isInGameState ) {
+                 score2PValue = 0;
+                 if (isPlayerSelectMode && selectedButtonIndex === 1) label2P = "2UP";
+                 else if ((isOnePlayerVsAIGameTypeSelectMode && selectedButtonIndex === 1) || (isFiringModeSelectMode && isPlayerTwoAI && selectedGameMode === 'coop')) label2P = "AI P2";
+                 else if ((isOnePlayerVsAIGameTypeSelectMode && selectedButtonIndex === 0 && isFiringModeSelectMode && isPlayerTwoAI) || (isFiringModeSelectMode && isPlayerTwoAI && selectedGameMode === 'normal') ) label2P = "AI P2";
+                 else label2P = "2UP";
+            }
+        } else {
+             label2P = "2UP";
+             score2PValue = 0;
+        }
+
+
+        if (isShowingResultsScreen) {
+            score1PValue = player1Score || 0; sessionHighScore = highScore || 20000; sessionHighScore = Math.max(sessionHighScore, score1PValue, score2PValue);
+            label1P = (wasLastGameAIDemo && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedGameMode === 'coop')) ? "DEMO" :
+                      ((isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop')) ? "DEMO-1" : "1UP");
+            if (isPlayerTwoAI && !isCoopAIDemoActive && wasLastGameAIDemo && selectedGameMode === 'normal') label1P = "1UP";
+
+            highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
+        }
+        else if (gameOverSequenceStartTime > 0 && !isShowingPlayerGameOverMessage && !isAnyCoopPlayerGameOver) {
+            score1PValue = player1Score || 0; sessionHighScore = highScore || 20000; sessionHighScore = Math.max(sessionHighScore, score1PValue, score2PValue);
+            label1P = (wasLastGameAIDemo && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedGameMode === 'coop')) ? "DEMO" :
+                      ((isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop')) ? "DEMO-1" : "1UP");
+            if (isPlayerTwoAI && !isCoopAIDemoActive && wasLastGameAIDemo && selectedGameMode === 'normal') label1P = "1UP";
+
+            highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
+        }
+        else if (isShowingPlayerGameOverMessage || isAnyCoopPlayerGameOver) {
+            score1PValue = player1Score || 0; sessionHighScore = highScore || 20000; sessionHighScore = Math.max(sessionHighScore, score1PValue, score2PValue);
+            label1P = (isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop')) ? "DEMO-1" : "1UP";
+             if (isPlayerTwoAI && !isCoopAIDemoActive && selectedGameMode === 'normal' && playerWhoIsGameOver === 1) label1P = "1UP";
+
+            highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
+        }
+        else if (!isInGameState) { // Menu
+            score1PValue = 0; sessionHighScore = highScore || 20000; label1P = "1UP";
+            highScoreConditionMet = false; show1UPBlink = false; show2UPBlink = false;
+        }
+        else { // In game
+            sessionHighScore = highScore || 0;
+            const baseBlinkCondition = !isPaused && !isShowingCoopPlayersReady;
+
+            if (isCoopAIDemoActive) {
+                score1PValue = player1Score;
+                sessionHighScore = Math.max(highScore, player1Score, player2Score);
+                label1P = "DEMO-1";
+                show1UPBlink = baseBlinkCondition && !isShowingIntro && player1Lives > 0 && ship1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage;
+                show2UPBlink = baseBlinkCondition && !isShowingIntro && player2Lives > 0 && ship2 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage;
+                if (player1Score >= sessionHighScore && player1Score > 0 && !isPlayer1ShowingGameOverMessage) highScoreConditionMet = show1UPBlink;
+                if (player2Score >= sessionHighScore && player2Score > 0 && player2Score >= player1Score && !isPlayer2ShowingGameOverMessage) highScoreConditionMet = show2UPBlink;
+
+            } else if (!isManualControl) {
+                score1PValue = score; sessionHighScore = Math.max(sessionHighScore, score); label1P = "DEMO";
+                show1UPBlink = baseBlinkCondition && !isShowingIntro && !isShipCaptured && playerLives > 0 && !isAnyCoopPlayerGameOver;
+                highScoreConditionMet = baseBlinkCondition && !isShowingIntro && score > 0 && sessionHighScore > 0 && score >= sessionHighScore && !isAnyCoopPlayerGameOver;
+            } else {
+                label1P = "1UP";
+                if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                    score1PValue = player1Score; sessionHighScore = Math.max(highScore, player1Score, player2Score);
+                    show1UPBlink = baseBlinkCondition && !isShowingIntro && player1Lives > 0 && ship1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !isPlayer1ShowingGameOverMessage;
+                    show2UPBlink = baseBlinkCondition && !isShowingIntro && player2Lives > 0 && ship2 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !isPlayer2ShowingGameOverMessage && (isPlayerTwoAI ? player2Lives > 0 : true) ;
+                    if (player1Score >= sessionHighScore && player1Score > 0 && !isPlayer1ShowingGameOverMessage) highScoreConditionMet = show1UPBlink;
+                    if (player2Score >= sessionHighScore && player2Score > 0 && player2Score >= player1Score && !isPlayer2ShowingGameOverMessage && (isPlayerTwoAI ? player2Lives > 0 : true)) highScoreConditionMet = show2UPBlink;
+                } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                    score1PValue = (currentPlayer === 1) ? score : player1Score; sessionHighScore = Math.max(highScore, player1Score, player2Score, score);
+                    show1UPBlink = baseBlinkCondition && !isShowingIntro && currentPlayer === 1 && playerLives > 0 && !isShipCaptured && !isWaitingForRespawn && !isShowingPlayerGameOverMessage;
+                    show2UPBlink = baseBlinkCondition && !isShowingIntro && currentPlayer === 2 && playerLives > 0 && !isShipCaptured && !isWaitingForRespawn && !isShowingPlayerGameOverMessage && (isPlayerTwoAI ? playerLives > 0 : true);
+                    highScoreConditionMet = baseBlinkCondition && !isShowingIntro && score > 0 && sessionHighScore > 0 && score >= sessionHighScore && !isShowingPlayerGameOverMessage;
+                } else {
+                    score1PValue = score; sessionHighScore = Math.max(sessionHighScore, score);
+                    show1UPBlink = baseBlinkCondition && !isShowingIntro && playerLives > 0 && !isShipCaptured && !isWaitingForRespawn && !isShowingPlayerGameOverMessage;
+                    highScoreConditionMet = baseBlinkCondition && !isShowingIntro && score > 0 && sessionHighScore > 0 && score >= sessionHighScore && !isShowingPlayerGameOverMessage;
+                }
+            }
+        }
+
+
+        isHighScoreBlinkingNow = false;
+        if (highScoreConditionMet) {
+            if (!isManualControl || isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop') ) {
+                 isHighScoreBlinkingNow = (player1Score >= sessionHighScore && player1Score > 0 && show1UPBlink && !isPlayer1ShowingGameOverMessage) ||
+                                       ((isCoopAIDemoActive || (isPlayerTwoAI && selectedGameMode === 'coop')) && player2Score >= sessionHighScore && player2Score > 0 && show2UPBlink && !isPlayer2ShowingGameOverMessage);
+                 if (!isCoopAIDemoActive && !isManualControl && !isPlayerTwoAI) isHighScoreBlinkingNow = show1UPBlink;
+            }
+            else if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                 isHighScoreBlinkingNow = (player1Score >= sessionHighScore && player1Score > 0 && show1UPBlink && !isPlayer1ShowingGameOverMessage) || (player2Score >= sessionHighScore && player2Score > 0 && show2UPBlink && !isPlayer2ShowingGameOverMessage);
+            }
+            else if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                isHighScoreBlinkingNow = (score >= sessionHighScore && score > 0 && ((currentPlayer === 1 && show1UPBlink) || (currentPlayer === 2 && show2UPBlink && (!isPlayerTwoAI || (isPlayerTwoAI && playerLives > 0)) )) && !isShowingPlayerGameOverMessage);
+            }
+            else { isHighScoreBlinkingNow = show1UPBlink; }
+        }
+
+
+        if(typeof MARGIN_SIDE!=='undefined' && typeof MARGIN_TOP!=='undefined' && typeof SCORE_OFFSET_Y!=='undefined'){
+            drawTopUiElement(label1P, score1PValue, 'left', MARGIN_SIDE, show1UPBlink);
+            drawTopUiElement("HIGH SCORE", sessionHighScore, 'center', gameCanvas.width / 2, isHighScoreBlinkingNow);
+            drawTopUiElement(label2P, score2PValue, 'right', gameCanvas.width - MARGIN_SIDE, show2UPBlink);
+        }
+
+        const inNormal2PResults = isShowingResultsScreen && isTwoPlayerMode && selectedGameMode === 'normal';
+
+        if (typeof shipImage !== 'undefined' && typeof LIFE_ICON_MARGIN_BOTTOM !== 'undefined' && typeof LIFE_ICON_SIZE !== 'undefined' && typeof LIFE_ICON_MARGIN_LEFT !== 'undefined' && typeof LIFE_ICON_SPACING !== 'undefined' ) {
+            if (shipImage.complete && shipImage.naturalHeight !== 0) {
+                const lifeIconY = gameCanvas.height - LIFE_ICON_MARGIN_BOTTOM - LIFE_ICON_SIZE;
+                let livesP1ToDisplay = 0;
+                let livesP2ToDisplay = 0;
+
+                const is1PNormalMode = !isTwoPlayerMode && selectedGameMode === 'normal';
+                const is1PNormalGameOverOrResults = is1PNormalMode && (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || isShowingResultsScreen);
+
+                if (is1PNormalGameOverOrResults) {
+                    livesP1ToDisplay = defaultReserveLives;
+                } else if (inNormal2PResults) {
+                    livesP1ToDisplay = defaultReserveLives;
+                } else if (!isInGameState || isShowingScoreScreen || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || gameOverSequenceStartTime > 0 ) {
+                    livesP1ToDisplay = (player1Lives <= 0) ? 0 : defaultReserveLives;
+                } else {
+                    if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                        livesP1ToDisplay = player1Lives > 0 ? Math.max(0, player1Lives - 1) : 0;
+                    } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                        if (currentPlayer === 1) {
+                            livesP1ToDisplay = playerLives > 0 ? Math.max(0, playerLives - 1) : 0;
+                        } else {
+                            livesP1ToDisplay = player1Lives > 0 ? Math.max(0, player1Lives - 1) : 0;
+                        }
+                    }
+                    else {
+                        livesP1ToDisplay = playerLives > 0 ? Math.max(0, playerLives - 1) : 0;
+                    }
+                }
+
+                if (livesP1ToDisplay > 0) {
+                    let p1LivesStartX = LIFE_ICON_MARGIN_LEFT;
+                    for (let i = 0; i < Math.min(livesP1ToDisplay, maxLivesIcons); i++) {
+                        const currentIconX = p1LivesStartX + i * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
+                        gameCtx.drawImage(shipImage, Math.round(currentIconX), Math.round(lifeIconY), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
+                    }
+                }
+
+                if (!inNormal2PResults) {
+                    if (!isInGameState || isShowingScoreScreen || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage || gameOverSequenceStartTime > 0 ) {
+                         if (isEffectivelyTwoPlayerUI || (!isInGameState && (!isPlayerSelectMode || selectedButtonIndex === 1 )) ) {
+                            livesP2ToDisplay = (player2Lives <= 0) ? 0 : defaultReserveLives;
+                        }
+                    } else {
+                        if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                            livesP2ToDisplay = player2Lives > 0 ? Math.max(0, player2Lives - 1) : 0;
+                        } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                            if (currentPlayer === 2) {
+                                livesP2ToDisplay = playerLives > 0 ? Math.max(0, playerLives - 1) : 0;
+                            } else {
+                                livesP2ToDisplay = player2Lives > 0 ? Math.max(0, player2Lives - 1) : 0;
+                            }
+                        }
+                    }
+
+                     const p2LivesIconsToDraw = Math.min(livesP2ToDisplay, maxLivesIcons);
+                     const showP2LivesInMenuGeneral = (!isInGameState &&
+                                                ( (isPlayerSelectMode && selectedButtonIndex === 1) ||
+                                                  (isGameModeSelectMode && (selectedButtonIndex === 0 || selectedButtonIndex === 1)) ||
+                                                  (isFiringModeSelectMode && isTwoPlayerMode && !isPlayerTwoAI)
+                                                )
+                                               );
+                     const showP2LivesInMenuForAICoop = (!isInGameState &&
+                                                ( (isOnePlayerVsAIGameTypeSelectMode && selectedButtonIndex === 1) ||
+                                                  (isFiringModeSelectMode && isPlayerTwoAI && selectedGameMode === 'coop')
+                                                )
+                                               );
+
+                     if (p2LivesIconsToDraw > 0 && ( (isEffectivelyTwoPlayerUI && isInGameState) || showP2LivesInMenuGeneral || showP2LivesInMenuForAICoop ) ) {
+                         const p2LivesTotalWidth = p2LivesIconsToDraw * LIFE_ICON_SIZE + Math.max(0, p2LivesIconsToDraw - 1) * LIFE_ICON_SPACING;
+                         const p2LivesStartX = gameCanvas.width - (typeof LEVEL_ICON_MARGIN_RIGHT !== 'undefined' ? LEVEL_ICON_MARGIN_RIGHT : MARGIN_SIDE) - p2LivesTotalWidth;
+                         for (let i = 0; i < p2LivesIconsToDraw; i++) {
+                             const currentIconX = p2LivesStartX + i * (LIFE_ICON_SIZE + LIFE_ICON_SPACING);
+                             gameCtx.drawImage(shipImage, Math.round(currentIconX), Math.round(lifeIconY), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
+                         }
+                     }
+                }
+            }
+        }
+
+
+        const iconTypes = [ { val: 50, img: level50Image }, { val: 30, img: level30Image }, { val: 20, img: level20Image }, { val: 10, img: level10Image }, { val: 5, img: level5Image }, { val: 1, img: level1Image } ];
+
+        const drawLevelIcons = (levelValueToDisplay, isPlayer1_Coop_Or_SinglePlayer) => {
+            const is1PNormalModeGameOverOrResults = !isTwoPlayerMode && selectedGameMode === 'normal' &&
+                                                (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || isShowingResultsScreen);
+
+            if ( (inNormal2PResults && isPlayer1_Coop_Or_SinglePlayer) ||
+                 (is1PNormalModeGameOverOrResults && isPlayer1_Coop_Or_SinglePlayer) ) {
+                return;
+            }
+
+            let actualLevelValueForDisplay = Math.max(1, levelValueToDisplay);
+            if (actualLevelValueForDisplay <= 0 || typeof LEVEL_ICON_MARGIN_BOTTOM === 'undefined' || typeof LEVEL_ICON_SIZE === 'undefined' || typeof LEVEL_ICON_MARGIN_RIGHT === 'undefined' || typeof LEVEL_ICON_SPACING === 'undefined') return;
+            let remainingLevelVal = actualLevelValueForDisplay;
+            let iconsToDrawList = [];
+            let usedIconTypes = new Set();
+            const canCompleteLevel = (startLevel, startIndex, currentUsedTypesSet) => {
+                let tempRemaining = startLevel;
+                let tempUsedTypes = new Set(currentUsedTypesSet);
+                for (let i = startIndex; i < iconTypes.length; i++) {
+                    const iconVal = iconTypes[i].val;
+                    if (tempRemaining >= iconVal) {
+                        const wouldExceedLimit = tempUsedTypes.size >= 3 && !tempUsedTypes.has(iconVal);
+                        if (!wouldExceedLimit || iconVal === 1) {
+                            const howMany = Math.floor(tempRemaining / iconVal);
+                            tempRemaining -= howMany * iconVal;
+                            tempUsedTypes.add(iconVal);
+                            if (tempRemaining === 0) return true;
+                        }
+                    }
+                }
+                return tempRemaining === 0;
+            };
+            for (let i = 0; i < iconTypes.length - 1; i++) {
+                const currentIcon = iconTypes[i];
+                const iconVal = currentIcon.val;
+                const iconImg = currentIcon.img;
+                if (remainingLevelVal >= iconVal) {
+                    const howManyCanFit = Math.floor(remainingLevelVal / iconVal);
+                    for (let numCurrentIcon = howManyCanFit; numCurrentIcon >= 1; numCurrentIcon--) {
+                        const potentialRemaining = remainingLevelVal - (numCurrentIcon * iconVal);
+                        let hypotheticalUsedTypes = new Set(usedIconTypes);
+                        hypotheticalUsedTypes.add(iconVal);
+                        if (hypotheticalUsedTypes.size <= 3 || (hypotheticalUsedTypes.size > 3 && hypotheticalUsedTypes.has(1) && iconVal === 1) ) {
+                             if (canCompleteLevel(potentialRemaining, i + 1, hypotheticalUsedTypes)) {
+                                for (let k = 0; k < numCurrentIcon; k++) {
+                                    iconsToDrawList.push(iconImg);
+                                }
+                                remainingLevelVal = potentialRemaining;
+                                usedIconTypes.add(iconVal);
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (remainingLevelVal === 0) break;
+            }
+            if (remainingLevelVal > 0) {
+                for (let k = 0; k < remainingLevelVal; k++) {
+                    iconsToDrawList.push(level1Image);
+                }
+                remainingLevelVal = 0;
+            }
+            if (iconsToDrawList.length === 0 && actualLevelValueForDisplay > 0) {
+                for(let fb = 0; fb < actualLevelValueForDisplay; fb++) iconsToDrawList.push(level1Image);
+            }
+            if (iconsToDrawList.length === 0) return;
+            const totalIcons = iconsToDrawList.length;
+            const totalWidth = totalIcons * LEVEL_ICON_SIZE + Math.max(0, totalIcons - 1) * LEVEL_ICON_SPACING;
+            const iconY = gameCanvas.height - LEVEL_ICON_MARGIN_BOTTOM - LEVEL_ICON_SIZE;
+            let startX;
+            let livesWidthForOffset = 0;
+            const playerLivesForOffset = isPlayer1_Coop_Or_SinglePlayer ? player1Lives : player2Lives;
+            const currentActivePlayerForOffset = isPlayer1_Coop_Or_SinglePlayer ? 1 : 2;
+            let numLifeIconsDrawn = 0;
+            const isGameOverOrResults = gameOverSequenceStartTime > 0 || isShowingResultsScreen ||
+                                     (isShowingPlayerGameOverMessage && playerWhoIsGameOver === currentActivePlayerForOffset) ||
+                                     (isPlayer1ShowingGameOverMessage && isPlayer1_Coop_Or_SinglePlayer) ||
+                                     (isPlayer2ShowingGameOverMessage && !isPlayer1_Coop_Or_SinglePlayer);
+
+            if (!isInGameState || isShowingScoreScreen || isGameOverOrResults) {
+                if (is1PNormalModeGameOverOrResults && isPlayer1_Coop_Or_SinglePlayer) {
+                    numLifeIconsDrawn = defaultReserveLives;
+                } else if (inNormal2PResults && isPlayer1_Coop_Or_SinglePlayer) {
+                    numLifeIconsDrawn = defaultReserveLives;
+                } else if (inNormal2PResults && !isPlayer1_Coop_Or_SinglePlayer) {
+                    numLifeIconsDrawn = 0;
+                } else {
+                    numLifeIconsDrawn = (playerLivesForOffset <= 0) ? 0 : defaultReserveLives;
+                }
+            } else if (isInGameState) {
+                 const actualPlayerLivesInGame = (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === currentActivePlayerForOffset) ? playerLives : playerLivesForOffset;
+                 numLifeIconsDrawn = actualPlayerLivesInGame > 0 ? Math.max(0, actualPlayerLivesInGame - 1) : 0;
+            }
+            numLifeIconsDrawn = Math.min(numLifeIconsDrawn, maxLivesIcons);
+
+
+            if (numLifeIconsDrawn > 0) {
+                livesWidthForOffset = numLifeIconsDrawn * LIFE_ICON_SIZE + (numLifeIconsDrawn -1) * LIFE_ICON_SPACING;
+            } else {
+                livesWidthForOffset = -LIFE_ICON_SPACING;
+            }
+
+
+            if (isTwoPlayerMode && selectedGameMode === 'coop' ) {
+                const coopLevelIconOffset = 15;
+                if (isPlayer1_Coop_Or_SinglePlayer) {
+                    startX = LIFE_ICON_MARGIN_LEFT + livesWidthForOffset + coopLevelIconOffset;
+                } else {
+                    const p2LivesStartXArea = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - livesWidthForOffset;
+                    startX = p2LivesStartXArea - totalWidth - coopLevelIconOffset;
+                }
+            } else if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                const normalLevelIconOffset = 15;
+                 if (isPlayer1_Coop_Or_SinglePlayer) {
+                    startX = LIFE_ICON_MARGIN_LEFT + livesWidthForOffset + normalLevelIconOffset;
+                } else {
+                    const p2LivesStartXArea = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - livesWidthForOffset;
+                    startX = p2LivesStartXArea - totalWidth - normalLevelIconOffset;
+                }
+            } else { // 1P
+                 startX = gameCanvas.width - LEVEL_ICON_MARGIN_RIGHT - totalWidth;
+            }
+
+            let currentX = startX;
+            for (const iconImage of iconsToDrawList) {
+                if (iconImage && iconImage.complete && iconImage.naturalHeight !== 0) {
+                    gameCtx.drawImage(iconImage, Math.round(currentX), Math.round(iconY), LEVEL_ICON_SIZE, LEVEL_ICON_SIZE);
+                }
+                currentX += LEVEL_ICON_SIZE + LEVEL_ICON_SPACING;
+            }
+        };
+
+        let p1LevelToDraw, p2LevelToDraw;
+
+        if (isInGameState && !isShowingPlayerGameOverMessage && !isPlayer1ShowingGameOverMessage && !isPlayer2ShowingGameOverMessage && gameOverSequenceStartTime === 0) {
+            if (isTwoPlayerMode && selectedGameMode === 'normal') {
+                p1LevelToDraw = (currentPlayer === 1) ? level : player1MaxLevelReached;
+                p2LevelToDraw = (currentPlayer === 2) ? level : player2MaxLevelReached;
+            } else if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                p1LevelToDraw = player1Lives > 0 ? level : player1MaxLevelReached;
+                p2LevelToDraw = player2Lives > 0 ? level : player2MaxLevelReached;
+            } else { // 1P
+                p1LevelToDraw = level;
+            }
+        } else { // Menu, Game Over, Results
+            p1LevelToDraw = player1MaxLevelReached;
+            if (isEffectivelyTwoPlayerUI || isTwoPlayerMode) {
+                p2LevelToDraw = player2MaxLevelReached;
+            }
+        }
+
+        drawLevelIcons(Math.max(1, p1LevelToDraw), true);
+
+        const is1PNormalModeGameOverOrResults = !isTwoPlayerMode && selectedGameMode === 'normal' &&
+                                            (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || isShowingResultsScreen);
+
+        if (is1PNormalModeGameOverOrResults) {
+            drawLevelIcons(Math.max(1, player1MaxLevelReached), false);
+        }
+        else if (isEffectivelyTwoPlayerUI || isTwoPlayerMode) {
+             if (typeof p2LevelToDraw === 'number' && p2LevelToDraw > 0) {
+                 drawLevelIcons(Math.max(1, p2LevelToDraw), false);
+             } else if (player2MaxLevelReached > 0) {
+                 drawLevelIcons(Math.max(1, player2MaxLevelReached), false);
+             }
+        }
+
+        gameCtx.restore();
+
+        gameCtx.save();
+        let drawMenuShip = false;
+        let gameIsEffectivelyOverOrInMenu = !isInGameState || isShowingScoreScreen || isShowingResultsScreen || gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage;
+
+        if (gameIsEffectivelyOverOrInMenu) {
+            drawMenuShip = true;
+        }
+
+        const isShowingCSBonusScreen = showCsBonusScoreMessage || showPerfectMessage;
+
+        if (drawMenuShip) {
+            const menuShipX = Math.round(gameCanvas.width / 2 - SHIP_WIDTH / 2);
+            const menuShipY = gameCanvas.height - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN;
+            if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
+                gameCtx.drawImage(shipImage, menuShipX, menuShipY, SHIP_WIDTH, SHIP_HEIGHT);
+            } else {
+                gameCtx.fillStyle = "blue"; gameCtx.fillRect(menuShipX, menuShipY, SHIP_WIDTH, SHIP_HEIGHT);
+            }
+        } else if (isInGameState && !isShowingPlayerGameOverMessage && !isPlayer1ShowingGameOverMessage && !isPlayer2ShowingGameOverMessage && gameOverSequenceStartTime === 0) {
+            if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                const p1ActiveAndAlive = ship1 && player1Lives > 0;
+                const p2ActiveAndAlive = ship2 && player2Lives > 0;
+
+                if (p1ActiveAndAlive && (!isPlayer1ShipCaptured || (isPlayer1ShipCaptured && !isShowingCaptureMessage))) {
+                    let shouldDrawP1 = true;
+                    if ((isPlayer1Invincible || isPlayer1WaitingForRespawn) && !isShowingCoopPlayersReady && !isShowingCaptureMessage) {
+                        const blinkCycleTime = INVINCIBILITY_BLINK_ON_MS + INVINCIBILITY_BLINK_OFF_MS;
+                        if ((now % blinkCycleTime) >= INVINCIBILITY_BLINK_ON_MS) shouldDrawP1 = false;
+                    }
+                    if (isShowingCSBonusScreen) {
+                        if (isCoopAIDemoActive && !p2ActiveAndAlive) {  }
+                        else if (isCoopAIDemoActive && p1ActiveAndAlive && p2ActiveAndAlive) {  }
+                        else if (isCoopAIDemoActive) { shouldDrawP1 = false; }
+                    }
+
+
+                    if (shouldDrawP1) {
+                        const shipDrawX = ship1.x; const shipDrawY = ship1.y;
+                        if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
+                            gameCtx.drawImage(shipImage, Math.round(shipDrawX), Math.round(shipDrawY), ship1.width, ship1.height);
+                            if (player1IsDualShipActive) { gameCtx.drawImage(shipImage, Math.round(shipDrawX + DUAL_SHIP_OFFSET_X), Math.round(shipDrawY), ship1.width, ship1.height); }
+                        } else { gameCtx.fillStyle = "blue"; gameCtx.fillRect(Math.round(shipDrawX), Math.round(shipDrawY), ship1.width, ship1.height); }
+                    }
+                }
+                if (p2ActiveAndAlive && (!isPlayer2ShipCaptured || (isPlayer2ShipCaptured && !isShowingCaptureMessage))) {
+                     let shouldDrawP2 = true;
+                    if ((isPlayer2Invincible || isPlayer2WaitingForRespawn) && !isShowingCoopPlayersReady && !isShowingCaptureMessage) {
+                        const blinkCycleTime = INVINCIBILITY_BLINK_ON_MS + INVINCIBILITY_BLINK_OFF_MS;
+                        if ((now % blinkCycleTime) >= INVINCIBILITY_BLINK_ON_MS) shouldDrawP2 = false;
+                    }
+                    if (isShowingCSBonusScreen) {
+                        if (isCoopAIDemoActive) {
+                            if (!p1ActiveAndAlive) {  }
+                            else if (p1ActiveAndAlive && p2ActiveAndAlive) {  }
+                            else { shouldDrawP2 = false; }
+                        }
+                    }
+
+                    if (shouldDrawP2) {
+                        const shipDrawX = ship2.x; const shipDrawY = ship2.y;
+                        if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
+                            gameCtx.drawImage(shipImage, Math.round(shipDrawX), Math.round(shipDrawY), ship2.width, ship2.height);
+                            if (player2IsDualShipActive) { gameCtx.drawImage(shipImage, Math.round(shipDrawX + DUAL_SHIP_OFFSET_X), Math.round(shipDrawY), ship2.width, ship2.height); }
+                        } else { gameCtx.fillStyle = "green"; gameCtx.fillRect(Math.round(shipDrawX), Math.round(shipDrawY), ship2.width, ship2.height); }
+                    }
+                }
+            } else {
+                 if (ship && playerLives > 0 && !isShipCaptured && !isShowingCaptureMessage) {
+                    let shouldDrawShip = true;
+                    if (isInvincible || isWaitingForRespawn) {
+                        const blinkCycleTime = INVINCIBILITY_BLINK_ON_MS + INVINCIBILITY_BLINK_OFF_MS;
+                        if ((now % blinkCycleTime) >= INVINCIBILITY_BLINK_ON_MS) shouldDrawShip = false;
+                    }
+                     if (shouldDrawShip && !(isShowingCSBonusScreen && (!isManualControl || (isPlayerTwoAI && selectedGameMode==='normal') ) && !isCoopAIDemoActive )) {
+                        let shipDrawX = ship.x;
+                        let shouldCenterSingleShipIntro = (isShowingIntro && (!isManualControl || (isPlayerTwoAI && selectedGameMode === 'normal')) && selectedGameMode !== 'coop') && !isDualShipActive;
+                        if (shouldCenterSingleShipIntro) {
+                            shipDrawX = Math.round(gameCanvas.width / 2 - ship.width / 2);
+                        }
+                        const shipDrawY = ship.y;
+                        if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
+                            gameCtx.drawImage(shipImage, Math.round(shipDrawX), Math.round(shipDrawY), ship.width, ship.height);
+                            if (isDualShipActive) {
+                                gameCtx.drawImage(shipImage, Math.round(shipDrawX + DUAL_SHIP_OFFSET_X), Math.round(shipDrawY), ship.width, ship.height);
+                            }
+                        } else {
+                            gameCtx.fillStyle = "blue"; gameCtx.fillRect(Math.round(shipDrawX), Math.round(shipDrawY), ship.width, ship.height);
+                        }
+                    }
+                }
+            }
+        }
+        if (fallingShips.length > 0 && typeof shipImage !== 'undefined' && shipImage.complete) { fallingShips.forEach(fs => { if (fs) { gameCtx.save(); const centerX = fs.x + fs.width / 2; const centerY = fs.y + fs.height / 2; gameCtx.translate(centerX, centerY); gameCtx.rotate(fs.rotation || 0); const drawX = -fs.width / 2; const drawY = -fs.height / 2; const drawW = fs.width; const drawH = fs.height; gameCtx.drawImage(shipImage, drawX, drawY, drawW, drawH); if (typeof fs.tintProgress === 'number' && fs.tintProgress > 0.01) { gameCtx.save(); gameCtx.globalAlpha = fs.tintProgress; gameCtx.fillStyle = CAPTURED_SHIP_TINT_COLOR; gameCtx.globalCompositeOperation = 'source-atop'; gameCtx.fillRect(drawX, drawY, drawW, drawH); gameCtx.restore(); } gameCtx.restore(); } }); }
+        gameCtx.restore();
+
+
+        if (!isInGameState) {
+             if (isShowingScoreScreen) {
+                if (typeof LIFE_ICON_SIZE !== 'undefined') {
+                    gameCtx.save();
+                    const centerX = gameCanvas.width / 2;
+                    let scoreScreenBaseY = gameCanvas.height * 0.25 + SCORE_SCREEN_VERTICAL_OFFSET + SCORE_SCREEN_LINE_V_SPACING;
+                    let alignedIconStartX = 0;
+                    let yPos1 = scoreScreenBaseY + 0;
+                    drawCanvasText("PUSH START BUTTON", centerX, yPos1 - 30, SCORE_SCREEN_TEXT_FONT, SCORE_SCREEN_TEXT_COLOR_TOP, 'center', 'middle', true);
+                    let yPos2 = yPos1 + SCORE_SCREEN_LINE_V_SPACING * 1.8;
+                    const text1 = ` 1ST LIFE BONUS FOR ${EXTRA_LIFE_THRESHOLD_1} PTS`;
+                    gameCtx.font = SCORE_SCREEN_TEXT_FONT;
+                    const text1Width = gameCtx.measureText(text1).width;
+                    const totalWidth1 = LIFE_ICON_SIZE + SCORE_SCREEN_ICON_TEXT_H_SPACING + text1Width;
+                    alignedIconStartX = (centerX - totalWidth1 / 2) - 30;
+                    if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
+                        gameCtx.drawImage(shipImage, Math.round(alignedIconStartX), Math.round(yPos2 - LIFE_ICON_SIZE/2 - 5), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
+                    }
+                    drawCanvasText(text1, alignedIconStartX + LIFE_ICON_SIZE + SCORE_SCREEN_ICON_TEXT_H_SPACING, yPos2, SCORE_SCREEN_TEXT_FONT, SCORE_SCREEN_TEXT_COLOR_BONUS, 'left', 'middle', false);
+                    let yPos3 = yPos2 + SCORE_SCREEN_LINE_V_SPACING * 1.0;
+                    const text2 = ` 2ND LIFE BONUS FOR ${EXTRA_LIFE_THRESHOLD_2} PTS`;
+                    if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
+                        gameCtx.drawImage(shipImage, Math.round(alignedIconStartX), Math.round(yPos3 - LIFE_ICON_SIZE/2 - 5), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
+                    }
+                    drawCanvasText(text2, alignedIconStartX + LIFE_ICON_SIZE + SCORE_SCREEN_ICON_TEXT_H_SPACING, yPos3, SCORE_SCREEN_TEXT_FONT, SCORE_SCREEN_TEXT_COLOR_BONUS, 'left', 'middle', false);
+                    let yPos4 = yPos3 + SCORE_SCREEN_LINE_V_SPACING * 1.0;
+                    const text3 = ` EXT LIFE FOR EVERY ${RECURRING_EXTRA_LIFE_INTERVAL} PTS`;
+                    if (typeof shipImage !== 'undefined' && shipImage.complete && shipImage.naturalHeight !== 0) {
+                        gameCtx.drawImage(shipImage, Math.round(alignedIconStartX), Math.round(yPos4 - LIFE_ICON_SIZE/2 - 5), LIFE_ICON_SIZE, LIFE_ICON_SIZE);
+                    }
+                    drawCanvasText(text3, alignedIconStartX + LIFE_ICON_SIZE + SCORE_SCREEN_ICON_TEXT_H_SPACING, yPos4, SCORE_SCREEN_TEXT_FONT, SCORE_SCREEN_TEXT_COLOR_BONUS, 'left', 'middle', false);
+                    let yPos5 = yPos4 + SCORE_SCREEN_LINE_V_SPACING * 1.8;
+                    drawCanvasText("2025   Platini2000(c)   LTD", centerX - 10, yPos5 + 30, MENU_SUBTITLE_FONT, MENU_SUBTITLE_COLOR, 'center', 'middle', false);
+                    gameCtx.restore();
+                }
+             } else {
+                gameCtx.save(); const canvasWidth = gameCanvas.width; const canvasHeight = gameCanvas.height; const canvasCenterX = canvasWidth / 2;
+                if (selectedButtonIndex === -1 &&
+                    (isPlayerSelectMode || isOnePlayerGameTypeSelectMode || isOnePlayerVsAIGameTypeSelectMode || isGameModeSelectMode || isFiringModeSelectMode ||
+                     (!isPlayerSelectMode && !isOnePlayerGameTypeSelectMode && !isOnePlayerVsAIGameTypeSelectMode && !isGameModeSelectMode && !isFiringModeSelectMode) )) {
+                    selectedButtonIndex = 0;
+                }
+
+                let actualLogoHeight = MENU_LOGO_APPROX_HEIGHT; let actualLogoWidth = actualLogoHeight * (logoImage.naturalWidth / logoImage.naturalHeight || 1); if (typeof logoImage !== 'undefined' && logoImage.complete && logoImage.naturalHeight !== 0) { actualLogoHeight = logoImage.naturalHeight * LOGO_SCALE_FACTOR; actualLogoWidth = logoImage.naturalWidth * LOGO_SCALE_FACTOR; } const subtitleHeight = getSubtitleApproxHeight(MENU_SUBTITLE_FONT); const totalContentHeightForLayout = actualLogoHeight + MENU_LOGO_BOTTOM_TO_START_GAP + (2 * MENU_BUTTON_HEIGHT) + MENU_BUTTON_V_GAP + MENU_BUTTON_SUBTITLE_V_GAP + subtitleHeight; let groupStartYForLayout = (canvasHeight - totalContentHeightForLayout) / 2 - 70; groupStartYForLayout += MENU_GENERAL_Y_OFFSET; const logoDrawX = canvasCenterX - actualLogoWidth / 2; const logoDrawY = groupStartYForLayout + MENU_LOGO_EXTRA_Y_OFFSET; if (typeof logoImage !== 'undefined' && logoImage.complete && logoImage.naturalHeight !== 0) { gameCtx.drawImage(logoImage, Math.round(logoDrawX), Math.round(logoDrawY), actualLogoWidth, actualLogoHeight); } else { drawCanvasText("LOGO", canvasCenterX, logoDrawY + actualLogoHeight / 2, "30px Arial", "grey"); }
+
+                if (isPlayerSelectMode) {
+                    drawCanvasButton("PLAYER 1", 0, selectedButtonIndex === 0);
+                    drawCanvasButton("PLAYER 2", 1, selectedButtonIndex === 1);
+                } else if (isOnePlayerGameTypeSelectMode) {
+                    drawCanvasButton("NORMAL GAME", 0, selectedButtonIndex === 0);
+                    drawCanvasButton("GAME Vs AI", 1, selectedButtonIndex === 1);
+                } else if (isOnePlayerVsAIGameTypeSelectMode) {
+                    drawCanvasButton("NORMAL GAME", 0, selectedButtonIndex === 0);
+                    drawCanvasButton("CO-OP GAME", 1, selectedButtonIndex === 1);
+                } else if (isGameModeSelectMode) {
+                    drawCanvasButton("NORMAL GAME", 0, selectedButtonIndex === 0);
+                    drawCanvasButton("CO-OP GAME", 1, selectedButtonIndex === 1);
+                } else if (isFiringModeSelectMode) {
+                    drawCanvasButton("EASY", 0, selectedButtonIndex === 0);
+                    drawCanvasButton("NORMAL", 1, selectedButtonIndex === 1);
+                } else {
+                    drawCanvasButton("START GAME", 0, selectedButtonIndex === 0);
+                    drawCanvasButton("GAME EXIT", 1, selectedButtonIndex === 1);
+                }
+
+                const exitButtonRect = getMenuButtonRect(1); let subtitleCenterY; if (exitButtonRect) { subtitleCenterY = exitButtonRect.y + exitButtonRect.height + MENU_BUTTON_SUBTITLE_V_GAP + (subtitleHeight / 2); } else { subtitleCenterY = groupStartYForLayout + actualLogoHeight + MENU_LOGO_BOTTOM_TO_START_GAP + (2 * MENU_BUTTON_HEIGHT) + MENU_BUTTON_V_GAP + MENU_BUTTON_SUBTITLE_V_GAP + (subtitleHeight / 2); } drawCanvasText( MENU_SUBTITLE_TEXT, canvasCenterX - 1, Math.round(subtitleCenterY), MENU_SUBTITLE_FONT, MENU_SUBTITLE_COLOR, 'center', 'middle', true ); gameCtx.restore();
+            }
+        } else {
+            const noGlobalGameOverOrResults = gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage && !isShowingResultsScreen;
+
+            if (noGlobalGameOverOrResults || isAnyCoopPlayerGameOver) {
+                 gameCtx.save();
+                 let showBullets = !showReadyMessage && !showCsHitsMessage && !showPerfectMessage && !showCsBonusScoreMessage && !showCSClearMessage && !isCsCompletionDelayActive && !isShowingIntro && !isShowingCaptureMessage && !isShowingCoopPlayersReady && !isAnyCoopPlayerGameOver;
+                 if (showBullets) { bullets.forEach(b => { if (b) { if (typeof bulletImage !== 'undefined' && bulletImage.complete) { gameCtx.drawImage(bulletImage, Math.round(b.x), Math.round(b.y), b.width, b.height); } else { gameCtx.fillStyle = "yellow"; gameCtx.fillRect(Math.round(b.x), Math.round(b.y), b.width, b.height); } } }); enemyBullets.forEach(eb => { if (eb) { if (typeof enemyBulletImage !== 'undefined' && enemyBulletImage.complete && enemyBulletImage.naturalWidth > 0) { gameCtx.drawImage(enemyBulletImage, Math.round(eb.x), Math.round(eb.y), eb.width, eb.height); } else { gameCtx.fillStyle = "white"; gameCtx.fillRect(Math.round(eb.x), Math.round(eb.y), eb.width, eb.height); } } }); }
+
+                 if (!isShowingCoopPlayersReady) {
+                    enemies.forEach(e => { if (e && e.y < gameCanvas.height + e.height * 2 && e.y > -e.height * 2) { gameCtx.save(); try { let currentEnemyImage = null; let fallbackColor = "grey"; const useSecondFrame = !isPaused && (now % (ENEMY_ANIMATION_INTERVAL_MS * 2)) >= ENEMY_ANIMATION_INTERVAL_MS; if (e.type === ENEMY3_TYPE) { currentEnemyImage = useSecondFrame ? bossGalagaImage2 : bossGalagaImage; fallbackColor = "purple"; } else if (e.type === ENEMY2_TYPE) { currentEnemyImage = useSecondFrame ? butterflyImage2 : butterflyImage; fallbackColor = "cyan"; } else { currentEnemyImage = useSecondFrame ? beeImage2 : beeImage; fallbackColor = "red"; } const drawX = Math.round(e.x); const drawY = Math.round(e.y); const drawW = e.width; const drawH = e.height; const needsTint = (e.type === ENEMY3_TYPE && e.isDamaged); const shouldRotateEnemy = !isPaused && (e.state === 'attacking' || e.state === 'following_bezier_path' || e.state === 'following_entrance_path') && e.y > -e.height * 0.5 && (Math.abs(e.velocityX) > 0.1 || Math.abs(e.velocityY) > 0.1); const shouldDrawCapturedShipAnim = e.state === 'showing_capture_message' && e.type === ENEMY3_TYPE && e.hasCapturedShip && e.capturedShipDimensions && typeof e.capturedShipX === 'number' && typeof e.capturedShipY === 'number' && typeof e.captureAnimationRotation === 'number'; const shouldDrawStaticCapturedShip = e.state !== 'showing_capture_message' && e.type === ENEMY3_TYPE && e.hasCapturedShip && e.capturedShipDimensions; const capturedW = (shouldDrawCapturedShipAnim || shouldDrawStaticCapturedShip) ? e.capturedShipDimensions.width : 0; const capturedH = (shouldDrawCapturedShipAnim || shouldDrawStaticCapturedShip) ? e.capturedShipDimensions.height : 0; let capturedX = 0; let capturedY = 0; if (shouldDrawCapturedShipAnim) { capturedX = Math.round(e.capturedShipX); capturedY = Math.round(e.capturedShipY); } else if (shouldDrawStaticCapturedShip) { capturedX = Math.round(e.x + CAPTURED_SHIP_OFFSET_X); capturedY = Math.round(e.y + CAPTURED_SHIP_OFFSET_Y); } const drawEnemyAndTint = (imgX, imgY, imgW, imgH) => { if (typeof currentEnemyImage !== 'undefined' && currentEnemyImage.complete && currentEnemyImage.naturalHeight !== 0) { gameCtx.drawImage(currentEnemyImage, imgX, imgY, imgW, imgH); } else { gameCtx.fillStyle = fallbackColor; gameCtx.fillRect(imgX, imgY, imgW, imgH); } if (needsTint) { gameCtx.globalCompositeOperation = 'source-atop'; gameCtx.fillStyle = 'rgba(0, 0, 139, 0.5)'; gameCtx.fillRect(imgX, imgY, imgW, imgH); gameCtx.globalCompositeOperation = 'source-over'; } }; if (shouldRotateEnemy) { const centerX = drawX + drawW / 2; const centerY = drawY + drawH / 2; gameCtx.translate(centerX, centerY); let angle = Math.atan2(e.velocityY, e.velocityX) + Math.PI / 2; if (e.type === ENEMY3_TYPE && e.state === 'attacking') angle += Math.PI; gameCtx.rotate(angle); drawEnemyAndTint(-drawW / 2, -drawH / 2, drawW, drawH); if (shouldDrawStaticCapturedShip && typeof shipImage !== 'undefined' && shipImage.complete) { gameCtx.globalAlpha = 0.8; const rotatedOffsetX = CAPTURED_SHIP_OFFSET_X; const rotatedOffsetY = CAPTURED_SHIP_OFFSET_Y; gameCtx.drawImage(shipImage, rotatedOffsetX - capturedW / 2, rotatedOffsetY - capturedH / 2, capturedW, capturedH); gameCtx.globalAlpha = 1.0; gameCtx.save(); gameCtx.fillStyle = CAPTURED_SHIP_TINT_COLOR; gameCtx.globalCompositeOperation = 'source-atop'; gameCtx.fillRect(rotatedOffsetX - capturedW / 2, rotatedOffsetY - capturedH / 2, capturedW, capturedH); gameCtx.restore(); } gameCtx.rotate(-angle); gameCtx.translate(-centerX, -centerY); } else { drawEnemyAndTint(drawX, drawY, drawW, drawH); if (shouldDrawStaticCapturedShip && typeof shipImage !== 'undefined' && shipImage.complete) { gameCtx.globalAlpha = 0.8; gameCtx.drawImage(shipImage, capturedX, capturedY, capturedW, capturedH); gameCtx.globalAlpha = 1.0; gameCtx.save(); gameCtx.fillStyle = CAPTURED_SHIP_TINT_COLOR; gameCtx.globalCompositeOperation = 'source-atop'; gameCtx.fillRect(capturedX, capturedY, capturedW, capturedH); gameCtx.restore(); } } if (shouldDrawCapturedShipAnim && typeof shipImage !== 'undefined' && shipImage.complete) { gameCtx.save(); const animCenterX = capturedX + capturedW / 2; const animCenterY = capturedY + capturedH / 2; gameCtx.translate(animCenterX, animCenterY); gameCtx.rotate(e.captureAnimationRotation); gameCtx.globalAlpha = 0.8; gameCtx.drawImage(shipImage, -capturedW / 2, -capturedH / 2, capturedW, capturedH); gameCtx.globalAlpha = 1.0; gameCtx.save(); gameCtx.fillStyle = CAPTURED_SHIP_TINT_COLOR; gameCtx.globalCompositeOperation = 'source-atop'; gameCtx.fillRect(-capturedW / 2, -capturedH / 2, capturedW, capturedH); gameCtx.restore(); gameCtx.restore(); } } catch (drawError) { console.error(`Error drawing enemy:`, drawError); gameCtx.fillStyle = "orange"; gameCtx.fillRect(Math.round(e.x), Math.round(e.y), e.width, e.height); } finally { gameCtx.restore(); } } });
+                 }
+                 if (captureBeamActive && capturingBossId && captureBeamProgress > 0 && !isShowingCoopPlayersReady) { gameCtx.save(); const pulseAlpha = 0.4 + (Math.sin(now * CAPTURE_BEAM_PULSE_SPEED) + 1) / 2 * 0.6; const fadeAlpha = captureBeamProgress; gameCtx.globalAlpha = fadeAlpha * pulseAlpha; const capturingBoss = enemies.find(e => e.id === capturingBossId); if (capturingBoss) { const beamSourceX = capturingBoss.x + BOSS_WIDTH / 2; const beamVisualStartY = capturingBoss.y + BOSS_HEIGHT; const beamVisualEndY = gameCanvas.height - LIFE_ICON_MARGIN_BOTTOM - LIFE_ICON_SIZE - 10; const topWidth = BOSS_WIDTH * CAPTURE_BEAM_WIDTH_TOP_FACTOR; const bottomWidth = SHIP_WIDTH * CAPTURE_BEAM_WIDTH_BOTTOM_FACTOR; if (beamVisualStartY < beamVisualEndY) { const grad = gameCtx.createLinearGradient(beamSourceX, beamVisualStartY, beamSourceX, beamVisualEndY); grad.addColorStop(0, CAPTURE_BEAM_COLOR_START); grad.addColorStop(1, CAPTURE_BEAM_COLOR_END); gameCtx.fillStyle = grad; gameCtx.beginPath(); gameCtx.moveTo(beamSourceX - topWidth / 2, beamVisualStartY); gameCtx.lineTo(beamSourceX + topWidth / 2, beamVisualStartY); gameCtx.lineTo(beamSourceX + bottomWidth / 2, beamVisualEndY); gameCtx.lineTo(beamSourceX - bottomWidth / 2, beamVisualEndY); gameCtx.closePath(); gameCtx.fill(); } } gameCtx.restore(); }
+                 if (!isShowingCoopPlayersReady) { renderExplosions(); renderFloatingScores(); renderHitSparks(); }
+
+                 let messageDrawnThisCycle = false;
+                 const midScreenY = gameCanvas.height / 2;
+                 const midScreenX = gameCanvas.width / 2;
+                 const hitsText = `NUMBER OF HITS ${challengingStageEnemiesHit}`;
+                 const clearBonusText = `BONUS ${scoreEarnedThisCS}`;
+                 const lineSpacingGameOver = RESULTS_LINE_V_SPACING_SINGLE;
+
+                 if (isPaused) {
+                    drawCanvasText("PAUSED", midScreenX, midScreenY, PAUSE_TEXT_FONT, PAUSE_TEXT_COLOR, 'center', 'middle', PAUSE_TEXT_SHADOW);
+                    messageDrawnThisCycle = true;
+                 }
+                 else if (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage)) {
+                    const messageCenterY_CoopGO = gameCanvas.height * 0.45;
+                    if (isPlayer1ShowingGameOverMessage && !isPlayer2ShowingGameOverMessage) {
+                        const p1goLabel = isCoopAIDemoActive ? "DEMO-1" : (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP' ? "PLAYER 1" : "PLAYER 1");
+                        drawCanvasText(p1goLabel.toUpperCase(), midScreenX, messageCenterY_CoopGO - lineSpacingGameOver / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
+                        drawCanvasText("GAME OVER", midScreenX, messageCenterY_CoopGO + lineSpacingGameOver / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
+                        messageDrawnThisCycle = true;
+                    } else if (isPlayer2ShowingGameOverMessage && !isPlayer1ShowingGameOverMessage) {
+                        const p2goLabel = isCoopAIDemoActive ? "DEMO-2" : (isPlayerTwoAI ? "AI PLAYER 2" : "PLAYER 2");
+                        drawCanvasText(p2goLabel.toUpperCase(), midScreenX, messageCenterY_CoopGO - lineSpacingGameOver / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
+                        drawCanvasText("GAME OVER", midScreenX, messageCenterY_CoopGO + lineSpacingGameOver / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
+                        messageDrawnThisCycle = true;
+                    }
+                 }
+                 else if (isShowingCoopPlayersReady) {
+                    const coopReadyText = isCoopAIDemoActive ? "DEMO PLAYERS READY!" : ((isPlayerTwoAI && selectedGameMode === 'coop') ? "PLAYER & AI READY!" : "PLAYERS READY!");
+                    drawCanvasText(coopReadyText, midScreenX, midScreenY, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true); messageDrawnThisCycle = true;
+                 }
+                 else if (isShowingCaptureMessage) {
+                    drawCanvasText("FIGHTER CAPTURED", midScreenX, midScreenY, INTRO_TEXT_FONT, "red", 'center', 'middle', true);
+                    messageDrawnThisCycle = true;
+                 }
+                 else if (!isManualControl && isInGameState && isShowingDemoText) {
+                    const isBlockingMessageActiveForDemoText = isShowingIntro ||
+                                              showCsBonusScoreMessage || showPerfectMessage || showCsHitsMessage || showCSClearMessage ||
+                                              showExtraLifeMessage ||
+                                              showReadyMessage ||
+                                              isCsCompletionDelayActive;
+
+                     if (!isBlockingMessageActiveForDemoText) {
+                         const demoBlinkCycle = DEMO_TEXT_BLINK_CYCLE_MS;
+                         const demoBlinkOn = DEMO_TEXT_BLINK_ON_MS;
+                         if ((now % demoBlinkCycle) < demoBlinkOn) {
+                             drawCanvasText("PUSH START BUTTON", midScreenX, midScreenY, DEMO_TEXT_LINE1_FONT, DEMO_TEXT_COLOR, 'center', 'middle', true);
+                             messageDrawnThisCycle = true;
+                         }
+                     }
+                 }
+
+                 if (!messageDrawnThisCycle) {
+                     if (showCsBonusScoreMessage || showPerfectMessage || showCsHitsMessage) { drawCanvasText(hitsText, midScreenX, midScreenY, INTRO_TEXT_FONT, CS_HITS_TEXT_COLOR, 'center', 'middle', true); messageDrawnThisCycle = true; if (showCsBonusScoreMessage || showPerfectMessage) { drawCanvasText("PERFECT !", midScreenX, midScreenY - CS_MESSAGE_VERTICAL_OFFSET, INTRO_TEXT_FONT, PERFECT_TEXT_COLOR, 'center', 'middle', true); } if (showCsBonusScoreMessage) { drawCanvasText("SPECIAL BONUS 10000 PTS", midScreenX, midScreenY + CS_MESSAGE_VERTICAL_OFFSET, INTRO_TEXT_FONT, CS_BONUS_SCORE_TEXT_COLOR, 'center', 'middle', true); } }
+                     else if (showCSClearMessage) { drawCanvasText("STAGE CLEARED", midScreenX, midScreenY - CS_MESSAGE_VERTICAL_OFFSET, INTRO_TEXT_FONT, CS_CLEAR_TEXT_COLOR, 'center', 'middle', true); messageDrawnThisCycle = true; if (showCsHitsForClearMessage) { drawCanvasText(hitsText, midScreenX, midScreenY, INTRO_TEXT_FONT, CS_HITS_TEXT_COLOR, 'center', 'middle', true); } if (showCsScoreForClearMessage) { drawCanvasText(clearBonusText, midScreenX, midScreenY + CS_MESSAGE_VERTICAL_OFFSET, INTRO_TEXT_FONT, CS_CLEAR_SCORE_TEXT_COLOR, 'center', 'middle', true); } }
+                     else if (showExtraLifeMessage) { drawCanvasText("EXTRA LIFE", midScreenX, midScreenY, INTRO_TEXT_FONT, EXTRA_LIFE_TEXT_COLOR, 'center', 'middle', true); messageDrawnThisCycle = true; }
+                     else if (isShowingIntro && !isShowingCoopPlayersReady) {
+                        let introText = ""; let introColor = INTRO_TEXT_COLOR_NORMAL;
+                        if (introStep === 1) {
+                            if (!(selectedGameMode === 'coop' && level === 1)) {
+                                introText = (!isManualControl && !isCoopAIDemoActive && !isPlayerTwoAI) ? "DEMO" :
+                                            (isCoopAIDemoActive ? "DEMO-1" :
+                                            ((isTwoPlayerMode && selectedGameMode === 'normal' && !isPlayerTwoAI) ? `PLAYER ${currentPlayer}` :
+                                            ((isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL') ? `PLAYER ${currentPlayer}` : "PLAYER 1") ));
+                                 if (isManualControl && isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) introText = "AI PLAYER 2";
+                            }
+                        }
+                        else if (introStep === 2) { introText = "STAGE " + level; }
+                        else if (introStep === 3) { introText = "CHALLENGING STAGE"; introColor = INTRO_TEXT_COLOR_CS_TEXT; if (!csIntroSoundPlayed) { playSound('entranceSound', false, 0.4); csIntroSoundPlayed = true; } }
+                        if (introText) { drawCanvasText(introText, midScreenX, midScreenY, INTRO_TEXT_FONT, introColor, 'center', 'middle', true); messageDrawnThisCycle = true; }
+                     }
+                     else if (showReadyMessage) { drawCanvasText("READY?", midScreenX, midScreenY, INTRO_TEXT_FONT, READY_TEXT_COLOR, 'center', 'middle', true); messageDrawnThisCycle = true; }
+                 }
+                 gameCtx.restore();
+            }
+            else {
+                if (isShowingPlayerGameOverMessage && selectedGameMode === 'normal') {
+                     const playerText = (isPlayerTwoAI && playerWhoIsGameOver === 2) ? `AI PLAYER 2` : `PLAYER ${playerWhoIsGameOver}`;
+                     const lineSpacing = RESULTS_LINE_V_SPACING_SINGLE; const messageCenterY = gameCanvas.height * 0.45; drawCanvasText(playerText, gameCanvas.width / 2, messageCenterY - lineSpacing / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true); drawCanvasText("GAME OVER", gameCanvas.width / 2, messageCenterY + lineSpacing / 2, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true);
+                }
+                else if (gameOverSequenceStartTime > 0) {
+                    const elapsedTime = now - gameOverSequenceStartTime;
+                    const isShowingGameOverText = elapsedTime < GAME_OVER_DURATION;
+                    const isShowingResultsScreenActive = elapsedTime >= GAME_OVER_DURATION;
+
+                    if (isShowingGameOverText && !isTwoPlayerMode && !isCoopAIDemoActive && !isPlayerTwoAI && selectedGameMode !== 'coop') {
+                        drawCanvasText("GAME OVER", gameCanvas.width / 2, gameCanvas.height / 2, GAME_OVER_FONT, GAME_OVER_COLOR, 'center', 'middle', GAME_OVER_SHADOW);
+                    } else if (isShowingGameOverText && isCoopAIDemoActive && player1Lives <= 0 && player2Lives <=0) {
+                         drawCanvasText("GAME OVER", gameCanvas.width / 2, gameCanvas.height / 2, GAME_OVER_FONT, GAME_OVER_COLOR, 'center', 'middle', GAME_OVER_SHADOW);
+                    }
+                    else if (isShowingResultsScreenActive) {
+                        gameCtx.save(); const centerX = gameCanvas.width / 2; const canvasWidth = gameCanvas.width; let initialY = RESULTS_START_Y + RESULTS_LINE_V_SPACING_SINGLE;
+                        const drawPlayerResultsColumn = (playerIdentifier, scoreVal, shotsVal, hitsVal, ratioVal, lastLevel, columnX, startY) => {
+                            let currentColumnY = startY; const STAGE_LABEL_COLOR = RESULTS_VALUE_COLOR_YELLOW; const LEVEL_NUMBER_COLOR = RESULTS_VALUE_COLOR_CYAN;
+                            drawCanvasText("- RESULTS -", columnX, currentColumnY, INTRO_TEXT_FONT, RESULTS_HEADER_COLOR, 'center', 'top', true); currentColumnY += getSubtitleApproxHeight(INTRO_TEXT_FONT) + RESULTS_LINE_V_SPACING_SINGLE;
+                            drawCanvasText(playerIdentifier, columnX, currentColumnY, INTRO_TEXT_FONT, 'white', 'center', 'middle', false); currentColumnY += RESULTS_LINE_V_SPACING_SINGLE;
+                            drawCanvasText("STAGE", columnX, currentColumnY, INTRO_TEXT_FONT, STAGE_LABEL_COLOR, 'center', 'middle', false); currentColumnY += RESULTS_LINE_V_SPACING_SINGLE * 0.8; drawCanvasText(lastLevel.toString(), columnX, currentColumnY, INTRO_TEXT_FONT, LEVEL_NUMBER_COLOR, 'center', 'middle', false); currentColumnY += RESULTS_LINE_V_SPACING_SINGLE;
+                            drawCanvasText("SCORE", columnX, currentColumnY, INTRO_TEXT_FONT, RESULTS_VALUE_COLOR_YELLOW, 'center', 'middle', false); currentColumnY += RESULTS_LINE_V_SPACING_SINGLE * 0.8; drawCanvasText(scoreVal.toString(), columnX, currentColumnY, INTRO_TEXT_FONT, RESULTS_VALUE_COLOR_CYAN, 'center', 'middle', false); currentColumnY += RESULTS_LINE_V_SPACING_SINGLE;
+                            drawCanvasText("SHOTS FIRED", columnX, currentColumnY, INTRO_TEXT_FONT, RESULTS_VALUE_COLOR_YELLOW, 'center', 'middle', false); currentColumnY += RESULTS_LINE_V_SPACING_SINGLE * 0.8; drawCanvasText(shotsVal.toString(), columnX, currentColumnY, INTRO_TEXT_FONT, RESULTS_VALUE_COLOR_CYAN, 'center', 'middle', false); currentColumnY += RESULTS_LINE_V_SPACING_SINGLE;
+                            drawCanvasText("NUMBER OF HITS", columnX, currentColumnY, INTRO_TEXT_FONT, RESULTS_VALUE_COLOR_YELLOW, 'center', 'middle', false); currentColumnY += RESULTS_LINE_V_SPACING_SINGLE * 0.8; drawCanvasText(hitsVal.toString(), columnX, currentColumnY, INTRO_TEXT_FONT, RESULTS_VALUE_COLOR_CYAN, 'center', 'middle', false); currentColumnY += RESULTS_LINE_V_SPACING_SINGLE;
+                            drawCanvasText("HIT-MISS-RATIO", columnX, currentColumnY, INTRO_TEXT_FONT, RESULTS_VALUE_COLOR_YELLOW, 'center', 'middle', false); currentColumnY += RESULTS_LINE_V_SPACING_SINGLE * 0.8; drawCanvasText(ratioVal, columnX, currentColumnY, INTRO_TEXT_FONT, RESULTS_VALUE_COLOR_CYAN, 'center', 'middle', false); currentColumnY += (RESULTS_LINE_V_SPACING_SINGLE * 1.5) - 10;
+                            drawCanvasText("Platini2000(c) LTD", columnX, currentColumnY, RESULTS_FOOTER_FONT, RESULTS_FOOTER_COLOR, 'center', 'middle', false);
+                        };
+                        if (isTwoPlayerMode || (wasLastGameAIDemo && isPlayerTwoAI) ) {
+                            const shots1 = player1ShotsFired || 0; const hits1 = player1EnemiesHit || 0; const ratio1 = shots1 > 0 ? Math.round((hits1 / shots1) * 100) + "%" : "0%";
+                            const shots2 = player2ShotsFired || 0; const hits2 = player2EnemiesHit || 0; const ratio2 = shots2 > 0 ? Math.round((hits2 / shots2) * 100) + "%" : "0%";
+                            const columnWidth = canvasWidth * 0.4; const columnGap = canvasWidth * 0.1; const leftColumnX = centerX - columnGap / 2 - columnWidth / 2 + (columnWidth * 0.1); const rightColumnX = centerX + columnGap / 2 + columnWidth / 2 - (columnWidth * 0.1);
+
+                            const p1Identifier = (isCoopAIDemoActive && wasLastGameAIDemo) ? "DEMO-1" : "PLAYER 1";
+                            let p2Identifier = "PLAYER 2";
+                            if (isCoopAIDemoActive && wasLastGameAIDemo) p2Identifier = "DEMO-2";
+                            else if (isPlayerTwoAI && wasLastGameAIDemo) p2Identifier = "AI PLAYER 2";
+                            else if (isPlayerTwoAI && !wasLastGameAIDemo) p2Identifier = "AI PLAYER 2";
+
+                            drawPlayerResultsColumn(p1Identifier, player1Score, shots1, hits1, ratio1, player1MaxLevelReached, leftColumnX, initialY);
+                            drawPlayerResultsColumn(p2Identifier, player2Score, shots2, hits2, ratio2, player2MaxLevelReached, rightColumnX, initialY);
+
+                            let winnerNum = 0;
+                            let winnerLabel = "";
+                            if (player1Score > player2Score) {
+                                winnerNum = 1;
+                                winnerLabel = p1Identifier;
+                            } else if (player2Score > player1Score) {
+                                winnerNum = 2;
+                                winnerLabel = p2Identifier;
+                            }
+
+                            if (winnerNum > 0) {
+                                let yPosForWinsText = initialY + getSubtitleApproxHeight(INTRO_TEXT_FONT) + RESULTS_LINE_V_SPACING_SINGLE * 2;
+                                drawCanvasText(winnerLabel, centerX, yPosForWinsText, INTRO_TEXT_FONT, 'white', 'center', 'middle', true);
+                                drawCanvasText("WINS", centerX, yPosForWinsText + RESULTS_LINE_V_SPACING_SINGLE, INTRO_TEXT_FONT, RESULTS_VALUE_COLOR_CYAN, 'center', 'middle', true);
+                            }
+                        } else {
+                             const shotsValue = player1ShotsFired || 0; const hitsValue = player1EnemiesHit || 0; const finalScore = (!isManualControl && wasLastGameAIDemo && !isCoopAIDemoActive && !isPlayerTwoAI) ? score : player1Score; const finalLevel = (!isManualControl && wasLastGameAIDemo && !isCoopAIDemoActive && !isPlayerTwoAI) ? level : player1MaxLevelReached; const ratioValue = shotsValue > 0 ? Math.round((hitsValue / shotsValue) * 100) + "%" : "0%";
+                             const playerIdentifier = (!isManualControl && wasLastGameAIDemo && !isCoopAIDemoActive && !isPlayerTwoAI) ? "DEMO" : "PLAYER 1";
+                             drawPlayerResultsColumn(playerIdentifier, finalScore, shotsValue, hitsValue, ratioValue, finalLevel, centerX, initialY);
+                        }
+                        gameCtx.restore();
+                    }
+                }
+            }
+        }
+    } catch (e) { console.error("Error in renderGame:", e, e.stack); if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; try { if(gameCtx && gameCanvas) { gameCtx.fillStyle = 'red'; gameCtx.font = '20px sans-serif'; gameCtx.textAlign = 'center'; gameCtx.fillText('FATAL RENDER ERROR.', gameCanvas.width / 2, gameCanvas.height/2); } } catch(err) {} try { showMenuState(); } catch (menuErr) {} }
+} // Einde renderGame
+
+
+function hideCursor() { if (gameCanvas) { gameCanvas.style.cursor = 'none'; } mouseIdleTimerId = null; }
+
+/**
+ * Handles mouse move events on the canvas.
+ */
+function handleCanvasMouseMove(event) {
+    if (!gameCanvas) return;
+
+    if (isTouchActiveGame && isInGameState) {
+        return;
+    }
+
+    clearTimeout(mouseIdleTimerId);
+    mouseIdleTimerId = null;
+    let currentCursorStyle = 'default';
+
+    const isInAnyMenuState = !isInGameState && !isShowingScoreScreen;
+
+    if (isInAnyMenuState) {
+        if (typeof handleCanvasTouch === 'function') {
+            handleCanvasTouch(event, 'move');
+        }
+
+        if (selectedButtonIndex !== -1) {
+            currentCursorStyle = 'pointer';
+        }
+    } else {
+        selectedButtonIndex = -1;
+    }
+
+    gameCanvas.style.cursor = currentCursorStyle;
+    mouseIdleTimerId = setTimeout(hideCursor, 2000);
+
+    if (!isInGameState) {
+        const now = Date.now();
+        if (now - lastMouseMoveResetTime > 500) {
+            if (typeof startAutoDemoTimer === 'function' && selectedButtonIndex === -1) {
+                 startAutoDemoTimer();
+            }
+            lastMouseMoveResetTime = now;
+        }
+    }
+}
+
+
+function mainLoop(timestamp) {
+    try {
+        drawStars(); if (retroGridCtx && retroGridCanvas) { drawRetroGrid(); } pollControllerForMenu();
+        if (isInGameState && !isPaused && !isShowingPortraitMessage) {
+            if (!isManualControl && connectedGamepadIndex !== null) { const gamepads = navigator.getGamepads(); if (gamepads?.[connectedGamepadIndex]) { const gamepad = gamepads[connectedGamepadIndex]; const currentDemoButtonStates = gamepad.buttons.map(b => b.pressed); let anyButtonPressedNow = false; for (let i = 0; i < currentDemoButtonStates.length; i++) { if (i === PS5_BUTTON_R1 || i === PS5_BUTTON_TRIANGLE) continue; if (currentDemoButtonStates[i] && !(previousDemoButtonStates[i] ?? false)) { anyButtonPressedNow = true; break; } } if (anyButtonPressedNow) { isCoopAIDemoActive = false; isPlayerTwoAI = false; showMenuState(); requestAnimationFrame(mainLoop); return; } previousDemoButtonStates = currentDemoButtonStates.slice(); } else { if(previousDemoButtonStates.length > 0) previousDemoButtonStates = []; } } else { if(previousDemoButtonStates.length > 0) previousDemoButtonStates = []; }
+
+            if(typeof window.runSingleGameUpdate === 'function') {
+                window.runSingleGameUpdate(timestamp);
+            }
+            else { console.error("FATAL: window.runSingleGameUpdate is not defined!"); if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; showMenuState(); requestAnimationFrame(mainLoop); return; }
+
+            if (gameOverSequenceStartTime > 0) { const now = Date.now(); const elapsedTime = now - gameOverSequenceStartTime; const totalSequenceDuration = GAME_OVER_DURATION + RESULTS_SCREEN_DURATION; if (elapsedTime >= totalSequenceDuration) { showMenuState(); requestAnimationFrame(mainLoop); return; } }
+        } else if (isShowingScoreScreen && !isShowingPortraitMessage) {
+            if(typeof renderGame === 'function') {
+                renderGame();
+            }
+        } else if (isInGameState && gameOverSequenceStartTime > 0 && !isShowingPortraitMessage) {
+            if(typeof renderGame === 'function') {
+                renderGame();
+            }
+            const now = Date.now(); const elapsedTime = now - gameOverSequenceStartTime; const totalSequenceDuration = GAME_OVER_DURATION + RESULTS_SCREEN_DURATION; if (elapsedTime >= totalSequenceDuration) { showMenuState(); requestAnimationFrame(mainLoop); return; }
+        } else if (isInGameState && (isPaused || isShowingPortraitMessage)) {
+            if(typeof renderGame === 'function') {
+                renderGame();
+            }
+        } else if (isInGameState && isCsCompletionDelayActive && !isShowingPortraitMessage) {
+            if(typeof window.runSingleGameUpdate === 'function') window.runSingleGameUpdate(timestamp);
+            else if (typeof renderGame === 'function') renderGame();
+        } else if (isInGameState && (isShowingPlayerGameOverMessage || isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage) && !isShowingPortraitMessage ) {
+            if(typeof window.runSingleGameUpdate === 'function') window.runSingleGameUpdate(timestamp);
+            else if (typeof renderGame === 'function') renderGame();
+        }
+        else { // Menu state (of portrait message)
+            if(typeof renderGame === 'function') {
+                renderGame(); // RenderGame zal de portrait message tekenen indien nodig
+            }
+        }
+        mainLoopId = requestAnimationFrame(mainLoop);
+    } catch (e) {
+        console.error("!!! CRITICAL ERROR IN mainLoop:", e, e.stack); if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; isPaused = false;
+        stopAllGameSoundsInternal();
+        isGridSoundPlaying = false;
+        try { showMenuState(); } catch(menuErr) { console.error("Failed to return to menu after loop error:", menuErr); document.body.innerHTML = '<p style="color:white;">CRITICAL LOOP ERROR. Please refresh.</p>';}
+    }
+}
+
+function startMainLoop() {
+    if (mainLoopId === null) {
+        gridOffsetY = 0;
+        mainLoop();
+    } else {
+    }
+}
+
+function initializeGame() {
+    try {
+        if (typeof initializeDOMElements === 'function') {
+            if (!initializeDOMElements()) {
+                console.error("DOM element initialization failed."); return;
+            }
+        } else { console.error("initializeDOMElements function not found!"); return; }
+
+        if (typeof window.loadHighScore === 'function') window.loadHighScore(); else if (typeof loadHighScore === 'function') loadHighScore(); else console.warn("loadHighScore function not found.");
+
+        if (typeof window.defineNormalWaveEntrancePaths === 'function') window.defineNormalWaveEntrancePaths(); else if (typeof defineNormalWaveEntrancePaths === 'function') defineNormalWaveEntrancePaths(); else console.error("defineNormalWaveEntrancePaths not found!");
+        if (typeof window.defineChallengingStagePaths === 'function') window.defineChallengingStagePaths(); else if (typeof defineChallengingStagePaths === 'function') defineChallengingStagePaths(); else console.error("defineChallengingStagePaths not found!");
+
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+        if (gameCanvas) {
+            gameCanvas.addEventListener('click', handleCanvasClick);
+            gameCanvas.addEventListener('mousemove', handleCanvasMouseMove);
+        } else { console.error("Cannot add canvas listeners: gameCanvas not found during init."); }
+        window.addEventListener("gamepadconnected", handleGamepadConnected);
+        window.addEventListener("gamepaddisconnected", handleGamepadDisconnected);
+        window.addEventListener('resize', resizeCanvases); // Resize wordt al afgehandeld, inclusief portrait check
+
+        showMenuState();
+
+        if (typeof resizeCanvases === 'function') {
+            resizeCanvases(); // Roep initieel aan om de staat te checken
+        } else console.error("resizeCanvases not found!");
+
+        startMainLoop();
+    } catch (e) {
+        console.error("FATAL INITIALIZATION ERROR:", e, e.stack);
+        document.body.innerHTML = `<div style="color:white; padding: 20px; font-family: sans-serif;"><h1>Fatal Initialization Error</h1><p>The game could not be started. Please check the browser console (F12) for details.</p><p>Error: ${e.message}</p></div>`;
+        if (mainLoopId) { cancelAnimationFrame(mainLoopId); mainLoopId = null; }
+    }
+}
+
+window.addEventListener('load', initializeGame);
+
+// --- EINDE deel 3 van 3 dit codeblok ---
+// --- END OF rendering_menu.js ---
