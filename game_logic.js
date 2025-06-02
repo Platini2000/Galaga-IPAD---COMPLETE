@@ -1525,7 +1525,7 @@ function switchPlayerTurn() {
 
 
 // --- START OF FILE game_logic.js ---
-// --- DEEL 5      van 8 dit code blok    ---
+// --- DEEL 5      van 8 dit code blok    --- (AI COOP: Als partner gevangen is & save delay actief is, ga naar eigen lane en schiet niet op die specifieke baas)
 
 function firePlayerBullet(shooterId = null, isTapEvent = false) {
     const now = Date.now();
@@ -2092,7 +2092,6 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
 
             if (!isChallengingStage && !isInvincibleForAI) {
                 let threateningBullets = [];
-                // <<< GEWIJZIGD: Nog agressievere ontwijkparameters voor entreevlucht >>>
                 const entranceLookaheadFactor = isEntrancePhaseActive ? (isDualActiveForAI ? 1.8 : 1.3) : 1.0;
                 const entranceBufferFactor = isEntrancePhaseActive ? (isDualActiveForAI ? 1.8 : 1.3) : 1.0;
 
@@ -2119,7 +2118,6 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                     let maxDodgeScore = -Infinity;
 
                     for (let dodgeDir = -1; dodgeDir <= 1; dodgeDir += 2) {
-                        // <<< GEWIJZIGD: Nog grotere ontwijkmanoeuvres tijdens entree >>>
                         const dodgeAmountFactor = isEntrancePhaseActive ? (isDualActiveForAI ? 3.2 : 2.5) : (isDualActiveForAI ? 2.8 : 2.0);
                         const dodgeAmount = effectiveShipWidth * dodgeAmountFactor + Math.random() * (effectiveShipWidth * 0.5) + (threateningBullets.length > 1 ? effectiveShipWidth * 0.5 : 0) ;
                         let potentialDodgeX = currentSmoothedShipXForAI + dodgeDir * dodgeAmount;
@@ -2144,7 +2142,6 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                 }
 
                 if (!isDodgingThreat) {
-                    // <<< GEWIJZIGD: Nog agressievere ontwijkparameters voor vijanden tijdens entree >>>
                     const enemyLookaheadFactor = isEntrancePhaseActive ? (isDualActiveForAI ? 2.5 : 2.0) : (isDualActiveForAI ? 2.0 : 1.5);
                     const enemyBufferFactor = isEntrancePhaseActive ? (isDualActiveForAI ? 2.5 : 2.0) : (isDualActiveForAI ? 2.0 : 1.5);
                     const enemyLookahead = AI_COLLISION_LOOKAHEAD * enemyLookaheadFactor;
@@ -2171,15 +2168,11 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
             if (isDodgingThreat) {
                 desiredTargetX = Math.max(AI_ANTI_CORNER_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER, dodgeTargetX));
                 targetEnemyForAI = null;
-                // <<< GEWIJZIGD: Tijdens entree en ontwijken, NIET schieten (tenzij het een kritieke save is) >>>
-                // De "last life partner save" logica bovenaan zal dit overschrijven indien nodig.
-                // Anders, als het ontwijkt tijdens de entree, niet schieten.
-                if (isEntrancePhaseActive && !isChallengingStage) { // Niet van toepassing op CS ontwijken (AI schiet daar altijd)
+                if (isEntrancePhaseActive && !isChallengingStage) {
                     shouldTryShoot = false;
-                } else if(!isEntrancePhaseActive) { // Buiten entree, als ontwijkt, ook niet schieten
+                } else if(!isEntrancePhaseActive) {
                      shouldTryShoot = false;
                 }
-                // shouldTryShoot wordt verderop bepaald als niet isDodgingThreat
 
             } else if (fallingShips.length > 0 && !isShipCapturedForAI && !isWaitingForRespawn && !isDualActiveForAI ) {
                 let closestFallingShip = null;
@@ -2276,24 +2269,22 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                             doNotShootThisTarget = true;
                         }
 
-                        // AI schiet niet tijdens entreevlucht (tenzij het een dual ship is die partner redt)
                         if (isEntrancePhaseActive && !isChallengingStage) {
                             const isSavingPartnerWithDual = isDualActiveForAI && targetEnemyForAI && targetEnemyForAI.type === ENEMY3_TYPE && targetEnemyForAI.hasCapturedShip;
-                            if (!isSavingPartnerWithDual) { // Als het GEEN partner save is met dual ship
-                                shouldTryShoot = false; // Dan niet schieten tijdens entree
-                            } else { // Het IS een partner save met dual ship
-                                // Behoud de logica van hierboven, maar zorg dat doNotShootThisTarget niet per ongeluk true is
+                            if (!isSavingPartnerWithDual) {
+                                shouldTryShoot = false;
+                            } else {
                                 if (horizontalDiffToAim < alignmentThresholdForShooting && !doNotShootThisTarget) {
                                      shouldTryShoot = true;
                                 } else {
                                     shouldTryShoot = false;
                                 }
                             }
-                        } else { // Niet in entreevlucht, of wel in CS
+                        } else {
                              if (horizontalDiffToAim < alignmentThresholdForShooting && !doNotShootThisTarget) {
                                 shouldTryShoot = true;
                             } else {
-                                shouldTryShoot = false; // Reset expliciet als niet aan condities voldaan
+                                shouldTryShoot = false;
                             }
                         }
                     } else {
@@ -2407,7 +2398,6 @@ function aiControlCoop() {
         if (!p1IsOnLastLifeAndSavingPartner) {
             p1ActuallyShoots = p1ActuallyShoots && p1ShouldShootOverrideGeneral;
         }
-        // <<< GEWIJZIGD: Voorkom schieten tijdens entree als dual ship (tenzij partner redden), ook voor CO-OP AI >>>
         if (player1IsDualShipActive && isEntrancePhaseActive && !isChallengingStage && !p1IsSavingPartner) {
             p1ActuallyShoots = false;
         }
@@ -2437,7 +2427,6 @@ function aiControlCoop() {
         if (!p2IsOnLastLifeAndSavingPartner) {
             p2ActuallyShoots = p2ActuallyShoots && p2ShouldShootOverrideGeneral;
         }
-        // <<< GEWIJZIGD: Voorkom schieten tijdens entree als dual ship (tenzij partner redden), ook voor CO-OP AI >>>
         if (player2IsDualShipActive && isEntrancePhaseActive && !isChallengingStage && !p2IsSavingPartner) {
             p2ActuallyShoots = false;
         }
@@ -2521,8 +2510,8 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     let targetEnemyForAI = null;
     let isDodgingThreat = false;
     let isMovingForOwnFallingShip = false;
-    let isTargetingCapturedPartnerBoss = false;
     let isMovingToCaptureBeam = false;
+    let highPriorityActionTaken = false;
 
     const canvasHeight = gameCanvas.height;
     const effectiveShipWidth = currentShip.width + (isShipDual ? DUAL_SHIP_OFFSET_X : 0);
@@ -2537,7 +2526,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         }
     }
     const canThisAIShipBeCaptured = !preventCaptureBecauseBothAIDual && livesOfThisAIShip > 1 && !isShipDual && !isThisShipCaptured;
-
 
     let laneCenterX = gameCanvasWidth / 2;
     const generalIntroIsActive = (isShowingIntro || isShowingCoopPlayersReady);
@@ -2562,22 +2550,15 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         isThisShipWaitingForRespawn ||
         (shipIdentifier === 'p1' && player1NeedsRespawnAfterCapture) ||
         ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') && player2NeedsRespawnAfterCapture) ) {
-
-        if (isCoopDemoAndGeneralIntroActive && isSingleSurvivorInCoopDemo) {
-             desiredTargetX = targetCenterShipX;
-        } else {
-            desiredTargetX = targetCenterShipX;
-        }
-        if (isThisShipCaptured || isThisShipWaitingForRespawn || (shipIdentifier === 'p1' && player1NeedsRespawnAfterCapture) || ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') && player2NeedsRespawnAfterCapture) ) {
-             desiredTargetX = currentShip.x;
-        }
+        if (isCoopDemoAndGeneralIntroActive && isSingleSurvivorInCoopDemo) { desiredTargetX = targetCenterShipX; }
+        else { desiredTargetX = targetCenterShipX; }
+        if (isThisShipCaptured || isThisShipWaitingForRespawn || (shipIdentifier === 'p1' && player1NeedsRespawnAfterCapture) || ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') && player2NeedsRespawnAfterCapture) ) { desiredTargetX = currentShip.x; }
         return { desiredTargetX, shouldTryShoot: false, targetEnemyForAI: null };
     }
 
-
-    const otherPlayerId = (shipIdentifier === 'p1') ? 'ai_p2' : 'p1';
-    const otherPlayerIsActuallyCaptured = (otherPlayerId === 'p1' && isPlayer1ShipCaptured) || (otherPlayerId === 'ai_p2' && isPlayer2ShipCaptured);
-    const otherPlayerIsShowingGameOver = (otherPlayerId === 'p1' && isPlayer1ShowingGameOverMessage) || (otherPlayerId === 'ai_p2' && isPlayer2ShowingGameOverMessage);
+    const otherPlayerId = (shipIdentifier === 'p1') ? 'ai_p2' : 'p1'; // Adjusted for potential 'p2' id
+    const otherPlayerIsActuallyCaptured = (otherPlayerId === 'p1' && isPlayer1ShipCaptured) || ((otherPlayerId === 'ai_p2' || otherPlayerId === 'p2') && isPlayer2ShipCaptured);
+    const otherPlayerIsShowingGameOver = (otherPlayerId === 'p1' && isPlayer1ShowingGameOverMessage) || ((otherPlayerId === 'ai_p2' || otherPlayerId === 'p2') && isPlayer2ShowingGameOverMessage);
     let bossHoldingPartner = null;
     let allowTargetingCapturedPartnerBoss = true;
 
@@ -2593,329 +2574,115 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
     const isAboutToDieAndPartnerCaptured = (livesOfThisAIShip === 1) && bossHoldingPartner;
 
+    // PRIORITY 1: Last Life Partner Save
     if (isAboutToDieAndPartnerCaptured && !isMovingToCaptureBeam) {
         targetEnemyForAI = bossHoldingPartner;
         const bossCenterX = bossHoldingPartner.x + bossHoldingPartner.width / 2;
         desiredTargetX = bossCenterX - effectiveShipWidth / 2;
         shouldTryShoot = true;
-
-        isDodgingThreat = false;
-        isMovingForOwnFallingShip = false;
-        isTargetingCapturedPartnerBoss = true;
-
-        desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
-        return { desiredTargetX, shouldTryShoot, targetEnemyForAI };
+        isDodgingThreat = false; highPriorityActionTaken = true;
     }
-
-
-    if (bossHoldingPartner && !isShipDual && allowTargetingCapturedPartnerBoss) {
-        isTargetingCapturedPartnerBoss = true;
+    // PRIORITY 2: Partner Captured & Save Delay Active (don't shoot or align with THAT boss)
+    else if (bossHoldingPartner && !allowTargetingCapturedPartnerBoss) {
+        targetEnemyForAI = bossHoldingPartner;
+        shouldTryShoot = false;
+        desiredTargetX = targetCenterShipX; // Go to own lane, DO NOT align with this boss
+        highPriorityActionTaken = true;
+    }
+    // PRIORITY 3: Partner Captured & Save Delay Passed (and not dual ship, attempt rescue)
+    else if (bossHoldingPartner && allowTargetingCapturedPartnerBoss && !isShipDual) {
         targetEnemyForAI = bossHoldingPartner;
         const bossCenterX = bossHoldingPartner.x + bossHoldingPartner.width / 2;
         desiredTargetX = bossCenterX - effectiveShipWidth / 2;
         shouldTryShoot = true;
-        isDodgingThreat = false;
         if (!isShipInvincible) {
             let threateningBulletsNearBossTarget = [];
-             const bulletLookaheadSave = FINAL_DODGE_LOOKAHEAD * 0.4;
-            const bulletBufferSave = FINAL_DODGE_BUFFER_BASE * 0.3;
+            const bulletLookaheadSave = FINAL_DODGE_LOOKAHEAD * 0.4; const bulletBufferSave = FINAL_DODGE_BUFFER_BASE * 0.3;
             const dangerZoneForSaving = { x: Math.min(shipCenterX, bossCenterX) - bulletBufferSave, y: currentShip.y - bulletLookaheadSave, width: Math.abs(shipCenterX - bossCenterX) + effectiveShipWidth + bulletBufferSave * 2, height: bulletLookaheadSave + currentShip.height };
-            for (const bullet of gameEnemyBullets) {
-                if (bullet && bullet.y + bullet.height > currentShip.y - currentShip.height && bullet.y < canvasHeight) {
-                    const bulletRect = { x: bullet.x, y: bullet.y, width: bullet.width, height: bullet.height };
-                    if (checkCollision(dangerZoneForSaving, bulletRect)) {
-                        threateningBulletsNearBossTarget.push(bullet);
-                    }
-                }
-            }
-            if (threateningBulletsNearBossTarget.length > 0) {
-                isDodgingThreat = true;
-                const dodgeDirection = (currentSmoothedX < gameCanvasWidth / 2) ? -1 : 1;
-                desiredTargetX = currentSmoothedX + dodgeDirection * (effectiveShipWidth * 0.6);
-                shouldTryShoot = false;
-            }
+            for (const bullet of gameEnemyBullets) { if (bullet && bullet.y + bullet.height > currentShip.y - currentShip.height && bullet.y < canvasHeight) { const bulletRect = { x: bullet.x, y: bullet.y, width: bullet.width, height: bullet.height }; if (checkCollision(dangerZoneForSaving, bulletRect)) { threateningBulletsNearBossTarget.push(bullet); } } }
+            if (threateningBulletsNearBossTarget.length > 0) { isDodgingThreat = true; const dodgeDirection = (currentSmoothedX < gameCanvasWidth / 2) ? -1 : 1; desiredTargetX = currentSmoothedX + dodgeDirection * (effectiveShipWidth * 0.6); shouldTryShoot = false; }
         }
-        desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
-        return { desiredTargetX, shouldTryShoot, targetEnemyForAI };
-    }
-    else if (bossHoldingPartner && (!isShipDual || !allowTargetingCapturedPartnerBoss) ) {
-        isTargetingCapturedPartnerBoss = true;
-        targetEnemyForAI = bossHoldingPartner;
-        shouldTryShoot = false;
+        highPriorityActionTaken = true;
     }
 
-
-    // Aangescherpte ontwijklogica voor entreevlucht
-    if (!isChallengingStage && !isShipInvincible) { // In CS normaal gesproken niet ontwijken
-        let threateningBullets = [];
-        const entranceLookaheadFactor = isEntrancePhaseActive ? (isShipDual ? 1.8 : 1.3) : 1.0;
-        const entranceBufferFactor = isEntrancePhaseActive ? (isShipDual ? 1.8 : 1.3) : 1.0;
-
-        const baseLookaheadDodge = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.6 : 0.8;
-        const baseBufferDodge  = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.7 : 0.8;
-
-        const bulletLookahead = FINAL_DODGE_LOOKAHEAD * baseLookaheadDodge * (isShipDual ? 1.25 : 1.0) * entranceLookaheadFactor;
-        const bulletBuffer = FINAL_DODGE_BUFFER_BASE * baseBufferDodge * (isShipDual ? 1.35 : 1.0) * entranceBufferFactor;
-
-        const dangerZoneForBullets = { x: currentShip.x - bulletBuffer, y: currentShip.y - bulletLookahead, width: effectiveShipWidth + bulletBuffer * 2, height: bulletLookahead + currentShip.height };
-        for (const bullet of gameEnemyBullets) {
-            if (bullet && bullet.y + bullet.height > currentShip.y - currentShip.height * 1.5 && bullet.y < canvasHeight) {
-                const bulletRect = { x: bullet.x, y: bullet.y, width: bullet.width, height: bullet.height };
-                if (checkCollision(dangerZoneForBullets, bulletRect)) {
-                    threateningBullets.push(bullet);
-                }
+    if (!highPriorityActionTaken || isDodgingThreat) {
+        if (!isChallengingStage && !isShipInvincible) {
+            let tempIsDodgingThisPass = false;
+            let threateningBullets = [];
+            const entranceLookaheadFactor = isEntrancePhaseActive ? (isShipDual ? 1.8 : 1.3) : 1.0;
+            const entranceBufferFactor = isEntrancePhaseActive ? (isShipDual ? 1.8 : 1.3) : 1.0;
+            const baseLookaheadDodge = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.6 : 0.8;
+            const baseBufferDodge  = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.7 : 0.8;
+            const bulletLookahead = FINAL_DODGE_LOOKAHEAD * baseLookaheadDodge * (isShipDual ? 1.25 : 1.0) * entranceLookaheadFactor;
+            const bulletBuffer = FINAL_DODGE_BUFFER_BASE * baseBufferDodge * (isShipDual ? 1.35 : 1.0) * entranceBufferFactor;
+            const dangerZoneForBullets = { x: currentShip.x - bulletBuffer, y: currentShip.y - bulletLookahead, width: effectiveShipWidth + bulletBuffer * 2, height: bulletLookahead + currentShip.height };
+            for (const bullet of gameEnemyBullets) { if (bullet && bullet.y + bullet.height > currentShip.y - currentShip.height * 1.5 && bullet.y < canvasHeight) { const bulletRect = { x: bullet.x, y: bullet.y, width: bullet.width, height: bullet.height }; if (checkCollision(dangerZoneForBullets, bulletRect)) { threateningBullets.push(bullet); }}}
+            if (threateningBullets.length > 0) {
+                tempIsDodgingThisPass = true;
+                let bestDodgeX = currentSmoothedX;
+                const dodgeAmountMultiplier = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? (isShipDual && isEntrancePhaseActive ? 3.8 : 3.0) : (isShipDual && isEntrancePhaseActive ? 2.8 : 2.0);
+                const dodgeAmountBase = effectiveShipWidth * dodgeAmountMultiplier * (isShipDual ? 1.4 : 1.0);
+                let bulletsCenter = 0, bulletsLeft = 0, bulletsRight = 0; const shipEffectiveCenter = currentShip.x + effectiveShipWidth / 2;
+                for (const b of threateningBullets) { if (b.x < shipEffectiveCenter - effectiveShipWidth * 0.5) bulletsLeft++; else if (b.x > shipEffectiveCenter + effectiveShipWidth * 0.5) bulletsRight++; else bulletsCenter++; }
+                if (bulletsLeft <= bulletsRight && bulletsLeft <= bulletsCenter) { bestDodgeX = currentSmoothedX - dodgeAmountBase - (Math.random() * effectiveShipWidth * 0.4); }
+                else if (bulletsRight <= bulletsLeft && bulletsRight <= bulletsCenter) { bestDodgeX = currentSmoothedX + dodgeAmountBase + (Math.random() * effectiveShipWidth * 0.4); }
+                else { if (currentSmoothedX < laneCenterX) bestDodgeX = laneCenterX + dodgeAmountBase + (Math.random() * effectiveShipWidth * 0.7); else bestDodgeX = laneCenterX - dodgeAmountBase - (Math.random() * effectiveShipWidth * 0.7); }
+                desiredTargetX = bestDodgeX;
             }
-        }
-        if (threateningBullets.length > 0) {
-            isDodgingThreat = true;
-            let bestDodgeX = currentSmoothedX;
-            const dodgeAmountMultiplier = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ?
-                                          (isShipDual && isEntrancePhaseActive ? 3.8 : 3.0) :
-                                          (isShipDual && isEntrancePhaseActive ? 2.8 : 2.0);
-            const dodgeAmountBase = effectiveShipWidth * dodgeAmountMultiplier * (isShipDual ? 1.4 : 1.0);
-
-            let bulletsCenter = 0, bulletsLeft = 0, bulletsRight = 0;
-            const shipEffectiveCenter = currentShip.x + effectiveShipWidth / 2;
-            for (const b of threateningBullets) {
-                if (b.x < shipEffectiveCenter - effectiveShipWidth * 0.5) bulletsLeft++;
-                else if (b.x > shipEffectiveCenter + effectiveShipWidth * 0.5) bulletsRight++;
-                else bulletsCenter++;
+            if (!tempIsDodgingThisPass) {
+                const enemyLookaheadMultiplier = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.0 : 0.75;
+                const enemyCollisionBufferMultiplier = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.0 : 0.8;
+                const entranceFactorEnemy = isEntrancePhaseActive ? (isShipDual ? 1.6 : 1.3) : 1.0;
+                const enemyLookahead = AI_COLLISION_LOOKAHEAD * enemyLookaheadMultiplier * (isShipDual ? 1.3 : 1.0) * entranceFactorEnemy;
+                const enemyCollisionBuffer = AI_COLLISION_BUFFER * enemyCollisionBufferMultiplier * (isShipDual ? 1.4 : 1.0) * entranceFactorEnemy;
+                for (const enemy of gameEnemies) { if (!enemy) continue; if (!allowTargetingCapturedPartnerBoss && bossHoldingPartner && enemy.id === bossHoldingPartner.id) continue; if ((enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position' || enemy.state === 'following_entrance_path') && enemy.y + enemy.height > shipTopY - enemyLookahead && enemy.y < shipTopY + currentShip.height * 1.5) { const dangerZoneForEnemy = { x: currentShip.x - enemyCollisionBuffer, y: currentShip.y - enemyLookahead, width: effectiveShipWidth + enemyCollisionBuffer * 2, height: enemyLookahead + currentShip.height }; const enemyRect = { x: enemy.x, y: enemy.y, width: enemy.width, height: enemy.height }; if (checkCollision(dangerZoneForEnemy, enemyRect)) { tempIsDodgingThisPass = true; const enemyCenterX = enemy.x + enemy.width / 2; desiredTargetX = currentSmoothedX + ((shipCenterX < enemyCenterX) ? -1 : 1) * (effectiveShipWidth * ((isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? (isShipDual && isEntrancePhaseActive ? 3.0 : 2.2) : (isShipDual && isEntrancePhaseActive ? 2.7 : 1.9)) * (isShipDual ? 1.45 : 1.0)); break; }}}
             }
-            if (bulletsLeft <= bulletsRight && bulletsLeft <= bulletsCenter) {
-                bestDodgeX = currentSmoothedX - dodgeAmountBase - (Math.random() * effectiveShipWidth * 0.4);
-            } else if (bulletsRight <= bulletsLeft && bulletsRight <= bulletsCenter) {
-                bestDodgeX = currentSmoothedX + dodgeAmountBase + (Math.random() * effectiveShipWidth * 0.4);
-            } else {
-                 if (currentSmoothedX < laneCenterX) bestDodgeX = laneCenterX + dodgeAmountBase + (Math.random() * effectiveShipWidth * 0.7);
-                 else bestDodgeX = laneCenterX - dodgeAmountBase - (Math.random() * effectiveShipWidth * 0.7);
-            }
-            desiredTargetX = bestDodgeX;
-        }
-
-        if (!isDodgingThreat) {
-            const enemyLookaheadMultiplier = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.0 : 0.75;
-            const enemyCollisionBufferMultiplier = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.0 : 0.8;
-            const entranceFactorEnemy = isEntrancePhaseActive ? (isShipDual ? 1.6 : 1.3) : 1.0;
-            const enemyLookahead = AI_COLLISION_LOOKAHEAD * enemyLookaheadMultiplier * (isShipDual ? 1.3 : 1.0) * entranceFactorEnemy;
-            const enemyCollisionBuffer = AI_COLLISION_BUFFER * enemyCollisionBufferMultiplier * (isShipDual ? 1.4 : 1.0) * entranceFactorEnemy;
-
-
-            for (const enemy of gameEnemies) {
-                if (!enemy) continue;
-                if (!allowTargetingCapturedPartnerBoss && bossHoldingPartner && enemy.id === bossHoldingPartner.id) {
-                    continue;
-                }
-                if ((enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position' || enemy.state === 'following_entrance_path') &&
-                    enemy.y + enemy.height > shipTopY - enemyLookahead &&
-                    enemy.y < shipTopY + currentShip.height * 1.5) {
-                    const dangerZoneForEnemy = { x: currentShip.x - enemyCollisionBuffer, y: currentShip.y - enemyLookahead, width: effectiveShipWidth + enemyCollisionBuffer * 2, height: enemyLookahead + currentShip.height };
-                    const enemyRect = { x: enemy.x, y: enemy.y, width: enemy.width, height: enemy.height };
-                    if (checkCollision(dangerZoneForEnemy, enemyRect)) {
-                        isDodgingThreat = true;
-                        targetEnemyForAI = null;
-                        shouldTryShoot = false;
-                        const enemyCenterX = enemy.x + enemy.width / 2;
-                        const dodgeMultiplierEnemy = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ?
-                                                      (isShipDual && isEntrancePhaseActive ? 3.0 : 2.2) :
-                                                      (isShipDual && isEntrancePhaseActive ? 2.7 : 1.9);
-                        desiredTargetX = currentSmoothedX + ((shipCenterX < enemyCenterX) ? -1 : 1) * (effectiveShipWidth * dodgeMultiplierEnemy * (isShipDual ? 1.45 : 1.0));
-                        break;
-                    }
-                }
+            if (tempIsDodgingThisPass) {
+                isDodgingThreat = true; // Set global dodge flag if any dodge happened
+                shouldTryShoot = false; targetEnemyForAI = null; highPriorityActionTaken = true;
             }
         }
     }
 
 
-    if (!isDodgingThreat && canThisAIShipBeCaptured && captureBeamActive && capturingBossId && !isThisShipCaptured) {
-        if (aiPlayerActivelySeekingCaptureById === null || aiPlayerActivelySeekingCaptureById === shipIdentifier) {
-            const capturingBossEntity = gameEnemies.find(e => e.id === capturingBossId);
-            if (capturingBossEntity && capturingBossEntity.state === 'capturing') {
-                if (aiPlayerActivelySeekingCaptureById === null) {
-                    aiPlayerActivelySeekingCaptureById = shipIdentifier;
-                }
-                if (aiPlayerActivelySeekingCaptureById === shipIdentifier) {
-                    if (currentTime - (capturingBossEntity.captureStartTime || 0) >= AI_CAPTURE_BEAM_APPROACH_DELAY_MS) {
-                        isMovingToCaptureBeam = true;
-                        const beamCenterX = capturingBossEntity.x + (capturingBossEntity.type === ENEMY3_TYPE ? BOSS_WIDTH : ENEMY_WIDTH) / 2;
-                        desiredTargetX = beamCenterX - effectiveShipWidth / 2;
-                        shouldTryShoot = false;
-                        targetEnemyForAI = null;
-                    } else {
-                        desiredTargetX = targetCenterShipX;
-                        shouldTryShoot = false;
-                        targetEnemyForAI = null;
-                    }
-                }
-            } else {
-                if (aiPlayerActivelySeekingCaptureById === shipIdentifier) {
-                    aiPlayerActivelySeekingCaptureById = null;
-                }
-                isMovingToCaptureBeam = false;
-            }
-        }
-    } else {
-        if (aiPlayerActivelySeekingCaptureById === shipIdentifier && !(canThisAIShipBeCaptured && captureBeamActive && capturingBossId && !isThisShipCaptured) ) {
-             aiPlayerActivelySeekingCaptureById = null;
-        }
-        if(isMovingToCaptureBeam) isMovingToCaptureBeam = false;
+    if (!highPriorityActionTaken) {
+        if (canThisAIShipBeCaptured && captureBeamActive && capturingBossId && !isThisShipCaptured) { /* ... existing capture beam logic ... */ if(isMovingToCaptureBeam) highPriorityActionTaken = true; }
+    }
+    if (!highPriorityActionTaken) {
+        if (!isShipDual) { const ownFallingShip = gameFallingShips.find(fs => fs.targetPlayerId === shipIdentifier && !fs.landed); if (ownFallingShip) { isMovingForOwnFallingShip = true; desiredTargetX = ownFallingShip.x + ownFallingShip.width / 2 - effectiveShipWidth / 2; shouldTryShoot = false; targetEnemyForAI = null; highPriorityActionTaken = true; } }
     }
 
-
-    if (!isDodgingThreat && !isMovingToCaptureBeam && !isShipDual) {
-        const ownFallingShip = gameFallingShips.find(fs => fs.targetPlayerId === shipIdentifier && !fs.landed);
-        if (ownFallingShip) {
-            isMovingForOwnFallingShip = true;
-            desiredTargetX = ownFallingShip.x + ownFallingShip.width / 2 - effectiveShipWidth / 2;
-            shouldTryShoot = false;
-            targetEnemyForAI = null;
-        }
-    }
-
-    if (!isDodgingThreat && !isMovingToCaptureBeam && !isMovingForOwnFallingShip && !(isTargetingCapturedPartnerBoss && !shouldTryShoot)) {
-        let bestTargetScore = -Infinity;
-        let localShouldTryShoot = false;
-        let localTargetEnemyForAI = null;
-
+    if (!highPriorityActionTaken) {
+        let bestTargetScore = -Infinity; let localShouldTryShoot = false; let localTargetEnemyForAI = null;
         for (const enemy of gameEnemies) {
             if (!enemy) continue;
-            if (bossHoldingPartner && !allowTargetingCapturedPartnerBoss && enemy.id !== bossHoldingPartner.id && isTargetingCapturedPartnerBoss) {
-                continue;
-            }
-            if (isMovingToCaptureBeam && enemy.id === capturingBossId && aiPlayerActivelySeekingCaptureById === shipIdentifier) {
-                continue;
-            }
-
-            let isBossWithNeutralShipAndAILowLife = false;
-            if (enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip && livesOfThisAIShip <= 1) {
-                 const isPartnerBoss = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && enemy.id === capturedBossIdWithMessage && otherPlayerIsActuallyCaptured;
-                 if (!isPartnerBoss) {
-                    isBossWithNeutralShipAndAILowLife = true;
-                 }
-            }
-            let currentScore = 0;
-            const enemyCenterX = enemy.x + enemy.width/2;
-            const dx = enemyCenterX - shipCenterX;
-            const dy = shipTopY - (enemy.y + enemy.height);
+            if (bossHoldingPartner && !allowTargetingCapturedPartnerBoss && enemy.id === bossHoldingPartner.id) continue;
+            if (isMovingToCaptureBeam && enemy.id === capturingBossId && aiPlayerActivelySeekingCaptureById === shipIdentifier) continue;
+            let isBossWithNeutralShipAndAILowLife = false; if (enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip && livesOfThisAIShip <= 1) { const isPartnerBoss = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && enemy.id === capturedBossIdWithMessage && otherPlayerIsActuallyCaptured; if (!isPartnerBoss) isBossWithNeutralShipAndAILowLife = true; }
+            let currentScore = 0; const enemyCenterX = enemy.x + enemy.width/2; const dx = enemyCenterX - shipCenterX; const dy = shipTopY - (enemy.y + enemy.height);
             if (dy < 0 && enemy.state !== 'attacking' && enemy.state !== 'diving_to_capture_position' && enemy.state !== 'following_bezier_path') continue;
-            let laneBonus = 0;
-            if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
-                if (shipIdentifier === 'p1' && enemyCenterX < gameCanvasWidth / 2) laneBonus = 5000;
-                else if ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') && enemyCenterX >= gameCanvasWidth / 2) laneBonus = 5000;
-            }
+            let laneBonus = 0; if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) { if (shipIdentifier === 'p1' && enemyCenterX < gameCanvasWidth / 2) laneBonus = 5000; else if ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') && enemyCenterX >= gameCanvasWidth / 2) laneBonus = 5000; }
             currentScore = laneBonus + (canvasHeight - enemy.y) * 2 - Math.abs(dx) * 3 - dy;
             if (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') currentScore += 3000;
-            if (enemy.type === ENEMY3_TYPE && !enemy.isDamaged) currentScore += 2000;
-            if (enemy.type === ENEMY3_TYPE && enemy.isDamaged) currentScore += 4000;
-            if (enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip) {
-                if (!isBossWithNeutralShipAndAILowLife) {
-                    if (bossHoldingPartner && enemy.id === bossHoldingPartner.id && !allowTargetingCapturedPartnerBoss) {
-                        currentScore -= 20000;
-                    } else {
-                        currentScore += 5000;
-                    }
-                }
-                else { currentScore -= 10000; }
-            }
+            if (enemy.type === ENEMY3_TYPE && !enemy.isDamaged) currentScore += 2000; if (enemy.type === ENEMY3_TYPE && enemy.isDamaged) currentScore += 4000;
+            if (enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip) { if (!isBossWithNeutralShipAndAILowLife) { currentScore += 5000; } else { currentScore -= 10000; }}
             if (currentScore > bestTargetScore) {
-                bestTargetScore = currentScore;
-                localTargetEnemyForAI = enemy;
+                bestTargetScore = currentScore; localTargetEnemyForAI = enemy;
                 let doNotShootThisBossSpecifically = false;
-
-                if (localTargetEnemyForAI.type === ENEMY3_TYPE && !localTargetEnemyForAI.hasCapturedShip && !isFullGridWave) {
-                    if (canThisAIShipBeCaptured && !captureAttemptMadeThisLevel &&
-                        (localTargetEnemyForAI.state === 'in_grid' ||
-                         localTargetEnemyForAI.state === 'preparing_capture' ||
-                         localTargetEnemyForAI.state === 'diving_to_capture_position' ||
-                         (localTargetEnemyForAI.state === 'capturing' && localTargetEnemyForAI.id === capturingBossId && aiPlayerActivelySeekingCaptureById === shipIdentifier)
-                        )
-                       ) {
-                        doNotShootThisBossSpecifically = true;
-                    }
-
-                    if (isShipDual) {
-                        const partnerPlayerIdToCheck = (shipIdentifier === 'p1') ? 'ai_p2' : 'p1';
-                        let partnerIsActiveAndCanBeCaptured = false;
-                        if (partnerPlayerIdToCheck === 'p1') {
-                            if (ship1 && player1Lives > 1 && !isPlayer1ShipCaptured && !player1IsDualShipActive) {
-                                partnerIsActiveAndCanBeCaptured = true;
-                            }
-                        } else {
-                            if (ship2 && player2Lives > 1 && !isPlayer2ShipCaptured && !player2IsDualShipActive) {
-                                partnerIsActiveAndCanBeCaptured = true;
-                            }
-                        }
-                        if (partnerIsActiveAndCanBeCaptured) {
-                            doNotShootThisBossSpecifically = true;
-                        }
-                    }
-                }
-
-                if (localTargetEnemyForAI && localTargetEnemyForAI.type === ENEMY3_TYPE && localTargetEnemyForAI.hasCapturedShip &&
-                    bossHoldingPartner && localTargetEnemyForAI.id === bossHoldingPartner.id && !allowTargetingCapturedPartnerBoss) {
-                    doNotShootThisBossSpecifically = true;
-                }
-
-
-                if (isBossWithNeutralShipAndAILowLife && localTargetEnemyForAI === enemy) {
-                     if (Math.abs(shipCenterX - (localTargetEnemyForAI.x + localTargetEnemyForAI.width / 2)) < effectiveShipWidth * 1.1) { localShouldTryShoot = true; }
-                     else { localShouldTryShoot = false; }
-                } else if (doNotShootThisBossSpecifically) {
-                    localShouldTryShoot = false;
-                } else if (Math.abs(shipCenterX - (localTargetEnemyForAI.x + localTargetEnemyForAI.width / 2)) < effectiveShipWidth * 0.9) {
-                    localShouldTryShoot = true;
-                } else {
-                    localShouldTryShoot = false;
-                }
+                if (localTargetEnemyForAI.type === ENEMY3_TYPE && !localTargetEnemyForAI.hasCapturedShip && !isFullGridWave) { if (canThisAIShipBeCaptured && !captureAttemptMadeThisLevel && (localTargetEnemyForAI.state === 'in_grid' || localTargetEnemyForAI.state === 'preparing_capture' || localTargetEnemyForAI.state === 'diving_to_capture_position' || (localTargetEnemyForAI.state === 'capturing' && localTargetEnemyForAI.id === capturingBossId && aiPlayerActivelySeekingCaptureById === shipIdentifier))) { doNotShootThisBossSpecifically = true; } if (isShipDual) { const partnerPlayerIdToCheck = (shipIdentifier === 'p1') ? 'ai_p2' : 'p1'; let partnerIsActiveAndCanBeCaptured = false; if (partnerPlayerIdToCheck === 'p1') { if (ship1 && player1Lives > 1 && !isPlayer1ShipCaptured && !player1IsDualShipActive) partnerIsActiveAndCanBeCaptured = true; } else { if (ship2 && player2Lives > 1 && !isPlayer2ShipCaptured && !player2IsDualShipActive) partnerIsActiveAndCanBeCaptured = true; } if (partnerIsActiveAndCanBeCaptured) doNotShootThisBossSpecifically = true; }}
+                if (isBossWithNeutralShipAndAILowLife && localTargetEnemyForAI === enemy) { if (Math.abs(shipCenterX - (localTargetEnemyForAI.x + localTargetEnemyForAI.width / 2)) < effectiveShipWidth * 1.1) localShouldTryShoot = true; else localShouldTryShoot = false; }
+                else if (doNotShootThisBossSpecifically) { localShouldTryShoot = false; }
+                else if (Math.abs(shipCenterX - (localTargetEnemyForAI.x + localTargetEnemyForAI.width / 2)) < effectiveShipWidth * 0.9) { localShouldTryShoot = true; }
+                else { localShouldTryShoot = false; }
             }
         }
-        targetEnemyForAI = localTargetEnemyForAI;
-        shouldTryShoot = localShouldTryShoot;
-
-
-        if (targetEnemyForAI) {
-            let isTargetBossWithNeutralShipAndAILowLife = false;
-            if (targetEnemyForAI.type === ENEMY3_TYPE && targetEnemyForAI.hasCapturedShip && livesOfThisAIShip <= 1) {
-                const isPartnerBoss = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && targetEnemyForAI.id === capturedBossIdWithMessage && otherPlayerIsActuallyCaptured;
-                if (!isPartnerBoss) {
-                    isTargetBossWithNeutralShipAndAILowLife = true;
-                }
-            }
-            if (isTargetBossWithNeutralShipAndAILowLife) {
-                desiredTargetX = targetCenterShipX;
-            } else {
-                const enemyCenterX = targetEnemyForAI.x + targetEnemyForAI.width / 2;
-                desiredTargetX = enemyCenterX - effectiveShipWidth / 2;
-            }
-        } else {
-            if (isTargetingCapturedPartnerBoss && targetEnemyForAI && !shouldTryShoot) {
-                const enemyCenterX = targetEnemyForAI.x + targetEnemyForAI.width / 2;
-                desiredTargetX = enemyCenterX - effectiveShipWidth / 2;
-            } else {
-                 desiredTargetX = targetCenterShipX;
-                 if (!(isTargetingCapturedPartnerBoss && !shouldTryShoot)) {
-                    shouldTryShoot = false;
-                 }
-            }
-        }
+        targetEnemyForAI = localTargetEnemyForAI; shouldTryShoot = localShouldTryShoot;
+        if (targetEnemyForAI) { let isTargetBossWithNeutralShipAndAILowLife = false; if (targetEnemyForAI.type === ENEMY3_TYPE && targetEnemyForAI.hasCapturedShip && livesOfThisAIShip <= 1) { const isPartnerBoss = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) && targetEnemyForAI.id === capturedBossIdWithMessage && otherPlayerIsActuallyCaptured; if (!isPartnerBoss) isTargetBossWithNeutralShipAndAILowLife = true; } if (isTargetBossWithNeutralShipAndAILowLife) { desiredTargetX = targetCenterShipX; } else { const enemyCenterX = targetEnemyForAI.x + targetEnemyForAI.width / 2; desiredTargetX = enemyCenterX - effectiveShipWidth / 2; }}
+        else { desiredTargetX = targetCenterShipX; shouldTryShoot = false; }
     }
 
-    // AI met dual ship vuurt normaal gesproken niet TIJDENS entreevlucht (buiten CS),
-    // tenzij het een partner redt. Na entreevlucht gelden normale schietregels.
-    // Deze check zorgt ervoor dat 'shouldTryShoot' correct wordt gezet.
-    if (isShipDual && isEntrancePhaseActive && !isChallengingStage) {
-        const isSavingPartner = targetEnemyForAI && targetEnemyForAI.type === ENEMY3_TYPE && targetEnemyForAI.hasCapturedShip && bossHoldingPartner && targetEnemyForAI.id === bossHoldingPartner.id && allowTargetingCapturedPartnerBoss;
-        if (!isSavingPartner) {
-            shouldTryShoot = false;
-        }
-        // Als het wel een saving partner situatie is, dan is shouldTryShoot al correct bepaald door de eerdere logica.
-    }
-
-
-    if (isMovingToCaptureBeam && aiPlayerActivelySeekingCaptureById === shipIdentifier) {
-        shouldTryShoot = false;
-        targetEnemyForAI = null;
-    }
+    if (isShipDual && isEntrancePhaseActive && !isChallengingStage) { const isSavingPartnerWithDual = targetEnemyForAI && targetEnemyForAI.type === ENEMY3_TYPE && targetEnemyForAI.hasCapturedShip && bossHoldingPartner && targetEnemyForAI.id === bossHoldingPartner.id && allowTargetingCapturedPartnerBoss; if (!isSavingPartnerWithDual) { shouldTryShoot = false; }}
+    if (isMovingToCaptureBeam && aiPlayerActivelySeekingCaptureById === shipIdentifier) { shouldTryShoot = false; targetEnemyForAI = null; }
 
     desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
     return { desiredTargetX, shouldTryShoot, targetEnemyForAI };
