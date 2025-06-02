@@ -2930,8 +2930,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
 
 
-
-
 // --- START OF FILE game_logic.js ---
 // --- DEEL 6      van 8 dit code blok    --- (Focus: Enemy Attack Selection & Capture Trigger)
 
@@ -4262,34 +4260,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
 // --- EINDE deel 5      van 8 dit codeblok ---
 // --- END OF FILE game_logic.js ---JustReturnedFlags(attackGroupIds);
-
-
-
-
-
-
-
-
-
-// --- START OF FILE game_logic.js ---
-// --- DEEL 6      van 8 dit code blok    ---
-
-function findAndDetachEnemy() {
-    try {
-        let aShipIsCapturedInGame = false;
-        if (isTwoPlayerMode && selectedGameMode === 'coop') {
-            aShipIsCapturedInGame = isPlayer1ShipCaptured || isPlayer2ShipCaptured;
-        } else {
-            aShipIsCapturedInGame = isShipCaptured;
-        }
-
-        if (!isFullGridWave && aShipIsCapturedInGame) {
-            const bossWithShip = enemies.find(e => e && e.type === ENEMY3_TYPE && e.hasCapturedShip && e.state === 'in_grid');
-            if (bossWithShip) {
-                bossWithShip.justReturned = true;
-                bossWithShip.attackType = 'normal';
-                const attackGroupIds = new Set([bossWithShip.id]);
-                resetJustReturnedFlags(attackGroupIds);
                 return [bossWithShip];
             }
         }
@@ -4301,7 +4271,7 @@ function findAndDetachEnemy() {
         let groupSelected = false;
         if (level > 1 && !isForcedAttackScenario && availableGridEnemies.length >= 3) { const bossesForTriple = availableGridEnemies.filter(e => e.type === ENEMY3_TYPE && !e.hasCapturedShip); for (const boss of bossesForTriple) { const escortLeft = availableGridEnemies.find(e => e.type === ENEMY2_TYPE && e.gridRow === boss.gridRow && e.gridCol === boss.gridCol - 1); const escortRight = availableGridEnemies.find(e => e.type === ENEMY2_TYPE && e.gridRow === boss.gridRow && e.gridCol === boss.gridCol + 1); if (escortLeft && escortRight) { attackGroup = [boss, escortLeft, escortRight]; groupSelected = true; break; } } }
         if (!groupSelected && !isForcedAttackScenario) { const availableBees = availableGridEnemies.filter(e => e.type === ENEMY1_TYPE); const beeGroupAttackChance = scaleValue(level, BASE_BEE_GROUP_ATTACK_PROBABILITY, MAX_BEE_GROUP_ATTACK_PROBABILITY) * 1.2; if (availableBees.length >= 2 && Math.random() < beeGroupAttackChance) { const beeTripleChance = scaleValue(level, BASE_BEE_TRIPLE_ATTACK_PROBABILITY, MAX_BEE_TRIPLE_ATTACK_PROBABILITY) * 1.1; const targetGroupSize = (availableBees.length >= 3 && Math.random() < beeTripleChance) ? 3 : 2; let foundCoordinatedGroup = false; availableBees.sort(() => Math.random() - 0.5); for (let i = 0; i < availableBees.length; i++) { const leaderBee = availableBees[i]; let potentialGroup = [leaderBee]; const neighbors = availableBees.filter(b => b.id !== leaderBee.id && b.gridRow === leaderBee.gridRow); neighbors.sort((a, b) => Math.abs(a.gridCol - leaderBee.gridCol) - Math.abs(b.gridCol - leaderBee.gridCol)); for(let j = 0; j < neighbors.length && potentialGroup.length < targetGroupSize; j++){ potentialGroup.push(neighbors[j]); } if (potentialGroup.length === targetGroupSize) { attackGroup = potentialGroup; groupSelected = true; foundCoordinatedGroup = true; break; } } if (!foundCoordinatedGroup && availableBees.length >= targetGroupSize) { attackGroup = availableBees.slice(0, targetGroupSize); groupSelected = true; } } }
-        if (!groupSelected && !isForcedAttackScenario) { const availableButterflies = availableGridEnemies.filter(e => e.type === ENEMY2_TYPE); const butterflyGroupAttackChance = 0.2; if (availableButterflies.length >= 2 && Math.random() < butterflyGroupAttackChance) { const targetGroupSize = 2; let foundCoordinatedGroup = false; availableButterflies.sort(() => Math.random() - 0.5); for (let i = 0; i < availableButterflies.length; i++) { const leader = availableButterflies[i]; let potentialGroup = [leader]; const neighbors = availableButterflies.filter(b => b.id !== leader.id && b.gridRow === leader.gridRow); neighbors.sort((a, b) => Math.abs(a.gridCol - leaderBee.gridCol) - Math.abs(b.gridCol - leaderBee.gridCol)); for(let j = 0; j < neighbors.length && potentialGroup.length < targetGroupSize; j++){ potentialGroup.push(neighbors[j]); } if (potentialGroup.length === targetGroupSize) { attackGroup = potentialGroup; groupSelected = true; foundCoordinatedGroup = true; break; } } if (!foundCoordinatedGroup && availableButterflies.length >= targetGroupSize) { attackGroup = availableButterflies.slice(0, targetGroupSize); groupSelected = true; } } }
+        if (!groupSelected && !isForcedAttackScenario) { const availableButterflies = availableGridEnemies.filter(e => e.type === ENEMY2_TYPE); const butterflyGroupAttackChance = 0.2; if (availableButterflies.length >= 2 && Math.random() < butterflyGroupAttackChance) { const targetGroupSize = 2; let foundCoordinatedGroup = false; availableButterflies.sort(() => Math.random() - 0.5); for (let i = 0; i < availableButterflies.length; i++) { const leader = availableButterflies[i]; let potentialGroup = [leader]; const neighbors = availableButterflies.filter(b => b.id !== leader.id && b.gridRow === leader.gridRow); neighbors.sort((a, b) => Math.abs(a.gridCol - leader.gridCol) - Math.abs(b.gridCol - leader.gridCol)); for(let j = 0; j < neighbors.length && potentialGroup.length < targetGroupSize; j++){ potentialGroup.push(neighbors[j]); } if (potentialGroup.length === targetGroupSize) { attackGroup = potentialGroup; groupSelected = true; foundCoordinatedGroup = true; break; } } if (!foundCoordinatedGroup && availableButterflies.length >= targetGroupSize) { attackGroup = availableButterflies.slice(0, targetGroupSize); groupSelected = true; } } }
         if (!groupSelected && availableGridEnemies.length > 0) { const chosenEnemy = availableGridEnemies[0]; attackGroup.push(chosenEnemy); if (availableGridEnemies.length > 1 && !isForcedAttackScenario && Math.random() < 0.2) { const partnerLeft = availableGridEnemies.find(e => e.id !== chosenEnemy.id && e.gridRow === chosenEnemy.gridRow && e.gridCol === chosenEnemy.gridCol - 1); const partnerRight = availableGridEnemies.find(e => e.id !== chosenEnemy.id && e.gridRow === chosenEnemy.gridRow && e.gridCol === chosenEnemy.gridCol + 1); const potentialPartner = partnerLeft || partnerRight; if (potentialPartner) { const bothAreBosses = chosenEnemy.type === ENEMY3_TYPE && potentialPartner.type === ENEMY3_TYPE; if (!bothAreBosses) { attackGroup.push(potentialPartner); } } } groupSelected = true; }
         if (attackGroup.length > 0) { attackGroup = attackGroup.filter(e => e); if (attackGroup.length === 0) { return null; } attackGroup.forEach(enemy => { if (enemy) { enemy.justReturned = true; enemy.attackType = selectedAttackType; } }); const attackGroupIds = new Set(attackGroup.map(e => e.id)); resetJustReturnedFlags(attackGroupIds); return attackGroup; }
         return null;
@@ -4314,23 +4284,16 @@ function findAndDetachEnemy() {
  */
 function triggerImmediateCaptureDive() {
     try {
-        // <<< GEWIJZIGD: Check of beide AI-spelers (in CO-OP AI modes) al een dual ship hebben >>>
-        if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
-            if (player1IsDualShipActive && player2IsDualShipActive) {
-                return; // Beide AI's hebben al een dual ship, geen capture dive nodig.
-            }
-        }
-        // <<< EINDE WIJZIGING >>>
-
         let canAttemptCapture = false;
         let targetPlayerShipForDive = null;
 
         if (isTwoPlayerMode && selectedGameMode === 'coop') {
-            // <<< GEWIJZIGD: AI P1 wordt alleen getarget als het GEEN dual ship heeft >>>
-            const p1CanBeTargeted = ship1 && player1Lives > 1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !player1IsDualShipActive;
-            // <<< GEWIJZIGD: AI P2 wordt alleen getarget als het GEEN dual ship heeft >>>
-            const p2CanBeTargeted = ship2 && player2Lives > 1 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !player2IsDualShipActive;
+            const p1CanBeTargeted = ship1 && player1Lives > 1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn;
+            const p2CanBeTargeted = ship2 && player2Lives > 1 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn;
 
+            // In CO-OP Demo, we staan een poging toe zolang `captureAttemptMadeThisLevel` false is,
+            // zelfs als de vorige geselecteerde boss sneuvelde.
+            // De vlag wordt pas true als een beam daadwerkelijk activeert.
             if ((p1CanBeTargeted || p2CanBeTargeted) && !captureAttemptMadeThisLevel) {
                 canAttemptCapture = true;
                 if (p1CanBeTargeted && p2CanBeTargeted) {
@@ -4341,9 +4304,8 @@ function triggerImmediateCaptureDive() {
                     targetPlayerShipForDive = ship2;
                 }
             }
-        } else { // 1P Classic, 1P vs AI Normal (P1 human), 2P Normal
-             // <<< GEWIJZIGD: Speler wordt alleen getarget als het GEEN dual ship heeft >>>
-            if (playerLives > 1 && ship && !isShipCaptured && !isWaitingForRespawn && !captureAttemptMadeThisLevel && !isDualShipActive) {
+        } else {
+            if (playerLives > 1 && ship && !isShipCaptured && !isWaitingForRespawn && !captureAttemptMadeThisLevel) {
                 canAttemptCapture = true;
                 targetPlayerShipForDive = ship;
             }
@@ -4361,8 +4323,10 @@ function triggerImmediateCaptureDive() {
             const chosenBoss = potentialCapturingBosses[Math.floor(Math.random() * potentialCapturingBosses.length)];
             const now = Date.now();
 
+            // Markeer deze boss als geselecteerd, maar zet captureAttemptMadeThisLevel nog NIET.
             chosenBoss.isPreparingForImmediateCapture = true;
-            chosenBoss.justReturned = true;
+
+            chosenBoss.justReturned = true; // Voorkom dat hij direct weer aanvalt als dit mislukt
             const attackGroupIds = new Set([chosenBoss.id]);
             resetJustReturnedFlags(attackGroupIds);
 
@@ -4376,7 +4340,7 @@ function triggerImmediateCaptureDive() {
             chosenBoss.state = 'preparing_capture';
             chosenBoss.targetX = targetX;
             chosenBoss.targetY = targetY;
-            chosenBoss.diveStartTime = now;
+            chosenBoss.diveStartTime = now; // diveStartTime wordt gebruikt om de beam te timen in moveEntities
             playSound('bossGalagaDiveSound', false, 0.2);
             const leaderId = chosenBoss.id;
 
@@ -4386,7 +4350,7 @@ function triggerImmediateCaptureDive() {
                     currentEnemy.state = 'diving_to_capture_position';
                 }
                 if(currentEnemy) currentEnemy.capturePrepareTimeout = null;
-                const timeoutIndex = enemySpawnTimeouts.findIndex(tId => tId === chosenBoss.capturePrepareTimeout);
+                const timeoutIndex = enemySpawnTimeouts.findIndex(tId => tId === chosenBoss.capturePrepareTimeout); // Moet capturePrepareTimeout van de boss zijn
                 if (timeoutIndex > -1) enemySpawnTimeouts.splice(timeoutIndex, 1);
             }, 300);
             enemySpawnTimeouts.push(chosenBoss.capturePrepareTimeout);
@@ -4399,6 +4363,7 @@ function triggerImmediateCaptureDive() {
 
 /**
  * Resets justReturned flag for other grid enemies. (Nu met Set<string> of null)
+ * <<< GEWIJZIGD: Parameter type aangepast in commentaar en logica >>>
  * @param {Set<string>|string|null} excludedIds - ID(s) to exclude. Set for multiple, string for single, null for none.
  */
 function resetJustReturnedFlags(excludedIds) {
