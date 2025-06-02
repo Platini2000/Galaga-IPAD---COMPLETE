@@ -2171,11 +2171,16 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
             if (isDodgingThreat) {
                 desiredTargetX = Math.max(AI_ANTI_CORNER_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER, dodgeTargetX));
                 targetEnemyForAI = null;
-                shouldTryShoot = false;
-                 // <<< GEWIJZIGD: Tijdens entree en ontwijken, NIET schieten >>>
-                if (isEntrancePhaseActive) {
+                // <<< GEWIJZIGD: Tijdens entree en ontwijken, NIET schieten (tenzij het een kritieke save is) >>>
+                // De "last life partner save" logica bovenaan zal dit overschrijven indien nodig.
+                // Anders, als het ontwijkt tijdens de entree, niet schieten.
+                if (isEntrancePhaseActive && !isChallengingStage) { // Niet van toepassing op CS ontwijken (AI schiet daar altijd)
                     shouldTryShoot = false;
+                } else if(!isEntrancePhaseActive) { // Buiten entree, als ontwijkt, ook niet schieten
+                     shouldTryShoot = false;
                 }
+                // shouldTryShoot wordt verderop bepaald als niet isDodgingThreat
+
             } else if (fallingShips.length > 0 && !isShipCapturedForAI && !isWaitingForRespawn && !isDualActiveForAI ) {
                 let closestFallingShip = null;
                 let minDist = Infinity;
@@ -2271,23 +2276,24 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                             doNotShootThisTarget = true;
                         }
 
-                        // <<< GEWIJZIGD: Tijdens entreevlucht, niet schieten (tenzij redding partner etc., wat al afgehandeld is) >>>
+                        // AI schiet niet tijdens entreevlucht (tenzij het een dual ship is die partner redt)
                         if (isEntrancePhaseActive && !isChallengingStage) {
-                            // Specifieke uitzondering: als de AI een dual ship heeft en de partner gevangen is, MAG het wel schieten in entree
                             const isSavingPartnerWithDual = isDualActiveForAI && targetEnemyForAI && targetEnemyForAI.type === ENEMY3_TYPE && targetEnemyForAI.hasCapturedShip;
-                            if (!isSavingPartnerWithDual) {
-                                shouldTryShoot = false;
-                            } else {
-                                // Behoud de shouldTryShoot waarde van hierboven
+                            if (!isSavingPartnerWithDual) { // Als het GEEN partner save is met dual ship
+                                shouldTryShoot = false; // Dan niet schieten tijdens entree
+                            } else { // Het IS een partner save met dual ship
+                                // Behoud de logica van hierboven, maar zorg dat doNotShootThisTarget niet per ongeluk true is
                                 if (horizontalDiffToAim < alignmentThresholdForShooting && !doNotShootThisTarget) {
                                      shouldTryShoot = true;
                                 } else {
                                     shouldTryShoot = false;
                                 }
                             }
-                        } else {
+                        } else { // Niet in entreevlucht, of wel in CS
                              if (horizontalDiffToAim < alignmentThresholdForShooting && !doNotShootThisTarget) {
                                 shouldTryShoot = true;
+                            } else {
+                                shouldTryShoot = false; // Reset expliciet als niet aan condities voldaan
                             }
                         }
                     } else {
@@ -2401,7 +2407,7 @@ function aiControlCoop() {
         if (!p1IsOnLastLifeAndSavingPartner) {
             p1ActuallyShoots = p1ActuallyShoots && p1ShouldShootOverrideGeneral;
         }
-        // <<< GEWIJZIGD: Voorkom schieten tijdens entree als dual ship, tenzij partner redden >>>
+        // <<< GEWIJZIGD: Voorkom schieten tijdens entree als dual ship (tenzij partner redden), ook voor CO-OP AI >>>
         if (player1IsDualShipActive && isEntrancePhaseActive && !isChallengingStage && !p1IsSavingPartner) {
             p1ActuallyShoots = false;
         }
@@ -2431,7 +2437,7 @@ function aiControlCoop() {
         if (!p2IsOnLastLifeAndSavingPartner) {
             p2ActuallyShoots = p2ActuallyShoots && p2ShouldShootOverrideGeneral;
         }
-        // <<< GEWIJZIGD: Voorkom schieten tijdens entree als dual ship, tenzij partner redden >>>
+        // <<< GEWIJZIGD: Voorkom schieten tijdens entree als dual ship (tenzij partner redden), ook voor CO-OP AI >>>
         if (player2IsDualShipActive && isEntrancePhaseActive && !isChallengingStage && !p2IsSavingPartner) {
             p2ActuallyShoots = false;
         }
@@ -2524,7 +2530,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     const shipTopY = currentShip.y;
     const livesOfThisAIShip = (shipIdentifier === 'p1') ? player1Lives : ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') ? player2Lives : 0);
 
-    // <<< GEWIJZIGD: Extra check voor CO-OP AI: als beide al dual ship hebben, kan niemand meer gevangen worden >>>
     let preventCaptureBecauseBothAIDual = false;
     if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) {
         if (player1IsDualShipActive && player2IsDualShipActive) {
@@ -2640,11 +2645,11 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     }
 
 
-    if (!isChallengingStage && !isShipInvincible) {
+    // Aangescherpte ontwijklogica voor entreevlucht
+    if (!isChallengingStage && !isShipInvincible) { // In CS normaal gesproken niet ontwijken
         let threateningBullets = [];
-        // <<< GEWIJZIGD: Nog agressievere ontwijkparameters voor entreevlucht, vooral met dual ship >>>
-        const entranceLookaheadFactor = isEntrancePhaseActive ? (isShipDual ? 1.8 : 1.3) : 1.0; // Groter voor dual in entree
-        const entranceBufferFactor = isEntrancePhaseActive ? (isShipDual ? 1.8 : 1.3) : 1.0;   // Groter voor dual in entree
+        const entranceLookaheadFactor = isEntrancePhaseActive ? (isShipDual ? 1.8 : 1.3) : 1.0;
+        const entranceBufferFactor = isEntrancePhaseActive ? (isShipDual ? 1.8 : 1.3) : 1.0;
 
         const baseLookaheadDodge = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.6 : 0.8;
         const baseBufferDodge  = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.7 : 0.8;
@@ -2664,9 +2669,8 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         if (threateningBullets.length > 0) {
             isDodgingThreat = true;
             let bestDodgeX = currentSmoothedX;
-            // <<< GEWIJZIGD: Nog grotere ontwijkmanoeuvres tijdens entree >>>
             const dodgeAmountMultiplier = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ?
-                                          (isShipDual && isEntrancePhaseActive ? 3.8 : 3.0) : // Agressiever
+                                          (isShipDual && isEntrancePhaseActive ? 3.8 : 3.0) :
                                           (isShipDual && isEntrancePhaseActive ? 2.8 : 2.0);
             const dodgeAmountBase = effectiveShipWidth * dodgeAmountMultiplier * (isShipDual ? 1.4 : 1.0);
 
@@ -2691,7 +2695,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         if (!isDodgingThreat) {
             const enemyLookaheadMultiplier = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.0 : 0.75;
             const enemyCollisionBufferMultiplier = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ? 1.0 : 0.8;
-            // <<< GEWIJZIGD: Nog agressievere ontwijkparameters voor vijanden tijdens entree >>>
             const entranceFactorEnemy = isEntrancePhaseActive ? (isShipDual ? 1.6 : 1.3) : 1.0;
             const enemyLookahead = AI_COLLISION_LOOKAHEAD * enemyLookaheadMultiplier * (isShipDual ? 1.3 : 1.0) * entranceFactorEnemy;
             const enemyCollisionBuffer = AI_COLLISION_BUFFER * enemyCollisionBufferMultiplier * (isShipDual ? 1.4 : 1.0) * entranceFactorEnemy;
@@ -2702,7 +2705,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                 if (!allowTargetingCapturedPartnerBoss && bossHoldingPartner && enemy.id === bossHoldingPartner.id) {
                     continue;
                 }
-                // <<< GEWIJZIGD: `following_entrance_path` toegevoegd aan state check voor ontwijken >>>
                 if ((enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position' || enemy.state === 'following_entrance_path') &&
                     enemy.y + enemy.height > shipTopY - enemyLookahead &&
                     enemy.y < shipTopY + currentShip.height * 1.5) {
@@ -2714,7 +2716,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                         shouldTryShoot = false;
                         const enemyCenterX = enemy.x + enemy.width / 2;
                         const dodgeMultiplierEnemy = (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) ?
-                                                      (isShipDual && isEntrancePhaseActive ? 3.0 : 2.2) : // Agressiever
+                                                      (isShipDual && isEntrancePhaseActive ? 3.0 : 2.2) :
                                                       (isShipDual && isEntrancePhaseActive ? 2.7 : 1.9);
                         desiredTargetX = currentSmoothedX + ((shipCenterX < enemyCenterX) ? -1 : 1) * (effectiveShipWidth * dodgeMultiplierEnemy * (isShipDual ? 1.45 : 1.0));
                         break;
@@ -2770,10 +2772,9 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         }
     }
 
-    // <<< GEWIJZIGD: AI mag nu schieten in CS, en dual ship mag schieten na entree >>>
     if (!isDodgingThreat && !isMovingToCaptureBeam && !isMovingForOwnFallingShip && !(isTargetingCapturedPartnerBoss && !shouldTryShoot)) {
         let bestTargetScore = -Infinity;
-        let localShouldTryShoot = false; // Begin met false
+        let localShouldTryShoot = false;
         let localTargetEnemyForAI = null;
 
         for (const enemy of gameEnemies) {
@@ -2892,7 +2893,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                 desiredTargetX = enemyCenterX - effectiveShipWidth / 2;
             } else {
                  desiredTargetX = targetCenterShipX;
-                 if (!(isTargetingCapturedPartnerBoss && !shouldTryShoot)) { // Als niet specifiek partner redt zonder te schieten
+                 if (!(isTargetingCapturedPartnerBoss && !shouldTryShoot)) {
                     shouldTryShoot = false;
                  }
             }
@@ -2901,9 +2902,13 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
     // AI met dual ship vuurt normaal gesproken niet TIJDENS entreevlucht (buiten CS),
     // tenzij het een partner redt. Na entreevlucht gelden normale schietregels.
-    if (isShipDual && isEntrancePhaseActive && !isChallengingStage &&
-        !(targetEnemyForAI && targetEnemyForAI.type === ENEMY3_TYPE && targetEnemyForAI.hasCapturedShip && bossHoldingPartner && targetEnemyForAI.id === bossHoldingPartner.id && allowTargetingCapturedPartnerBoss)) {
-        shouldTryShoot = false;
+    // Deze check zorgt ervoor dat 'shouldTryShoot' correct wordt gezet.
+    if (isShipDual && isEntrancePhaseActive && !isChallengingStage) {
+        const isSavingPartner = targetEnemyForAI && targetEnemyForAI.type === ENEMY3_TYPE && targetEnemyForAI.hasCapturedShip && bossHoldingPartner && targetEnemyForAI.id === bossHoldingPartner.id && allowTargetingCapturedPartnerBoss;
+        if (!isSavingPartner) {
+            shouldTryShoot = false;
+        }
+        // Als het wel een saving partner situatie is, dan is shouldTryShoot al correct bepaald door de eerdere logica.
     }
 
 
