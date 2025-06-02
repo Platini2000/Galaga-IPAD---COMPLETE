@@ -1986,7 +1986,7 @@ function switchPlayerTurn() {
 
 
 // --- START OF FILE game_logic.js ---
-// --- DEEL 5      van 8 dit code blok    --- (Focus: AI herkent boss die capture afbreekt; robuustere state & Dual Ship AI Dodge Entrance)
+// --- DEEL 5      van 8 dit code blok    --- (Focus: AI respecteert boss die capture voorbereidt, tenzij afgebroken)
 
 function firePlayerBullet(shooterId = null, isTapEvent = false) {
     const now = Date.now();
@@ -2671,10 +2671,13 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                         if (aiIsCurrentlyTargetingCaptureBoss && enemy.id === capturingBossId) {
                              blockShootingThisEnemyAsCaptureTarget = true;
                         }
-                        if (enemy.type === ENEMY3_TYPE && enemy.isPreparingForImmediateCapture && enemy.state === 'in_grid' && !isMovingToCapture) {
-                           // Dit is een boss die zijn capture heeft afgebroken en in de grid is gebleven.
-                           // De AI moet deze nu als een normaal doelwit beschouwen.
-                           // De 'doNotShootThisTarget' logica hieronder zal bepalen of er geschoten wordt.
+                        // <<< GEWIJZIGD: Check expliciet of de AI DEZE boss probeert te capturen >>>
+                        if (enemy.type === ENEMY3_TYPE && enemy.isPreparingForImmediateCapture && enemy.state === 'in_grid') {
+                            if (aiIsCurrentlyTargetingCaptureBoss && enemy.id === capturingBossId) { // AI is deze specifieke boss aan het targetten voor capture
+                                blockShootingThisEnemyAsCaptureTarget = true;
+                            } else {
+                                // Deze boss heeft zijn capture afgebroken, of de AI target een andere boss. Behandel als normaal doelwit.
+                            }
                         }
 
 
@@ -2687,11 +2690,13 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
 
                         currentScore = (canvasHeight - enemy.y) * 2 - Math.abs(dx) * 3 - dy;
                         if (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') currentScore += 3000;
-                        // <<< GEWIJZIGD: Bonus voor targetten van 'preparing_capture' boss die in grid is gebleven >>>
+
                         if (enemy.type === ENEMY3_TYPE && enemy.isPreparingForImmediateCapture && enemy.state === 'in_grid') {
-                            currentScore += 2500; // Extra bonus om deze prioriteit te geven
+                            // Alleen bonus als we deze boss NIET actief targetten voor capture
+                            if (!(aiIsCurrentlyTargetingCaptureBoss && enemy.id === capturingBossId)) {
+                                currentScore += 2500;
+                            }
                         }
-                        // <<< EINDE GEWIJZIGD >>>
                         else if (enemy.type === ENEMY3_TYPE && !enemy.isDamaged) currentScore += 2000;
                         if (enemy.type === ENEMY3_TYPE && enemy.isDamaged) currentScore += 4000;
 
@@ -2740,16 +2745,15 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                             doNotShootThisTarget = true;
                         } else if (aiCanBeCapturedThisTurn && targetEnemyForAI.type === ENEMY3_TYPE &&
                                    !targetEnemyForAI.hasCapturedShip && !captureAttemptMadeThisLevel && !isFullGridWave &&
-                                   (targetEnemyForAI.state === 'in_grid' ||
+                                   ( // En de boss is daadwerkelijk bezig met een capture-gerelateerde actie (niet alleen in grid met een oude vlag)
                                     targetEnemyForAI.state === 'preparing_capture' ||
                                     targetEnemyForAI.state === 'diving_to_capture_position' ||
                                     (targetEnemyForAI.state === 'capturing' && targetEnemyForAI.id === capturingBossId)
-                                   )
+                                   ) &&
+                                   // <<< GEWIJZIGD: Extra check om te voorkomen dat we schieten op een boss die nog legitiem bezig is met 'preparing_capture' >>>
+                                   !(targetEnemyForAI.state === 'preparing_capture' && targetEnemyForAI.isPreparingForImmediateCapture)
                                   ) {
-                            // <<< GEWIJZIGD: Alleen niet schieten als het een *actieve* capture voorbereiding is, niet een afgebroken. >>>
-                            if (!(targetEnemyForAI.isPreparingForImmediateCapture && targetEnemyForAI.state === 'in_grid')) {
-                                doNotShootThisTarget = true;
-                            }
+                            doNotShootThisTarget = true;
                         }
                         else if (targetEnemyForAI.type === ENEMY3_TYPE && targetEnemyForAI.hasCapturedShip) {
                             let ownShipCapturedTime = 0;
@@ -3224,10 +3228,12 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
             if (isMovingToCaptureBeam && enemy.id === capturingBossId && aiPlayerActivelySeekingCaptureById === shipIdentifier) {
                 continue;
             }
-            // <<< GEWIJZIGD: AI moet boss die capture afbreekt als normaal doelwit zien >>>
             let isAbortedCaptureBoss = false;
+            // <<< GEWIJZIGD: Check of de boss zijn capture heeft afgebroken >>>
             if (enemy.type === ENEMY3_TYPE && enemy.isPreparingForImmediateCapture && enemy.state === 'in_grid' && !isMovingToCaptureBeam) {
-                isAbortedCaptureBoss = true;
+                // Deze boss was bezig met een capture, maar is nog/weer in de grid, en de AI is niet bezig zich door *deze* boss te laten vangen.
+                // Dit betekent dat de capture poging van deze boss is afgebroken vanuit het perspectief van de AI's huidige actie.
+                 isAbortedCaptureBoss = !(aiPlayerActivelySeekingCaptureById === shipIdentifier && enemy.id === capturingBossId);
             }
 
 
@@ -3251,8 +3257,8 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
             currentScore = laneBonus + (canvasHeight - enemy.y) * 2 - Math.abs(dx) * 3 - dy;
             if (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') currentScore += 3000;
 
-            if (isAbortedCaptureBoss) { // Geef hoge prioriteit aan een boss die zijn capture afbrak
-                currentScore += 15000; // Sterke bonus
+            if (isAbortedCaptureBoss) {
+                currentScore += 15000; // Hoge prioriteit om deze alsnog aan te vallen
             } else if (enemy.type === ENEMY3_TYPE && !enemy.isDamaged) currentScore += 2000;
             if (enemy.type === ENEMY3_TYPE && enemy.isDamaged) currentScore += 4000;
 
@@ -3274,14 +3280,12 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
                 if (localTargetEnemyForAI.type === ENEMY3_TYPE && !localTargetEnemyForAI.hasCapturedShip && !isFullGridWave) {
                     if (canThisAIShipBeCaptured && !captureAttemptMadeThisLevel &&
-                        (localTargetEnemyForAI.state === 'in_grid' ||
-                         localTargetEnemyForAI.state === 'preparing_capture' ||
+                        (localTargetEnemyForAI.state === 'preparing_capture' || // Alleen 'preparing_capture' hier relevant voor *niet* schieten
                          localTargetEnemyForAI.state === 'diving_to_capture_position' ||
-                         localTargetEnemyForAI.state === 'capturing'
-                        )
+                         localTargetEnemyForAI.state === 'capturing')
                        ) {
-                        // Alleen NIET schieten als het een actieve 'preparing_capture' is (niet een afgebroken)
-                        // EN de AI niet al naar DEZE boss beweegt om gevangen te worden.
+                        // <<< GEWIJZIGD: Alleen NIET schieten als het een *actieve* 'preparing_capture' is >>>
+                        // Als het isPreparingForImmediateCapture is EN nog in_grid, dan is het afgebroken, dus mag wel geschoten worden.
                         if (localTargetEnemyForAI.state === 'preparing_capture' && !(localTargetEnemyForAI.isPreparingForImmediateCapture && localTargetEnemyForAI.state === 'in_grid')) {
                             if (isMovingToCaptureBeam && localTargetEnemyForAI.id === capturingBossId && aiPlayerActivelySeekingCaptureById === shipIdentifier) {
                                 doNotShootThisBossSpecifically = true;
