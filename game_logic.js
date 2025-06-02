@@ -175,6 +175,7 @@ function resetGameInternal() {
     score = 0;
     level = 1;
     playerLives = 3;
+    window.highScoreHolderId = null; // << GEWIJZIGD: Reset highScoreHolderId
 
     if (isTwoPlayerMode) {
         player1Lives = 3;
@@ -490,30 +491,38 @@ function generateWaveDefinitionInternal(level) {
     const waveType = getWaveTypeInternal(level);
 
     if (typeof waveEntrancePatterns === 'undefined' || !Array.isArray(waveEntrancePatterns) || waveEntrancePatterns.length < 2) {
+        console.error("CRITICAL: waveEntrancePatterns not defined or insufficient for wave generation.");
         return [];
     }
 
     if (waveType === 'challenging_stage') {
-        waveDef = [];
+        waveDef = []; // Specifieke CS logica handelt dit af in startChallengingStageSequence
     } else if (waveType === 'full_grid') {
-        currentWavePatternIndex = 0;
+        currentWavePatternIndex = 0; // Gebruik altijd het eerste patroon voor full grid
         const selectedPattern = waveEntrancePatterns[0];
         if (!selectedPattern || selectedPattern.length === 0) {
+            console.error("CRITICAL: Full grid wave pattern (index 0) is missing or empty.");
             waveDef = [];
         } else {
             try {
+                // Diepe kopie om te voorkomen dat originele data wordt gewijzigd
                 waveDef = JSON.parse(JSON.stringify(selectedPattern), (key, value) => {
+                    // Zorg ervoor dat nieuwe bazen standaard geen gevangen schip hebben
                     if (value && typeof value === 'object' && value.type === ENEMY3_TYPE && typeof value.hasCapturedShip === 'undefined') {
                         value.hasCapturedShip = false;
                     }
                     return value;
                 });
-            } catch (e) { waveDef = []; }
+            } catch (e) {
+                console.error("Error cloning full grid wave pattern:", e);
+                waveDef = [];
+            }
         }
     } else if (waveType === 'entrance_flight_1') {
-        currentWavePatternIndex = 0;
+        currentWavePatternIndex = 0; // Gebruik het eerste patroon
         const selectedPattern = waveEntrancePatterns[0];
          if (!selectedPattern || selectedPattern.length === 0) {
+            console.error("CRITICAL: Entrance flight 1 wave pattern (index 0) is missing or empty.");
             waveDef = [];
         } else {
             try {
@@ -523,12 +532,16 @@ function generateWaveDefinitionInternal(level) {
                     }
                     return value;
                 });
-            } catch (e) { waveDef = []; }
+            } catch (e) {
+                console.error("Error cloning entrance flight 1 wave pattern:", e);
+                waveDef = [];
+            }
         }
     } else if (waveType === 'entrance_flight_2') {
-        currentWavePatternIndex = 1;
+        currentWavePatternIndex = 1; // Gebruik het tweede patroon
         const selectedPattern = waveEntrancePatterns[1];
         if (!selectedPattern || selectedPattern.length === 0) {
+            console.error("CRITICAL: Entrance flight 2 wave pattern (index 1) is missing or empty.");
             waveDef = [];
         } else {
             try {
@@ -538,19 +551,26 @@ function generateWaveDefinitionInternal(level) {
                     }
                     return value;
                 });
-            } catch (e) { waveDef = []; }
+            } catch (e) {
+                console.error("Error cloning entrance flight 2 wave pattern:", e);
+                waveDef = [];
+            }
         }
     } else {
+        console.warn(`Unknown wave type for level ${level}: ${waveType}`);
         waveDef = [];
     }
 
+    // Valideer paden voor niet-CS waves
     if (waveType !== 'challenging_stage') {
         if (typeof normalWaveEntrancePaths === 'undefined' || Object.keys(normalWaveEntrancePaths).length === 0) {
-             return waveDef;
+             console.error("CRITICAL: normalWaveEntrancePaths not defined or empty. Cannot assign paths to squadrons.");
+             return waveDef; // Geef terug wat we hebben, maar het zal waarschijnlijk problemen veroorzaken.
         }
         for (let i = waveDef.length - 1; i >= 0; i--) {
             const squadron = waveDef[i];
             if (!normalWaveEntrancePaths?.[squadron.pathId]) {
+                // console.warn(`Squadron ${i} in wave ${level} has invalid pathId '${squadron.pathId}'. Removing squadron.`);
                 waveDef.splice(i, 1);
                 continue;
             }
@@ -558,16 +578,20 @@ function generateWaveDefinitionInternal(level) {
                 for (let j = squadron.enemies.length - 1; j >= 0; j--) {
                     const enemy = squadron.enemies[j];
                     if (!enemy || !normalWaveEntrancePaths?.[enemy.entrancePathId]) {
+                        // console.warn(`Enemy ${j} in squadron ${i} (wave ${level}) has invalid entrancePathId '${enemy?.entrancePathId}'. Removing enemy.`);
                         squadron.enemies.splice(j, 1);
                     }
+                    // Zorg ervoor dat bazen in de definitie correct geïnitialiseerd zijn
                     if (enemy && enemy.type === ENEMY3_TYPE && typeof enemy.hasCapturedShip === 'undefined') {
                         enemy.hasCapturedShip = false;
                     }
                 }
                 if (squadron.enemies.length === 0) {
+                    // console.warn(`Squadron ${i} in wave ${level} has no valid enemies after path validation. Removing squadron.`);
                     waveDef.splice(i, 1);
                 }
             } else {
+                //  console.warn(`Squadron ${i} in wave ${level} has no 'enemies' array or it's not an array. Removing squadron.`);
                  waveDef.splice(i, 1);
             }
         }

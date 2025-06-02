@@ -50,7 +50,8 @@ let isInGameState = false;
 let isShowingScoreScreen = false;
 let scoreScreenStartTime = 0;
 let highScore = 20000;
-let highScoreHolderId = null; // << GEWIJZIGD: Wie heeft de huidige high score? 'player1', 'player2', 'ai_p2'
+// let highScoreHolderId = null; // Oude declaratie
+window.highScoreHolderId = null; // << GEWIJZIGD: Expliciet aan window toevoegen
 let playerLives = 3;
 let score = 0;
 let level = 1;
@@ -68,14 +69,14 @@ let player2MaxLevelReached = 1;
 // Menu State Variabelen
 let isPlayerSelectMode = false;
 let isOnePlayerGameTypeSelectMode = false;
-let isOnePlayerNormalGameSubTypeSelectMode = false; // Wordt niet meer gebruikt, maar laten staan om geen onverwachte fouten te introduceren
-let isOnePlayerVsAIGameTypeSelectMode = false; // Toegevoegd voor "1P vs AI" sub-menu (Normal/Coop)
+let isOnePlayerNormalGameSubTypeSelectMode = false;
+let isOnePlayerVsAIGameTypeSelectMode = false;
 let isGameModeSelectMode = false;
 let isFiringModeSelectMode = false;
 
 let selectedFiringMode = 'rapid';
-let selectedOnePlayerGameVariant = ''; // bv. 'CLASSIC_1P', '1P_VS_AI_NORMAL', '1P_VS_AI_COOP'
-let isPlayerTwoAI = false; // Vlag om aan te duiden dat P2 door AI bestuurd wordt
+let selectedOnePlayerGameVariant = '';
+let isPlayerTwoAI = false;
 
 let p1JustFiredSingle = false;
 let p2JustFiredSingle = false;
