@@ -2821,7 +2821,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
 
 // --- START OF FILE game_logic.js ---
-// --- DEEL 6      van 8 dit code blok    --- (Focus: Enemy Attack Selection & Capture Trigger)
+// --- DEEL 6      van 8 dit code blok    --- (Focus: Enemy Attack Selection & Capture Trigger Reliability)
 
 function findAndDetachEnemy() {
     try {
@@ -2867,12 +2867,9 @@ function triggerImmediateCaptureDive() {
         let targetPlayerShipForDive = null;
 
         if (isTwoPlayerMode && selectedGameMode === 'coop') {
-            const p1CanBeTargeted = ship1 && player1Lives > 1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn;
-            const p2CanBeTargeted = ship2 && player2Lives > 1 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn;
+            const p1CanBeTargeted = ship1 && player1Lives > 1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !player1NeedsRespawnAfterCapture;
+            const p2CanBeTargeted = ship2 && player2Lives > 1 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !player2NeedsRespawnAfterCapture;
 
-            // In CO-OP Demo, we staan een poging toe zolang `captureAttemptMadeThisLevel` false is,
-            // zelfs als de vorige geselecteerde boss sneuvelde.
-            // De vlag wordt pas true als een beam daadwerkelijk activeert.
             if ((p1CanBeTargeted || p2CanBeTargeted) && !captureAttemptMadeThisLevel) {
                 canAttemptCapture = true;
                 if (p1CanBeTargeted && p2CanBeTargeted) {
@@ -2902,10 +2899,8 @@ function triggerImmediateCaptureDive() {
             const chosenBoss = potentialCapturingBosses[Math.floor(Math.random() * potentialCapturingBosses.length)];
             const now = Date.now();
 
-            // Markeer deze boss als geselecteerd, maar zet captureAttemptMadeThisLevel nog NIET.
             chosenBoss.isPreparingForImmediateCapture = true;
-
-            chosenBoss.justReturned = true; // Voorkom dat hij direct weer aanvalt als dit mislukt
+            chosenBoss.justReturned = true;
             const attackGroupIds = new Set([chosenBoss.id]);
             resetJustReturnedFlags(attackGroupIds);
 
@@ -2919,20 +2914,25 @@ function triggerImmediateCaptureDive() {
             chosenBoss.state = 'preparing_capture';
             chosenBoss.targetX = targetX;
             chosenBoss.targetY = targetY;
-            chosenBoss.diveStartTime = now; // diveStartTime wordt gebruikt om de beam te timen in moveEntities
+            chosenBoss.diveStartTime = now;
             playSound('bossGalagaDiveSound', false, 0.2);
             const leaderId = chosenBoss.id;
 
-            chosenBoss.capturePrepareTimeout = setTimeout(() => {
+            // Bewaar een referentie naar de timeout ID zodat we deze kunnen clearen als de boss voortijdig verdwijnt.
+            const prepareTimeoutId = setTimeout(() => {
                 const currentEnemy = enemies.find(e => e?.id === leaderId);
+                // <<< GEWIJZIGD: captureAttemptMadeThisLevel pas hier zetten EN ALLEEN als de boss nog bestaat en in de juiste state is >>>
                 if (currentEnemy && currentEnemy.state === 'preparing_capture') {
                     currentEnemy.state = 'diving_to_capture_position';
+                    captureAttemptMadeThisLevel = true; // Nu pas de vlag zetten
                 }
-                if(currentEnemy) currentEnemy.capturePrepareTimeout = null;
-                const timeoutIndex = enemySpawnTimeouts.findIndex(tId => tId === chosenBoss.capturePrepareTimeout); // Moet capturePrepareTimeout van de boss zijn
+                // <<< EINDE GEWIJZIGD >>>
+                if(currentEnemy) currentEnemy.capturePrepareTimeout = null; // Reset de opgeslagen ID in de enemy
+                const timeoutIndex = enemySpawnTimeouts.indexOf(prepareTimeoutId);
                 if (timeoutIndex > -1) enemySpawnTimeouts.splice(timeoutIndex, 1);
             }, 300);
-            enemySpawnTimeouts.push(chosenBoss.capturePrepareTimeout);
+            chosenBoss.capturePrepareTimeout = prepareTimeoutId; // Sla de ID op in de enemy
+            enemySpawnTimeouts.push(prepareTimeoutId);
         }
     } catch (e) {
         console.error("Error in triggerImmediateCaptureDive:", e);
