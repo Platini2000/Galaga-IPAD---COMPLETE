@@ -1,1 +1,1337 @@
-const _0x4a7590=_0x35c9;(function(_0x35f182,_0x1b0fc6){const _0x42be9a=_0x35c9,_0x318bf8=_0x35f182();while(!![]){try{const _0x3e8085=parseInt(_0x42be9a(0x262))/0x1*(-parseInt(_0x42be9a(0x164))/0x2)+-parseInt(_0x42be9a(0x172))/0x3*(-parseInt(_0x42be9a(0x20c))/0x4)+parseInt(_0x42be9a(0x1b6))/0x5*(-parseInt(_0x42be9a(0x16d))/0x6)+-parseInt(_0x42be9a(0x1c1))/0x7+parseInt(_0x42be9a(0x1ef))/0x8*(-parseInt(_0x42be9a(0x1c3))/0x9)+-parseInt(_0x42be9a(0x1d1))/0xa*(parseInt(_0x42be9a(0x1fb))/0xb)+parseInt(_0x42be9a(0x241))/0xc;if(_0x3e8085===_0x1b0fc6)break;else _0x318bf8['push'](_0x318bf8['shift']());}catch(_0x3426b0){_0x318bf8['push'](_0x318bf8['shift']());}}}(_0x5817,0x6e8be));const ENEMY1_TYPE=_0x4a7590(0x18a),ENEMY2_TYPE=_0x4a7590(0x185),ENEMY3_TYPE='enemy3',ENEMY_WIDTH=0x28,ENEMY_HEIGHT=0x28,ENEMY1_SCALE_FACTOR=1.33,ENEMY1_WIDTH=Math['round'](ENEMY_WIDTH*ENEMY1_SCALE_FACTOR),ENEMY1_HEIGHT=Math[_0x4a7590(0x205)](ENEMY_HEIGHT*ENEMY1_SCALE_FACTOR),BOSS_SCALE_FACTOR=1.5,BOSS_WIDTH=Math['round'](ENEMY_WIDTH*BOSS_SCALE_FACTOR),BOSS_HEIGHT=Math[_0x4a7590(0x205)](ENEMY_HEIGHT*BOSS_SCALE_FACTOR),SHIP_WIDTH=0x32,SHIP_HEIGHT=0x32,SHIP_BOTTOM_MARGIN=0x1e,SHIP_MOVE_SPEED=0xa,COOP_SHIP_HORIZONTAL_OFFSET_FACTOR=0.15,CHALLENGING_STAGE_ENEMY_COUNT=0x28,CHALLENGING_STAGE_SQUADRON_SIZE=0x5,CHALLENGING_STAGE_SQUADRON_COUNT=CHALLENGING_STAGE_ENEMY_COUNT/CHALLENGING_STAGE_SQUADRON_SIZE,BASE_CS_SPEED_MULTIPLIER=4.2,MAX_CS_SPEED_MULTIPLIER=0x5,CS_HORIZONTAL_FLYBY_SPEED_FACTOR=0.35,CS_ENEMY_SPAWN_DELAY_IN_SQUADRON=0x50,CS_HORIZONTAL_FLYBY_SPAWN_DELAY=-0x19,CS_LOOP_ATTACK_SPAWN_DELAY=0x23,CHALLENGING_STAGE_SQUADRON_INTERVAL=0xbb8,PATH_T_OFFSET_PER_ENEMY=0.05,ENEMY2_MAX_HITS=0x1,ENEMY3_MAX_HITS=0x2,LEVEL_CAP_FOR_SCALING=0x32,BASE_GRID_FIRE_INTERVAL=0xaf0,MIN_GRID_FIRE_INTERVAL=0x2bc,BASE_GRID_FIRE_PROBABILITY=0.04,MAX_GRID_FIRE_PROBABILITY=0.18,BASE_GRID_MAX_FIRING_ENEMIES=0x7,MAX_GRID_MAX_FIRING_ENEMIES=0x10,BASE_RETURN_SPEED_FACTOR=1.5,MAX_RETURN_SPEED_FACTOR=2.5,PLAYER_GAME_OVER_MESSAGE_DURATION_COOP=0xbb8,AI_CAPTURE_BEAM_APPROACH_DELAY_MS=0x7d0,COOP_AI_CAPTURE_DIVE_ANTICIPATION_DURATION_MS=0xbb8,COOP_AI_SAVE_PARTNER_DELAY_MS=0x2710;let starrySkyCanvas,starryCtx,retroGridCanvas,retroGridCtx,gameCanvas,gameCtx,stars=[],gridOffsetY=0x0,isInGameState=![],isShowingScoreScreen=![],scoreScreenStartTime=0x0,highScore=0x4e20;function _0x5817(){const _0x411309=['\x20empty\x20after\x20validation!\x20Adding\x20fallback.','left','Afbeeldingen/butterfly.png','arc','Geluiden/LevelUp.mp3','toLowerCase','startSound','captureSound','stop','Geluiden/Enemy2.mp3','single','1P_VS_AI_COOP','isArray','Afbeeldingen/bee-2.png','KeyL','Escape','error','Geluiden/Fire-enemy.mp3','\x20on\x20resize:','1P_VS_AI_NORMAL','length','cos','1359064whbByc','mid_curve_left','mozRequestFullScreen','rgba(255,\x20255,\x20255,\x20','start','mid_curve_right','running','name','log','Space','Geluiden/gameover.mp3','CS3_DiveLoopL_Sharp','391875IDBabX','Geluiden/Boss-hit2.mp3','map','includes','levelUpSound','Cannot\x20define\x20CS\x20paths:\x20Canvas\x20size\x20unknown\x20or\x20zero\x20width.','beeHitSound','then','Error\x20in\x20saveHighScore:','webkitAudioContext','round','font','connect','ArrowRight','new_path_left','boss_loop_left','\x20for\x20','28uaLuoP','rgba(','Error\x20in\x20handleKeyDown:','Geluiden/Triple.mp3','Geluiden/Boss-hit1.mp3','height','lostLifeSound','in_grid','click','gain','suspended','requestFullscreen','enemyShootSound','gameOverSound','Geluiden/Extra-Leven.mp3','returning','Normal\x20Wave\x20Path\x20','setValueAtTime','butterflyHitSound','targetGridX','bossHit2Sound','KeyJ','onerror','Afbeeldingen/Level-20.png','clientX','addEventListener','red','buttons','Geluiden/results-music.mp3','msRequestFullscreen','Geluiden/Start.mp3','alphaChange','pressed','20px\x20\x27Press\x20Start\x202P\x27','ArrowDown','<p\x20style=\x22color:white;\x22>FATAL\x20ERROR</p>','csClearSound','AudioContext\x20resumed\x20from\x20pause.','touchmove','retroGridCanvas','max','currentTime','body','createBufferSource','gameCanvas','gridBackgroundSound','Numpad6','now','radius','right','Afbeeldingen/bullet-enemy.png','boss_loop_right','getBoundingClientRect','30828936lhLRHT','clearRect','clientY','ai_p2','width','hiScoreSound','stringify','ArrowLeft','preventDefault','FATAL:\x20Could\x20not\x20initialize\x20one\x20or\x20more\x20canvas\x20contexts!','rgba(255,\x20255,\x20180,\x200.9)','waveUpSound','touchcancel','push','menuMusicSound','readySound','strokeStyle','Afbeeldingen/bossGalaga.png','Numpad4','fill','pause','function','ArrowUp','Error\x20in\x20drawRetroGrid:','getContext','player2','shiftKey','alpha','Enter','playerShootSound','Geluiden/Bees-hit.mp3','resultsMusicSound','slice','630759BoxeVC','type','normal','catch','AudioContext\x20not\x20initialized,\x20cannot\x20load\x20sound:\x20','AudioContext\x20resumed\x20by\x20gamepad\x20connection.','documentElement','Geluiden/lost-live.mp3','Geluiden/CS-Clear.mp3','targetGridY','Numpad0','Error\x20loading\x20critical\x20canvas\x20elements.','code','touchend','new_path_right','lineWidth','csPerfectSound','end','key','2dMReMQ','altKey','KeyW','Geluiden/hi-score.mp3','lineTo','100,\x20180,\x20255','index','number','Error\x20in\x20handleGamepadConnected:','30ZaUFPo','innerHeight','floor','Error\x20in\x20handleGamepadDisconnected:','rapid','67173oAOSRE','Geluiden/Entree.mp3','Geluiden/Capture.mp3','onended','shoot','stroke','AudioContext\x20resumed\x20by\x20keydown.','warn','Geluiden/coin.mp3','player1','Geluiden/flying.mp3','Geluiden/firing.mp3','Afbeeldingen/Level-1.png','beginPath','bold\x2012px\x20\x27Press\x20Start\x202P\x27','Error\x20resuming\x20AudioContext:','moveTo','filter','sin','enemy2','min','innerHTML','gridRow','CS_HorizontalFlyByR','enemy1','webkitRequestFullscreen','2UP','moving_to_grid','Geluiden/Menu-music.mp3','Afbeeldingen/Level-10.png','Geluiden/ready.mp3','Fullscreen\x20API\x20is\x20not\x20supported\x20by\x20this\x20browser.','CS3_DiveLoopR_Sharp','parse','state','keys','butterflyDiveSound','destination','sqrt','move','Error\x20resuming\x20AudioContext\x20for\x20fullscreen\x20music:','AudioContext\x20still\x20suspended.\x20User\x20interaction\x20needed\x20to\x20play\x20sounds.','tripleAttackSound','touchstart','KeyI','Geluiden/Butterfly-hit.mp3','undefined','coop','atan2','forEach','Error\x20recalculating\x20grid\x20pos\x20for\x20enemy\x20','shipCapturedSound','rgba(255,\x20150,\x20150,\x200.55)','bossHit1Sound','AudioContext\x20resumed\x20explicitly\x20after\x20unpause.','dualShipSound','KeyA','Error\x20in\x20drawStars:','Error\x20setting\x20up\x20initial\x20event\x20listeners:','Geluiden/kill.mp3','gridCol','src','message','touches','getElementById','rgba(180,\x20180,\x20255,\x200.1)','Geluiden/Waveup.mp3','innerWidth','527405bHbKJj','2up','Error\x20fetching\x20sound\x20','Afbeeldingen/bossGalaga-2.png','explosionSound','toFixed','entranceSound','Error\x20handling\x20game\x20resize\x20specifics:','KeyD','ctrlKey','hasOwnProperty','4121040GSDsnt','Error\x20in\x20loadHighScore:','9MuRJxl','CS_LoopAttack_TR','AudioContext','fillStyle','Geluiden/CS-Stage-Perfect-.mp3','bossGalagaDiveSound','Web\x20Audio\x20API\x20is\x20not\x20supported\x20in\x20this\x20browser.','\x20is\x20not\x20an\x20array!\x20Using\x20basic\x20fallback.','targetX','changedTouches','measureText','CS\x20Path\x20','gamepad','random','100zqKfOV','resume','Error\x20loading\x20image:\x20','Error\x20attempting\x20to\x20enable\x20full-screen\x20mode:\x20','metaKey','Afbeeldingen/Level-50.png','Error\x20in\x20resizeCanvases:','rgba(220,\x20220,\x20255,\x200.6)'];_0x5817=function(){return _0x411309;};return _0x5817();}window['highScoreHolderId']=null;let playerLives=0x3,score=0x0,level=0x1,isTwoPlayerMode=![],selectedGameMode='normal',currentPlayer=0x1,player1Lives=0x3,player2Lives=0x3,player1Score=0x0,player2Score=0x0,player1CompletedLevel=-0x1,player1MaxLevelReached=0x1,player2MaxLevelReached=0x1,isPlayerSelectMode=![],isOnePlayerGameTypeSelectMode=![],isOnePlayerNormalGameSubTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=![],isGameModeSelectMode=![],isFiringModeSelectMode=![],selectedFiringMode=_0x4a7590(0x171),selectedOnePlayerGameVariant='',isPlayerTwoAI=![],p1JustFiredSingle=![],p2JustFiredSingle=![],p1FireInputWasDown=![],p2FireInputWasDown=![],scoreEarnedThisCS=0x0,player1LifeThresholdsMet=new Set(),player2LifeThresholdsMet=new Set(),isManualControl=![],isShowingDemoText=![],autoStartTimerId=null,gameJustStarted=![],mainLoopId=null,isShowingIntro=![],introStep=0x0,introDisplayStartTime=0x0,lastMouseMoveResetTime=0x0,isChallengingStage=![],isFullGridWave=![],isWaveTransitioning=![],showCsHitsMessage=![],csHitsMessageStartTime=0x0,showExtraLifeMessage=![],extraLifeMessageStartTime=0x0,showPerfectMessage=![],perfectMessageStartTime=0x0,showCSClearMessage=![],csClearMessageStartTime=0x0,showCsHitsForClearMessage=![];showCsScoreForClearMessage=![];let showReadyMessage=![],readyMessageStartTime=0x0,showCsBonusScoreMessage=![],csBonusScoreMessageStartTime=0x0,readyForNextWave=![],readyForNextWaveReset=![],isCsCompletionDelayActive=![],csCompletionDelayStartTime=0x0,csCompletionResultIsPerfect=![],csIntroSoundPlayed=![],playerIntroSoundPlayed=![],stageIntroSoundPlayed=![],playLevelUpAfterCSBonus=![],isShowingPlayerGameOverMessage=![],playerGameOverMessageStartTime=0x0,playerWhoIsGameOver=0x0,nextActionAfterPlayerGameOver='',isPlayer1ShowingGameOverMessage=![],player1GameOverMessageStartTime=0x0,isPlayer2ShowingGameOverMessage=![],player2GameOverMessageStartTime=0x0,forceCenterShipNextReset=![],isShipCaptured=![],isPlayer1ShipCaptured=![],isPlayer2ShipCaptured=![],capturingBossId=null,captureBeamActive=![],captureBeamSource={'x':0x0,'y':0x0},captureBeamTargetY=0x0,captureBeamProgress=0x0,captureAttemptMadeThisLevel=![],isWaitingForRespawn=![],isPlayer1WaitingForRespawn=![],isPlayer2WaitingForRespawn=![],respawnTime=0x0,player1RespawnTime=0x0,player2RespawnTime=0x0,isInvincible=![],isPlayer1Invincible=![],isPlayer2Invincible=![],invincibilityEndTime=0x0,player1InvincibilityEndTime=0x0,player2InvincibilityEndTime=0x0,fallingShips=[],isDualShipActive=![],player1IsDualShipActive=![],player2IsDualShipActive=![],isShowingCaptureMessage=![],captureMessageStartTime=0x0,capturedBossIdWithMessage=null,enemies=[],normalWaveEntrancePaths={},challengingStagePaths={},currentWaveDefinition=null,isEntrancePhaseActive=![],enemySpawnTimeouts=[],totalEnemiesScheduledForWave=0x0,enemiesSpawnedThisWave=0x0,lastEnemyDetachTime=0x0,gridMoveDirection=0x1,lastGridFireCheckTime=0x0,firstEnemyLanded=![],currentGridOffsetX=0x0,challengingStageEnemiesHit=0x0,challengingStageTotalEnemies=CHALLENGING_STAGE_ENEMY_COUNT,isGridBreathingActive=![];gridBreathStartTime=0x0,currentGridBreathFactor=0x0;let ship={'x':0x0,'y':0x0,'width':SHIP_WIDTH,'height':SHIP_HEIGHT,'speed':SHIP_MOVE_SPEED,'targetX':0x0,'id':'main'},ship1=null,ship2=null,leftPressed=![],rightPressed=![],shootPressed=![],p2LeftPressed=![];p2RightPressed=![],p2ShootPressed=![];let keyboardP1LeftDown=![];keyboardP1RightDown=![],keyboardP1ShootDown=![];let keyboardP2LeftDown=![];keyboardP2RightDown=![],keyboardP2ShootDown=![];let bullets=[],enemyBullets=[],explosions=[],hitSparks=[],playerLastShotTime=0x0,player1LastShotTime=0x0,player2LastShotTime=0x0,aiLastShotTime=0x0,aiCanShootTime=0x0,connectedGamepadIndex=null,connectedGamepadIndexP2=null,previousButtonStates=[],previousDemoButtonStates=[],previousGameButtonStates=[],previousGameButtonStatesP2=[],selectedButtonIndex=-0x1,joystickMovedVerticallyLastFrame=![],isGridSoundPlaying=![],gridJustCompleted=![],player1ShotsFired=0x0,player2ShotsFired=0x0,player1EnemiesHit=0x0,player2EnemiesHit=0x0,isShowingResultsScreen=![],gameOverSequenceStartTime=0x0,gameStartTime=0x0,visualOffsetX=-0x14,floatingScores=[],csCurrentChainHits=0x0;csCurrentChainScore=0x0,csLastHitTime=0x0,csLastChainHitPosition=null;let normalWaveCurrentChainHits=0x0;normalWaveCurrentChainScore=0x0,normalWaveLastHitTime=0x0,normalWaveLastHitPosition=null;let squadronCompletionStatus={},squadronEntranceFiringStatus={},isPaused=![],mouseIdleTimerId=null,initialGameStartSoundPlayedThisSession=![],coopStartSoundPlayedThisSession=![],wasLastGameAIDemo=![],player1TriggeredHighScoreSound=![],player2TriggeredHighScoreSound=![],isShowingCoopPlayersReady=![],coopPlayersReadyStartTime=0x0,gameJustStartedAndWaveLaunched=![],isCoopAIDemoActive=![],demoModeCounter=0x0,smoothedShip1X=undefined,smoothedShip2X=undefined,aiShip1TargetEnemy=null,aiShip2TargetEnemy=null,aiShip1CanShootTime=0x0,aiShip2CanShootTime=0x0,aiShip1LastShotTime=0x0,aiShip2LastShotTime=0x0,aiPlayerActivelySeekingCaptureById=null,coopAICaptureDiveAnticipationActive=![],coopAICaptureDiveAnticipationEndTime=0x0,player1CaptureRespawnX=0x0,player2CaptureRespawnX=0x0,player1NeedsRespawnAfterCapture=![],player2NeedsRespawnAfterCapture=![],capturedShipRespawnX_NormalMode=0x0,coopPartner1CapturedTime=0x0,coopPartner2CapturedTime=0x0,touchStartX=0x0,touchStartY=0x0,touchCurrentX=0x0,touchCurrentY=0x0,touchStartTime=0x0,isTouchActiveGame=![],isTouchActiveMenu=![],touchedMenuButtonIndex=-0x1,lastTapTime=0x0,isShowingPortraitMessage=![],gameWasAutoPausedForPortrait=![];const TOUCH_TAP_MAX_DURATION=0xfa,TOUCH_TAP_MAX_MOVEMENT=0x14,TOUCH_SHIP_CONTROL_AREA_Y_FACTOR=0.5,shipImage=new Image(),beeImage=new Image(),butterflyImage=new Image(),bossGalagaImage=new Image(),bulletImage=new Image(),enemyBulletImage=new Image(),logoImage=new Image();shipImage['src']='Afbeeldingen/spaceship.png',beeImage[_0x4a7590(0x1af)]='Afbeeldingen/bee.png',bulletImage[_0x4a7590(0x1af)]='Afbeeldingen/bullet.png',bossGalagaImage[_0x4a7590(0x1af)]=_0x4a7590(0x252),butterflyImage[_0x4a7590(0x1af)]=_0x4a7590(0x1db),logoImage['src']='Afbeeldingen/Logo.png',enemyBulletImage['src']=_0x4a7590(0x23e);const beeImage2=new Image(),butterflyImage2=new Image(),bossGalagaImage2=new Image();beeImage2[_0x4a7590(0x1af)]=_0x4a7590(0x1e6),butterflyImage2[_0x4a7590(0x1af)]='Afbeeldingen/butterfly-2.png',bossGalagaImage2['src']=_0x4a7590(0x1b9);const level1Image=new Image(),level5Image=new Image(),level10Image=new Image(),level20Image=new Image(),level30Image=new Image(),level50Image=new Image();level1Image[_0x4a7590(0x1af)]=_0x4a7590(0x17e),level5Image[_0x4a7590(0x1af)]='Afbeeldingen/Level-5.png',level10Image['src']=_0x4a7590(0x18f),level20Image['src']=_0x4a7590(0x223),level30Image[_0x4a7590(0x1af)]='Afbeeldingen/Level-30.png',level50Image[_0x4a7590(0x1af)]=_0x4a7590(0x1d6);let audioContext,soundBuffers={},soundSources={},soundGainNodes={},audioContextInitialized=![];const soundPaths={'captureSound':_0x4a7590(0x174),'shipCapturedSound':'Geluiden/Capture-ship.mp3','dualShipSound':'Geluiden/coin.mp3','playerShootSound':_0x4a7590(0x17d),'explosionSound':_0x4a7590(0x1ad),'gameOverSound':_0x4a7590(0x1f9),'lostLifeSound':_0x4a7590(0x269),'entranceSound':_0x4a7590(0x173),'bossGalagaDiveSound':_0x4a7590(0x1e2),'levelUpSound':_0x4a7590(0x1dd),'enemyShootSound':_0x4a7590(0x1ea),'butterflyDiveSound':_0x4a7590(0x17c),'startSound':_0x4a7590(0x22a),'coinSound':_0x4a7590(0x17a),'beeHitSound':_0x4a7590(0x25f),'butterflyHitSound':_0x4a7590(0x19f),'bossHit1Sound':_0x4a7590(0x210),'bossHit2Sound':_0x4a7590(0x1fc),'gridBackgroundSound':'Geluiden/Achtergrond-grid.mp3','extraLifeSound':_0x4a7590(0x21a),'csPerfectSound':_0x4a7590(0x1c7),'csClearSound':_0x4a7590(0x26a),'waveUpSound':_0x4a7590(0x1b4),'menuMusicSound':_0x4a7590(0x18e),'readySound':_0x4a7590(0x190),'tripleAttackSound':_0x4a7590(0x20f),'resultsMusicSound':_0x4a7590(0x228),'hiScoreSound':_0x4a7590(0x167)},BASE_ENEMY_BULLET_SPEED=0x9,MAX_ENEMY_BULLET_SPEED=0x9,BASE_ENEMY_ATTACK_SPEED=5.5,MAX_ENEMY_ATTACK_SPEED=0x8,BASE_MAX_ATTACKING_ENEMIES=0xa,MAX_MAX_ATTACKING_ENEMIES=0x16,BASE_GRID_MOVE_SPEED=0.3,MAX_GRID_MOVE_SPEED=0.7,BASE_GRID_BREATH_CYCLE_MS=0x7d0,MIN_GRID_BREATH_CYCLE_MS=0x3e8,BASE_ENEMY_BULLET_BURST_COUNT=0x1,MAX_ENEMY_BULLET_BURST_COUNT=0x5,BASE_ENEMY_AIM_FACTOR=0.75,MAX_ENEMY_AIM_FACTOR=0.95,BASE_BEE_GROUP_ATTACK_PROBABILITY=0.05,MAX_BEE_GROUP_ATTACK_PROBABILITY=0.4,BASE_BEE_TRIPLE_ATTACK_PROBABILITY=0.1,MAX_BEE_TRIPLE_ATTACK_PROBABILITY=0.5,PLAYER_BULLET_WIDTH=0x5,PLAYER_BULLET_HEIGHT=0xf,PLAYER_BULLET_SPEED=0xe,DUAL_SHIP_BULLET_OFFSET_X=SHIP_WIDTH*0.5,ENEMY_BULLET_WIDTH=0x4,ENEMY_BULLET_HEIGHT=0xc,NUM_STARS=0x1f4,MAX_STAR_RADIUS=1.5,MIN_STAR_RADIUS=0.5,TWINKLE_SPEED=0.015,BASE_PARALLAX_SPEED=0.3,PARALLAX_SPEED_FACTOR=0x2,STAR_FADE_START_FACTOR_ABOVE_HORIZON=0.25,GRID_RGB_PART=_0x4a7590(0x169),GRID_BASE_ALPHA=0.8,GRID_MIN_ALPHA=0.3,GRID_FIXED_LINES_ALPHA=0.5,GRID_LINE_COLOR_FIXED='rgba('+GRID_RGB_PART+',\x20'+GRID_FIXED_LINES_ALPHA+')',GRID_LINE_WIDTH=0x2,GRID_SPEED=0.4,GRID_HORIZON_Y_FACTOR=0.74,GRID_BASE_SPACING=0xf,GRID_SPACING_POWER=0x2,GRID_HORIZONTAL_LINE_WIDTH_FACTOR=1.5,GRID_NUM_PERSPECTIVE_LINES=0xe,GRID_HORIZON_SPREAD_FACTOR=1.2,GRID_BOTTOM_SPREAD_FACTOR=0x2,GRID_PERSPECTIVE_POWER=0x1,MENU_INACTIVITY_TIMEOUT=0x4e20,SCORE_SCREEN_DURATION=0x4e20,ENTRANCE_SPEED=0x6,BASE_RETURN_SPEED=ENTRANCE_SPEED,NORMAL_ENTRANCE_PATH_SPEED=0.013934592,BOSS_LOOP_ENTRANCE_PATH_SPEED=0.055738368,ENEMY_SPAWN_DELAY_IN_SQUADRON=0x64,ENTRANCE_PAIR_HORIZONTAL_GAP=0x5,ENTRANCE_PAIR_PATH_T_OFFSET=0x0,NORMAL_WAVE_SQUADRON_INTERVAL=0x708,ENTRANCE_FIRE_BURST_DELAY_MS=0x50,CS_ENTRANCE_PATH_SPEED=0.0032,CS_COMPLETION_MESSAGE_DELAY=0x3e8,ENEMY_ANIMATION_INTERVAL_MS=0xfa,AXIS_DEAD_ZONE_MENU=0.3,AXIS_DEAD_ZONE_GAMEPLAY=0.15,PS5_BUTTON_CROSS=0x0,PS5_BUTTON_CIRCLE=0x1,PS5_BUTTON_TRIANGLE=0x3,PS5_BUTTON_R1=0x5,PS5_DPAD_UP=0xc,PS5_DPAD_DOWN=0xd,PS5_DPAD_LEFT=0xe,PS5_DPAD_RIGHT=0xf,PS5_LEFT_STICK_X=0x0,PS5_LEFT_STICK_Y=0x1,SHOOT_COOLDOWN=0x8c,CS_MULTI_BULLET_COUNT=0x2,CS_MULTI_BULLET_SPREAD_ANGLE_DEG=0x8,GRID_ROWS=0x5,GRID_COLS=0xa,ENEMY_V_SPACING=0x14,ENEMY_H_SPACING_FIXED=0x1e,ENEMY_TOP_MARGIN=0x75,GRID_HORIZONTAL_MARGIN_PERCENT=0.18,GRID_BREATH_ENABLED=!![],GRID_BREATH_MAX_EXTRA_H_SPACING_FACTOR=0.5,GRID_BREATH_MAX_EXTRA_V_SPACING_FACTOR=0.3,ENEMY1_DIVE_SPEED_FACTOR=0.65,ENEMY2_DIVE_SPEED_FACTOR=0.75,ENEMY3_ATTACK_SPEED_FACTOR=0.8,BOSS_CAPTURE_DIVE_SPEED_FACTOR=0.85,GROUP_DETACH_DELAY_MS=0x50,GROUP_FIRE_BURST_DELAY=0x258,SOLO_BUTTERFLY_FIRE_DELAY=0x258,BOSS_CAPTURE_DIVE_PROBABILITY=0.15,CAPTURE_DIVE_SIDE_MARGIN_FACTOR=0.15,CAPTURE_DIVE_BOTTOM_HOVER_Y_FACTOR=0.7,CAPTURE_BEAM_DURATION_MS=0x1388,CAPTURE_BEAM_ANIMATION_DURATION_MS=0x1f4,CAPTURE_BEAM_WIDTH_TOP_FACTOR=0.7,CAPTURE_BEAM_WIDTH_BOTTOM_FACTOR=1.8,CAPTURE_BEAM_COLOR_START=_0x4a7590(0x1b3),CAPTURE_BEAM_COLOR_END=_0x4a7590(0x1d8),CAPTURE_BEAM_PULSE_SPEED=0.004,CAPTURED_SHIP_SCALE=0x1,CAPTURED_SHIP_OFFSET_X=(BOSS_WIDTH-SHIP_WIDTH)/0x2,CAPTURED_SHIP_OFFSET_Y=-SHIP_HEIGHT*0.5,CAPTURE_MESSAGE_DURATION=0xbb8,CAPTURED_SHIP_TINT_COLOR=_0x4a7590(0x1a6),CAPTURED_SHIP_FIRE_COOLDOWN_MS=0x1f4,RESPAWN_DELAY_MS=0x7d0,INVINCIBILITY_DURATION_MS=0x7d0,INVINCIBILITY_BLINK_ON_MS=0x64,INVINCIBILITY_BLINK_OFF_MS=0x32,FALLING_SHIP_SPEED=3.5,FALLING_SHIP_FADE_DURATION_MS=0x5dc,FALLING_SHIP_ROTATION_DURATION_MS=0x5dc,FALLING_SHIP_ROTATION_SPEED=0.1,DUAL_SHIP_DOCK_TIME_MS=0x3e8,DUAL_SHIP_OFFSET_X=SHIP_WIDTH,AUTO_DOCK_THRESHOLD=0x14,FLOATING_SCORE_DURATION=0x1f4,FLOATING_SCORE_APPEAR_DELAY=-0x32,FLOATING_SCORE_FONT=_0x4a7590(0x180),FLOATING_SCORE_OPACITY=0.5,FLOATING_SCORE_COLOR_GRID='cyan',FLOATING_SCORE_COLOR_ACTIVE=_0x4a7590(0x226),FLOATING_SCORE_COLOR_CS_CHAIN='cyan',CS_CHAIN_SCORE_THRESHOLD=0x4,CS_CHAIN_BREAK_TIME_MS=0x1f4,NORMAL_WAVE_CHAIN_BONUS_ENABLED=![],NORMAL_WAVE_CHAIN_SCORE_THRESHOLD=0x4,NORMAL_WAVE_CHAIN_BREAK_TIME_MS=0x2ee,EXPLOSION_DURATION=0x28a,EXPLOSION_PARTICLE_COUNT=0x19,EXPLOSION_MAX_SPEED=5.5,EXPLOSION_MIN_SPEED=1.5,EXPLOSION_PARTICLE_RADIUS=0x4,EXPLOSION_FADE_SPEED=2.8,EXPLOSION_MAX_OPACITY=0.8,HIT_SPARK_COUNT=0x8,HIT_SPARK_LIFETIME=0x5dc,HIT_SPARK_SPEED=4.5,HIT_SPARK_SIZE=2.5,HIT_SPARK_COLOR=_0x4a7590(0x24b),HIT_SPARK_GRAVITY=0.05,HIT_SPARK_FADE_SPEED=0x1/HIT_SPARK_LIFETIME,UI_TEXT_MARGIN_TOP=0x23,UI_1UP_BLINK_ON_MS=0x258,UI_1UP_BLINK_OFF_MS=0x190,UI_1UP_BLINK_CYCLE_MS=UI_1UP_BLINK_ON_MS+UI_1UP_BLINK_OFF_MS,AI_SHOOT_COOLDOWN=0x8c,AI_STABILIZATION_DURATION=0x1f4,AI_POSITION_MOVE_SPEED_FACTOR=1.2,AI_COLLISION_LOOKAHEAD=SHIP_HEIGHT*3.5,AI_COLLISION_BUFFER=SHIP_WIDTH*0.6,FINAL_DODGE_LOOKAHEAD=AI_COLLISION_LOOKAHEAD*4.5,FINAL_DODGE_BUFFER_BASE=AI_COLLISION_BUFFER*3.5,ENTRANCE_BULLET_DODGE_LOOKAHEAD=FINAL_DODGE_LOOKAHEAD*1.1,ENTRANCE_BULLET_DODGE_BUFFER=FINAL_DODGE_BUFFER_BASE*1.1,FINAL_AI_DODGE_MOVE_SPEED_FACTOR=3.8,AI_SHOOT_ALIGNMENT_THRESHOLD=0.15,AI_SHOT_CLEARANCE_BUFFER=PLAYER_BULLET_WIDTH*1.5,MAX_PREDICTION_TIME_CS=0.7,NORMAL_MOVE_FRACTION=0.08,CS_AI_MOVE_FRACTION=0.16,AI_SMOOTHING_FACTOR_MOVE=0.05,CS_MOVE_SPEED_FACTOR=1.8,NORMAL_WAVE_ATTACKING_DODGE_BUFFER_MULTIPLIER=1.2,NORMAL_WAVE_ATTACKING_DODGE_SPEED_MULTIPLIER=1.1,STABILIZE_MOVE_FRACTION=0.05,ENTRANCE_DODGE_MOVE_FRACTION=0.15,AI_MOVEMENT_DEADZONE=0.8,AI_SMOOTHING_FACTOR=0.1,AI_EDGE_BUFFER=SHIP_WIDTH*0.5,AI_ANTI_CORNER_BUFFER=AI_EDGE_BUFFER*2.5,BEE_DODGE_BUFFER_HORIZONTAL_FACTOR=1.5,FINAL_SHOOT_ALIGNMENT_THRESHOLD=0x2,GRID_SHOOT_ALIGNMENT_FACTOR=1.5,ENTRANCE_SHOOT_ALIGNMENT_FACTOR=1.2,ENTRANCE_AI_DODGE_MOVE_SPEED_FACTOR=0x4,AI_WIGGLE_AMPLITUDE=SHIP_WIDTH*0.15,AI_WIGGLE_PERIOD=0xbb8,AI_EDGE_SHOOT_BUFFER_FACTOR=0x2,AI_EDGE_SHOOT_TARGET_THRESHOLD_FACTOR=0.75,ENTRANCE_SHOOT_BULLET_CHECK_LOOKAHEAD=SHIP_HEIGHT*1.5,ENTRANCE_SHOOT_BULLET_CHECK_BUFFER=SHIP_WIDTH*0.8,MAX_PREDICTION_TIME=0.8,LOCAL_CS_POSITION_MIN_X=0x0,LOCAL_CS_POSITION_MAX_X=0x0,CS_SHOOTING_MOVE_FRACTION=0.25,CS_SHOOTING_MOVE_SPEED_FACTOR=0x2,CS_PREDICTION_FACTOR=0x1,AI_CAPTURE_WAIT_DURATION_MS=0x7d0,INTRO_DURATION_PER_STEP=0xfa0,TWO_PLAYER_STAGE_INTRO_DURATION=0xfa0,READY_MESSAGE_DURATION=0xbb8,CS_HITS_MESSAGE_DURATION=0x3e8,CS_PERFECT_MESSAGE_DURATION=0x3e8,CS_BONUS_MESSAGE_DURATION=0x1f40,CS_CLEAR_DELAY=0x1f40,CS_CLEAR_HITS_DELAY=0x3e8,CS_CLEAR_SCORE_DELAY=0x7d0,EXTRA_LIFE_MESSAGE_DURATION=0xbb8,RECURRING_EXTRA_LIFE_INTERVAL=0x11170,POST_MESSAGE_RESET_DELAY=0x3e8,EXTRA_LIFE_THRESHOLD_1=0x4e20,EXTRA_LIFE_THRESHOLD_2=0x11170,GAME_OVER_DURATION=0x1388,waveEntrancePatterns=[[{'pathId':'new_path_left','enemies':[{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x4,'entrancePathId':'new_path_left'},{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x5,'entrancePathId':_0x4a7590(0x209)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x4,'entrancePathId':_0x4a7590(0x209)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x5,'entrancePathId':_0x4a7590(0x209)}]},{'pathId':'new_path_right','enemies':[{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x4,'entrancePathId':'new_path_right'},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x5,'entrancePathId':_0x4a7590(0x270)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x4,'entrancePathId':_0x4a7590(0x270)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x5,'entrancePathId':_0x4a7590(0x270)}]},{'pathId':_0x4a7590(0x20a),'enemies':[{'type':ENEMY3_TYPE,'gridRow':0x0,'gridCol':0x4,'entrancePathId':_0x4a7590(0x20a),'hasCapturedShip':![]},{'type':ENEMY3_TYPE,'gridRow':0x0,'gridCol':0x5,'entrancePathId':_0x4a7590(0x20a),'hasCapturedShip':![]},{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x3,'entrancePathId':'boss_loop_left'},{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x6,'entrancePathId':_0x4a7590(0x20a)},{'type':ENEMY3_TYPE,'gridRow':0x0,'gridCol':0x3,'entrancePathId':_0x4a7590(0x20a),'hasCapturedShip':![]},{'type':ENEMY3_TYPE,'gridRow':0x0,'gridCol':0x6,'entrancePathId':_0x4a7590(0x20a),'hasCapturedShip':![]},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x3,'entrancePathId':_0x4a7590(0x20a)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x6,'entrancePathId':_0x4a7590(0x20a)}]},{'pathId':_0x4a7590(0x23f),'enemies':[{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x1,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x2,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x7,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x8,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x1,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x2,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x7,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x8,'entrancePathId':'boss_loop_right'}]},{'pathId':_0x4a7590(0x1f0),'enemies':[{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x6,'entrancePathId':_0x4a7590(0x1f0)},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x7,'entrancePathId':'mid_curve_left'},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x8,'entrancePathId':'mid_curve_left'},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x9,'entrancePathId':'mid_curve_left'},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x6,'entrancePathId':_0x4a7590(0x1f0)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x7,'entrancePathId':_0x4a7590(0x1f0)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x8,'entrancePathId':'mid_curve_left'},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x9,'entrancePathId':_0x4a7590(0x1f0)}]},{'pathId':'mid_curve_right','enemies':[{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x0,'entrancePathId':_0x4a7590(0x1f4)},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x1,'entrancePathId':_0x4a7590(0x1f4)},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x2,'entrancePathId':'mid_curve_right'},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x3,'entrancePathId':_0x4a7590(0x1f4)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x0,'entrancePathId':_0x4a7590(0x1f4)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x1,'entrancePathId':_0x4a7590(0x1f4)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x2,'entrancePathId':_0x4a7590(0x1f4)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x3,'entrancePathId':_0x4a7590(0x1f4)}]}],[{'pathId':_0x4a7590(0x209),'enemies':[{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x4,'entrancePathId':_0x4a7590(0x209)},{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x5,'entrancePathId':_0x4a7590(0x209)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x4,'entrancePathId':_0x4a7590(0x209)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x5,'entrancePathId':_0x4a7590(0x209)}]},{'pathId':_0x4a7590(0x270),'enemies':[{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x4,'entrancePathId':_0x4a7590(0x270)},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x5,'entrancePathId':_0x4a7590(0x270)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x4,'entrancePathId':_0x4a7590(0x270)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x5,'entrancePathId':_0x4a7590(0x270)}]},{'pathId':_0x4a7590(0x20a),'enemies':[{'type':ENEMY3_TYPE,'gridRow':0x0,'gridCol':0x4,'entrancePathId':_0x4a7590(0x20a),'hasCapturedShip':![]},{'type':ENEMY3_TYPE,'gridRow':0x0,'gridCol':0x5,'entrancePathId':_0x4a7590(0x20a),'hasCapturedShip':![]},{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x3,'entrancePathId':_0x4a7590(0x20a)},{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x6,'entrancePathId':_0x4a7590(0x20a)},{'type':ENEMY3_TYPE,'gridRow':0x0,'gridCol':0x3,'entrancePathId':_0x4a7590(0x20a),'hasCapturedShip':![]},{'type':ENEMY3_TYPE,'gridRow':0x0,'gridCol':0x6,'entrancePathId':_0x4a7590(0x20a),'hasCapturedShip':![]},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x3,'entrancePathId':_0x4a7590(0x20a)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x6,'entrancePathId':_0x4a7590(0x20a)}]},{'pathId':_0x4a7590(0x23f),'enemies':[{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x1,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x2,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x7,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x1,'gridCol':0x8,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x1,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x2,'entrancePathId':'boss_loop_right'},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x7,'entrancePathId':_0x4a7590(0x23f)},{'type':ENEMY2_TYPE,'gridRow':0x2,'gridCol':0x8,'entrancePathId':_0x4a7590(0x23f)}]},{'pathId':_0x4a7590(0x1f0),'enemies':[{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x6,'entrancePathId':_0x4a7590(0x1f0)},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x7,'entrancePathId':'mid_curve_left'},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x8,'entrancePathId':'mid_curve_left'},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x9,'entrancePathId':_0x4a7590(0x1f0)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x6,'entrancePathId':_0x4a7590(0x1f0)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x7,'entrancePathId':_0x4a7590(0x1f0)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x8,'entrancePathId':_0x4a7590(0x1f0)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x9,'entrancePathId':_0x4a7590(0x1f0)}]},{'pathId':_0x4a7590(0x1f4),'enemies':[{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x0,'entrancePathId':_0x4a7590(0x1f4)},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x1,'entrancePathId':_0x4a7590(0x1f4)},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x2,'entrancePathId':'mid_curve_right'},{'type':ENEMY1_TYPE,'gridRow':0x3,'gridCol':0x3,'entrancePathId':'mid_curve_right'},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x0,'entrancePathId':'mid_curve_right'},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x1,'entrancePathId':_0x4a7590(0x1f4)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x2,'entrancePathId':_0x4a7590(0x1f4)},{'type':ENEMY1_TYPE,'gridRow':0x4,'gridCol':0x3,'entrancePathId':_0x4a7590(0x1f4)}]}]],MARGIN_TOP=0x5,MARGIN_SIDE=0x69,SCORE_OFFSET_Y=0x19,LIFE_ICON_SIZE=0x23,LIFE_ICON_SPACING=0x8,LIFE_ICON_MARGIN_BOTTOM=-0x1,LIFE_ICON_MARGIN_LEFT=MARGIN_SIDE-0x1e,LEVEL_ICON_SIZE=0x23,LEVEL_ICON_MARGIN_BOTTOM=LIFE_ICON_MARGIN_BOTTOM,LEVEL_ICON_MARGIN_RIGHT=MARGIN_SIDE-0x1e,LEVEL_ICON_SPACING=LIFE_ICON_SPACING;function checkCollision(_0x308bcd,_0x14d1f4){const _0x496113=_0x4a7590;if(!_0x308bcd||!_0x14d1f4)return![];return _0x308bcd['x']<_0x14d1f4['x']+_0x14d1f4[_0x496113(0x245)]&&_0x308bcd['x']+_0x308bcd[_0x496113(0x245)]>_0x14d1f4['x']&&_0x308bcd['y']<_0x14d1f4['y']+_0x14d1f4[_0x496113(0x211)]&&_0x308bcd['y']+_0x308bcd[_0x496113(0x211)]>_0x14d1f4['y'];}function _0x35c9(_0x3e4be7,_0x5d30f3){const _0x5817fa=_0x5817();return _0x35c9=function(_0x35c9c4,_0x5f3045){_0x35c9c4=_0x35c9c4-0x163;let _0x5c3f49=_0x5817fa[_0x35c9c4];return _0x5c3f49;},_0x35c9(_0x3e4be7,_0x5d30f3);}function initializeAudioContext(){const _0x53f314=_0x4a7590;if(audioContextInitialized)return;try{audioContext=new(window[(_0x53f314(0x1c5))]||window[(_0x53f314(0x204))])();if(audioContext[_0x53f314(0x194)]==='suspended'){const _0x4760cd=()=>{const _0x4699a0=_0x53f314;audioContext['resume']()[_0x4699a0(0x202)](()=>{const _0x3325a3=_0x4699a0;console['log']('AudioContext\x20resumed\x20successfully\x20after\x20user\x20gesture.'),audioContextInitialized=!![],window['removeEventListener'](_0x3325a3(0x214),_0x4760cd),window['removeEventListener'](_0x3325a3(0x19d),_0x4760cd);})[_0x4699a0(0x265)](_0x17c924=>console[_0x4699a0(0x1e9)](_0x4699a0(0x181),_0x17c924));};window['addEventListener'](_0x53f314(0x214),_0x4760cd,{'once':!![]}),window[_0x53f314(0x225)](_0x53f314(0x19d),_0x4760cd,{'once':!![]});}else audioContextInitialized=!![];}catch(_0x307794){console[_0x53f314(0x1e9)](_0x53f314(0x1c9),_0x307794);}}async function loadSound(_0x1be7b1,_0x2ab8a7){const _0x5da835=_0x4a7590;if(!audioContext){console[_0x5da835(0x179)](_0x5da835(0x266)+_0x1be7b1);return;}if(soundBuffers[_0x1be7b1])return;try{const _0x1964b1=await fetch(_0x2ab8a7);if(!_0x1964b1['ok'])throw new Error('HTTP\x20error!\x20status:\x20'+_0x1964b1['status']+_0x5da835(0x20b)+_0x2ab8a7);const _0x8645b6=await _0x1964b1['arrayBuffer']();audioContext['decodeAudioData'](_0x8645b6,_0x2b616f=>{soundBuffers[_0x1be7b1]=_0x2b616f;},_0x11e759=>{const _0x7cdec5=_0x5da835;console[_0x7cdec5(0x1e9)]('Error\x20decoding\x20audio\x20data\x20for\x20'+_0x1be7b1+'\x20('+_0x2ab8a7+'):',_0x11e759);});}catch(_0x9d755d){console[_0x5da835(0x1e9)](_0x5da835(0x1b8)+_0x1be7b1+'\x20('+_0x2ab8a7+'):',_0x9d755d);}}function loadAllSounds(){if(!audioContext)return;for(const _0x1649a0 in soundPaths){loadSound(_0x1649a0,soundPaths[_0x1649a0]);}}function initializeDOMElements(){const _0x3d3de9=_0x4a7590;starrySkyCanvas=document[_0x3d3de9(0x1b2)]('starrySkyCanvas'),starryCtx=starrySkyCanvas?.[_0x3d3de9(0x259)]('2d'),retroGridCanvas=document[_0x3d3de9(0x1b2)](_0x3d3de9(0x233)),retroGridCtx=retroGridCanvas?.['getContext']('2d'),gameCanvas=document[_0x3d3de9(0x1b2)](_0x3d3de9(0x238)),gameCtx=gameCanvas?.[_0x3d3de9(0x259)]('2d');if(!starryCtx||!retroGridCtx||!gameCtx)return console[_0x3d3de9(0x1e9)](_0x3d3de9(0x24a)),alert(_0x3d3de9(0x26d)),document[_0x3d3de9(0x236)][_0x3d3de9(0x187)]=_0x3d3de9(0x22f),![];if(gameCanvas[_0x3d3de9(0x245)]===0x0||gameCanvas[_0x3d3de9(0x211)]===0x0){const _0x384af8=window['innerWidth']||0x320,_0x133c95=window[_0x3d3de9(0x16e)]||0x258;starrySkyCanvas&&(starrySkyCanvas['width']=_0x384af8,starrySkyCanvas['height']=_0x133c95),retroGridCanvas&&(retroGridCanvas[_0x3d3de9(0x245)]=_0x384af8,retroGridCanvas[_0x3d3de9(0x211)]=_0x133c95),gameCanvas[_0x3d3de9(0x245)]=_0x384af8,gameCanvas['height']=_0x133c95;}floatingScores=[],csCurrentChainHits=0x0,csCurrentChainScore=0x0,csLastHitTime=0x0,csLastChainHitPosition=null,normalWaveCurrentChainHits=0x0,normalWaveCurrentChainScore=0x0,normalWaveLastHitTime=0x0,normalWaveLastHitPosition=null,initializeAudioContext();audioContext&&(loadAllSounds(),setTimeout(()=>{const _0x5e0a84=_0x3d3de9;!audioContextInitialized&&audioContext[_0x5e0a84(0x194)]==='suspended'&&console[_0x5e0a84(0x179)](_0x5e0a84(0x19b)),setVolume(_0x5e0a84(0x25e),0.4),setVolume(_0x5e0a84(0x1ba),0.4),setVolume(_0x5e0a84(0x219),0.4),setVolume(_0x5e0a84(0x212),0.6),setVolume(_0x5e0a84(0x1bc),0.4),setVolume(_0x5e0a84(0x1c8),0.2),setVolume(_0x5e0a84(0x1ff),0.2),setVolume(_0x5e0a84(0x218),0.4),setVolume(_0x5e0a84(0x196),0.2),setVolume(_0x5e0a84(0x1df),0.4),setVolume('coinSound',0.4),setVolume(_0x5e0a84(0x201),0.3),setVolume(_0x5e0a84(0x21e),0.3),setVolume(_0x5e0a84(0x1a7),0.6),setVolume(_0x5e0a84(0x220),0.4),setVolume('gridBackgroundSound',0.1),setVolume('extraLifeSound',0.5),setVolume(_0x5e0a84(0x272),0.6),setVolume(_0x5e0a84(0x230),0.6),setVolume(_0x5e0a84(0x24c),0.8),setVolume('menuMusicSound',0.2),setVolume(_0x5e0a84(0x250),0.1),setVolume(_0x5e0a84(0x19c),0.3),setVolume(_0x5e0a84(0x1e0),0.6),setVolume(_0x5e0a84(0x1a5),0.3),setVolume(_0x5e0a84(0x1a9),0.4),setVolume(_0x5e0a84(0x260),0.2),setVolume(_0x5e0a84(0x246),0.2);},0x64));gameCanvas&&(gameCanvas[_0x3d3de9(0x225)](_0x3d3de9(0x19d),handleTouchStartGlobal,{'passive':![]}),gameCanvas[_0x3d3de9(0x225)](_0x3d3de9(0x232),handleTouchMoveGlobal,{'passive':![]}),gameCanvas[_0x3d3de9(0x225)](_0x3d3de9(0x26f),handleTouchEndGlobal,{'passive':![]}),gameCanvas['addEventListener'](_0x3d3de9(0x24d),handleTouchEndGlobal,{'passive':![]}));const _0x4f76b6=[shipImage,beeImage,bulletImage,bossGalagaImage,butterflyImage,logoImage,level1Image,level5Image,level10Image,level20Image,level30Image,level50Image,beeImage2,butterflyImage2,bossGalagaImage2];return _0x4f76b6['forEach'](_0xffadfd=>{const _0x91decd=_0x3d3de9;if(_0xffadfd)_0xffadfd[_0x91decd(0x222)]=()=>console['error'](_0x91decd(0x1d3)+_0xffadfd[_0x91decd(0x1af)]);}),!![];}function scaleValue(_0x422b58,_0x5069b6,_0x164662){const _0x4f22f0=_0x4a7590,_0xaca380=Math['max'](0x1,Math[_0x4f22f0(0x186)](_0x422b58,LEVEL_CAP_FOR_SCALING));if(_0xaca380===0x1)return _0x5069b6;const _0x45460e=(_0xaca380-0x1)/(LEVEL_CAP_FOR_SCALING-0x1);return _0x5069b6+(_0x164662-_0x5069b6)*_0x45460e;}function setupInitialEventListeners(){const _0x13b561=_0x4a7590;try{window[_0x13b561(0x225)]('gamepadconnected',handleGamepadConnected),window[_0x13b561(0x225)]('gamepaddisconnected',handleGamepadDisconnected),window[_0x13b561(0x225)]('resize',resizeCanvases);}catch(_0x1910b5){console[_0x13b561(0x1e9)](_0x13b561(0x1ac),_0x1910b5);}}function getCurrentGridSlotPosition(_0x1b9713,_0x3ad578,_0x40fef4){const _0x86bde8=_0x4a7590;if(!gameCanvas||gameCanvas[_0x86bde8(0x245)]===0x0||_0x1b9713<0x0||_0x3ad578<0x0)return{'x':gameCanvas?.[_0x86bde8(0x245)]/0x2||0xc8,'y':ENEMY_TOP_MARGIN||0x64};const _0x46aa4b=ENEMY_WIDTH;let _0x4f8a81=ENEMY_H_SPACING_FIXED,_0x302f26=ENEMY_V_SPACING;if(GRID_BREATH_ENABLED&&isGridBreathingActive){const _0x1ab52f=ENEMY_H_SPACING_FIXED*GRID_BREATH_MAX_EXTRA_H_SPACING_FACTOR*currentGridBreathFactor;_0x4f8a81=ENEMY_H_SPACING_FIXED+_0x1ab52f;const _0x596e24=ENEMY_V_SPACING*GRID_BREATH_MAX_EXTRA_V_SPACING_FACTOR*currentGridBreathFactor;_0x302f26=ENEMY_V_SPACING+_0x596e24;}const _0x21e0b5=GRID_COLS*_0x46aa4b+(GRID_COLS-0x1)*_0x4f8a81,_0x148209=Math['round']((gameCanvas['width']-_0x21e0b5)/0x2),_0x3c9303=_0x148209+currentGridOffsetX,_0x5fe4e5=_0x3c9303+_0x3ad578*(_0x46aa4b+_0x4f8a81),_0x77cf31=(_0x46aa4b-_0x40fef4)/0x2,_0xd95d8f=Math[_0x86bde8(0x205)](_0x5fe4e5+_0x77cf31),_0x4b0ec2=Math[_0x86bde8(0x205)](ENEMY_TOP_MARGIN+_0x1b9713*(ENEMY_HEIGHT+ENEMY_V_SPACING));return{'x':_0xd95d8f,'y':_0x4b0ec2};}function playSound(_0x47121e,_0x510fd5=![],_0x310084=0x1){const _0x54e12e=_0x4a7590;if(!audioContext||!audioContextInitialized||audioContext[_0x54e12e(0x194)]===_0x54e12e(0x216)||!soundBuffers[_0x47121e])return;if(isShowingPortraitMessage)return;if(isPaused&&_0x47121e!==_0x54e12e(0x24f))return;if(_0x47121e!=='menuMusicSound'&&_0x47121e!==_0x54e12e(0x239))stopSound(_0x47121e);else{if((_0x47121e==='menuMusicSound'||_0x47121e===_0x54e12e(0x239))&&soundSources[_0x47121e])return;}const _0x47b08d=audioContext[_0x54e12e(0x237)]();_0x47b08d['buffer']=soundBuffers[_0x47121e],_0x47b08d['loop']=_0x510fd5;let _0x1dea91=soundGainNodes[_0x47121e];!_0x1dea91&&(_0x1dea91=audioContext['createGain'](),soundGainNodes[_0x47121e]=_0x1dea91);const _0x153891=Math[_0x54e12e(0x234)](0x0,Math[_0x54e12e(0x186)](0x2,_0x310084));_0x1dea91['gain']['setValueAtTime'](_0x153891,audioContext[_0x54e12e(0x235)]),_0x47b08d[_0x54e12e(0x207)](_0x1dea91),_0x1dea91[_0x54e12e(0x207)](audioContext[_0x54e12e(0x197)]),_0x47b08d['start'](0x0),soundSources[_0x47121e]=_0x47b08d,_0x47b08d[_0x54e12e(0x175)]=()=>{soundSources[_0x47121e]===_0x47b08d&&delete soundSources[_0x47121e];};}function stopSound(_0x43643f){const _0x24233f=_0x4a7590;if(soundSources[_0x43643f]){const _0x3001ac=soundSources[_0x43643f];delete soundSources[_0x43643f];try{_0x3001ac&&typeof _0x3001ac[_0x24233f(0x175)]===_0x24233f(0x256)&&(_0x3001ac[_0x24233f(0x175)]=null),_0x3001ac[_0x24233f(0x1e1)](0x0);}catch(_0x1a96f5){}}}function setVolume(_0x1ec4ce,_0x5c9d17){const _0x20e0bd=_0x4a7590;if(!audioContext)return;!soundGainNodes[_0x1ec4ce]&&(soundGainNodes[_0x1ec4ce]=audioContext['createGain'](),soundGainNodes[_0x1ec4ce][_0x20e0bd(0x207)](audioContext['destination']));const _0xd33064=Math[_0x20e0bd(0x234)](0x0,Math[_0x20e0bd(0x186)](0x2,_0x5c9d17));soundGainNodes[_0x1ec4ce][_0x20e0bd(0x215)][_0x20e0bd(0x21d)](_0xd33064,audioContext[_0x20e0bd(0x235)]);}function triggerFullscreen(){const _0x28b219=_0x4a7590;if(!document['fullscreenElement']){const _0x360943=document[_0x28b219(0x268)];let _0x2543ca=null;if(_0x360943[_0x28b219(0x217)])_0x2543ca=_0x360943[_0x28b219(0x217)]();else{if(_0x360943['mozRequestFullScreen'])_0x2543ca=_0x360943[_0x28b219(0x1f1)]();else{if(_0x360943[_0x28b219(0x18b)])_0x2543ca=_0x360943[_0x28b219(0x18b)]();else _0x360943[_0x28b219(0x229)]&&(_0x2543ca=_0x360943['msRequestFullscreen']());}}const _0x1ff2de=()=>{const _0x115dd4=_0x28b219;if(audioContext&&audioContext[_0x115dd4(0x194)]===_0x115dd4(0x216))audioContext['resume']()[_0x115dd4(0x202)](()=>{const _0x1eea1c=_0x115dd4;audioContextInitialized=!![],playSound(_0x1eea1c(0x24f),!![],0.2);})[_0x115dd4(0x265)](_0xafeaf7=>console['error'](_0x115dd4(0x19a),_0xafeaf7));else audioContext&&playSound('menuMusicSound',!![],0.2);};_0x2543ca?_0x2543ca[_0x28b219(0x202)](()=>{_0x1ff2de();})['catch'](_0x28e576=>{const _0x2997c3=_0x28b219;console[_0x2997c3(0x1e9)](_0x2997c3(0x1d4)+_0x28e576[_0x2997c3(0x1b0)]+'\x20('+_0x28e576[_0x2997c3(0x1f6)]+')'),_0x1ff2de();}):(console[_0x28b219(0x179)](_0x28b219(0x191)),_0x1ff2de());}else{if(audioContext&&audioContext[_0x28b219(0x194)]===_0x28b219(0x216))audioContext[_0x28b219(0x1d2)]()[_0x28b219(0x202)](()=>{const _0x391ef4=_0x28b219;audioContextInitialized=!![],playSound(_0x391ef4(0x24f),!![],0.2);});else audioContext&&playSound(_0x28b219(0x24f),!![],0.2);}}function createStar(){const _0x489452=_0x4a7590;if(!starrySkyCanvas||starrySkyCanvas[_0x489452(0x245)]===0x0)return null;return{'x':Math[_0x489452(0x1d0)]()*starrySkyCanvas[_0x489452(0x245)],'y':Math[_0x489452(0x1d0)]()*starrySkyCanvas[_0x489452(0x211)],'radius':Math[_0x489452(0x1d0)]()*(MAX_STAR_RADIUS-MIN_STAR_RADIUS)+MIN_STAR_RADIUS,'alpha':Math['random']()*0.8+0.2,'alphaChange':(Math[_0x489452(0x1d0)]()>0.5?0x1:-0x1)*TWINKLE_SPEED*(Math['random']()*0.5+0.5)};}function createStars(){const _0x2793c7=_0x4a7590;stars=[];if(starrySkyCanvas?.[_0x2793c7(0x245)]>0x0&&starrySkyCanvas?.[_0x2793c7(0x211)]>0x0)for(let _0x2fb6c2=0x0;_0x2fb6c2<NUM_STARS;_0x2fb6c2++){const _0x356e38=createStar();if(_0x356e38)stars['push'](_0x356e38);}}function drawStars(){const _0x368844=_0x4a7590;try{if(!starryCtx||!starrySkyCanvas||starrySkyCanvas[_0x368844(0x245)]===0x0||starrySkyCanvas[_0x368844(0x211)]===0x0)return;const _0x30fc81=starrySkyCanvas[_0x368844(0x245)],_0x4f8ba7=starrySkyCanvas[_0x368844(0x211)];starryCtx[_0x368844(0x242)](0x0,0x0,_0x30fc81,_0x4f8ba7);const _0x26483b=Math[_0x368844(0x205)](_0x4f8ba7*GRID_HORIZON_Y_FACTOR),_0x502bd3=_0x4f8ba7-_0x26483b,_0x49bedd=Math[_0x368844(0x234)](0x0,_0x26483b-_0x502bd3*STAR_FADE_START_FACTOR_ABOVE_HORIZON),_0x38f34e=_0x26483b,_0x178339=Math[_0x368844(0x234)](0x1,_0x38f34e-_0x49bedd);stars[_0x368844(0x1a3)](_0x1459f3=>{const _0x4bea47=_0x368844,_0x21f8b0=(_0x1459f3['radius']-MIN_STAR_RADIUS)/(MAX_STAR_RADIUS-MIN_STAR_RADIUS),_0x4ccd29=BASE_PARALLAX_SPEED+_0x21f8b0*PARALLAX_SPEED_FACTOR;(!isPaused||isShowingPortraitMessage)&&(_0x1459f3['y']+=_0x4ccd29);_0x1459f3['y']>_0x4f8ba7+_0x1459f3['radius']&&(_0x1459f3['y']=-_0x1459f3[_0x4bea47(0x23c)]*0x2,_0x1459f3['x']=Math[_0x4bea47(0x1d0)]()*_0x30fc81);(!isPaused||isShowingPortraitMessage)&&(_0x1459f3['alpha']+=_0x1459f3[_0x4bea47(0x22b)],(_0x1459f3[_0x4bea47(0x25c)]<=0.1||_0x1459f3[_0x4bea47(0x25c)]>=0x1)&&(_0x1459f3[_0x4bea47(0x22b)]*=-0x1,_0x1459f3['alpha']=Math[_0x4bea47(0x234)](0.1,Math[_0x4bea47(0x186)](0x1,_0x1459f3[_0x4bea47(0x25c)]))));let _0x268255=_0x1459f3['alpha'];_0x49bedd>=0x0&&_0x1459f3['y']>_0x49bedd&&(_0x1459f3['y']>=_0x26483b?_0x268255=0x0:_0x268255*=0x1-Math['min'](0x1,Math[_0x4bea47(0x234)](0x0,(_0x1459f3['y']-_0x49bedd)/_0x178339))),_0x268255=Math[_0x4bea47(0x234)](0x0,Math[_0x4bea47(0x186)](0x1,_0x268255)),_0x268255>0.01&&(starryCtx[_0x4bea47(0x17f)](),starryCtx[_0x4bea47(0x1dc)](Math['round'](_0x1459f3['x']),Math['round'](_0x1459f3['y']),_0x1459f3[_0x4bea47(0x23c)],0x0,Math['PI']*0x2),starryCtx[_0x4bea47(0x1c6)]=_0x4bea47(0x1f2)+_0x268255['toFixed'](0x3)+')',starryCtx[_0x4bea47(0x254)]());});}catch(_0x675c72){console[_0x368844(0x1e9)](_0x368844(0x1ab),_0x675c72);if(mainLoopId)cancelAnimationFrame(mainLoopId);mainLoopId=null;}}function drawRetroGrid(){const _0xb1a2dd=_0x4a7590;try{if(!retroGridCtx||!retroGridCanvas||retroGridCanvas[_0xb1a2dd(0x245)]===0x0||retroGridCanvas[_0xb1a2dd(0x211)]===0x0)return;(!isPaused||isShowingPortraitMessage)&&(gridOffsetY-=GRID_SPEED);const _0x4bc1c8=retroGridCanvas[_0xb1a2dd(0x245)],_0x207fad=retroGridCanvas[_0xb1a2dd(0x211)];retroGridCtx[_0xb1a2dd(0x242)](0x0,0x0,_0x4bc1c8,_0x207fad);const _0x5cf305=Math[_0xb1a2dd(0x205)](_0x207fad*GRID_HORIZON_Y_FACTOR),_0x18c99e=_0x4bc1c8/0x2,_0x531dea=_0x207fad-_0x5cf305;retroGridCtx[_0xb1a2dd(0x271)]=GRID_LINE_WIDTH;const _0x291f61=_0x4bc1c8*GRID_HORIZONTAL_LINE_WIDTH_FACTOR,_0x3a4bc2=_0x18c99e-_0x291f61/0x2,_0xc5be26=_0x18c99e+_0x291f61/0x2,_0x241df5=_0x5cf305+_0x531dea*0.1,_0x569d5e=_0x207fad,_0x1c6f83=Math[_0xb1a2dd(0x234)](0x1,_0x569d5e-_0x241df5);retroGridCtx[_0xb1a2dd(0x251)]=GRID_LINE_COLOR_FIXED,retroGridCtx[_0xb1a2dd(0x17f)](),retroGridCtx[_0xb1a2dd(0x182)](_0x3a4bc2,_0x5cf305),retroGridCtx[_0xb1a2dd(0x168)](_0xc5be26,_0x5cf305),retroGridCtx[_0xb1a2dd(0x177)]();let _0x3e5cc3=gridOffsetY%GRID_BASE_SPACING;_0x3e5cc3>0x0&&(_0x3e5cc3-=GRID_BASE_SPACING);let _0x10da45=_0x5cf305-_0x3e5cc3;if(_0x10da45<=_0x5cf305)_0x10da45+=GRID_BASE_SPACING;while(_0x10da45<_0x207fad+GRID_BASE_SPACING){let _0x4b3835=Math['max'](0x0,Math[_0xb1a2dd(0x186)](0x1,(_0x10da45-_0x5cf305)/_0x531dea));if(_0x10da45>_0x5cf305&&_0x10da45<=_0x207fad+GRID_LINE_WIDTH*0x2){let _0x593ce8;if(_0x10da45<=_0x241df5)_0x593ce8=GRID_MIN_ALPHA;else{if(_0x10da45>=_0x569d5e)_0x593ce8=GRID_BASE_ALPHA;else{const _0x374d11=(_0x10da45-_0x241df5)/_0x1c6f83;_0x593ce8=GRID_MIN_ALPHA+(GRID_BASE_ALPHA-GRID_MIN_ALPHA)*_0x374d11;}}_0x593ce8=Math[_0xb1a2dd(0x234)](0x0,Math[_0xb1a2dd(0x186)](GRID_BASE_ALPHA,_0x593ce8)),_0x593ce8>0.01&&(retroGridCtx['strokeStyle']=_0xb1a2dd(0x20d)+GRID_RGB_PART+',\x20'+_0x593ce8[_0xb1a2dd(0x1bb)](0x3)+')',retroGridCtx[_0xb1a2dd(0x17f)](),retroGridCtx['moveTo'](_0x3a4bc2,Math[_0xb1a2dd(0x205)](_0x10da45)),retroGridCtx[_0xb1a2dd(0x168)](_0xc5be26,Math[_0xb1a2dd(0x205)](_0x10da45)),retroGridCtx[_0xb1a2dd(0x177)]());}let _0x5876f7=GRID_BASE_SPACING*Math['pow'](0x1+_0x4b3835*1.5,GRID_SPACING_POWER);_0x10da45+=Math[_0xb1a2dd(0x234)](0x1,_0x5876f7);}retroGridCtx[_0xb1a2dd(0x251)]=GRID_LINE_COLOR_FIXED,retroGridCtx[_0xb1a2dd(0x17f)]();const _0x5bb99f=Math[_0xb1a2dd(0x16f)](GRID_NUM_PERSPECTIVE_LINES/0x2),_0x867f8c=_0x4bc1c8*GRID_HORIZON_SPREAD_FACTOR,_0xae6f4c=_0x4bc1c8*GRID_BOTTOM_SPREAD_FACTOR;for(let _0x2ff51d=0x0;_0x2ff51d<=_0x5bb99f;_0x2ff51d++){let _0x5a9013=Math['pow'](_0x2ff51d/_0x5bb99f,GRID_PERSPECTIVE_POWER),_0x454b84=_0x18c99e+_0x5a9013*(_0x867f8c/0x2),_0x3880e4=_0x18c99e-_0x5a9013*(_0x867f8c/0x2),_0x49f8b8=_0x18c99e+_0x5a9013*(_0xae6f4c/0x2),_0x27c4ed=_0x18c99e-_0x5a9013*(_0xae6f4c/0x2);retroGridCtx[_0xb1a2dd(0x182)](_0x454b84,_0x5cf305),retroGridCtx[_0xb1a2dd(0x168)](_0x49f8b8,_0x207fad),_0x2ff51d>0x0&&(retroGridCtx[_0xb1a2dd(0x182)](_0x3880e4,_0x5cf305),retroGridCtx[_0xb1a2dd(0x168)](_0x27c4ed,_0x207fad));}retroGridCtx['stroke']();}catch(_0x128456){console[_0xb1a2dd(0x1e9)](_0xb1a2dd(0x258),_0x128456);}}function calculateBezierPoint(_0x1d052b,_0x6ba213,_0xd9f925,_0x1afb61,_0x3546a1){const _0x474eea=0x1-_0x1d052b,_0x59f713=_0x1d052b*_0x1d052b,_0x41651e=_0x474eea*_0x474eea,_0x230c2d=_0x41651e*_0x474eea,_0x28fe58=_0x59f713*_0x1d052b;let _0x1c8282=_0x230c2d*_0x6ba213;return _0x1c8282+=0x3*_0x41651e*_0x1d052b*_0xd9f925,_0x1c8282+=0x3*_0x474eea*_0x59f713*_0x1afb61,_0x1c8282+=_0x28fe58*_0x3546a1,_0x1c8282;}function defineNormalWaveEntrancePaths(){const _0x811fc7=_0x4a7590;normalWaveEntrancePaths={};const _0x1e8167=gameCanvas?.[_0x811fc7(0x245)],_0x5aa4e1=gameCanvas?.[_0x811fc7(0x211)];if(!_0x1e8167||!_0x5aa4e1||_0x1e8167===0x0){console['error']('Cannot\x20define\x20Normal\x20Wave\x20entrance\x20paths:\x20Canvas\x20size\x20unknown\x20or\x20zero\x20width.');return;}const _0x4b02e6=_0x1e8167/0x320,_0x2a4598=_0x5aa4e1/0x258,_0x58b861=-Math[_0x811fc7(0x234)](ENEMY1_HEIGHT,ENEMY_HEIGHT)*1.5,_0x4d630f=_0x1e8167/0x2,_0x1f929a=-0x19,_0x4f712d=ENEMY_WIDTH,_0x32b660=ENEMY_H_SPACING_FIXED,_0x556fd6=GRID_COLS*_0x4f712d+(GRID_COLS-0x1)*_0x32b660,_0x46b909=Math[_0x811fc7(0x205)]((_0x1e8167-_0x556fd6)/0x2),_0x5eb9b4=_0x46b909+0x4*(_0x4f712d+_0x32b660)+_0x4f712d/0x2,_0x28d8eb=_0x46b909+0x5*(_0x4f712d+_0x32b660)+_0x4f712d/0x2,_0x24ca4a=(_0x5eb9b4+_0x28d8eb)/0x2+_0x1f929a,_0xa88054=Math[_0x811fc7(0x205)](ENEMY_TOP_MARGIN+0x1*(ENEMY_HEIGHT+ENEMY_V_SPACING)),_0x5afa4c=_0xa88054+0x3c*_0x2a4598,_0x1e70f6=[{'p0':{'x':0x50/0x190*0x320*_0x4b02e6+_0x1f929a,'y':_0x58b861},'p1':{'x':0x1b8/0x190*0x320*_0x4b02e6+_0x1f929a,'y':0x8c/0x12c*0x258*_0x2a4598},'p2':{'x':0x104/0x190*0x320*_0x4b02e6+_0x1f929a,'y':0x154/0x12c*0x258*_0x2a4598},'p3':{'x':_0x24ca4a,'y':_0x5afa4c}}];normalWaveEntrancePaths[_0x811fc7(0x209)]=_0x1e70f6;const _0x4dca34=_0x1e70f6[_0x811fc7(0x1fd)](_0x3b48e2=>({'p0':{'x':_0x1e8167-(_0x3b48e2['p0']['x']-_0x1f929a)+_0x1f929a,'y':_0x3b48e2['p0']['y']},'p1':{'x':_0x1e8167-(_0x3b48e2['p1']['x']-_0x1f929a)+_0x1f929a,'y':_0x3b48e2['p1']['y']},'p2':{'x':_0x1e8167-(_0x3b48e2['p2']['x']-_0x1f929a)+_0x1f929a,'y':_0x3b48e2['p2']['y']},'p3':{'x':_0x24ca4a,'y':_0x3b48e2['p3']['y']}}));normalWaveEntrancePaths[_0x811fc7(0x270)]=_0x4dca34;const _0x2995ee=_0x38808a=>{const _0x11f6da=_0x811fc7,_0x4f531f=_0x38808a?_0x11f6da(0x23f):_0x11f6da(0x20a),_0xe720c1=_0x5088a9=>_0x38808a?_0x1e8167-_0x5088a9:_0x5088a9,_0x2e6cb6=0x82*_0x2a4598,_0x414150=0x50*_0x4b02e6,_0x140f17=0x12c*_0x4b02e6,_0x4d5d80=0x12c*_0x2a4598,_0x57a6c4=_0x140f17+_0x414150,_0x4a9987=_0x4d5d80,_0x39e7be=_0xe720c1(-0x64*_0x4b02e6),_0xc434f2=(0x15e+_0x2e6cb6)*_0x2a4598,_0x39f0e8=ENEMY_TOP_MARGIN-0x14,_0xdadead={'x':_0x39e7be,'y':_0xc434f2},_0x3d3d68={'x':_0xe720c1(_0x57a6c4),'y':_0x4d5d80},_0xc032e8={'x':_0xe720c1(_0x140f17),'y':_0x4d5d80-_0x414150},_0x3fd372={'x':_0xe720c1(_0x140f17-_0x414150),'y':_0x4d5d80},_0x351752={'x':_0xe720c1(_0x140f17),'y':_0x4d5d80+_0x414150},_0x35fca1={'x':_0x3d3d68['x'],'y':_0x39f0e8},_0x59547e=0.25,_0x518795=Math[_0x11f6da(0x1a2)](_0x3d3d68['y']-_0xc434f2,_0x3d3d68['x']-_0x39e7be),_0x48b963={'x':_0x3d3d68['x']-Math[_0x11f6da(0x1ee)](_0x518795)*_0x414150*_0x59547e,'y':_0x3d3d68['y']-Math[_0x11f6da(0x184)](_0x518795)*_0x414150*_0x59547e},_0x57fbca={'x':(_0xdadead['x']+_0x48b963['x'])/0x2,'y':(_0xdadead['y']+_0x48b963['y'])/0x2},_0x5d8c7d={'x':_0x3d3d68['x'],'y':(_0x3d3d68['y']+_0x35fca1['y'])/0x2},_0x11e67c=0.552284749831,_0x2f67a3=_0x414150*_0x11e67c,_0x582d8a=_0x414150*_0x11e67c;let _0xca8927=[];_0xca8927[_0x11f6da(0x24e)]({'p0':_0xdadead,'p1':{'x':_0xdadead['x']+(_0x57fbca['x']-_0xdadead['x'])*0.33,'y':_0xdadead['y']+(_0x57fbca['y']-_0xdadead['y'])*0.33},'p2':{'x':_0xdadead['x']+(_0x57fbca['x']-_0xdadead['x'])*0.66,'y':_0xdadead['y']+(_0x57fbca['y']-_0xdadead['y'])*0.66},'p3':_0x57fbca}),_0xca8927['push']({'p0':_0x57fbca,'p1':{'x':_0x57fbca['x']+(_0x48b963['x']-_0x57fbca['x'])*0.33,'y':_0x57fbca['y']+(_0x48b963['y']-_0x57fbca['y'])*0.33},'p2':{'x':_0x57fbca['x']+(_0x48b963['x']-_0x57fbca['x'])*0.66,'y':_0x57fbca['y']+(_0x48b963['y']-_0x57fbca['y'])*0.66},'p3':_0x48b963});const _0x4271eb={'x':_0x48b963['x']+(_0x48b963['x']-_0x57fbca['x'])*0.3,'y':_0x48b963['y']+(_0x48b963['y']-_0x57fbca['y'])*0.3},_0x5f2fb9={'x':_0xe720c1(_0x140f17+_0x2f67a3),'y':_0xc032e8['y']};return _0xca8927[_0x11f6da(0x24e)]({'p0':_0x48b963,'p1':_0x4271eb,'p2':_0x5f2fb9,'p3':_0xc032e8}),_0xca8927[_0x11f6da(0x24e)]({'p0':_0xc032e8,'p1':{'x':_0xe720c1(_0x140f17-_0x2f67a3),'y':_0xc032e8['y']},'p2':{'x':_0x3fd372['x'],'y':_0x3fd372['y']-_0x582d8a},'p3':_0x3fd372}),_0xca8927['push']({'p0':_0x3fd372,'p1':{'x':_0x3fd372['x'],'y':_0x3fd372['y']+_0x582d8a},'p2':{'x':_0xe720c1(_0x140f17-_0x2f67a3),'y':_0x351752['y']},'p3':_0x351752}),_0xca8927[_0x11f6da(0x24e)]({'p0':_0x351752,'p1':{'x':_0xe720c1(_0x140f17+_0x2f67a3),'y':_0x351752['y']},'p2':{'x':_0x3d3d68['x'],'y':_0x3d3d68['y']+_0x582d8a},'p3':_0x3d3d68}),_0xca8927[_0x11f6da(0x24e)]({'p0':_0x3d3d68,'p1':{'x':_0x3d3d68['x']+(_0x5d8c7d['x']-_0x3d3d68['x'])*0.33,'y':_0x3d3d68['y']+(_0x5d8c7d['y']-_0x3d3d68['y'])*0.33},'p2':{'x':_0x3d3d68['x']+(_0x5d8c7d['x']-_0x3d3d68['x'])*0.66,'y':_0x3d3d68['y']+(_0x5d8c7d['y']-_0x3d3d68['y'])*0.66},'p3':_0x5d8c7d}),_0xca8927[_0x11f6da(0x24e)]({'p0':_0x5d8c7d,'p1':{'x':_0x5d8c7d['x']+(_0x35fca1['x']-_0x5d8c7d['x'])*0.33,'y':_0x5d8c7d['y']+(_0x35fca1['y']-_0x5d8c7d['y'])*0.33},'p2':{'x':_0x5d8c7d['x']+(_0x35fca1['x']-_0x5d8c7d['x'])*0.66,'y':_0x5d8c7d['y']+(_0x35fca1['y']-_0x5d8c7d['y'])*0.66},'p3':_0x35fca1}),_0xca8927;};normalWaveEntrancePaths[_0x811fc7(0x20a)]=_0x2995ee(![]),normalWaveEntrancePaths[_0x811fc7(0x23f)]=_0x2995ee(!![]);const _0xbb0edc=0x2ee,_0x1f947f=0x15e*_0x2a4598,_0x3d4f39={'x':_0x4d630f,'y':_0x58b861},_0x20849c={'x':(_0x4d630f+(0x2ee-0x190)*(0x2/0x3))*_0x4b02e6,'y':(-0x32+(_0xbb0edc- -0x32)*(0x2/0x3))*_0x2a4598},_0x14a985={'x':(0x190+(0x2ee-0x190)*(0x1/0x3))*_0x4b02e6,'y':(_0x1f947f+(_0xbb0edc-_0x1f947f)*(0x1/0x3))*_0x2a4598},_0x1d3d75={'x':_0x4d630f,'y':_0x1f947f};normalWaveEntrancePaths['mid_curve_right']=[{'p0':_0x3d4f39,'p1':_0x20849c,'p2':_0x14a985,'p3':_0x1d3d75}];const _0x41f776={'x':_0x4d630f,'y':_0x58b861},_0xc24485={'x':_0x1e8167-_0x20849c['x'],'y':_0x20849c['y']},_0x39c443={'x':_0x1e8167-_0x14a985['x'],'y':_0x14a985['y']},_0x582487={'x':_0x4d630f,'y':_0x1f947f};normalWaveEntrancePaths[_0x811fc7(0x1f0)]=[{'p0':_0x41f776,'p1':_0xc24485,'p2':_0x39c443,'p3':_0x582487}];for(const _0x305c22 in normalWaveEntrancePaths){if(!Array[_0x811fc7(0x1e5)](normalWaveEntrancePaths[_0x305c22])){console['error'](_0x811fc7(0x21c)+_0x305c22+_0x811fc7(0x1ca)),normalWaveEntrancePaths[_0x305c22]=[{'p0':{'x':_0x1e8167/0x2,'y':_0x58b861},'p1':{'x':_0x1e8167/0x2,'y':_0x5aa4e1/0x3},'p2':{'x':_0x1e8167/0x2,'y':_0x5aa4e1*0x2/0x3},'p3':{'x':_0x1e8167/0x2,'y':ENEMY_TOP_MARGIN}}];continue;}normalWaveEntrancePaths[_0x305c22]=normalWaveEntrancePaths[_0x305c22][_0x811fc7(0x183)](_0x231922=>_0x231922?.['p0']&&_0x231922?.['p1']&&_0x231922?.['p2']&&_0x231922?.['p3']&&typeof _0x231922['p0']['x']===_0x811fc7(0x16b)&&typeof _0x231922['p0']['y']===_0x811fc7(0x16b)&&typeof _0x231922['p1']['x']===_0x811fc7(0x16b)&&typeof _0x231922['p1']['y']===_0x811fc7(0x16b)&&typeof _0x231922['p2']['x']===_0x811fc7(0x16b)&&typeof _0x231922['p2']['y']===_0x811fc7(0x16b)&&typeof _0x231922['p3']['x']===_0x811fc7(0x16b)&&typeof _0x231922['p3']['y']===_0x811fc7(0x16b)&&!isNaN(_0x231922['p0']['x']+_0x231922['p0']['y']+_0x231922['p1']['x']+_0x231922['p1']['y']+_0x231922['p2']['x']+_0x231922['p2']['y']+_0x231922['p3']['x']+_0x231922['p3']['y'])),normalWaveEntrancePaths[_0x305c22][_0x811fc7(0x1ed)]===0x0&&(console[_0x811fc7(0x1e9)](_0x811fc7(0x21c)+_0x305c22+'\x20empty\x20after\x20validation!\x20Using\x20basic\x20fallback.'),normalWaveEntrancePaths[_0x305c22]=[{'p0':{'x':_0x1e8167/0x2,'y':_0x58b861},'p1':{'x':_0x1e8167/0x2,'y':_0x5aa4e1/0x3},'p2':{'x':_0x1e8167/0x2,'y':_0x5aa4e1*0x2/0x3},'p3':{'x':_0x1e8167/0x2,'y':ENEMY_TOP_MARGIN}}]);}}function defineChallengingStagePaths(){const _0x371541=_0x4a7590;challengingStagePaths={};const _0x594e46=gameCanvas?.[_0x371541(0x245)],_0xb677f8=gameCanvas?.[_0x371541(0x211)];if(!_0x594e46||!_0xb677f8||_0x594e46===0x0){console[_0x371541(0x1e9)](_0x371541(0x200));return;}const _0x2e5e12=ENEMY_WIDTH,_0xb5a374=ENEMY_HEIGHT,_0x3880d5=-_0xb5a374*1.5,_0x28263c=_0xb677f8+_0xb5a374*0x2,_0xe973d1=-_0x2e5e12*1.5,_0x41bd98=_0x594e46+_0x2e5e12*1.5,_0x3fc2cb=_0x594e46/0x2,_0x5cb15a=_0xb677f8/0x2,_0x139c2a=-0x1c,_0x3fa22a=(_0x359636,_0x53687c)=>{const _0x36ecd0=_0x371541;return _0x359636[_0x36ecd0(0x1fd)](_0x1b8768=>{const _0x31243d=_0x36ecd0,_0x2fd23c=JSON[_0x31243d(0x193)](JSON[_0x31243d(0x247)](_0x1b8768));if(_0x2fd23c['p0']&&typeof _0x2fd23c['p0']['x']==='number')_0x2fd23c['p0']['x']+=_0x53687c;if(_0x2fd23c['p1']&&typeof _0x2fd23c['p1']['x']==='number')_0x2fd23c['p1']['x']+=_0x53687c;if(_0x2fd23c['p2']&&typeof _0x2fd23c['p2']['x']==='number')_0x2fd23c['p2']['x']+=_0x53687c;return _0x2fd23c['p3']&&typeof _0x2fd23c['p3']['x']===_0x31243d(0x16b)&&_0x2fd23c['p3']['x']!==_0xe973d1&&_0x2fd23c['p3']['x']!==_0x41bd98&&(_0x2fd23c['p3']['x']+=_0x53687c),_0x2fd23c;});},_0x740a2=37.8/0x320*0.3,_0x4b1a95=0.5-_0x740a2,_0x5f5c30=0x1c2/0x258,_0x361485=0.49,_0x285bae=0x258/0x258,_0x32ec67=0.48,_0x8553f2=0x12c/0x258,_0x3ffdb4=_0x594e46*_0x4b1a95,_0x5846b9=_0xb677f8*_0x5f5c30,_0x2149de=_0x594e46*_0x361485,_0x19789a=_0xb677f8*Math[_0x371541(0x186)](0x1,_0x285bae),_0xbb2528=_0x594e46*_0x32ec67,_0x3f910d=_0xb677f8*_0x8553f2,_0xf00a87=_0xe973d1,_0x171815=_0x3880d5,_0x26e510={'x':_0x3ffdb4,'y':_0x3880d5},_0x2537d6={'x':_0x3ffdb4,'y':_0x5846b9},_0x28eb25={'x':_0x3ffdb4,'y':_0x3880d5+(_0x5846b9-_0x3880d5)*0.33},_0x1d48ad={'x':_0x3ffdb4,'y':_0x3880d5+(_0x5846b9-_0x3880d5)*0.66},_0x3df6d2=_0x2537d6,_0x1dc304={'x':_0x2149de,'y':_0x19789a},_0x1d75a9={'x':_0xbb2528,'y':_0x3f910d},_0x31f21c={'x':_0xf00a87,'y':_0x171815},_0x1fa8ea=[{'p0':_0x26e510,'p1':_0x28eb25,'p2':_0x1d48ad,'p3':_0x2537d6},{'p0':_0x3df6d2,'p1':_0x1dc304,'p2':_0x1d75a9,'p3':_0x31f21c}],_0x1a96d9=_0x1fa8ea['map'](_0x5e10dd=>({'p0':{'x':_0x594e46-_0x5e10dd['p0']['x'],'y':_0x5e10dd['p0']['y']},'p1':{'x':_0x594e46-_0x5e10dd['p1']['x'],'y':_0x5e10dd['p1']['y']},'p2':{'x':_0x594e46-_0x5e10dd['p2']['x'],'y':_0x5e10dd['p2']['y']},'p3':{'x':_0x5e10dd['p3']['x']===_0xe973d1?_0x41bd98:_0x594e46-_0x5e10dd['p3']['x'],'y':_0x5e10dd['p3']['y']}}));challengingStagePaths[_0x371541(0x1fa)]=_0x3fa22a(_0x1fa8ea,_0x139c2a),challengingStagePaths[_0x371541(0x192)]=_0x3fa22a(_0x1a96d9,_0x139c2a);const _0xca590e=_0xb677f8*0.7,_0x2970d7=_0xb677f8*0.03,_0x509126=_0x594e46*0.15;challengingStagePaths['CS_HorizontalFlyByL']=[{'p0':{'x':_0xe973d1,'y':_0xca590e},'p1':{'x':_0xe973d1+_0x509126,'y':_0xca590e-_0x2970d7},'p2':{'x':_0x41bd98-_0x509126,'y':_0xca590e+_0x2970d7},'p3':{'x':_0x41bd98,'y':_0xca590e}}],challengingStagePaths[_0x371541(0x189)]=[{'p0':{'x':_0x41bd98,'y':_0xca590e},'p1':{'x':_0x41bd98-_0x509126,'y':_0xca590e-_0x2970d7},'p2':{'x':_0xe973d1+_0x509126,'y':_0xca590e+_0x2970d7},'p3':{'x':_0xe973d1,'y':_0xca590e}}];const _0x519f0a=_0xb677f8*0.8,_0x15f510=_0xb677f8*0.55,_0x4b6fdd=_0xb677f8*0.15;challengingStagePaths['CS_LoopAttack_TL']=[{'p0':{'x':_0x594e46*0.1,'y':_0x3880d5},'p1':{'x':_0x594e46*0.2,'y':_0xb677f8*0.2},'p2':{'x':_0x594e46*0.6,'y':_0x519f0a},'p3':{'x':_0x594e46*0.7,'y':_0x519f0a}},{'p0':{'x':_0x594e46*0.7,'y':_0x519f0a},'p1':{'x':_0x594e46*0.8,'y':_0x519f0a},'p2':{'x':_0x594e46*0.8,'y':_0x15f510},'p3':{'x':_0x594e46*0.7,'y':_0x15f510}},{'p0':{'x':_0x594e46*0.7,'y':_0x15f510},'p1':{'x':_0x594e46*0.6,'y':_0x15f510},'p2':{'x':_0x41bd98,'y':_0x4b6fdd},'p3':{'x':_0x41bd98,'y':_0x4b6fdd+_0xb677f8*0.1}}],challengingStagePaths[_0x371541(0x1c4)]=[{'p0':{'x':_0x594e46*0.9,'y':_0x3880d5},'p1':{'x':_0x594e46*0.8,'y':_0xb677f8*0.2},'p2':{'x':_0x594e46*0.4,'y':_0x519f0a},'p3':{'x':_0x594e46*0.3,'y':_0x519f0a}},{'p0':{'x':_0x594e46*0.3,'y':_0x519f0a},'p1':{'x':_0x594e46*0.2,'y':_0x519f0a},'p2':{'x':_0x594e46*0.2,'y':_0x15f510},'p3':{'x':_0x594e46*0.3,'y':_0x15f510}},{'p0':{'x':_0x594e46*0.3,'y':_0x15f510},'p1':{'x':_0x594e46*0.4,'y':_0x15f510},'p2':{'x':_0xe973d1,'y':_0x4b6fdd},'p3':{'x':_0xe973d1,'y':_0x4b6fdd+_0xb677f8*0.1}}],challengingStagePaths['CS_LoopAttack_BL']=[{'p0':{'x':_0xe973d1,'y':_0xb677f8*0.6},'p1':{'x':_0x594e46*0.1,'y':_0xb677f8*0.4},'p2':{'x':_0x594e46*0.6,'y':_0xb677f8*0.2},'p3':{'x':_0x3fc2cb,'y':_0xb677f8*0.3}},{'p0':{'x':_0x3fc2cb,'y':_0xb677f8*0.3},'p1':{'x':_0x594e46*0.4,'y':_0xb677f8*0.4},'p2':{'x':_0x594e46*0.3,'y':_0x519f0a*0.9},'p3':{'x':_0x594e46*0.4,'y':_0x519f0a}},{'p0':{'x':_0x594e46*0.4,'y':_0x519f0a},'p1':{'x':_0x594e46*0.5,'y':_0x519f0a*1.05},'p2':{'x':_0x3fc2cb,'y':_0x3880d5},'p3':{'x':_0x3fc2cb+_0x594e46*0.1,'y':_0x3880d5}}],challengingStagePaths['CS_LoopAttack_BR']=[{'p0':{'x':_0x41bd98,'y':_0xb677f8*0.6},'p1':{'x':_0x594e46*0.9,'y':_0xb677f8*0.4},'p2':{'x':_0x594e46*0.4,'y':_0xb677f8*0.2},'p3':{'x':_0x3fc2cb,'y':_0xb677f8*0.3}},{'p0':{'x':_0x3fc2cb,'y':_0xb677f8*0.3},'p1':{'x':_0x594e46*0.6,'y':_0xb677f8*0.4},'p2':{'x':_0x594e46*0.7,'y':_0x519f0a*0.9},'p3':{'x':_0x594e46*0.6,'y':_0x519f0a}},{'p0':{'x':_0x594e46*0.6,'y':_0x519f0a},'p1':{'x':_0x594e46*0.5,'y':_0x519f0a*1.05},'p2':{'x':_0x3fc2cb,'y':_0x3880d5},'p3':{'x':_0x3fc2cb-_0x594e46*0.1,'y':_0x3880d5}}];for(const _0x59a09c in challengingStagePaths){challengingStagePaths[_0x59a09c]=challengingStagePaths[_0x59a09c]['filter'](_0x596c15=>_0x596c15?.['p0']&&_0x596c15?.['p1']&&_0x596c15?.['p2']&&_0x596c15?.['p3']&&!isNaN(_0x596c15['p0']['x']+_0x596c15['p0']['y']+_0x596c15['p1']['x']+_0x596c15['p1']['y']+_0x596c15['p2']['x']+_0x596c15['p2']['y']+_0x596c15['p3']['x']+_0x596c15['p3']['y'])),challengingStagePaths[_0x59a09c]['length']===0x0&&(console['error'](_0x371541(0x1ce)+_0x59a09c+_0x371541(0x1d9)),challengingStagePaths[_0x59a09c]=[{'p0':{'x':_0x594e46/0x2,'y':_0x3880d5},'p1':{'x':_0x594e46/0x2,'y':_0xb677f8/0x3},'p2':{'x':_0x594e46/0x2,'y':_0xb677f8*0x2/0x3},'p3':{'x':_0x594e46/0x2,'y':_0x28263c}}]);}}function resizeCanvases(){const _0x12a483=_0x4a7590;try{const _0x20cde9=window[_0x12a483(0x1b5)],_0x3fcc38=window['innerHeight'];if(_0x20cde9<=0x0||_0x3fcc38<=0x0)return;let _0x55d58f=_0x3fcc38>_0x20cde9;if(_0x55d58f){if(!isShowingPortraitMessage){isShowingPortraitMessage=!![];if(isInGameState&&!isPaused)gameWasAutoPausedForPortrait=!![],togglePause();else(!isInGameState||isPaused)&&pauseAllSounds();}}else{if(isShowingPortraitMessage){isShowingPortraitMessage=![];if(gameWasAutoPausedForPortrait&&isPaused)togglePause();else!isInGameState&&!isPaused&&resumeAllSounds();gameWasAutoPausedForPortrait=![];}}starrySkyCanvas&&(starrySkyCanvas[_0x12a483(0x245)]!==_0x20cde9||starrySkyCanvas[_0x12a483(0x211)]!==_0x3fcc38)&&(starrySkyCanvas[_0x12a483(0x245)]=_0x20cde9,starrySkyCanvas[_0x12a483(0x211)]=_0x3fcc38,createStars());retroGridCanvas&&(retroGridCanvas[_0x12a483(0x245)]!==_0x20cde9||retroGridCanvas[_0x12a483(0x211)]!==_0x3fcc38)&&(retroGridCanvas[_0x12a483(0x245)]=_0x20cde9,retroGridCanvas[_0x12a483(0x211)]=_0x3fcc38);if(gameCanvas&&(gameCanvas[_0x12a483(0x245)]!==_0x20cde9||gameCanvas['height']!==_0x3fcc38)){const _0x109425=gameCanvas[_0x12a483(0x245)];gameCanvas[_0x12a483(0x245)]=_0x20cde9,gameCanvas[_0x12a483(0x211)]=_0x3fcc38,defineNormalWaveEntrancePaths(),defineChallengingStagePaths(),isInGameState&&handleResizeGameElements(_0x109425,_0x20cde9,_0x3fcc38);}else(!gameCanvas?.['width']||!gameCanvas?.[_0x12a483(0x211)])&&(defineNormalWaveEntrancePaths(),defineChallengingStagePaths());}catch(_0x3f3003){console[_0x12a483(0x1e9)](_0x12a483(0x1d7),_0x3f3003);}}function handleResizeGameElements(_0x4ccf4f,_0x1381fc,_0x456aa7){const _0x558fa9=_0x4a7590;try{currentGridOffsetX=0x0,ship&&(_0x4ccf4f>0x0&&_0x1381fc>0x0&&typeof ship['x']!==_0x558fa9(0x1a0)?ship['x']=ship['x']/_0x4ccf4f*_0x1381fc:ship['x']=_0x1381fc/0x2-ship[_0x558fa9(0x245)]/0x2,ship['x']=Math[_0x558fa9(0x234)](0x0,Math[_0x558fa9(0x186)](_0x1381fc-ship[_0x558fa9(0x245)],ship['x'])),ship['y']=_0x456aa7-SHIP_HEIGHT-SHIP_BOTTOM_MARGIN,ship[_0x558fa9(0x1cb)]=ship['x']),enemies[_0x558fa9(0x1a3)](_0x57c5dd=>{const _0x1ed8db=_0x558fa9;if(_0x57c5dd&&(_0x57c5dd[_0x1ed8db(0x194)]===_0x1ed8db(0x213)||_0x57c5dd[_0x1ed8db(0x194)]===_0x1ed8db(0x21b)||_0x57c5dd[_0x1ed8db(0x194)]===_0x1ed8db(0x18d)))try{const _0x124db8=_0x57c5dd[_0x1ed8db(0x263)]===ENEMY3_TYPE?BOSS_WIDTH:_0x57c5dd[_0x1ed8db(0x263)]===ENEMY1_TYPE?ENEMY1_WIDTH:ENEMY_WIDTH,{x:_0x4aab06,y:_0x50d31f}=getCurrentGridSlotPosition(_0x57c5dd[_0x1ed8db(0x188)],_0x57c5dd[_0x1ed8db(0x1ae)],_0x124db8);_0x57c5dd[_0x1ed8db(0x21f)]=_0x4aab06,_0x57c5dd[_0x1ed8db(0x26b)]=_0x50d31f,_0x57c5dd[_0x1ed8db(0x194)]===_0x1ed8db(0x213)&&(_0x57c5dd['x']=_0x4aab06,_0x57c5dd['y']=_0x50d31f);}catch(_0x355310){console['error'](_0x1ed8db(0x1a4)+_0x57c5dd['id']+_0x1ed8db(0x1eb),_0x355310),(_0x57c5dd[_0x1ed8db(0x194)]===_0x1ed8db(0x213)||_0x57c5dd[_0x1ed8db(0x194)]===_0x1ed8db(0x18d)||_0x57c5dd[_0x1ed8db(0x194)]==='returning')&&(_0x57c5dd['x']=_0x1381fc/0x2,_0x57c5dd['y']=ENEMY_TOP_MARGIN+_0x57c5dd['gridRow']*(ENEMY_HEIGHT+ENEMY_V_SPACING),_0x57c5dd[_0x1ed8db(0x21f)]=_0x57c5dd['x'],_0x57c5dd['targetGridY']=_0x57c5dd['y']);}});}catch(_0x1efd9a){console['error'](_0x558fa9(0x1bd),_0x1efd9a);}}let lastTapArea=null,lastTapTimestamp=0x0;const DOUBLE_TAP_MAX_INTERVAL=0x12c,SCORE_AREA_TAP_MARGIN=0x1e;function handleTouchStartGlobal(_0x5eb295){const _0x1ae4d9=_0x4a7590;_0x5eb295[_0x1ae4d9(0x249)]();audioContext&&audioContext[_0x1ae4d9(0x194)]===_0x1ae4d9(0x216)&&audioContext[_0x1ae4d9(0x1d2)]()[_0x1ae4d9(0x202)](()=>{audioContextInitialized=!![],console['log']('AudioContext\x20resumed\x20by\x20touchstart.');});if(_0x5eb295['touches'][_0x1ae4d9(0x1ed)]>0x0){const _0x8e5240=_0x5eb295['touches'][0x0];touchStartX=_0x8e5240[_0x1ae4d9(0x224)],touchStartY=_0x8e5240[_0x1ae4d9(0x243)],touchCurrentX=_0x8e5240['clientX'],touchCurrentY=_0x8e5240[_0x1ae4d9(0x243)],touchStartTime=Date[_0x1ae4d9(0x23b)]();if(isInGameState&&!isShowingPortraitMessage)isTouchActiveGame=!![],isTouchActiveMenu=![];else!isShowingPortraitMessage&&(isTouchActiveMenu=!![],isTouchActiveGame=![],typeof handleCanvasTouch===_0x1ae4d9(0x256)&&handleCanvasTouch(_0x5eb295,_0x1ae4d9(0x1f3)));}}function handleTouchMoveGlobal(_0x467249){const _0x349d2a=_0x4a7590;_0x467249['preventDefault']();if(_0x467249[_0x349d2a(0x1b1)][_0x349d2a(0x1ed)]>0x0){const _0x250ec3=_0x467249[_0x349d2a(0x1b1)][0x0];touchCurrentX=_0x250ec3[_0x349d2a(0x224)],touchCurrentY=_0x250ec3[_0x349d2a(0x243)];if(isTouchActiveGame&&isInGameState&&!isShowingPortraitMessage){}else isTouchActiveMenu&&!isInGameState&&!isShowingPortraitMessage&&(typeof handleCanvasTouch===_0x349d2a(0x256)&&handleCanvasTouch(_0x467249,_0x349d2a(0x199)));}}function handleTouchEndGlobal(_0x259dd7){const _0x38108e=_0x4a7590;_0x259dd7[_0x38108e(0x249)]();const _0x1980ad=Date[_0x38108e(0x23b)](),_0x4c96e9=_0x1980ad-touchStartTime;let _0x407015=0x0,_0x2dc242=0x0,_0x3462f0,_0x437abb;_0x259dd7[_0x38108e(0x1cc)]&&_0x259dd7[_0x38108e(0x1cc)][_0x38108e(0x1ed)]>0x0?(_0x3462f0=_0x259dd7[_0x38108e(0x1cc)][0x0][_0x38108e(0x224)],_0x437abb=_0x259dd7[_0x38108e(0x1cc)][0x0][_0x38108e(0x243)]):(_0x3462f0=touchCurrentX,_0x437abb=touchCurrentY);typeof _0x3462f0==='number'&&typeof touchStartX===_0x38108e(0x16b)&&(_0x407015=_0x3462f0-touchStartX);typeof _0x437abb===_0x38108e(0x16b)&&typeof touchStartY===_0x38108e(0x16b)&&(_0x2dc242=_0x437abb-touchStartY);const _0x2d5eba=Math[_0x38108e(0x198)](_0x407015*_0x407015+_0x2dc242*_0x2dc242),_0x57d193=_0x4c96e9<TOUCH_TAP_MAX_DURATION&&_0x2d5eba<TOUCH_TAP_MAX_MOVEMENT,_0x2d4125=gameCanvas[_0x38108e(0x240)](),_0x40672c=gameCanvas[_0x38108e(0x245)]/_0x2d4125[_0x38108e(0x245)],_0x4a1eaa=gameCanvas[_0x38108e(0x211)]/_0x2d4125['height'],_0x4e69b5=(_0x3462f0-_0x2d4125['left'])*_0x40672c,_0x1b1ce8=(_0x437abb-_0x2d4125['top'])*_0x4a1eaa;if(!isShowingPortraitMessage&&_0x57d193){const _0x5ea0f4=Date[_0x38108e(0x23b)]();let _0x50f8fb=![];if(typeof MARGIN_SIDE!==_0x38108e(0x1a0)&&typeof MARGIN_TOP!=='undefined'&&gameCanvas&&gameCtx){gameCtx[_0x38108e(0x206)]=_0x38108e(0x22d);let _0x3b7ef9=gameCtx['measureText'](_0x38108e(0x18c))[_0x38108e(0x245)],_0x4aaaad=gameCtx[_0x38108e(0x1cd)]('888888')['width'];const _0x454356=0x14,_0x165bb3=gameCanvas[_0x38108e(0x245)]-MARGIN_SIDE-Math[_0x38108e(0x234)](_0x3b7ef9,_0x4aaaad)-SCORE_AREA_TAP_MARGIN,_0x456e5a=MARGIN_TOP-SCORE_AREA_TAP_MARGIN,_0x482421=Math[_0x38108e(0x234)](_0x3b7ef9,_0x4aaaad)+0x2*SCORE_AREA_TAP_MARGIN,_0x23ca41=SCORE_OFFSET_Y+0x5+_0x454356+0x2*SCORE_AREA_TAP_MARGIN;_0x4e69b5>=_0x165bb3&&_0x4e69b5<=_0x165bb3+_0x482421&&_0x1b1ce8>=_0x456e5a&&_0x1b1ce8<=_0x456e5a+_0x23ca41&&(_0x50f8fb=!![]);}if(_0x50f8fb){if(lastTapArea===_0x38108e(0x1b7)&&_0x5ea0f4-lastTapTimestamp<DOUBLE_TAP_MAX_INTERVAL){if(typeof stopGameAndShowMenu===_0x38108e(0x256)){stopGameAndShowMenu(),lastTapArea=null,lastTapTimestamp=0x0,isTouchActiveGame=![],isTouchActiveMenu=![],touchedMenuButtonIndex=-0x1;return;}}lastTapArea=_0x38108e(0x1b7),lastTapTimestamp=_0x5ea0f4;}else lastTapArea===_0x38108e(0x1b7)&&(lastTapArea=null,lastTapTimestamp=0x0);}if(isTouchActiveGame&&isInGameState&&!isShowingPortraitMessage){if(_0x57d193){if(selectedFiringMode==='single'&&!(lastTapArea===_0x38108e(0x1b7)&&Date[_0x38108e(0x23b)]()-lastTapTimestamp<DOUBLE_TAP_MAX_INTERVAL)){if(Date['now']()-lastTapTime>SHOOT_COOLDOWN/0x2){let _0x4da250=_0x38108e(0x17b);if(isTwoPlayerMode&&selectedGameMode===_0x38108e(0x1a1))_0x4e69b5>gameCanvas[_0x38108e(0x245)]/0x2&&ship2&&player2Lives>0x0&&(_0x4da250=isPlayerTwoAI?_0x38108e(0x244):_0x38108e(0x25a));else isTwoPlayerMode&&selectedGameMode==='normal'&&(_0x4da250=currentPlayer===0x1?_0x38108e(0x17b):_0x38108e(0x25a));if(_0x4da250===_0x38108e(0x17b))p1FireInputWasDown=!![];else{if(_0x4da250===_0x38108e(0x25a)||_0x4da250===_0x38108e(0x244))p2FireInputWasDown=!![];}typeof firePlayerBullet===_0x38108e(0x256)&&firePlayerBullet(_0x4da250);if(_0x4da250===_0x38108e(0x17b))p1FireInputWasDown=![];else{if(_0x4da250===_0x38108e(0x25a)||_0x4da250==='ai_p2')p2FireInputWasDown=![];}lastTapTime=Date['now']();}}}shootPressed=![],p2ShootPressed=![],isTouchActiveGame=![];}else isTouchActiveMenu&&!isInGameState&&!isShowingPortraitMessage?(isTouchActiveMenu=![],typeof handleCanvasTouch==='function'&&handleCanvasTouch(_0x259dd7,_0x38108e(0x273),_0x57d193)):(isTouchActiveGame=![],isTouchActiveMenu=![]);touchedMenuButtonIndex=-0x1;}function handleKeyDown(_0x585a3e){const _0x1ce429=_0x4a7590;try{if(isTouchActiveGame&&isInGameState){if(_0x585a3e[_0x1ce429(0x163)]==='p'||_0x585a3e[_0x1ce429(0x163)]==='P'){if(typeof togglePause===_0x1ce429(0x256))togglePause();}else{if(_0x585a3e['key']==='Escape'||_0x585a3e[_0x1ce429(0x163)]==='Enter'){if(isInGameState&&typeof stopGameAndShowMenu===_0x1ce429(0x256))stopGameAndShowMenu();}}return;}audioContext&&audioContext['state']===_0x1ce429(0x216)&&audioContext[_0x1ce429(0x1d2)]()[_0x1ce429(0x202)](()=>{const _0x2d8180=_0x1ce429;audioContextInitialized=!![],console[_0x2d8180(0x1f7)](_0x2d8180(0x178));});const _0x24c1f5=['\x20','ArrowUp',_0x1ce429(0x22e),'ArrowLeft',_0x1ce429(0x208),_0x1ce429(0x25d),_0x1ce429(0x1e8),'w','a','s','d','p','P','j','J','l','L','i','I','Numpad4',_0x1ce429(0x23a),'Numpad0'];(_0x24c1f5['includes'](_0x585a3e[_0x1ce429(0x163)])||_0x24c1f5[_0x1ce429(0x1fe)](_0x585a3e['code']))&&_0x585a3e['preventDefault']();let _0x4d0b52=![];(isShowingPlayerGameOverMessage||gameOverSequenceStartTime>0x0||isShowingPortraitMessage)&&(_0x4d0b52=!![]);if(_0x4d0b52)return;if(isInGameState){if((_0x585a3e[_0x1ce429(0x163)]==='p'||_0x585a3e[_0x1ce429(0x163)]==='P')&&gameOverSequenceStartTime===0x0&&!isShowingPlayerGameOverMessage){if(typeof togglePause==='function')togglePause();return;}if(!isPaused){if(!isManualControl){if(isPlayerTwoAI&&selectedGameMode===_0x1ce429(0x264)&&currentPlayer===0x2){}else{if(_0x585a3e['key']==='Escape'||_0x585a3e[_0x1ce429(0x163)]===_0x1ce429(0x25d)){if(typeof stopGameAndShowMenu===_0x1ce429(0x256))stopGameAndShowMenu();}else{if(!_0x585a3e[_0x1ce429(0x165)]&&!_0x585a3e[_0x1ce429(0x1bf)]&&!_0x585a3e[_0x1ce429(0x1d5)]&&!_0x585a3e[_0x1ce429(0x25b)]&&_0x585a3e[_0x1ce429(0x163)]!=='p'&&_0x585a3e[_0x1ce429(0x163)]!=='P'){if(typeof showMenuState===_0x1ce429(0x256))showMenuState();}}}}else{switch(_0x585a3e['code']){case _0x1ce429(0x248):case'KeyA':keyboardP1LeftDown=!![];break;case'ArrowRight':case _0x1ce429(0x1be):keyboardP1RightDown=!![];break;case _0x1ce429(0x1f8):case'ArrowUp':case _0x1ce429(0x166):keyboardP1ShootDown=!![];break;case _0x1ce429(0x221):case _0x1ce429(0x253):if(isTwoPlayerMode&&!isPlayerTwoAI)keyboardP2LeftDown=!![];break;case _0x1ce429(0x1e7):case'Numpad6':if(isTwoPlayerMode&&!isPlayerTwoAI)keyboardP2RightDown=!![];break;case'KeyI':case _0x1ce429(0x26c):if(isTwoPlayerMode&&!isPlayerTwoAI)keyboardP2ShootDown=!![];break;case _0x1ce429(0x1e8):case _0x1ce429(0x25d):if(typeof stopGameAndShowMenu===_0x1ce429(0x256))stopGameAndShowMenu();break;}if(!keyboardP2LeftDown&&isTwoPlayerMode&&!isPlayerTwoAI&&_0x585a3e[_0x1ce429(0x163)]['toLowerCase']()==='j')keyboardP2LeftDown=!![];if(!keyboardP2RightDown&&isTwoPlayerMode&&!isPlayerTwoAI&&_0x585a3e[_0x1ce429(0x163)][_0x1ce429(0x1de)]()==='l')keyboardP2RightDown=!![];if(!keyboardP2ShootDown&&isTwoPlayerMode&&!isPlayerTwoAI&&_0x585a3e[_0x1ce429(0x163)][_0x1ce429(0x1de)]()==='i')keyboardP2ShootDown=!![];}}}else{if(isTouchActiveMenu)return;if(isShowingScoreScreen&&!isTransitioningToDemoViaScoreScreen){if(!_0x585a3e[_0x1ce429(0x165)]&&!_0x585a3e['ctrlKey']&&!_0x585a3e[_0x1ce429(0x1d5)]&&!_0x585a3e[_0x1ce429(0x25b)]&&_0x585a3e[_0x1ce429(0x163)]!=='p'&&_0x585a3e[_0x1ce429(0x163)]!=='P'){if(typeof showMenuState==='function')showMenuState();return;}}else{if(!isShowingScoreScreen){stopAutoDemoTimer();switch(_0x585a3e[_0x1ce429(0x163)]){case _0x1ce429(0x257):case'w':selectedButtonIndex=selectedButtonIndex<=0x0?0x1:0x0,startAutoDemoTimer();break;case _0x1ce429(0x22e):case's':selectedButtonIndex=selectedButtonIndex>=0x1?0x0:0x1,startAutoDemoTimer();break;case _0x1ce429(0x25d):case'\x20':if(isPlayerSelectMode)selectedButtonIndex===0x0?startGame1P():startGame2P();else{if(isOnePlayerGameTypeSelectMode)selectedButtonIndex===0x0?(isOnePlayerGameTypeSelectMode=![],isFiringModeSelectMode=!![],selectedOnePlayerGameVariant='CLASSIC_1P',selectedGameMode=_0x1ce429(0x264),isTwoPlayerMode=![],isPlayerTwoAI=![],selectedButtonIndex=0x0):(isOnePlayerGameTypeSelectMode=![],isOnePlayerVsAIGameTypeSelectMode=!![],selectedButtonIndex=0x0);else{if(isOnePlayerVsAIGameTypeSelectMode)selectedButtonIndex===0x0?(selectedOnePlayerGameVariant=_0x1ce429(0x1ec),selectedGameMode=_0x1ce429(0x264)):(selectedOnePlayerGameVariant=_0x1ce429(0x1e4),selectedGameMode=_0x1ce429(0x1a1)),isOnePlayerVsAIGameTypeSelectMode=![],isFiringModeSelectMode=!![],isTwoPlayerMode=!![],isPlayerTwoAI=!![],selectedButtonIndex=0x0;else{if(isGameModeSelectMode)selectedButtonIndex===0x0?selectedGameMode=_0x1ce429(0x264):selectedGameMode='coop',isGameModeSelectMode=![],isFiringModeSelectMode=!![],isTwoPlayerMode=!![],isPlayerTwoAI=![],selectedButtonIndex=0x0;else{if(isFiringModeSelectMode)selectedButtonIndex===0x0?selectedFiringMode='rapid':selectedFiringMode='single',baseStartGame(!![]);else{if(selectedButtonIndex===0x0)isPlayerSelectMode=!![],selectedButtonIndex=0x0;else selectedButtonIndex===0x1&&exitGame();}}}}}startAutoDemoTimer();break;case _0x1ce429(0x1e8):goBackInMenu(),startAutoDemoTimer();break;default:startAutoDemoTimer();break;}}}}}catch(_0x2ee833){console[_0x1ce429(0x1e9)](_0x1ce429(0x20e),_0x2ee833),keyboardP1LeftDown=![],keyboardP1RightDown=![],keyboardP1ShootDown=![],keyboardP2LeftDown=![],keyboardP2RightDown=![],keyboardP2ShootDown=![],p1JustFiredSingle=![],p2JustFiredSingle=![],p1FireInputWasDown=![],p2FireInputWasDown=![];}}function handleKeyUp(_0x5e37ae){const _0x3572a3=_0x4a7590;try{switch(_0x5e37ae[_0x3572a3(0x26e)]){case _0x3572a3(0x248):case _0x3572a3(0x1aa):keyboardP1LeftDown=![];break;case _0x3572a3(0x208):case _0x3572a3(0x1be):keyboardP1RightDown=![];break;case'Space':case'ArrowUp':case'KeyW':keyboardP1ShootDown=![];if(selectedFiringMode==='single')p1JustFiredSingle=![];break;case'KeyJ':case _0x3572a3(0x253):keyboardP2LeftDown=![];break;case _0x3572a3(0x1e7):case _0x3572a3(0x23a):keyboardP2RightDown=![];break;case _0x3572a3(0x19e):case _0x3572a3(0x26c):keyboardP2ShootDown=![];if(selectedFiringMode===_0x3572a3(0x1e3))p2JustFiredSingle=![];break;}if(_0x5e37ae[_0x3572a3(0x163)]['toLowerCase']()==='j')keyboardP2LeftDown=![];if(_0x5e37ae[_0x3572a3(0x163)]['toLowerCase']()==='l')keyboardP2RightDown=![];if(_0x5e37ae[_0x3572a3(0x163)]['toLowerCase']()==='i'){keyboardP2ShootDown=![];if(selectedFiringMode===_0x3572a3(0x1e3))p2JustFiredSingle=![];}}catch(_0xf93768){console['error']('Error\x20in\x20handleKeyUp:',_0xf93768),keyboardP1LeftDown=![],keyboardP1RightDown=![],keyboardP1ShootDown=![],keyboardP2LeftDown=![],keyboardP2RightDown=![],keyboardP2ShootDown=![],p1JustFiredSingle=![],p2JustFiredSingle=![];}}function handleGamepadConnected(_0x4c0866){const _0x520de2=_0x4a7590;try{audioContext&&audioContext[_0x520de2(0x194)]===_0x520de2(0x216)&&audioContext[_0x520de2(0x1d2)]()['then'](()=>{const _0x5e4a07=_0x520de2;audioContextInitialized=!![],console[_0x5e4a07(0x1f7)](_0x5e4a07(0x267));});if(connectedGamepadIndex===null){connectedGamepadIndex=_0x4c0866[_0x520de2(0x1cf)][_0x520de2(0x16a)];const _0x476b07=_0x4c0866[_0x520de2(0x1cf)][_0x520de2(0x227)][_0x520de2(0x1ed)];previousButtonStates=new Array(_0x476b07)[_0x520de2(0x254)](![]),previousDemoButtonStates=new Array(_0x476b07)['fill'](![]),previousGameButtonStates=new Array(_0x476b07)[_0x520de2(0x254)](![]),!isInGameState&&!isTouchActiveMenu&&(stopAutoDemoTimer(),selectedButtonIndex=0x0);}else{if(connectedGamepadIndexP2===null){connectedGamepadIndexP2=_0x4c0866['gamepad']['index'];const _0x2d16a4=_0x4c0866[_0x520de2(0x1cf)][_0x520de2(0x227)][_0x520de2(0x1ed)];previousGameButtonStatesP2=new Array(_0x2d16a4)[_0x520de2(0x254)](![]);}}}catch(_0x25b2bb){console[_0x520de2(0x1e9)](_0x520de2(0x16c),_0x25b2bb);}}function handleGamepadDisconnected(_0x253e56){const _0x496490=_0x4a7590;try{if(connectedGamepadIndex===_0x253e56[_0x496490(0x1cf)]['index'])connectedGamepadIndex=null,previousButtonStates=[],previousDemoButtonStates=[],previousGameButtonStates=[],!isInGameState&&!isTouchActiveMenu&&(selectedButtonIndex=-0x1,joystickMovedVerticallyLastFrame=![],startAutoDemoTimer()),p1FireInputWasDown=![];else connectedGamepadIndexP2===_0x253e56[_0x496490(0x1cf)]['index']&&(connectedGamepadIndexP2=null,previousGameButtonStatesP2=[],p2FireInputWasDown=![]);}catch(_0x23b85d){console['error'](_0x496490(0x170),_0x23b85d),p1JustFiredSingle=![],p2JustFiredSingle=![],p1FireInputWasDown=![],p2FireInputWasDown=![];}}function saveHighScore(){const _0x2dd19d=_0x4a7590;try{let _0x4f5940=0x0;if(isTwoPlayerMode&&selectedGameMode==='coop')_0x4f5940=Math[_0x2dd19d(0x234)](player1Score,player2Score);else isTwoPlayerMode&&selectedGameMode==='normal'?_0x4f5940=Math['max'](player1Score,player2Score):_0x4f5940=score;isManualControl&&_0x4f5940>highScore&&(highScore=_0x4f5940);}catch(_0x51beeb){console[_0x2dd19d(0x1e9)](_0x2dd19d(0x203),_0x51beeb);}}function loadHighScore(){const _0x3ce70b=_0x4a7590;try{highScore=0x4e20;}catch(_0x51059a){console[_0x3ce70b(0x1e9)](_0x3ce70b(0x1c2),_0x51059a),highScore=0x4e20;}}const soundsToPauseOnSystemPause=Object[_0x4a7590(0x195)](soundPaths);let soundPausedStates={};function pauseAllSounds(){const _0x39d32f=_0x4a7590;if(audioContext&&audioContext['state']===_0x39d32f(0x1f5)){}for(const _0x52012f in soundSources){Object[_0x39d32f(0x1c0)]['call'](soundSources,_0x52012f)&&stopSound(_0x52012f);}isGridSoundPlaying=![];}function resumeAllSounds(){const _0x1e3178=_0x4a7590;audioContext&&audioContext['state']===_0x1e3178(0x216)&&audioContext['resume']()[_0x1e3178(0x202)](()=>console['log'](_0x1e3178(0x231)))['catch'](_0x4f8a77=>console[_0x1e3178(0x1e9)](_0x1e3178(0x181),_0x4f8a77)),!isInGameState&&audioContext&&!isTouchActiveMenu&&!isShowingPortraitMessage&&playSound(_0x1e3178(0x24f),!![],0.2);}function togglePause(){const _0xd3a0ba=_0x4a7590;let _0x4897f3=![];const _0x540054=isShowingPlayerGameOverMessage||isTwoPlayerMode&&selectedGameMode==='coop'&&(isPlayer1ShowingGameOverMessage||isPlayer2ShowingGameOverMessage);if(isInGameState&&gameOverSequenceStartTime===0x0&&!_0x540054&&!isShowingPortraitMessage){if(!isManualControl)_0x4897f3=!![];else{if(isTwoPlayerMode&&selectedGameMode==='coop')_0x4897f3=player1Lives>0x0&&ship1&&!isPlayer1ShipCaptured&&!player1NeedsRespawnAfterCapture||player2Lives>0x0&&ship2&&!isPlayer2ShipCaptured&&!player2NeedsRespawnAfterCapture;else isTwoPlayerMode&&selectedGameMode===_0xd3a0ba(0x264)&&isPlayerTwoAI&&currentPlayer===0x2?_0x4897f3=![]:_0x4897f3=playerLives>0x0&&ship&&!isShipCaptured;}}if(!_0x4897f3)return;isPaused=!isPaused,isPaused?(pauseAllSounds(),clearTimeout(mouseIdleTimerId),mouseIdleTimerId=null):(resumeAllSounds(),clearTimeout(mouseIdleTimerId),mouseIdleTimerId=setTimeout(hideCursor,0x7d0),audioContext&&audioContext['state']===_0xd3a0ba(0x216)&&audioContext[_0xd3a0ba(0x1d2)]()[_0xd3a0ba(0x202)](()=>{const _0xf3fc8e=_0xd3a0ba;audioContextInitialized=!![],console['log'](_0xf3fc8e(0x1a8));}));}function processSingleController(_0x51089e,_0x537208){const _0x41725b=_0x4a7590,_0xd4c1c5=_0x51089e[_0x41725b(0x227)][_0x41725b(0x1fd)](_0x596c79=>_0x596c79[_0x41725b(0x22c)]),_0x173e67={'left':![],'right':![],'shoot':![],'pause':![],'back':![],'newButtonStates':_0xd4c1c5[_0x41725b(0x261)]()},_0x5694df=_0xd4c1c5[PS5_BUTTON_CROSS],_0x288e20=_0xd4c1c5[PS5_BUTTON_R1],_0x281d72=_0x537208[PS5_BUTTON_R1]??![],_0x37e974=_0xd4c1c5[PS5_BUTTON_TRIANGLE],_0xe1a1c9=_0x537208[PS5_BUTTON_TRIANGLE]??![],_0x14d281=_0x51089e['axes'][PS5_LEFT_STICK_X]??0x0,_0xddeef0=_0xd4c1c5[PS5_DPAD_LEFT],_0x231adc=_0xd4c1c5[PS5_DPAD_RIGHT],_0x3aa206=AXIS_DEAD_ZONE_GAMEPLAY;if(_0x14d281<-_0x3aa206||_0xddeef0)_0x173e67[_0x41725b(0x1da)]=!![];else(_0x14d281>_0x3aa206||_0x231adc)&&(_0x173e67[_0x41725b(0x23d)]=!![]);return _0x5694df&&(_0x173e67[_0x41725b(0x176)]=!![]),_0x288e20&&!_0x281d72&&(_0x173e67[_0x41725b(0x255)]=!![]),_0x37e974&&!_0xe1a1c9&&(_0x173e67['back']=!![]),_0x173e67;}function triggerFinalGameOverSequence(){const _0x4f728c=_0x4a7590;if(isInGameState&&gameOverSequenceStartTime===0x0){isPaused=![],isShowingDemoText=![],isShowingIntro=![],isWaveTransitioning=![],showCsHitsMessage=![],showExtraLifeMessage=![],showPerfectMessage=![],showCSClearMessage=![],showCsHitsForClearMessage=![],showCsScoreForClearMessage=![],showReadyMessage=![],showCsBonusScoreMessage=![],isShowingPlayerGameOverMessage=![],isEntrancePhaseActive=![],isCsCompletionDelayActive=![],csCompletionDelayStartTime=0x0,csCompletionResultIsPerfect=![],csIntroSoundPlayed=![];isManualControl&&saveHighScore();const _0xf49467=Object[_0x4f728c(0x195)](soundPaths)[_0x4f728c(0x183)](_0x514b72=>_0x514b72!==_0x4f728c(0x219)&&_0x514b72!==_0x4f728c(0x260));_0xf49467[_0x4f728c(0x1a3)](_0x56e989=>stopSound(_0x56e989)),isGridSoundPlaying=![];const _0x487b59=Date[_0x4f728c(0x23b)]();playSound(_0x4f728c(0x219),![],0.4),isTwoPlayerMode&&selectedGameMode===_0x4f728c(0x264)&&player1Lives<=0x0&&player2Lives<=0x0||selectedOnePlayerGameVariant==='1P_VS_AI_NORMAL'&&player1Lives<=0x0&&player2Lives<=0x0?gameOverSequenceStartTime=_0x487b59-GAME_OVER_DURATION:gameOverSequenceStartTime=_0x487b59,bullets=[],enemyBullets=[],explosions=[],fallingShips=[],isDualShipActive=![],player1IsDualShipActive=![],player2IsDualShipActive=![],isShowingResultsScreen=![],previousButtonStates=[],previousGameButtonStates=[],previousDemoButtonStates=[],previousGameButtonStatesP2=[];}}function triggerGameOver(){triggerFinalGameOverSequence();}
+// --- START OF FILE setup_utils.js ---
+// --- DEEL 1      van 3 dit code blok    --- (Nieuwe AI Globale Variabelen Toegevoegd)
+
+const
+    // Enemy Types (Needs to be defined BEFORE game_logic.js uses them)
+    ENEMY1_TYPE = 'enemy1', ENEMY2_TYPE = 'enemy2', ENEMY3_TYPE = 'enemy3',
+
+    // Basis Afmetingen (Vijanden & Schip) - Nodig voor paden & vroege logica
+    ENEMY_WIDTH = 40, ENEMY_HEIGHT = 40,
+    ENEMY1_SCALE_FACTOR = 1.33,
+    ENEMY1_WIDTH = Math.round(ENEMY_WIDTH * ENEMY1_SCALE_FACTOR),
+    ENEMY1_HEIGHT = Math.round(ENEMY_HEIGHT * ENEMY1_SCALE_FACTOR),
+    BOSS_SCALE_FACTOR = 1.50,
+    BOSS_WIDTH = Math.round(ENEMY_WIDTH * BOSS_SCALE_FACTOR),
+    BOSS_HEIGHT = Math.round(ENEMY_HEIGHT * BOSS_SCALE_FACTOR),
+    SHIP_WIDTH = 50, SHIP_HEIGHT = 50, SHIP_BOTTOM_MARGIN = 30, SHIP_MOVE_SPEED = 10,
+    COOP_SHIP_HORIZONTAL_OFFSET_FACTOR = 0.15,
+
+    // Challenging Stage Basis Info - Nodig voor initialisatie & pad selectie
+    CHALLENGING_STAGE_ENEMY_COUNT = 40,
+    CHALLENGING_STAGE_SQUADRON_SIZE = 5,
+    CHALLENGING_STAGE_SQUADRON_COUNT = CHALLENGING_STAGE_ENEMY_COUNT / CHALLENGING_STAGE_SQUADRON_SIZE,
+    BASE_CS_SPEED_MULTIPLIER = 4.2,
+    MAX_CS_SPEED_MULTIPLIER = 5.0,
+    CS_HORIZONTAL_FLYBY_SPEED_FACTOR = 0.35,
+    CS_ENEMY_SPAWN_DELAY_IN_SQUADRON = 80,
+    CS_HORIZONTAL_FLYBY_SPAWN_DELAY = -25,
+    CS_LOOP_ATTACK_SPAWN_DELAY = 35,
+    CHALLENGING_STAGE_SQUADRON_INTERVAL = 3000,
+
+    PATH_T_OFFSET_PER_ENEMY = 0.05,
+    ENEMY2_MAX_HITS = 1, ENEMY3_MAX_HITS = 2,
+    LEVEL_CAP_FOR_SCALING = 50,
+    BASE_GRID_FIRE_INTERVAL = 2800, MIN_GRID_FIRE_INTERVAL = 700,
+    BASE_GRID_FIRE_PROBABILITY = 0.04, MAX_GRID_FIRE_PROBABILITY = 0.18,
+    BASE_GRID_MAX_FIRING_ENEMIES = 7, MAX_GRID_MAX_FIRING_ENEMIES = 16,
+    BASE_RETURN_SPEED_FACTOR = 1.5, MAX_RETURN_SPEED_FACTOR = 2.5,
+    PLAYER_GAME_OVER_MESSAGE_DURATION_COOP = 3000,
+    AI_CAPTURE_BEAM_APPROACH_DELAY_MS = 2000, // Bestaande constante
+    COOP_AI_CAPTURE_DIVE_ANTICIPATION_DURATION_MS = 3000, // Bestaande constante
+    AI_GLOBAL_CAPTURE_DIVE_HOLD_DURATION_MS = 5000, // <<< NIEUWE CONSTANTE >>>
+    COOP_AI_SAVE_PARTNER_DELAY_MS = 10000
+;
+
+
+// --- Globale State Variabelen ---
+let starrySkyCanvas, starryCtx, retroGridCanvas, retroGridCtx, gameCanvas, gameCtx;
+let stars = [];
+let gridOffsetY = 0;
+let isInGameState = false;
+let isShowingScoreScreen = false;
+let scoreScreenStartTime = 0;
+let highScore = 20000;
+window.highScoreHolderId = null;
+let playerLives = 3;
+let score = 0;
+let level = 1;
+let isTwoPlayerMode = false;
+let selectedGameMode = 'normal';
+let currentPlayer = 1;
+let player1Lives = 3;
+let player2Lives = 3;
+let player1Score = 0;
+let player2Score = 0;
+let player1CompletedLevel = -1;
+let player1MaxLevelReached = 1;
+let player2MaxLevelReached = 1;
+
+let isPlayerSelectMode = false;
+let isOnePlayerGameTypeSelectMode = false;
+let isOnePlayerNormalGameSubTypeSelectMode = false;
+let isOnePlayerVsAIGameTypeSelectMode = false;
+let isGameModeSelectMode = false;
+let isFiringModeSelectMode = false;
+
+let selectedFiringMode = 'rapid';
+let selectedOnePlayerGameVariant = '';
+let isPlayerTwoAI = false;
+
+let p1JustFiredSingle = false;
+let p2JustFiredSingle = false;
+let p1FireInputWasDown = false;
+let p2FireInputWasDown = false;
+let scoreEarnedThisCS = 0;
+let player1LifeThresholdsMet = new Set();
+let player2LifeThresholdsMet = new Set();
+let isManualControl = false; let isShowingDemoText = false; let autoStartTimerId = null; let gameJustStarted = false; let mainLoopId = null;
+let isShowingIntro = false; let introStep = 0; let introDisplayStartTime = 0; let lastMouseMoveResetTime = 0;
+let isChallengingStage = false;
+let isFullGridWave = false;
+let isWaveTransitioning = false;
+let showCsHitsMessage = false; let csHitsMessageStartTime = 0;
+let showExtraLifeMessage = false; let extraLifeMessageStartTime = 0;
+let showPerfectMessage = false; let perfectMessageStartTime = 0;
+let showCSClearMessage = false; let csClearMessageStartTime = 0;
+let showCsHitsForClearMessage = false; showCsScoreForClearMessage = false;
+let showReadyMessage = false; let readyMessageStartTime = 0;
+let showCsBonusScoreMessage = false; let csBonusScoreMessageStartTime = 0;
+let readyForNextWave = false; let readyForNextWaveReset = false;
+let isCsCompletionDelayActive = false; let csCompletionDelayStartTime = 0;
+let csCompletionResultIsPerfect = false;
+let csIntroSoundPlayed = false;
+let playerIntroSoundPlayed = false;
+let stageIntroSoundPlayed = false;
+let playLevelUpAfterCSBonus = false;
+
+let isShowingPlayerGameOverMessage = false;
+let playerGameOverMessageStartTime = 0;
+let playerWhoIsGameOver = 0;
+let nextActionAfterPlayerGameOver = '';
+
+let isPlayer1ShowingGameOverMessage = false;
+let player1GameOverMessageStartTime = 0;
+let isPlayer2ShowingGameOverMessage = false;
+let player2GameOverMessageStartTime = 0;
+
+
+let forceCenterShipNextReset = false;
+let isShipCaptured = false;
+let isPlayer1ShipCaptured = false;
+let isPlayer2ShipCaptured = false;
+let capturingBossId = null;
+let captureBeamActive = false;
+let captureBeamSource = { x: 0, y: 0 };
+let captureBeamTargetY = 0;
+let captureBeamProgress = 0;
+let captureAttemptMadeThisLevel = false;
+let isWaitingForRespawn = false;
+let isPlayer1WaitingForRespawn = false;
+let isPlayer2WaitingForRespawn = false;
+let respawnTime = 0;
+let player1RespawnTime = 0;
+let player2RespawnTime = 0;
+let isInvincible = false;
+let isPlayer1Invincible = false;
+let isPlayer2Invincible = false;
+let invincibilityEndTime = 0;
+let player1InvincibilityEndTime = 0;
+let player2InvincibilityEndTime = 0;
+let fallingShips = [];
+let isDualShipActive = false;
+let player1IsDualShipActive = false;
+let player2IsDualShipActive = false;
+let isShowingCaptureMessage = false;
+let captureMessageStartTime = 0;
+let capturedBossIdWithMessage = null;
+enemies = []; // Moet hier gedefinieerd worden vanwege hoisting/volgorde
+let normalWaveEntrancePaths = {}; let challengingStagePaths = {};
+let currentWaveDefinition = null; let isEntrancePhaseActive = false;
+let enemySpawnTimeouts = []; let totalEnemiesScheduledForWave = 0; let enemiesSpawnedThisWave = 0;
+let lastEnemyDetachTime = 0; let gridMoveDirection = 1;
+let lastGridFireCheckTime = 0;
+let firstEnemyLanded = false;
+let currentGridOffsetX = 0; let challengingStageEnemiesHit = 0;
+let challengingStageTotalEnemies = CHALLENGING_STAGE_ENEMY_COUNT;
+let isGridBreathingActive = false; gridBreathStartTime = 0; currentGridBreathFactor = 0;
+let ship = { x: 0, y: 0, width: SHIP_WIDTH, height: SHIP_HEIGHT, speed: SHIP_MOVE_SPEED, targetX: 0, id: 'main' };
+let ship1 = null;
+let ship2 = null;
+let leftPressed = false; let rightPressed = false; let shootPressed = false;
+let p2LeftPressed = false; p2RightPressed = false; p2ShootPressed = false;
+let keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false;
+let keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false;
+bullets = []; // Moet hier gedefinieerd worden
+enemyBullets = []; explosions = []; // Moet hier gedefinieerd worden
+hitSparks = [];
+let playerLastShotTime = 0;
+let player1LastShotTime = 0;
+let player2LastShotTime = 0;
+let aiLastShotTime = 0;
+let aiCanShootTime = 0;
+let connectedGamepadIndex = null; let connectedGamepadIndexP2 = null;
+let previousButtonStates = []; let previousDemoButtonStates = []; let previousGameButtonStates = []; let previousGameButtonStatesP2 = [];
+let selectedButtonIndex = -1; let joystickMovedVerticallyLastFrame = false;
+let isGridSoundPlaying = false;
+let gridJustCompleted = false;
+let player1ShotsFired = 0;
+let player2ShotsFired = 0;
+let player1EnemiesHit = 0;
+let player2EnemiesHit = 0;
+let isShowingResultsScreen = false;
+let gameOverSequenceStartTime = 0; let gameStartTime = 0;
+let visualOffsetX = -20; floatingScores = []; // Moet hier
+let csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
+let normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null;
+let squadronCompletionStatus = {}; let squadronEntranceFiringStatus = {}; let isPaused = false;
+let mouseIdleTimerId = null;
+let initialGameStartSoundPlayedThisSession = false;
+let coopStartSoundPlayedThisSession = false;
+let wasLastGameAIDemo = false;
+let player1TriggeredHighScoreSound = false;
+let player2TriggeredHighScoreSound = false;
+let isShowingCoopPlayersReady = false;
+let coopPlayersReadyStartTime = 0;
+let gameJustStartedAndWaveLaunched = false;
+
+let isCoopAIDemoActive = false;
+let demoModeCounter = 0;
+let smoothedShip1X = undefined;
+let smoothedShip2X = undefined;
+let aiShip1TargetEnemy = null;
+let aiShip2TargetEnemy = null;
+let aiShip1CanShootTime = 0;
+let aiShip2CanShootTime = 0;
+let aiShip1LastShotTime = 0;
+let aiShip2LastShotTime = 0;
+let aiPlayerActivelySeekingCaptureById = null;
+let coopAICaptureDiveAnticipationActive = false;
+let coopAICaptureDiveAnticipationEndTime = 0;
+let player1CaptureRespawnX = 0;
+let player2CaptureRespawnX = 0;
+let player1NeedsRespawnAfterCapture = false;
+let player2NeedsRespawnAfterCapture = false;
+let capturedShipRespawnX_NormalMode = 0;
+let coopPartner1CapturedTime = 0;
+let coopPartner2CapturedTime = 0;
+
+// <<< NIEUWE GLOBALE VARIABELEN VOOR AI CAPTURE HOLD >>>
+let aiGlobalCaptureDiveHoldActive = false;
+let aiGlobalCaptureDiveHoldEndTime = 0;
+// <<< EINDE NIEUWE GLOBALE VARIABELEN >>>
+
+
+let touchStartX = 0, touchStartY = 0;
+let touchCurrentX = 0, touchCurrentY = 0;
+let touchStartTime = 0;
+let isTouchActiveGame = false;
+let isTouchActiveMenu = false;
+let touchedMenuButtonIndex = -1;
+let lastTapTime = 0;
+
+let isShowingPortraitMessage = false;
+let gameWasAutoPausedForPortrait = false;
+
+
+const TOUCH_TAP_MAX_DURATION = 250;
+const TOUCH_TAP_MAX_MOVEMENT = 20;
+const TOUCH_SHIP_CONTROL_AREA_Y_FACTOR = 0.5;
+
+const shipImage = new Image(), beeImage = new Image(), butterflyImage = new Image(), bossGalagaImage = new Image(), bulletImage = new Image(), enemyBulletImage = new Image(), logoImage = new Image();
+shipImage.src = 'Afbeeldingen/spaceship.png'; beeImage.src = 'Afbeeldingen/bee.png'; bulletImage.src = 'Afbeeldingen/bullet.png'; bossGalagaImage.src = 'Afbeeldingen/bossGalaga.png'; butterflyImage.src = 'Afbeeldingen/butterfly.png'; logoImage.src = 'Afbeeldingen/Logo.png';
+enemyBulletImage.src = 'Afbeeldingen/bullet-enemy.png';
+const beeImage2 = new Image(), butterflyImage2 = new Image(), bossGalagaImage2 = new Image();
+beeImage2.src = 'Afbeeldingen/bee-2.png'; butterflyImage2.src = 'Afbeeldingen/butterfly-2.png'; bossGalagaImage2.src = 'Afbeeldingen/bossGalaga-2.png';
+const level1Image = new Image(), level5Image = new Image(), level10Image = new Image(), level20Image = new Image(), level30Image = new Image(), level50Image = new Image();
+level1Image.src = 'Afbeeldingen/Level-1.png'; level5Image.src = 'Afbeeldingen/Level-5.png'; level10Image.src = 'Afbeeldingen/Level-10.png'; level20Image.src = 'Afbeeldingen/Level-20.png'; level30Image.src = 'Afbeeldingen/Level-30.png'; level50Image.src = 'Afbeeldingen/Level-50.png';
+
+let audioContext;
+let soundBuffers = {};
+let soundSources = {};
+let soundGainNodes = {};
+let audioContextInitialized = false;
+
+const soundPaths = {
+    captureSound: "Geluiden/Capture.mp3",
+    shipCapturedSound: "Geluiden/Capture-ship.mp3",
+    dualShipSound: "Geluiden/coin.mp3",
+    playerShootSound: "Geluiden/firing.mp3",
+    explosionSound: "Geluiden/kill.mp3",
+    gameOverSound: "Geluiden/gameover.mp3",
+    lostLifeSound: "Geluiden/lost-live.mp3",
+    entranceSound: "Geluiden/Entree.mp3",
+    bossGalagaDiveSound: "Geluiden/Enemy2.mp3",
+    levelUpSound: "Geluiden/LevelUp.mp3",
+    enemyShootSound: "Geluiden/Fire-enemy.mp3",
+    butterflyDiveSound: "Geluiden/flying.mp3",
+    startSound: "Geluiden/Start.mp3",
+    coinSound: "Geluiden/coin.mp3",
+    beeHitSound: "Geluiden/Bees-hit.mp3",
+    butterflyHitSound: "Geluiden/Butterfly-hit.mp3",
+    bossHit1Sound: "Geluiden/Boss-hit1.mp3",
+    bossHit2Sound: "Geluiden/Boss-hit2.mp3",
+    gridBackgroundSound: "Geluiden/Achtergrond-grid.mp3",
+    extraLifeSound: "Geluiden/Extra-Leven.mp3",
+    csPerfectSound: "Geluiden/CS-Stage-Perfect-.mp3",
+    csClearSound: "Geluiden/CS-Clear.mp3",
+    waveUpSound: "Geluiden/Waveup.mp3",
+    menuMusicSound: "Geluiden/Menu-music.mp3",
+    readySound: "Geluiden/ready.mp3",
+    tripleAttackSound: "Geluiden/Triple.mp3",
+    resultsMusicSound: "Geluiden/results-music.mp3",
+    hiScoreSound: "Geluiden/hi-score.mp3"
+};
+
+
+// --- EINDE deel 1      van 3 dit codeblok ---
+// --- END OF FILE setup_utils.js ---
+
+
+
+
+
+
+
+// --- START OF FILE setup_utils.js ---
+// --- DEEL 2      van 3 dit code blok    ---
+
+const
+
+    BASE_ENEMY_BULLET_SPEED = 9,
+    MAX_ENEMY_BULLET_SPEED = 9,
+    BASE_ENEMY_ATTACK_SPEED = 5.5,
+    MAX_ENEMY_ATTACK_SPEED = 8.0,
+    BASE_MAX_ATTACKING_ENEMIES = 10,
+    MAX_MAX_ATTACKING_ENEMIES = 22,
+    BASE_GRID_MOVE_SPEED = 0.3,
+    MAX_GRID_MOVE_SPEED = 0.7,
+    BASE_GRID_BREATH_CYCLE_MS = 2000,
+    MIN_GRID_BREATH_CYCLE_MS = 1000,
+    BASE_ENEMY_BULLET_BURST_COUNT = 1,
+    MAX_ENEMY_BULLET_BURST_COUNT = 5,
+    BASE_ENEMY_AIM_FACTOR = 0.75,
+    MAX_ENEMY_AIM_FACTOR = 0.95,
+    BASE_BEE_GROUP_ATTACK_PROBABILITY = 0.05,
+    MAX_BEE_GROUP_ATTACK_PROBABILITY = 0.40,
+    BASE_BEE_TRIPLE_ATTACK_PROBABILITY = 0.10,
+    MAX_BEE_TRIPLE_ATTACK_PROBABILITY = 0.50,
+
+    // --- Bestaande constanten ---
+    PLAYER_BULLET_WIDTH = 5, PLAYER_BULLET_HEIGHT = 15, PLAYER_BULLET_SPEED = 14,
+    DUAL_SHIP_BULLET_OFFSET_X = SHIP_WIDTH * 0.5,
+    ENEMY_BULLET_WIDTH = 4, ENEMY_BULLET_HEIGHT = 12,
+    NUM_STARS = 500, MAX_STAR_RADIUS = 1.5, MIN_STAR_RADIUS = 0.5, TWINKLE_SPEED = 0.015, BASE_PARALLAX_SPEED = 0.3, PARALLAX_SPEED_FACTOR = 2.0, STAR_FADE_START_FACTOR_ABOVE_HORIZON = 0.25,
+    GRID_RGB_PART = "100, 180, 255", GRID_BASE_ALPHA = 0.8, GRID_MIN_ALPHA = 0.3, GRID_FIXED_LINES_ALPHA = 0.5, GRID_LINE_COLOR_FIXED = `rgba(${GRID_RGB_PART}, ${GRID_FIXED_LINES_ALPHA})`, GRID_LINE_WIDTH = 2,
+    GRID_SPEED = 0.4,
+    GRID_HORIZON_Y_FACTOR = 0.74, GRID_BASE_SPACING = 15, GRID_SPACING_POWER = 2.0, GRID_HORIZONTAL_LINE_WIDTH_FACTOR = 1.5, GRID_NUM_PERSPECTIVE_LINES = 14, GRID_HORIZON_SPREAD_FACTOR = 1.2, GRID_BOTTOM_SPREAD_FACTOR = 2.0, GRID_PERSPECTIVE_POWER = 1.0,
+    MENU_INACTIVITY_TIMEOUT = 20000, SCORE_SCREEN_DURATION = 20000,
+    ENTRANCE_SPEED = 6,
+    BASE_RETURN_SPEED = ENTRANCE_SPEED,
+    NORMAL_ENTRANCE_PATH_SPEED = 0.013934592,
+    BOSS_LOOP_ENTRANCE_PATH_SPEED = 0.055738368,
+    ENEMY_SPAWN_DELAY_IN_SQUADRON = 100,
+    ENTRANCE_PAIR_HORIZONTAL_GAP = 5,
+    ENTRANCE_PAIR_PATH_T_OFFSET = 0.00,
+    NORMAL_WAVE_SQUADRON_INTERVAL = 1800,
+    ENTRANCE_FIRE_BURST_DELAY_MS = 80,
+    CS_ENTRANCE_PATH_SPEED = 0.0032,
+    CS_COMPLETION_MESSAGE_DELAY = 1000,
+    ENEMY_ANIMATION_INTERVAL_MS = 250,
+    AXIS_DEAD_ZONE_MENU = 0.3,
+    AXIS_DEAD_ZONE_GAMEPLAY = 0.15,
+    PS5_BUTTON_CROSS = 0, PS5_BUTTON_CIRCLE = 1, PS5_BUTTON_TRIANGLE = 3, PS5_BUTTON_R1 = 5, PS5_DPAD_UP = 12, PS5_DPAD_DOWN = 13, PS5_DPAD_LEFT = 14, PS5_DPAD_RIGHT = 15, PS5_LEFT_STICK_X = 0, PS5_LEFT_STICK_Y = 1,
+    SHOOT_COOLDOWN = 140,
+    CS_MULTI_BULLET_COUNT = 2,
+    CS_MULTI_BULLET_SPREAD_ANGLE_DEG = 8,
+    GRID_ROWS = 5, GRID_COLS = 10,
+    ENEMY_V_SPACING = 20,
+    ENEMY_H_SPACING_FIXED = 30,
+    ENEMY_TOP_MARGIN = 117,
+    GRID_HORIZONTAL_MARGIN_PERCENT = 0.18,
+    GRID_BREATH_ENABLED = true,
+    GRID_BREATH_MAX_EXTRA_H_SPACING_FACTOR = 0.5,
+    GRID_BREATH_MAX_EXTRA_V_SPACING_FACTOR = 0.3,
+    ENEMY1_DIVE_SPEED_FACTOR = 0.65,
+    ENEMY2_DIVE_SPEED_FACTOR = 0.75,
+    ENEMY3_ATTACK_SPEED_FACTOR = 0.80,
+    BOSS_CAPTURE_DIVE_SPEED_FACTOR = 0.85,
+    GROUP_DETACH_DELAY_MS = 80,
+    GROUP_FIRE_BURST_DELAY = 600,
+    SOLO_BUTTERFLY_FIRE_DELAY = 600,
+    BOSS_CAPTURE_DIVE_PROBABILITY = 0.15,
+    CAPTURE_DIVE_SIDE_MARGIN_FACTOR = 0.15,
+    CAPTURE_DIVE_BOTTOM_HOVER_Y_FACTOR = 0.70,
+    CAPTURE_BEAM_DURATION_MS = 5000,
+    CAPTURE_BEAM_ANIMATION_DURATION_MS = 500,
+    CAPTURE_BEAM_WIDTH_TOP_FACTOR = 0.7,
+    CAPTURE_BEAM_WIDTH_BOTTOM_FACTOR = 1.8,
+    CAPTURE_BEAM_COLOR_START = 'rgba(180, 180, 255, 0.1)',
+    CAPTURE_BEAM_COLOR_END = 'rgba(220, 220, 255, 0.6)',
+    CAPTURE_BEAM_PULSE_SPEED = 0.004,
+    CAPTURED_SHIP_SCALE = 1.0,
+    CAPTURED_SHIP_OFFSET_X = (BOSS_WIDTH - SHIP_WIDTH) / 2,
+    CAPTURED_SHIP_OFFSET_Y = -SHIP_HEIGHT * 0.5,
+    CAPTURE_MESSAGE_DURATION = 3000,
+    CAPTURED_SHIP_TINT_COLOR = 'rgba(255, 150, 150, 0.55)',
+    CAPTURED_SHIP_FIRE_COOLDOWN_MS = 500,
+    RESPAWN_DELAY_MS = 2000,
+    INVINCIBILITY_DURATION_MS = 2000,
+    INVINCIBILITY_BLINK_ON_MS = 100,
+    INVINCIBILITY_BLINK_OFF_MS = 50,
+    FALLING_SHIP_SPEED = 3.5,
+    FALLING_SHIP_FADE_DURATION_MS = 1500,
+    FALLING_SHIP_ROTATION_DURATION_MS = 1500,
+    FALLING_SHIP_ROTATION_SPEED = 0.1,
+    DUAL_SHIP_DOCK_TIME_MS = 1000,
+    DUAL_SHIP_OFFSET_X = SHIP_WIDTH,
+    AUTO_DOCK_THRESHOLD = 20,
+    FLOATING_SCORE_DURATION = 500,
+    FLOATING_SCORE_APPEAR_DELAY = -50,
+    FLOATING_SCORE_FONT = "bold 12px 'Press Start 2P'",
+    FLOATING_SCORE_OPACITY = 0.5,
+    FLOATING_SCORE_COLOR_GRID = "cyan",
+    FLOATING_SCORE_COLOR_ACTIVE = "red",
+    FLOATING_SCORE_COLOR_CS_CHAIN = "cyan",
+    CS_CHAIN_SCORE_THRESHOLD = 4,
+    CS_CHAIN_BREAK_TIME_MS = 500,
+    NORMAL_WAVE_CHAIN_BONUS_ENABLED = false,
+    NORMAL_WAVE_CHAIN_SCORE_THRESHOLD = 4,
+    NORMAL_WAVE_CHAIN_BREAK_TIME_MS = 750,
+    EXPLOSION_DURATION = 650, EXPLOSION_PARTICLE_COUNT = 25, EXPLOSION_MAX_SPEED = 5.5, EXPLOSION_MIN_SPEED = 1.5, EXPLOSION_PARTICLE_RADIUS = 4, EXPLOSION_FADE_SPEED = 2.8, EXPLOSION_MAX_OPACITY = 0.8,
+    HIT_SPARK_COUNT = 8, HIT_SPARK_LIFETIME = 1500, HIT_SPARK_SPEED = 4.5, HIT_SPARK_SIZE = 2.5, HIT_SPARK_COLOR = 'rgba(255, 255, 180, 0.9)', HIT_SPARK_GRAVITY = 0.05, HIT_SPARK_FADE_SPEED = 1.0 / HIT_SPARK_LIFETIME,
+    UI_TEXT_MARGIN_TOP = 35,
+    UI_1UP_BLINK_ON_MS = 600, UI_1UP_BLINK_OFF_MS = 400, UI_1UP_BLINK_CYCLE_MS = UI_1UP_BLINK_ON_MS + UI_1UP_BLINK_OFF_MS,
+    AI_SHOOT_COOLDOWN = 140, AI_STABILIZATION_DURATION = 500, AI_POSITION_MOVE_SPEED_FACTOR = 1.2,
+    AI_COLLISION_LOOKAHEAD = SHIP_HEIGHT * 3.5, AI_COLLISION_BUFFER = SHIP_WIDTH * 0.6,
+    FINAL_DODGE_LOOKAHEAD = AI_COLLISION_LOOKAHEAD * 4.5,
+    FINAL_DODGE_BUFFER_BASE = AI_COLLISION_BUFFER * 3.5,
+    ENTRANCE_BULLET_DODGE_LOOKAHEAD = FINAL_DODGE_LOOKAHEAD * 1.1,
+    ENTRANCE_BULLET_DODGE_BUFFER = FINAL_DODGE_BUFFER_BASE * 1.1,
+    FINAL_AI_DODGE_MOVE_SPEED_FACTOR = 3.8,
+    AI_SHOOT_ALIGNMENT_THRESHOLD = 0.15, AI_SHOT_CLEARANCE_BUFFER = PLAYER_BULLET_WIDTH * 1.5, MAX_PREDICTION_TIME_CS = 0.7, NORMAL_MOVE_FRACTION = 0.08, CS_AI_MOVE_FRACTION = 0.16,
+    AI_SMOOTHING_FACTOR_MOVE = 0.05,
+    CS_MOVE_SPEED_FACTOR = 1.8, NORMAL_WAVE_ATTACKING_DODGE_BUFFER_MULTIPLIER = 1.2, NORMAL_WAVE_ATTACKING_DODGE_SPEED_MULTIPLIER = 1.1, STABILIZE_MOVE_FRACTION = 0.05, ENTRANCE_DODGE_MOVE_FRACTION = 0.15,
+    AI_MOVEMENT_DEADZONE = 0.8,
+    AI_SMOOTHING_FACTOR = 0.1, AI_EDGE_BUFFER = SHIP_WIDTH * 0.5, AI_ANTI_CORNER_BUFFER = AI_EDGE_BUFFER * 2.5, BEE_DODGE_BUFFER_HORIZONTAL_FACTOR = 1.5, FINAL_SHOOT_ALIGNMENT_THRESHOLD = 2.0, GRID_SHOOT_ALIGNMENT_FACTOR = 1.5, ENTRANCE_SHOOT_ALIGNMENT_FACTOR = 1.2, ENTRANCE_AI_DODGE_MOVE_SPEED_FACTOR = 4.0, AI_WIGGLE_AMPLITUDE = SHIP_WIDTH * 0.15, AI_WIGGLE_PERIOD = 3000, AI_EDGE_SHOOT_BUFFER_FACTOR = 2.0, AI_EDGE_SHOOT_TARGET_THRESHOLD_FACTOR = 0.75, ENTRANCE_SHOOT_BULLET_CHECK_LOOKAHEAD = SHIP_HEIGHT * 1.5, ENTRANCE_SHOOT_BULLET_CHECK_BUFFER = SHIP_WIDTH * 0.8, MAX_PREDICTION_TIME = 0.8, LOCAL_CS_POSITION_MIN_X = 0, LOCAL_CS_POSITION_MAX_X = 0, CS_SHOOTING_MOVE_FRACTION = 0.25, CS_SHOOTING_MOVE_SPEED_FACTOR = 2.0, CS_PREDICTION_FACTOR = 1.0, AI_CAPTURE_WAIT_DURATION_MS = 2000,
+    INTRO_DURATION_PER_STEP = 4000,
+    TWO_PLAYER_STAGE_INTRO_DURATION = 4000,
+    READY_MESSAGE_DURATION = 3000,
+    CS_HITS_MESSAGE_DURATION = 1000,
+    CS_PERFECT_MESSAGE_DURATION = 1000,
+    CS_BONUS_MESSAGE_DURATION = 8000,
+    CS_CLEAR_DELAY = 8000,
+    CS_CLEAR_HITS_DELAY = 1000,
+    CS_CLEAR_SCORE_DELAY = 2000,
+    EXTRA_LIFE_MESSAGE_DURATION = 3000,
+    RECURRING_EXTRA_LIFE_INTERVAL = 70000,
+    POST_MESSAGE_RESET_DELAY = 1000,
+    EXTRA_LIFE_THRESHOLD_1 = 20000,
+    EXTRA_LIFE_THRESHOLD_2 = 70000
+;
+
+const GAME_OVER_DURATION = 5000;
+
+const waveEntrancePatterns = [
+    [ { pathId: 'new_path_left', enemies: [ { type: ENEMY2_TYPE, gridRow: 1, gridCol: 4, entrancePathId: 'new_path_left' }, { type: ENEMY2_TYPE, gridRow: 1, gridCol: 5, entrancePathId: 'new_path_left' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 4, entrancePathId: 'new_path_left' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 5, entrancePathId: 'new_path_left' } ]}, { pathId: 'new_path_right', enemies: [ { type: ENEMY1_TYPE, gridRow: 3, gridCol: 4, entrancePathId: 'new_path_right' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 5, entrancePathId: 'new_path_right' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 4, entrancePathId: 'new_path_right' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 5, entrancePathId: 'new_path_right' } ]}, { pathId: 'boss_loop_left', enemies: [ { type: ENEMY3_TYPE, gridRow: 0, gridCol: 4, entrancePathId: 'boss_loop_left', hasCapturedShip: false }, { type: ENEMY3_TYPE, gridRow: 0, gridCol: 5, entrancePathId: 'boss_loop_left', hasCapturedShip: false }, { type: ENEMY2_TYPE, gridRow: 1, gridCol: 3, entrancePathId: 'boss_loop_left' }, { type: ENEMY2_TYPE, gridRow: 1, gridCol: 6, entrancePathId: 'boss_loop_left' }, { type: ENEMY3_TYPE, gridRow: 0, gridCol: 3, entrancePathId: 'boss_loop_left', hasCapturedShip: false }, { type: ENEMY3_TYPE, gridRow: 0, gridCol: 6, entrancePathId: 'boss_loop_left', hasCapturedShip: false }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 3, entrancePathId: 'boss_loop_left' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 6, entrancePathId: 'boss_loop_left' } ]}, { pathId: 'boss_loop_right', enemies: [ { type: ENEMY2_TYPE, gridRow: 1, gridCol: 1, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 1, gridCol: 2, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 1, gridCol: 7, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 1, gridCol: 8, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 1, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 2, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 7, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 8, entrancePathId: 'boss_loop_right' } ]}, { pathId: 'mid_curve_left', enemies: [ { type: ENEMY1_TYPE, gridRow: 3, gridCol: 6, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 7, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 8, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 9, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 6, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 7, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 8, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 9, entrancePathId: 'mid_curve_left' } ]}, { pathId: 'mid_curve_right', enemies: [ { type: ENEMY1_TYPE, gridRow: 3, gridCol: 0, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 1, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 2, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 3, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 0, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 1, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 2, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 3, entrancePathId: 'mid_curve_right' } ]} ],
+    [ { pathId: 'new_path_left', enemies: [ { type: ENEMY2_TYPE, gridRow: 1, gridCol: 4, entrancePathId: 'new_path_left' }, { type: ENEMY2_TYPE, gridRow: 1, gridCol: 5, entrancePathId: 'new_path_left' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 4, entrancePathId: 'new_path_left' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 5, entrancePathId: 'new_path_left' } ]}, { pathId: 'new_path_right', enemies: [ { type: ENEMY1_TYPE, gridRow: 3, gridCol: 4, entrancePathId: 'new_path_right' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 5, entrancePathId: 'new_path_right' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 4, entrancePathId: 'new_path_right' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 5, entrancePathId: 'new_path_right' } ]}, { pathId: 'boss_loop_left', enemies: [ { type: ENEMY3_TYPE, gridRow: 0, gridCol: 4, entrancePathId: 'boss_loop_left', hasCapturedShip: false }, { type: ENEMY3_TYPE, gridRow: 0, gridCol: 5, entrancePathId: 'boss_loop_left', hasCapturedShip: false }, { type: ENEMY2_TYPE, gridRow: 1, gridCol: 3, entrancePathId: 'boss_loop_left' }, { type: ENEMY2_TYPE, gridRow: 1, gridCol: 6, entrancePathId: 'boss_loop_left' }, { type: ENEMY3_TYPE, gridRow: 0, gridCol: 3, entrancePathId: 'boss_loop_left', hasCapturedShip: false }, { type: ENEMY3_TYPE, gridRow: 0, gridCol: 6, entrancePathId: 'boss_loop_left', hasCapturedShip: false }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 3, entrancePathId: 'boss_loop_left' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 6, entrancePathId: 'boss_loop_left' } ]}, { pathId: 'boss_loop_right', enemies: [ { type: ENEMY2_TYPE, gridRow: 1, gridCol: 1, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 1, gridCol: 2, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 1, gridCol: 7, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 1, gridCol: 8, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 1, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 2, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 7, entrancePathId: 'boss_loop_right' }, { type: ENEMY2_TYPE, gridRow: 2, gridCol: 8, entrancePathId: 'boss_loop_right' } ]}, { pathId: 'mid_curve_left', enemies: [ { type: ENEMY1_TYPE, gridRow: 3, gridCol: 6, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 7, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 8, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 9, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 6, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 7, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 8, entrancePathId: 'mid_curve_left' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 9, entrancePathId: 'mid_curve_left' } ]}, { pathId: 'mid_curve_right', enemies: [ { type: ENEMY1_TYPE, gridRow: 3, gridCol: 0, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 1, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 2, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 3, gridCol: 3, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 0, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 1, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 2, entrancePathId: 'mid_curve_right' }, { type: ENEMY1_TYPE, gridRow: 4, gridCol: 3, entrancePathId: 'mid_curve_right' } ]} ] ];
+
+const MARGIN_TOP = 5, MARGIN_SIDE = 105, SCORE_OFFSET_Y = 25;
+const LIFE_ICON_SIZE = 35, LIFE_ICON_SPACING = 8, LIFE_ICON_MARGIN_BOTTOM = -1, LIFE_ICON_MARGIN_LEFT = MARGIN_SIDE - 30;
+const LEVEL_ICON_SIZE = 35, LEVEL_ICON_MARGIN_BOTTOM = LIFE_ICON_MARGIN_BOTTOM, LEVEL_ICON_MARGIN_RIGHT = MARGIN_SIDE - 30, LEVEL_ICON_SPACING = LIFE_ICON_SPACING;
+
+/** Basic rectangle collision check. */
+function checkCollision(rect1, rect2) {
+    if (!rect1 || !rect2) return false;
+    return (
+        rect1.x < rect2.x + rect2.width &&
+        rect1.x + rect1.width > rect2.x &&
+        rect1.y < rect2.y + rect2.height &&
+        rect1.y + rect1.height > rect2.y
+    );
+}
+
+function initializeAudioContext() {
+    if (audioContextInitialized) return;
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        // Unlock Web Audio API on iOS - needs a user gesture.
+        // We'll attempt to resume it during the first click/touch if it's suspended.
+        if (audioContext.state === 'suspended') {
+            const unlockAudio = () => {
+                audioContext.resume().then(() => {
+                    console.log("AudioContext resumed successfully after user gesture.");
+                    audioContextInitialized = true;
+                    window.removeEventListener('click', unlockAudio);
+                    window.removeEventListener('touchstart', unlockAudio);
+                }).catch(e => console.error("Error resuming AudioContext:", e));
+            };
+            window.addEventListener('click', unlockAudio, { once: true });
+            window.addEventListener('touchstart', unlockAudio, { once: true });
+        } else {
+            audioContextInitialized = true;
+        }
+    } catch (e) {
+        console.error("Web Audio API is not supported in this browser.", e);
+    }
+}
+
+async function loadSound(soundId, path) {
+    if (!audioContext) {
+        console.warn(`AudioContext not initialized, cannot load sound: ${soundId}`);
+        return;
+    }
+    if (soundBuffers[soundId]) {
+        return; // Already loaded or loading
+    }
+    try {
+        const response = await fetch(path);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} for ${path}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        audioContext.decodeAudioData(arrayBuffer, (buffer) => {
+            soundBuffers[soundId] = buffer;
+        }, (error) => {
+            console.error(`Error decoding audio data for ${soundId} (${path}):`, error);
+        });
+    } catch (e) {
+        console.error(`Error fetching sound ${soundId} (${path}):`, e);
+    }
+}
+
+function loadAllSounds() {
+    if (!audioContext) return;
+    for (const soundId in soundPaths) {
+        loadSound(soundId, soundPaths[soundId]);
+    }
+}
+
+
+function initializeDOMElements() {
+    starrySkyCanvas = document.getElementById('starrySkyCanvas');
+    starryCtx = starrySkyCanvas?.getContext('2d');
+    retroGridCanvas = document.getElementById('retroGridCanvas');
+    retroGridCtx = retroGridCanvas?.getContext('2d');
+    gameCanvas = document.getElementById("gameCanvas");
+    gameCtx = gameCanvas?.getContext("2d");
+    if (!starryCtx || !retroGridCtx || !gameCtx) { console.error("FATAL: Could not initialize one or more canvas contexts!"); alert("Error loading critical canvas elements."); document.body.innerHTML = '<p style="color:white;">FATAL ERROR</p>'; return false; }
+
+    if (gameCanvas.width === 0 || gameCanvas.height === 0) {
+        const initialWidth = window.innerWidth || 800;
+        const initialHeight = window.innerHeight || 600;
+        if (starrySkyCanvas) { starrySkyCanvas.width = initialWidth; starrySkyCanvas.height = initialHeight; }
+        if (retroGridCanvas) { retroGridCanvas.width = initialWidth; retroGridCanvas.height = initialHeight; }
+        gameCanvas.width = initialWidth;
+        gameCanvas.height = initialHeight;
+    }
+
+    floatingScores = [];
+    csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
+    normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null;
+
+    initializeAudioContext(); // Initialize AudioContext
+    if (audioContext) {
+        loadAllSounds(); // Load all sounds
+
+        // Set initial volumes after sounds are expected to be loaded (or at least paths are known)
+        // Actual buffer might not be ready yet, but GainNodes can be created.
+        // A more robust solution would set volume after each sound buffer is decoded.
+        setTimeout(() => {
+            if (!audioContextInitialized && audioContext.state === 'suspended') {
+                console.warn("AudioContext still suspended. User interaction needed to play sounds.");
+            }
+            setVolume('playerShootSound', 0.4);
+            setVolume('explosionSound', 0.4);
+            setVolume('gameOverSound', 0.4);
+            setVolume('lostLifeSound', 0.6);
+            setVolume('entranceSound', 0.4);
+            setVolume('bossGalagaDiveSound', 0.2);
+            setVolume('levelUpSound', 0.2);
+            setVolume('enemyShootSound', 0.4);
+            setVolume('butterflyDiveSound', 0.2);
+            setVolume('startSound', 0.4);
+            setVolume('coinSound', 0.4); // or dualShipSound
+            setVolume('beeHitSound', 0.3);
+            setVolume('butterflyHitSound', 0.3);
+            setVolume('bossHit1Sound', 0.6);
+            setVolume('bossHit2Sound', 0.4);
+            setVolume('gridBackgroundSound', 0.1);
+            setVolume('extraLifeSound', 0.5);
+            setVolume('csPerfectSound', 0.6);
+            setVolume('csClearSound', 0.6);
+            setVolume('waveUpSound', 0.8);
+            setVolume('menuMusicSound', 0.2);
+            setVolume('readySound', 0.1);
+            setVolume('tripleAttackSound', 0.3);
+            setVolume('captureSound', 0.6);
+            setVolume('shipCapturedSound', 0.3);
+            setVolume('dualShipSound', 0.4);
+            setVolume('resultsMusicSound', 0.2);
+            setVolume('hiScoreSound', 0.2);
+        }, 100); // Short delay to allow GainNode creation
+    }
+
+    // Voeg touch event listeners toe aan gameCanvas
+    if (gameCanvas) {
+        gameCanvas.addEventListener('touchstart', handleTouchStartGlobal, { passive: false });
+        gameCanvas.addEventListener('touchmove', handleTouchMoveGlobal, { passive: false });
+        gameCanvas.addEventListener('touchend', handleTouchEndGlobal, { passive: false });
+        gameCanvas.addEventListener('touchcancel', handleTouchEndGlobal, { passive: false }); // Behandel cancel als een end
+    }
+
+
+    const imagesToLoad = [ shipImage, beeImage, bulletImage, bossGalagaImage, butterflyImage, logoImage, level1Image, level5Image, level10Image, level20Image, level30Image, level50Image, beeImage2, butterflyImage2, bossGalagaImage2 ];
+    imagesToLoad.forEach(img => { if (img) img.onerror = () => console.error(`Error loading image: ${img.src}`); });
+    return true;
+}
+
+
+function scaleValue(currentLevel, baseValue, maxValue) { const levelForCalc = Math.max(1, Math.min(currentLevel, LEVEL_CAP_FOR_SCALING)); if (levelForCalc === 1) { return baseValue; } const progress = (levelForCalc - 1) / (LEVEL_CAP_FOR_SCALING - 1); return baseValue + (maxValue - baseValue) * progress; }
+
+// --- EINDE deel 2      van 3 dit codeblok ---
+// --- END OF FILE setup_utils.js ---
+
+
+
+
+
+
+
+
+
+
+
+// --- START OF FILE setup_utils.js ---
+// --- DEEL 3      van 3 dit code blok    ---
+
+
+function setupInitialEventListeners() { /* ... ongewijzigd ... */ try { window.addEventListener("gamepadconnected", handleGamepadConnected); window.addEventListener("gamepaddisconnected", handleGamepadDisconnected); window.addEventListener('resize', resizeCanvases); } catch(e) { console.error("Error setting up initial event listeners:", e); } }
+
+
+function getCurrentGridSlotPosition(gridRow, gridCol, enemyWidth) {
+    if (!gameCanvas || gameCanvas.width === 0 || gridRow < 0 || gridCol < 0) {
+        // console.warn(`[DEBUG] getCurrentGridSlotPosition called with invalid params or zero canvas width. Row: ${gridRow}, Col: ${gridCol}, CanvasW: ${gameCanvas?.width}`);
+        return { x: gameCanvas?.width / 2 || 200, y: ENEMY_TOP_MARGIN || 100 };
+    }
+    const baseEnemyWidthForCalc = ENEMY_WIDTH;
+    let currentHorizontalSpacing = ENEMY_H_SPACING_FIXED;
+    let currentVerticalSpacing = ENEMY_V_SPACING;
+
+    if (GRID_BREATH_ENABLED && isGridBreathingActive) {
+        const extraHSpacing = ENEMY_H_SPACING_FIXED * GRID_BREATH_MAX_EXTRA_H_SPACING_FACTOR * currentGridBreathFactor;
+        currentHorizontalSpacing = ENEMY_H_SPACING_FIXED + extraHSpacing;
+        const extraVSpacing = ENEMY_V_SPACING * GRID_BREATH_MAX_EXTRA_V_SPACING_FACTOR * currentGridBreathFactor;
+        currentVerticalSpacing = ENEMY_V_SPACING + extraVSpacing;
+    }
+
+    const actualGridWidth = GRID_COLS * baseEnemyWidthForCalc + (GRID_COLS - 1) * currentHorizontalSpacing;
+    const initialGridStartX = Math.round((gameCanvas.width - actualGridWidth) / 2);
+    const currentStartX = initialGridStartX + currentGridOffsetX;
+    const colStartX = currentStartX + gridCol * (baseEnemyWidthForCalc + currentHorizontalSpacing);
+    const centeringOffset = (baseEnemyWidthForCalc - enemyWidth) / 2;
+    const targetX = Math.round(colStartX + centeringOffset);
+    const targetY = Math.round(ENEMY_TOP_MARGIN + gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING));
+
+    return { x: targetX, y: targetY };
+}
+
+
+/** Safely attempts to play a sound from the beginning. Handles potential errors. */
+function playSound(soundId, loop = false, volume = 1) {
+    if (!audioContext || !audioContextInitialized || audioContext.state === 'suspended' || !soundBuffers[soundId]) {
+        // console.warn(`Cannot play sound: ${soundId}. Context suspended or buffer not ready.`);
+        return;
+    }
+
+    if (isShowingPortraitMessage) {
+        // console.log(`[playSound] Blocked sound '${soundId}' due to portrait mode.`); // Debug log
+        return;
+    }
+
+    if (isPaused && soundId !== 'menuMusicSound') return;
+
+
+    // Stop any existing instance of this sound before playing a new one, unless it's music
+    if (soundId !== 'menuMusicSound' && soundId !== 'gridBackgroundSound') {
+        stopSound(soundId);
+    } else if ((soundId === 'menuMusicSound' || soundId === 'gridBackgroundSound') && soundSources[soundId]) {
+        // If it's looping music and already playing, don't restart
+        return;
+    }
+
+
+    const source = audioContext.createBufferSource();
+    source.buffer = soundBuffers[soundId];
+    source.loop = loop;
+
+    let gainNode = soundGainNodes[soundId];
+    if (!gainNode) {
+        gainNode = audioContext.createGain();
+        soundGainNodes[soundId] = gainNode;
+    }
+    const safeVolume = Math.max(0, Math.min(2, volume));
+    gainNode.gain.setValueAtTime(safeVolume, audioContext.currentTime);
+    source.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    source.start(0);
+    soundSources[soundId] = source;
+
+    source.onended = () => {
+        if (soundSources[soundId] === source) {
+            delete soundSources[soundId];
+        }
+    };
+}
+
+/** Safely attempts to stop a sound and reset its position. */
+function stopSound(soundId) {
+    if (soundSources[soundId]) {
+        const sourceToStop = soundSources[soundId]; // Pak de referentie
+        delete soundSources[soundId]; // Verwijder direct uit de actieve lijst
+
+        try {
+            // Zet de onended listener op null om te voorkomen dat de oude onended
+            // probeert een al verwijderde property te benaderen als stop() asynchroon is
+            // of als onended om een andere reden getriggerd zou worden na de delete.
+            if (sourceToStop && typeof sourceToStop.onended === 'function') {
+                 sourceToStop.onended = null;
+            }
+            sourceToStop.stop(0);
+        } catch (e) {
+            // console.warn(`Warning stopping sound ${soundId}:`, e.message);
+        }
+    }
+}
+
+/** Helper to set volume for a specific sound */
+function setVolume(soundId, volume) {
+    if (!audioContext) return;
+    if (!soundGainNodes[soundId]) {
+        soundGainNodes[soundId] = audioContext.createGain();
+        soundGainNodes[soundId].connect(audioContext.destination);
+    }
+    const safeVolume = Math.max(0, Math.min(2, volume));
+    soundGainNodes[soundId].gain.setValueAtTime(safeVolume, audioContext.currentTime);
+}
+
+
+/** Attempts to enter fullscreen mode and plays menu music. */
+function triggerFullscreen() {
+    if (!document.fullscreenElement) {
+        const element = document.documentElement;
+        let requestFullscreenPromise = null;
+
+        if (element.requestFullscreen) {
+            requestFullscreenPromise = element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) { /* Firefox */
+            requestFullscreenPromise = element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+            requestFullscreenPromise = element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) { /* IE/Edge */
+            requestFullscreenPromise = element.msRequestFullscreen();
+        }
+
+        const playMenuMusicAfterAction = () => {
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    audioContextInitialized = true;
+                    playSound('menuMusicSound', true, 0.2);
+                }).catch(e => console.error("Error resuming AudioContext for fullscreen music:", e));
+            } else if (audioContext) {
+                playSound('menuMusicSound', true, 0.2);
+            }
+        };
+
+        if (requestFullscreenPromise) {
+            requestFullscreenPromise
+                .then(() => {
+                    playMenuMusicAfterAction();
+                })
+                .catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    playMenuMusicAfterAction();
+                });
+        } else {
+            console.warn("Fullscreen API is not supported by this browser.");
+            playMenuMusicAfterAction();
+        }
+    } else {
+         if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => {
+                audioContextInitialized = true;
+                playSound('menuMusicSound', true, 0.2);
+            });
+        } else if (audioContext) {
+            playSound('menuMusicSound', true, 0.2);
+        }
+    }
+}
+
+
+/** Creates a single star object with random properties. */
+function createStar() { /* ... ongewijzigd ... */ if (!starrySkyCanvas || starrySkyCanvas.width === 0) return null; return { x: Math.random() * starrySkyCanvas.width, y: Math.random() * starrySkyCanvas.height, radius: Math.random() * (MAX_STAR_RADIUS - MIN_STAR_RADIUS) + MIN_STAR_RADIUS, alpha: Math.random() * 0.8 + 0.2, alphaChange: (Math.random() > 0.5 ? 1 : -1) * TWINKLE_SPEED * (Math.random() * 0.5 + 0.5) }; }
+
+/** Populates the stars array. */
+function createStars() { /* ... ongewijzigd ... */ stars = []; if (starrySkyCanvas?.width > 0 && starrySkyCanvas?.height > 0) { for (let i = 0; i < NUM_STARS; i++) { const star = createStar(); if (star) stars.push(star); } } }
+
+/** Draws the starry background, handling movement, twinkle, and fade near horizon. */
+function drawStars() { /* ... ongewijzigd ... */ try { if (!starryCtx || !starrySkyCanvas || starrySkyCanvas.width === 0 || starrySkyCanvas.height === 0) return; const currentCanvasWidth = starrySkyCanvas.width; const currentCanvasHeight = starrySkyCanvas.height; starryCtx.clearRect(0, 0, currentCanvasWidth, currentCanvasHeight); const horizonY = Math.round(currentCanvasHeight * GRID_HORIZON_Y_FACTOR); const perspectiveHeight = currentCanvasHeight - horizonY; const fadeStartY = Math.max(0, horizonY - perspectiveHeight * STAR_FADE_START_FACTOR_ABOVE_HORIZON); const fadeEndY = horizonY; const fadeRange = Math.max(1, fadeEndY - fadeStartY); stars.forEach(star => { const normalizedRadius = (star.radius - MIN_STAR_RADIUS) / (MAX_STAR_RADIUS - MIN_STAR_RADIUS); const speed = BASE_PARALLAX_SPEED + (normalizedRadius * PARALLAX_SPEED_FACTOR); if (!isPaused || isShowingPortraitMessage) { star.y += speed; } if (star.y > currentCanvasHeight + star.radius) { star.y = -star.radius * 2; star.x = Math.random() * currentCanvasWidth; } if (!isPaused || isShowingPortraitMessage) { star.alpha += star.alphaChange; if (star.alpha <= 0.1 || star.alpha >= 1.0) { star.alphaChange *= -1; star.alpha = Math.max(0.1, Math.min(1.0, star.alpha)); } } let finalAlpha = star.alpha; if (fadeStartY >= 0 && star.y > fadeStartY) { if (star.y >= horizonY) { finalAlpha = 0; } else { finalAlpha *= (1.0 - Math.min(1.0, Math.max(0, (star.y - fadeStartY) / fadeRange))); } } finalAlpha = Math.max(0, Math.min(1.0, finalAlpha)); if (finalAlpha > 0.01) { starryCtx.beginPath(); starryCtx.arc(Math.round(star.x), Math.round(star.y), star.radius, 0, Math.PI * 2); starryCtx.fillStyle = `rgba(255, 255, 255, ${finalAlpha.toFixed(3)})`; starryCtx.fill(); } }); } catch (e) { console.error("Error in drawStars:", e); if (mainLoopId) cancelAnimationFrame(mainLoopId); mainLoopId = null; } }
+
+/** Draws the retro perspective grid. */
+function drawRetroGrid() { /* ... ongewijzigd ... */ try { if (!retroGridCtx || !retroGridCanvas || retroGridCanvas.width === 0 || retroGridCanvas.height === 0) return; if (!isPaused || isShowingPortraitMessage) { gridOffsetY -= GRID_SPEED; } const width = retroGridCanvas.width; const height = retroGridCanvas.height; retroGridCtx.clearRect(0, 0, width, height); const horizonY = Math.round(height * GRID_HORIZON_Y_FACTOR); const vanishingPointX = width / 2; const perspectiveHeight = height - horizonY; retroGridCtx.lineWidth = GRID_LINE_WIDTH; const fixedLineWidth = width * GRID_HORIZONTAL_LINE_WIDTH_FACTOR; const fixedLineStartX = vanishingPointX - fixedLineWidth / 2; const fixedLineEndX = vanishingPointX + fixedLineWidth / 2; const fadeStartY = horizonY + perspectiveHeight * 0.1; const fadeEndY = height; const fadeRange = Math.max(1, fadeEndY - fadeStartY); retroGridCtx.strokeStyle = GRID_LINE_COLOR_FIXED; retroGridCtx.beginPath(); retroGridCtx.moveTo(fixedLineStartX, horizonY); retroGridCtx.lineTo(fixedLineEndX, horizonY); retroGridCtx.stroke(); let normalizedOffset = gridOffsetY % GRID_BASE_SPACING; if (normalizedOffset > 0) { normalizedOffset -= GRID_BASE_SPACING; } let currentDrawY = horizonY - normalizedOffset; if (currentDrawY <= horizonY) currentDrawY += GRID_BASE_SPACING; while (currentDrawY < height + GRID_BASE_SPACING) { let progress = Math.max(0, Math.min(1, (currentDrawY - horizonY) / perspectiveHeight)); if (currentDrawY > horizonY && currentDrawY <= height + GRID_LINE_WIDTH*2) { let currentAlpha; if (currentDrawY <= fadeStartY) { currentAlpha = GRID_MIN_ALPHA; } else if (currentDrawY >= fadeEndY) { currentAlpha = GRID_BASE_ALPHA; } else { const fadeProgress = (currentDrawY - fadeStartY) / fadeRange; currentAlpha = GRID_MIN_ALPHA + (GRID_BASE_ALPHA - GRID_MIN_ALPHA) * fadeProgress; } currentAlpha = Math.max(0, Math.min(GRID_BASE_ALPHA, currentAlpha)); if (currentAlpha > 0.01) { retroGridCtx.strokeStyle = `rgba(${GRID_RGB_PART}, ${currentAlpha.toFixed(3)})`; retroGridCtx.beginPath(); retroGridCtx.moveTo(fixedLineStartX, Math.round(currentDrawY)); retroGridCtx.lineTo(fixedLineEndX, Math.round(currentDrawY)); retroGridCtx.stroke(); } } let nextSpacing = GRID_BASE_SPACING * Math.pow(1 + progress * 1.5, GRID_SPACING_POWER); currentDrawY += Math.max(1, nextSpacing); } retroGridCtx.strokeStyle = GRID_LINE_COLOR_FIXED; retroGridCtx.beginPath(); const numLinesHalf = Math.floor(GRID_NUM_PERSPECTIVE_LINES / 2); const horizonSpreadWidth = width * GRID_HORIZON_SPREAD_FACTOR; const maxSpreadAtBottom = width * GRID_BOTTOM_SPREAD_FACTOR; for (let i = 0; i <= numLinesHalf; i++) { let spreadProgress = Math.pow(i / numLinesHalf, GRID_PERSPECTIVE_POWER); let startX_R = vanishingPointX + spreadProgress * (horizonSpreadWidth / 2); let startX_L = vanishingPointX - spreadProgress * (horizonSpreadWidth / 2); let bottomX_R = vanishingPointX + spreadProgress * (maxSpreadAtBottom / 2); let bottomX_L = vanishingPointX - spreadProgress * (maxSpreadAtBottom / 2); retroGridCtx.moveTo(startX_R, horizonY); retroGridCtx.lineTo(bottomX_R, height); if (i > 0) { retroGridCtx.moveTo(startX_L, horizonY); retroGridCtx.lineTo(bottomX_L, height); } } retroGridCtx.stroke(); } catch (e) { console.error("Error in drawRetroGrid:", e); } }
+
+/** Berekent een punt op een kubische Bézier curve. */
+function calculateBezierPoint(t, p0, p1, p2, p3) { /* ... ongewijzigd ... */ const u = 1 - t; const tt = t * t; const uu = u * u; const uuu = uu * u; const ttt = tt * t; let p = uuu * p0; p += 3 * uu * t * p1; p += 3 * u * tt * p2; p += ttt * p3; return p; }
+
+/** Defines the Bezier curve paths for normal wave enemy entrances. */
+ function defineNormalWaveEntrancePaths() { /* ... ongewijzigd ... */ normalWaveEntrancePaths = {}; const w = gameCanvas?.width; const h = gameCanvas?.height; if (!w || !h || w === 0) { console.error("Cannot define Normal Wave entrance paths: Canvas size unknown or zero width."); return; } const sX = w / 800; const sY = h / 600; const offTop = -Math.max(ENEMY1_HEIGHT, ENEMY_HEIGHT) * 1.5; const midScreenX = w / 2; const horizontalShift = -25; const baseEnemyWidthForCalc = ENEMY_WIDTH; const fixedSpacing = ENEMY_H_SPACING_FIXED; const actualGridWidth = GRID_COLS * baseEnemyWidthForCalc + (GRID_COLS - 1) * fixedSpacing; const initialGridStartX = Math.round((w - actualGridWidth) / 2); const col4CenterX = initialGridStartX + 4 * (baseEnemyWidthForCalc + fixedSpacing) + baseEnemyWidthForCalc / 2; const col5CenterX = initialGridStartX + 5 * (baseEnemyWidthForCalc + fixedSpacing) + baseEnemyWidthForCalc / 2; const targetCenterX_shifted = (col4CenterX + col5CenterX) / 2 + horizontalShift; const targetY_row1 = Math.round(ENEMY_TOP_MARGIN + 1 * (ENEMY_HEIGHT + ENEMY_V_SPACING)); const finalPathEndY_shifted = targetY_row1 + 60 * sY; const leftPath = [{ p0: { x: (80/400*800) * sX + horizontalShift, y: offTop }, p1: { x: (440/400*800) * sX + horizontalShift, y: (140/300*600) * sY }, p2: { x: (260/400*800) * sX + horizontalShift, y: (340/300*600) * sY }, p3: { x: targetCenterX_shifted, y: finalPathEndY_shifted } }]; normalWaveEntrancePaths['new_path_left'] = leftPath; const rightPath_shifted = leftPath.map(seg => ({ p0: { x: w - (seg.p0.x - horizontalShift) + horizontalShift, y: seg.p0.y }, p1: { x: w - (seg.p1.x - horizontalShift) + horizontalShift, y: seg.p1.y }, p2: { x: w - (seg.p2.x - horizontalShift) + horizontalShift, y: seg.p2.y }, p3: { x: targetCenterX_shifted, y: seg.p3.y } })); normalWaveEntrancePaths['new_path_right'] = rightPath_shifted; const createBossLoopPath = (isRightSide) => { const pathId = isRightSide ? 'boss_loop_right' : 'boss_loop_left'; const mirror = (x) => isRightSide ? w - x : x; const offsetY_new = 130 * sY; const radius_new = 80 * sX; const circleCenterX_new = 300 * sX; const circleCenterY_new = 300 * sY; const circleStartPointX = circleCenterX_new + radius_new; const circleStartPointY = circleCenterY_new; const startX_new = mirror(-100 * sX); const startY_new = (350 + offsetY_new) * sY; const finalY_new = ENEMY_TOP_MARGIN - 20; const P_Start = { x: startX_new, y: startY_new }; const P_Entry = { x: mirror(circleStartPointX), y: circleCenterY_new }; const P_Top = { x: mirror(circleCenterX_new), y: circleCenterY_new - radius_new }; const P_Left = { x: mirror(circleCenterX_new - radius_new), y: circleCenterY_new }; const P_Bottom = { x: mirror(circleCenterX_new), y: circleCenterY_new + radius_new }; const P_Final = { x: P_Entry.x, y: finalY_new }; const preEntryDistanceFactor = 0.25; const angleToEntry = Math.atan2(P_Entry.y - startY_new, P_Entry.x - startX_new); const P_Before_Entry = { x: P_Entry.x - Math.cos(angleToEntry) * radius_new * preEntryDistanceFactor, y: P_Entry.y - Math.sin(angleToEntry) * radius_new * preEntryDistanceFactor }; const P_Mid_Start_BeforeEntry = { x: (P_Start.x + P_Before_Entry.x) / 2, y: (P_Start.y + P_Before_Entry.y) / 2 }; const P_Mid_Entry_Final = { x: P_Entry.x, y: (P_Entry.y + P_Final.y) / 2 }; const kappa = 0.552284749831; const kRadX = radius_new * kappa; const kRadY = radius_new * kappa; let bossLoopPath = []; bossLoopPath.push({ p0: P_Start, p1: { x: P_Start.x + (P_Mid_Start_BeforeEntry.x - P_Start.x) * 0.33, y: P_Start.y + (P_Mid_Start_BeforeEntry.y - P_Start.y) * 0.33 }, p2: { x: P_Start.x + (P_Mid_Start_BeforeEntry.x - P_Start.x) * 0.66, y: P_Start.y + (P_Mid_Start_BeforeEntry.y - P_Start.y) * 0.66 }, p3: P_Mid_Start_BeforeEntry }); bossLoopPath.push({ p0: P_Mid_Start_BeforeEntry, p1: { x: P_Mid_Start_BeforeEntry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.33, y: P_Mid_Start_BeforeEntry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.33 }, p2: { x: P_Mid_Start_BeforeEntry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.66, y: P_Mid_Start_BeforeEntry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.66 }, p3: P_Before_Entry }); const cp1_smooth = { x: P_Before_Entry.x + (P_Before_Entry.x - P_Mid_Start_BeforeEntry.x) * 0.3, y: P_Before_Entry.y + (P_Before_Entry.y - P_Mid_Start_BeforeEntry.y) * 0.3 }; const cp2_smooth = { x: mirror(circleCenterX_new + kRadX), y: P_Top.y }; bossLoopPath.push({ p0: P_Before_Entry, p1: cp1_smooth, p2: cp2_smooth, p3: P_Top }); bossLoopPath.push({ p0: P_Top, p1: { x: mirror(circleCenterX_new - kRadX), y: P_Top.y }, p2: { x: P_Left.x, y: P_Left.y - kRadY }, p3: P_Left }); bossLoopPath.push({ p0: P_Left, p1: { x: P_Left.x, y: P_Left.y + kRadY }, p2: { x: mirror(circleCenterX_new - kRadX), y: P_Bottom.y }, p3: P_Bottom }); bossLoopPath.push({ p0: P_Bottom, p1: { x: mirror(circleCenterX_new + kRadX), y: P_Bottom.y }, p2: { x: P_Entry.x, y: P_Entry.y + kRadY }, p3: P_Entry }); bossLoopPath.push({ p0: P_Entry, p1: { x: P_Entry.x + (P_Mid_Entry_Final.x - P_Entry.x) * 0.33, y: P_Entry.y + (P_Mid_Entry_Final.y - P_Entry.y) * 0.33 }, p2: { x: P_Entry.x + (P_Mid_Entry_Final.x - P_Entry.x) * 0.66, y: P_Entry.y + (P_Mid_Entry_Final.y - P_Entry.y) * 0.66 }, p3: P_Mid_Entry_Final }); bossLoopPath.push({ p0: P_Mid_Entry_Final, p1: { x: P_Mid_Entry_Final.x + (P_Final.x - P_Mid_Entry_Final.x) * 0.33, y: P_Mid_Entry_Final.y + (P_Final.y - P_Mid_Entry_Final.y) * 0.33 }, p2: { x: P_Mid_Entry_Final.x + (P_Final.x - P_Mid_Entry_Final.x) * 0.66, y: P_Mid_Entry_Final.y + (P_Final.y - P_Mid_Entry_Final.y) * 0.66 }, p3: P_Final }); return bossLoopPath; }; normalWaveEntrancePaths['boss_loop_left'] = createBossLoopPath(false); normalWaveEntrancePaths['boss_loop_right'] = createBossLoopPath(true); const effectiveCurveY = 750; const finalEndY = 350 * sY; const midCurveRight_p0 = { x: midScreenX, y: offTop }; const midCurveRight_p1 = { x: (midScreenX + (750 - 400) * (2/3)) * sX, y: (-50 + (effectiveCurveY - (-50)) * (2/3)) * sY }; const midCurveRight_p2 = { x: (400 + (750 - 400) * (1/3)) * sX, y: (finalEndY + (effectiveCurveY - finalEndY) * (1/3)) * sY }; const midCurveRight_p3 = { x: midScreenX, y: finalEndY }; normalWaveEntrancePaths['mid_curve_right'] = [ { p0: midCurveRight_p0, p1: midCurveRight_p1, p2: midCurveRight_p2, p3: midCurveRight_p3 } ]; const midCurveLeft_p0 = { x: midScreenX, y: offTop }; const midCurveLeft_p1 = { x: w - midCurveRight_p1.x, y: midCurveRight_p1.y }; const midCurveLeft_p2 = { x: w - midCurveRight_p2.x, y: midCurveRight_p2.y }; const midCurveLeft_p3 = { x: midScreenX, y: finalEndY }; normalWaveEntrancePaths['mid_curve_left'] = [ { p0: midCurveLeft_p0, p1: midCurveLeft_p1, p2: midCurveLeft_p2, p3: midCurveLeft_p3 } ]; for (const pathId in normalWaveEntrancePaths) { if (!Array.isArray(normalWaveEntrancePaths[pathId])) { console.error(`Normal Wave Path ${pathId} is not an array! Using basic fallback.`); normalWaveEntrancePaths[pathId] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:ENEMY_TOP_MARGIN} }]; continue; } normalWaveEntrancePaths[pathId] = normalWaveEntrancePaths[pathId].filter(seg => seg?.p0 && seg?.p1 && seg?.p2 && seg?.p3 && typeof seg.p0.x === 'number' && typeof seg.p0.y === 'number' && typeof seg.p1.x === 'number' && typeof seg.p1.y === 'number' && typeof seg.p2.x === 'number' && typeof seg.p2.y === 'number' && typeof seg.p3.x === 'number' && typeof seg.p3.y === 'number' && !isNaN(seg.p0.x + seg.p0.y + seg.p1.x + seg.p1.y + seg.p2.x + seg.p2.y + seg.p3.x + seg.p3.y) ); if (normalWaveEntrancePaths[pathId].length === 0) { console.error(`Normal Wave Path ${pathId} empty after validation! Using basic fallback.`); normalWaveEntrancePaths[pathId] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:ENEMY_TOP_MARGIN} }]; } } }
+
+/** Defines the Bezier curve paths specifically for Challenging Stages. */
+function defineChallengingStagePaths() { /* ... ongewijzigd ... */ challengingStagePaths = {}; const w = gameCanvas?.width; const h = gameCanvas?.height; if (!w || !h || w === 0) { console.error("Cannot define CS paths: Canvas size unknown or zero width."); return; } const enemyW = ENEMY_WIDTH; const enemyH = ENEMY_HEIGHT; const offTop = -enemyH * 1.5; const offBottom = h + enemyH * 2; const offLeft = -enemyW * 1.5; const offRight = w + enemyW * 1.5; const midX = w / 2; const midY = h / 2; const CS3_START_SHIFT_X = -28; const shiftPathX = (originalPath, shiftX) => { return originalPath.map(seg => { const newSeg = JSON.parse(JSON.stringify(seg)); if (newSeg.p0 && typeof newSeg.p0.x === 'number') newSeg.p0.x += shiftX; if (newSeg.p1 && typeof newSeg.p1.x === 'number') newSeg.p1.x += shiftX; if (newSeg.p2 && typeof newSeg.p2.x === 'number') newSeg.p2.x += shiftX; if (newSeg.p3 && typeof newSeg.p3.x === 'number' && newSeg.p3.x !== offLeft && newSeg.p3.x !== offRight) { newSeg.p3.x += shiftX; } return newSeg; }); }; const cmScale = (37.8 / 800) * 0.3; const exampleStartX_L_frac_orig = 0.5 - cmScale; const exampleMidY_frac = 450 / 600; const exampleCp1X_L_frac_orig = 0.49; const exampleCp1Y_frac = 600 / 600; const exampleCp2X_L_frac_orig = 0.48; const exampleCp2Y_frac = 300 / 600; const path5_startX_orig = w * exampleStartX_L_frac_orig; const path5_midY = h * exampleMidY_frac; const path5_cp1X_orig = w * exampleCp1X_L_frac_orig; const path5_cp1Y = h * Math.min(1.0, exampleCp1Y_frac); const path5_cp2X_orig = w * exampleCp2X_L_frac_orig; const path5_cp2Y = h * exampleCp2Y_frac; const path5_endX_orig = offLeft; const path5_endY = offTop; const path5_seg1_p0_orig = { x: path5_startX_orig, y: offTop }; const path5_seg1_p3_orig = { x: path5_startX_orig, y: path5_midY }; const path5_seg1_p1_orig = { x: path5_startX_orig, y: offTop + (path5_midY - offTop) * 0.33 }; const path5_seg1_p2_orig = { x: path5_startX_orig, y: offTop + (path5_midY - offTop) * 0.66 }; const path5_seg2_p0_orig = path5_seg1_p3_orig; const path5_seg2_p1_orig = { x: path5_cp1X_orig, y: path5_cp1Y }; const path5_seg2_p2_orig = { x: path5_cp2X_orig, y: path5_cp2Y }; const path5_seg2_p3_orig = { x: path5_endX_orig, y: path5_endY }; const original_CS3_DiveLoopL_Sharp = [ { p0: path5_seg1_p0_orig, p1: path5_seg1_p1_orig, p2: path5_seg1_p2_orig, p3: path5_seg1_p3_orig }, { p0: path5_seg2_p0_orig, p1: path5_seg2_p1_orig, p2: path5_seg2_p2_orig, p3: path5_seg2_p3_orig } ]; const original_CS3_DiveLoopR_Sharp = original_CS3_DiveLoopL_Sharp.map(seg => ({ p0: { x: w - seg.p0.x, y: seg.p0.y }, p1: { x: w - seg.p1.x, y: seg.p1.y }, p2: { x: w - seg.p2.x, y: seg.p2.y }, p3: { x: (seg.p3.x === offLeft) ? offRight : w - seg.p3.x, y: seg.p3.y } })); challengingStagePaths['CS3_DiveLoopL_Sharp'] = shiftPathX(original_CS3_DiveLoopL_Sharp, CS3_START_SHIFT_X); challengingStagePaths['CS3_DiveLoopR_Sharp'] = shiftPathX(original_CS3_DiveLoopR_Sharp, CS3_START_SHIFT_X); const flyByY = h * 0.70; const controlOffsetYFlyBy = h * 0.03; const controlOffsetXFlyBy = w * 0.15; challengingStagePaths['CS_HorizontalFlyByL'] = [{ p0: { x: offLeft, y: flyByY }, p1: { x: offLeft + controlOffsetXFlyBy, y: flyByY - controlOffsetYFlyBy }, p2: { x: offRight - controlOffsetXFlyBy, y: flyByY + controlOffsetYFlyBy }, p3: { x: offRight, y: flyByY } }]; challengingStagePaths['CS_HorizontalFlyByR'] = [{ p0: { x: offRight, y: flyByY }, p1: { x: offRight - controlOffsetXFlyBy, y: flyByY - controlOffsetYFlyBy }, p2: { x: offLeft + controlOffsetXFlyBy, y: flyByY + controlOffsetYFlyBy }, p3: { x: offLeft, y: flyByY } }]; const loopDipY = h * 0.80; const loopRiseY = h * 0.55; const loopExitY = h * 0.15; challengingStagePaths['CS_LoopAttack_TL'] = [ { p0: { x: w * 0.1, y: offTop }, p1: { x: w * 0.2, y: h * 0.2 }, p2: { x: w * 0.6, y: loopDipY }, p3: { x: w * 0.7, y: loopDipY } }, { p0: { x: w * 0.7, y: loopDipY }, p1: { x: w * 0.8, y: loopDipY }, p2: { x: w * 0.8, y: loopRiseY }, p3: { x: w * 0.7, y: loopRiseY } }, { p0: { x: w * 0.7, y: loopRiseY }, p1: { x: w * 0.6, y: loopRiseY }, p2: { x: offRight, y: loopExitY }, p3: { x: offRight, y: loopExitY + h*0.1 } } ]; challengingStagePaths['CS_LoopAttack_TR'] = [ { p0: { x: w * 0.9, y: offTop }, p1: { x: w * 0.8, y: h * 0.2 }, p2: { x: w * 0.4, y: loopDipY }, p3: { x: w * 0.3, y: loopDipY } }, { p0: { x: w * 0.3, y: loopDipY }, p1: { x: w * 0.2, y: loopDipY }, p2: { x: w * 0.2, y: loopRiseY }, p3: { x: w * 0.3, y: loopRiseY } }, { p0: { x: w * 0.3, y: loopRiseY }, p1: { x: w * 0.4, y: loopRiseY }, p2: { x: offLeft, y: loopExitY }, p3: { x: offLeft, y: loopExitY + h*0.1 } } ]; challengingStagePaths['CS_LoopAttack_BL'] = [ { p0: { x: offLeft, y: h * 0.6 }, p1: { x: w * 0.1, y: h * 0.4 }, p2: { x: w * 0.6, y: h * 0.2 }, p3: { x: midX, y: h * 0.3 } }, { p0: { x: midX, y: h * 0.3 }, p1: { x: w * 0.4, y: h * 0.4 }, p2: { x: w * 0.3, y: loopDipY * 0.9 }, p3: { x: w*0.4, y: loopDipY } }, { p0: { x: w*0.4, y: loopDipY }, p1: { x: w * 0.5, y: loopDipY * 1.05 }, p2: { x: midX, y: offTop }, p3: { x: midX + w*0.1, y: offTop } } ]; challengingStagePaths['CS_LoopAttack_BR'] = [ { p0: { x: offRight, y: h * 0.6 }, p1: { x: w * 0.9, y: h * 0.4 }, p2: { x: w * 0.4, y: h * 0.2 }, p3: { x: midX, y: h * 0.3 } }, { p0: { x: midX, y: h * 0.3 }, p1: { x: w * 0.6, y: h * 0.4 }, p2: { x: w * 0.7, y: loopDipY * 0.9 }, p3: { x: w*0.6, y: loopDipY } }, { p0: { x: w*0.6, y: loopDipY }, p1: { x: w * 0.5, y: loopDipY * 1.05 }, p2: { x: midX, y: offTop }, p3: { x: midX - w*0.1, y: offTop } } ]; for (const key in challengingStagePaths) { challengingStagePaths[key] = challengingStagePaths[key].filter(seg => seg?.p0 && seg?.p1 && seg?.p2 && seg?.p3 && !isNaN(seg.p0.x + seg.p0.y + seg.p1.x + seg.p1.y + seg.p2.x + seg.p2.y + seg.p3.x + seg.p3.y) ); if (challengingStagePaths[key].length === 0) { console.error(`CS Path ${key} empty after validation! Adding fallback.`); challengingStagePaths[key] = [{ p0:{x:w/2, y:offTop}, p1:{x:w/2, y:h/3}, p2:{x:w/2, y:h*2/3}, p3:{x:w/2, y:offBottom} }]; } } }
+
+/** Resizes all canvases to fit the window and redraws/recalculates related elements. */
+function resizeCanvases() {
+    try {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        if (width <= 0 || height <= 0) return;
+
+        let isCurrentlyPortrait = height > width;
+
+        if (isCurrentlyPortrait) {
+            if (!isShowingPortraitMessage) { // Alleen acties uitvoeren als de staat VERANDERT naar portrait
+                isShowingPortraitMessage = true;
+                // console.log("[resizeCanvases] Switched to Portrait. isShowingPortraitMessage = true."); // Debug
+                if (isInGameState && !isPaused) {
+                    gameWasAutoPausedForPortrait = true;
+                    togglePause(); // Dit roept pauseAllSounds() aan
+                } else if (!isInGameState || isPaused) {
+                    // Als we in het menu zijn, of al gepauzeerd,
+                    // roep pauseAllSounds direct aan om zeker te zijn dat alles stopt.
+                    // console.log("[resizeCanvases] In menu or already paused, calling pauseAllSounds() for portrait."); // Debug
+                    pauseAllSounds();
+                }
+            }
+        } else { // Landscape
+            if (isShowingPortraitMessage) { // Alleen acties uitvoeren als de staat VERANDERT naar landscape
+                isShowingPortraitMessage = false;
+                // console.log("[resizeCanvases] Switched to Landscape. isShowingPortraitMessage = false."); // Debug
+                if (gameWasAutoPausedForPortrait && isPaused) {
+                    togglePause(); // Dit roept resumeAllSounds() aan
+                } else if (!isInGameState && !isPaused) {
+                    // Als we in het menu zijn en niet gepauzeerd, hervat menu muziek
+                    // console.log("[resizeCanvases] In menu and not paused, calling resumeAllSounds() for landscape."); // Debug
+                    resumeAllSounds();
+                }
+                gameWasAutoPausedForPortrait = false;
+            }
+        }
+
+
+        if (starrySkyCanvas && (starrySkyCanvas.width !== width || starrySkyCanvas.height !== height)) {
+            starrySkyCanvas.width = width; starrySkyCanvas.height = height; createStars();
+        }
+        if (retroGridCanvas && (retroGridCanvas.width !== width || retroGridCanvas.height !== height)) {
+            retroGridCanvas.width = width; retroGridCanvas.height = height;
+        }
+        if (gameCanvas && (gameCanvas.width !== width || gameCanvas.height !== height)) {
+            const oldWidth = gameCanvas.width; gameCanvas.width = width; gameCanvas.height = height;
+            defineNormalWaveEntrancePaths(); defineChallengingStagePaths();
+            if (isInGameState) { handleResizeGameElements(oldWidth, width, height); }
+        } else if (!gameCanvas?.width || !gameCanvas?.height) {
+            defineNormalWaveEntrancePaths(); defineChallengingStagePaths();
+        }
+    } catch (e) { console.error("Error in resizeCanvases:", e); }
+}
+
+
+/** Repositions ship and enemy targets after a resize while the game is running. */
+function handleResizeGameElements(oldWidth, newWidth, newHeight) { /* ... ongewijzigd ... */ try { currentGridOffsetX = 0; if (ship) { if (oldWidth > 0 && newWidth > 0 && typeof ship.x !== 'undefined') { ship.x = (ship.x / oldWidth) * newWidth; } else { ship.x = newWidth / 2 - ship.width / 2; } ship.x = Math.max(0, Math.min(newWidth - ship.width, ship.x)); ship.y = newHeight - SHIP_HEIGHT - SHIP_BOTTOM_MARGIN; ship.targetX = ship.x; } enemies.forEach((e) => { if (e && (e.state === 'in_grid' || e.state === 'returning' || e.state === 'moving_to_grid')) { try { const enemyWidthForGrid = (e.type === ENEMY3_TYPE) ? BOSS_WIDTH : ((e.type === ENEMY1_TYPE) ? ENEMY1_WIDTH : ENEMY_WIDTH); const { x: newTargetX, y: newTargetY } = getCurrentGridSlotPosition(e.gridRow, e.gridCol, enemyWidthForGrid); e.targetGridX = newTargetX; e.targetGridY = newTargetY; if (e.state === 'in_grid') { e.x = newTargetX; e.y = newTargetY; } } catch (gridPosError) { console.error(`Error recalculating grid pos for enemy ${e.id} on resize:`, gridPosError); if(e.state === 'in_grid' || e.state === 'moving_to_grid' || e.state === 'returning'){ e.x = newWidth / 2; e.y = ENEMY_TOP_MARGIN + e.gridRow * (ENEMY_HEIGHT + ENEMY_V_SPACING); e.targetGridX = e.x; e.targetGridY = e.y; } } } }); } catch (e) { console.error("Error handling game resize specifics:", e); } }
+
+// --- Touch Event Handlers ---
+// <<< NIEUWE GLOBALE VARIABELEN VOOR DUBBEL-TAP >>>
+let lastTapArea = null; // '1up', '2up', 'center', null
+let lastTapTimestamp = 0;
+const DOUBLE_TAP_MAX_INTERVAL = 300; // ms tussen taps voor een dubbel-tap
+const SCORE_AREA_TAP_MARGIN = 30; // Extra marge rond de score tekst voor tap detectie
+
+function handleTouchStartGlobal(event) {
+    event.preventDefault(); // Voorkom standaard browsergedrag zoals scrollen
+    if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by touchstart."); });
+    }
+    if (event.touches.length > 0) {
+        const touch = event.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        touchCurrentX = touch.clientX;
+        touchCurrentY = touch.clientY;
+        touchStartTime = Date.now();
+
+        if (isInGameState && !isShowingPortraitMessage) { // <<<< GEWIJZIGD
+            isTouchActiveGame = true;
+            isTouchActiveMenu = false;
+        } else if (!isShowingPortraitMessage) { // In Menu (en niet in portrait)
+            isTouchActiveMenu = true;
+            isTouchActiveGame = false;
+            if (typeof handleCanvasTouch === 'function') {
+                handleCanvasTouch(event, 'start');
+            }
+        }
+    }
+}
+
+function handleTouchMoveGlobal(event) {
+    event.preventDefault();
+    if (event.touches.length > 0) {
+        const touch = event.touches[0];
+        touchCurrentX = touch.clientX;
+        touchCurrentY = touch.clientY;
+
+        if (isTouchActiveGame && isInGameState && !isShowingPortraitMessage) { // <<<< GEWIJZIGD
+            // Game-specifieke drag logica in game_logic.js -> handlePlayerInput
+        } else if (isTouchActiveMenu && !isInGameState && !isShowingPortraitMessage) { // <<<< GEWIJZIGD
+            if (typeof handleCanvasTouch === 'function') {
+                handleCanvasTouch(event, 'move');
+            }
+        }
+    }
+}
+
+function handleTouchEndGlobal(event) {
+    event.preventDefault();
+    const touchEndTime = Date.now();
+    const touchDuration = touchEndTime - touchStartTime;
+    let dx = 0, dy = 0;
+    let interactionClientX, interactionClientY;
+
+    if (event.changedTouches && event.changedTouches.length > 0) {
+        interactionClientX = event.changedTouches[0].clientX;
+        interactionClientY = event.changedTouches[0].clientY;
+    } else {
+        interactionClientX = touchCurrentX;
+        interactionClientY = touchCurrentY;
+    }
+
+    if (typeof interactionClientX === 'number' && typeof touchStartX === 'number') {
+        dx = interactionClientX - touchStartX;
+    }
+    if (typeof interactionClientY === 'number' && typeof touchStartY === 'number') {
+        dy = interactionClientY - touchStartY;
+    }
+
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const isTap = touchDuration < TOUCH_TAP_MAX_DURATION && distance < TOUCH_TAP_MAX_MOVEMENT;
+
+    const rect = gameCanvas.getBoundingClientRect();
+    const scaleX = gameCanvas.width / rect.width;
+    const scaleY = gameCanvas.height / rect.height;
+    const canvasTapX = (interactionClientX - rect.left) * scaleX;
+    const canvasTapY = (interactionClientY - rect.top) * scaleY;
+
+    // <<< GEWIJZIGD: Dubbel-tap logica bovenaan, en alleen als geen portrait message >>>
+    if (!isShowingPortraitMessage && isTap) {
+        const now = Date.now();
+        let tapped2UpArea = false;
+
+        // Check for tap in 2UP area (rechterbovenhoek)
+        if (typeof MARGIN_SIDE !== 'undefined' && typeof MARGIN_TOP !== 'undefined' && gameCanvas && gameCtx) {
+            gameCtx.font = "20px 'Press Start 2P'"; // Referentie font voor gebiedsberekening
+            let label2PWidthEstimate = gameCtx.measureText("2UP").width; // Gebruik een standaard label voor consistentie
+            let score2PWidthEstimate = gameCtx.measureText("888888").width; // Geschatte maximale score breedte
+            const approxFontHeight = 20;
+
+            const area2UpX = gameCanvas.width - MARGIN_SIDE - Math.max(label2PWidthEstimate, score2PWidthEstimate) - SCORE_AREA_TAP_MARGIN;
+            const area2UpY = MARGIN_TOP - SCORE_AREA_TAP_MARGIN;
+            const area2UpWidth = Math.max(label2PWidthEstimate, score2PWidthEstimate) + 2 * SCORE_AREA_TAP_MARGIN;
+            const area2UpHeight = (SCORE_OFFSET_Y + 5 + approxFontHeight) + 2 * SCORE_AREA_TAP_MARGIN;
+
+            if (canvasTapX >= area2UpX && canvasTapX <= area2UpX + area2UpWidth &&
+                canvasTapY >= area2UpY && canvasTapY <= area2UpY + area2UpHeight) {
+                tapped2UpArea = true;
+            }
+        }
+
+        if (tapped2UpArea) {
+            if (lastTapArea === '2up' && (now - lastTapTimestamp < DOUBLE_TAP_MAX_INTERVAL)) {
+                if (typeof stopGameAndShowMenu === 'function') {
+                    stopGameAndShowMenu();
+                    lastTapArea = null;
+                    lastTapTimestamp = 0;
+                    isTouchActiveGame = false;
+                    isTouchActiveMenu = false;
+                    touchedMenuButtonIndex = -1;
+                    return; // Actie voltooid, stop verdere verwerking
+                }
+            }
+            lastTapArea = '2up';
+            lastTapTimestamp = now;
+        } else {
+            if (lastTapArea === '2up') { // Reset als de tap ergens anders was
+                lastTapArea = null;
+                lastTapTimestamp = 0;
+            }
+        }
+        // Ga verder met andere tap-logica ALS de dubbel-tap niet resulteerde in menu-exit
+    }
+    // <<< EINDE GEWIJZIGDE Dubbel-tap logica >>>
+
+
+    if (isTouchActiveGame && isInGameState && !isShowingPortraitMessage) {
+        if (isTap) {
+            // Game-specifieke single-tap (fire) logica
+            if (selectedFiringMode === 'single' && !(lastTapArea === '2up' && (Date.now() - lastTapTimestamp < DOUBLE_TAP_MAX_INTERVAL))) { // Voorkom vuren bij dubbel-tap poging
+                if (Date.now() - lastTapTime > SHOOT_COOLDOWN / 2) {
+                    let shooterPlayerIdForTap = 'player1';
+                    if (isTwoPlayerMode && selectedGameMode === 'coop') {
+                        if (canvasTapX > gameCanvas.width / 2 && ship2 && player2Lives > 0) {
+                            shooterPlayerIdForTap = isPlayerTwoAI ? 'ai_p2' : 'player2';
+                        }
+                    } else if (isTwoPlayerMode && selectedGameMode === 'normal'){
+                         shooterPlayerIdForTap = (currentPlayer === 1) ? 'player1' : 'player2';
+                    }
+
+                    if (shooterPlayerIdForTap === 'player1') p1FireInputWasDown = true;
+                    else if (shooterPlayerIdForTap === 'player2' || shooterPlayerIdForTap === 'ai_p2') p2FireInputWasDown = true;
+
+                    if (typeof firePlayerBullet === 'function') {
+                         firePlayerBullet(shooterPlayerIdForTap);
+                    }
+                    if (shooterPlayerIdForTap === 'player1') p1FireInputWasDown = false;
+                    else if (shooterPlayerIdForTap === 'player2' || shooterPlayerIdForTap === 'ai_p2') p2FireInputWasDown = false;
+
+                    lastTapTime = Date.now();
+                }
+            }
+        }
+        shootPressed = false; // Reset shoot flags na touch end
+        p2ShootPressed = false;
+        isTouchActiveGame = false;
+    } else if (isTouchActiveMenu && !isInGameState && !isShowingPortraitMessage) {
+        isTouchActiveMenu = false;
+        if (typeof handleCanvasTouch === 'function') {
+            handleCanvasTouch(event, 'end', isTap);
+        }
+    } else {
+        isTouchActiveGame = false;
+        isTouchActiveMenu = false;
+    }
+    touchedMenuButtonIndex = -1;
+}
+
+
+// --- Keyboard Event Handlers ---
+function handleKeyDown(e) {
+    try {
+        // Voorkom dat keyboard input de game bestuurt als touch actief is voor de game.
+        if (isTouchActiveGame && isInGameState) {
+            if (e.key === 'p' || e.key === 'P') { // Pauze mag altijd
+                 if(typeof togglePause === 'function') togglePause();
+            } else if (e.key === "Escape" || e.key === "Enter") { // Menu verlaten mag altijd
+                 if(isInGameState && typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu();
+            }
+            // Andere game-gerelateerde keyboard input wordt genegeerd als touch actief is.
+            return;
+        }
+
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by keydown."); });
+        }
+        const relevantKeys = [" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Escape", "w", "a", "s", "d", "p", "P", "j", "J", "l", "L", "i", "I", "Numpad4", "Numpad6", "Numpad0"];
+        if (relevantKeys.includes(e.key) || relevantKeys.includes(e.code)) {
+            e.preventDefault();
+        }
+        let blockAllKeyboardInput = false;
+        if (isShowingPlayerGameOverMessage || gameOverSequenceStartTime > 0 || isShowingPortraitMessage) {
+            blockAllKeyboardInput = true;
+        }
+        if (blockAllKeyboardInput) { return; }
+
+        if (isInGameState) {
+            if ((e.key === 'p' || e.key === 'P') && gameOverSequenceStartTime === 0 && !isShowingPlayerGameOverMessage) {
+                if(typeof togglePause === 'function') togglePause();
+                return;
+            }
+
+            if (!isPaused) {
+                if (!isManualControl) {
+                    if (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) {
+                        // AI P2 is active, P1 (mens) kan niet stoppen.
+                    } else {
+                        if (e.key === "Escape" || e.key === "Enter") {
+                            if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu();
+                        } else if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') {
+                            if(typeof showMenuState === 'function') showMenuState();
+                        }
+                    }
+                } else {
+                    switch (e.code) {
+                        case "ArrowLeft": case "KeyA": keyboardP1LeftDown = true; break;
+                        case "ArrowRight": case "KeyD": keyboardP1RightDown = true; break;
+                        case "Space": case "ArrowUp": case "KeyW":
+                            keyboardP1ShootDown = true;
+                            break;
+                        case "KeyJ": case "Numpad4": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2LeftDown = true; break;
+                        case "KeyL": case "Numpad6": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2RightDown = true; break;
+                        case "KeyI": case "Numpad0": if(isTwoPlayerMode && !isPlayerTwoAI) keyboardP2ShootDown = true; break;
+                        case "Escape": case "Enter": if(typeof stopGameAndShowMenu === 'function') stopGameAndShowMenu(); break;
+                    }
+                    if (!keyboardP2LeftDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "j") keyboardP2LeftDown = true;
+                    if (!keyboardP2RightDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "l") keyboardP2RightDown = true;
+                    if (!keyboardP2ShootDown && isTwoPlayerMode && !isPlayerTwoAI && e.key.toLowerCase() === "i") keyboardP2ShootDown = true;
+                }
+            }
+        } else { // Menu or Score Screen
+            if (isTouchActiveMenu) return; // Negeer keyboard als menu touch actief is
+
+            if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
+                if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key !== 'p' && e.key !== 'P') {
+                    if(typeof showMenuState === 'function') showMenuState(); return;
+                }
+            } else if (!isShowingScoreScreen) { // Menu
+                stopAutoDemoTimer();
+                switch (e.key) {
+                    case "ArrowUp": case "w": selectedButtonIndex = (selectedButtonIndex <= 0) ? 1 : 0; startAutoDemoTimer(); break;
+                    case "ArrowDown": case "s": selectedButtonIndex = (selectedButtonIndex >= 1) ? 0 : 1; startAutoDemoTimer(); break;
+                    case "Enter": case " ":
+                        if (isPlayerSelectMode) {
+                            if (selectedButtonIndex === 0) { startGame1P(); }
+                            else { startGame2P(); }
+                        } else if (isOnePlayerGameTypeSelectMode) {
+                            if (selectedButtonIndex === 0) { // 1P -> NORMAL GAME (Classic)
+                                isOnePlayerGameTypeSelectMode = false;
+                                isFiringModeSelectMode = true;
+                                selectedOnePlayerGameVariant = 'CLASSIC_1P';
+                                selectedGameMode = 'normal';
+                                isTwoPlayerMode = false; isPlayerTwoAI = false;
+                                selectedButtonIndex = 0;
+                            } else { // 1P -> GAME VS AI
+                                isOnePlayerGameTypeSelectMode = false;
+                                isOnePlayerVsAIGameTypeSelectMode = true;
+                                selectedButtonIndex = 0;
+                            }
+                        } else if (isOnePlayerVsAIGameTypeSelectMode) { // 1P -> GAME VS AI -> Normal / Coop
+                            if (selectedButtonIndex === 0) { // 1P vs AI NORMAL
+                                selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL';
+                                selectedGameMode = 'normal';
+                            } else { // 1P vs AI COOP
+                                selectedOnePlayerGameVariant = '1P_VS_AI_COOP';
+                                selectedGameMode = 'coop';
+                            }
+                            isOnePlayerVsAIGameTypeSelectMode = false;
+                            isFiringModeSelectMode = true;
+                            isTwoPlayerMode = true; isPlayerTwoAI = true;
+                            selectedButtonIndex = 0;
+                        } else if (isGameModeSelectMode) { // 2P HUMAN -> Normal / Coop
+                            if (selectedButtonIndex === 0) { selectedGameMode = 'normal'; }
+                            else { selectedGameMode = 'coop'; }
+                            isGameModeSelectMode = false; isFiringModeSelectMode = true;
+                            isTwoPlayerMode = true; isPlayerTwoAI = false;
+                            selectedButtonIndex = 0;
+                        } else if (isFiringModeSelectMode) {
+                            if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; }
+                            else { selectedFiringMode = 'single'; }
+                            baseStartGame(true);
+                        } else { // Hoofdmenu
+                            if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0;}
+                            else if (selectedButtonIndex === 1) { exitGame(); }
+                        }
+                        startAutoDemoTimer(); break;
+                    case "Escape":
+                        goBackInMenu(); // Gebruik de helper functie
+                        startAutoDemoTimer(); break;
+                    default: startAutoDemoTimer(); break;
+                }
+            }
+        }
+    } catch(err) { console.error("Error in handleKeyDown:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; }
+}
+function handleKeyUp(e) {
+    try {
+        // Key up events worden altijd verwerkt, ongeacht touch state,
+        // om te zorgen dat knoppen correct losgelaten worden.
+        switch (e.code) {
+            case "ArrowLeft": case "KeyA": keyboardP1LeftDown = false; break;
+            case "ArrowRight": case "KeyD": keyboardP1RightDown = false; break;
+            case "Space": case "ArrowUp": case "KeyW":
+                keyboardP1ShootDown = false;
+                if (selectedFiringMode === 'single') p1JustFiredSingle = false;
+                break;
+            case "KeyJ": case "Numpad4": keyboardP2LeftDown = false; break;
+            case "KeyL": case "Numpad6": keyboardP2RightDown = false; break;
+            case "KeyI": case "Numpad0":
+                keyboardP2ShootDown = false;
+                if (selectedFiringMode === 'single') p2JustFiredSingle = false;
+                break;
+        }
+        if (e.key.toLowerCase() === "j") keyboardP2LeftDown = false;
+        if (e.key.toLowerCase() === "l") keyboardP2RightDown = false;
+        if (e.key.toLowerCase() === "i") {
+            keyboardP2ShootDown = false;
+            if (selectedFiringMode === 'single') p2JustFiredSingle = false;
+        }
+
+    } catch(err) { console.error("Error in handleKeyUp:", err); keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false; keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false; p1JustFiredSingle = false; p2JustFiredSingle = false;}
+}
+
+
+// --- Gamepad Event Handlers ---
+function handleGamepadConnected(event) {
+    try {
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed by gamepad connection."); });
+        }
+        if (connectedGamepadIndex === null) {
+            connectedGamepadIndex = event.gamepad.index;
+            const numButtons = event.gamepad.buttons.length;
+            previousButtonStates = new Array(numButtons).fill(false);
+            previousDemoButtonStates = new Array(numButtons).fill(false);
+            previousGameButtonStates = new Array(numButtons).fill(false);
+            if (!isInGameState && !isTouchActiveMenu) { // Alleen als touch niet al het menu bestuurt
+                 stopAutoDemoTimer(); selectedButtonIndex = 0;
+            }
+        } else if (connectedGamepadIndexP2 === null) {
+            connectedGamepadIndexP2 = event.gamepad.index;
+            const numButtons = event.gamepad.buttons.length;
+            previousGameButtonStatesP2 = new Array(numButtons).fill(false);
+        }
+    } catch(e) { console.error("Error in handleGamepadConnected:", e); }
+}
+function handleGamepadDisconnected(event) {
+    try {
+        if (connectedGamepadIndex === event.gamepad.index) {
+            connectedGamepadIndex = null;
+            previousButtonStates = []; previousDemoButtonStates = []; previousGameButtonStates = [];
+            if (!isInGameState && !isTouchActiveMenu) { // Alleen als touch niet al het menu bestuurt
+                selectedButtonIndex = -1; joystickMovedVerticallyLastFrame = false; startAutoDemoTimer();
+            }
+            p1FireInputWasDown = false;
+        } else if (connectedGamepadIndexP2 === event.gamepad.index) {
+            connectedGamepadIndexP2 = null;
+            previousGameButtonStatesP2 = [];
+            p2FireInputWasDown = false;
+        }
+    } catch(e) { console.error("Error in handleGamepadDisconnected:", e); p1JustFiredSingle = false; p2JustFiredSingle = false; p1FireInputWasDown = false; p2FireInputWasDown = false; }
+}
+
+// --- High Score ---
+function saveHighScore() {
+    try {
+        let potentialNewHighScore = 0;
+        if (isTwoPlayerMode && selectedGameMode === 'coop') { potentialNewHighScore = Math.max(player1Score, player2Score); }
+        else if (isTwoPlayerMode && selectedGameMode === 'normal') { potentialNewHighScore = Math.max(player1Score, player2Score); }
+        else { potentialNewHighScore = score; }
+
+        if (isManualControl && potentialNewHighScore > highScore) {
+            highScore = potentialNewHighScore;
+        }
+    } catch (e) { console.error("Error in saveHighScore:", e); }
+}
+function loadHighScore() { /* ... ongewijzigd ... */ try { highScore = 20000; } catch (e) { console.error("Error in loadHighScore:", e); highScore = 20000; } }
+
+// --- Pauze Functies ---
+const soundsToPauseOnSystemPause = Object.keys(soundPaths); // Alle geluiden in soundPaths
+let soundPausedStates = {}; // Wordt niet meer gebruikt op dezelfde manier met Web Audio
+
+function pauseAllSounds() {
+    if (audioContext && audioContext.state === 'running') {
+        // audioContext.suspend().then(() => console.log("AudioContext suspended for pause.")).catch(e => console.error("Error suspending AudioContext:", e));
+        // Laten we audioContext.suspend() voor nu even uitcommentariëren om te zien of dat een probleem is.
+        // Het direct stoppen van sounds zou effectiever moeten zijn.
+    }
+    // <<< GEWIJZIGD: Stop alle geluiden individueel, inclusief menu muziek, door te itereren over soundSources. >>>
+    for (const soundId in soundSources) {
+        if (Object.hasOwnProperty.call(soundSources, soundId)) { // Zeker zijn dat het een eigen property is
+            stopSound(soundId);
+        }
+    }
+    isGridSoundPlaying = false; // Reset de vlag voor grid geluid expliciet
+    // console.log("[pauseAllSounds] Called, attempting to stop all sounds."); // Debug log
+}
+
+function resumeAllSounds() {
+    if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume().then(() => console.log("AudioContext resumed from pause.")).catch(e => console.error("Error resuming AudioContext:", e));
+    }
+    // <<< GEWIJZIGD: Voeg check voor isShowingPortraitMessage toe voordat menu muziek hervat wordt >>>
+    if (!isInGameState && audioContext && !isTouchActiveMenu && !isShowingPortraitMessage) {
+        playSound('menuMusicSound', true, 0.2);
+    }
+    // Andere geluiden worden hervat wanneer ze opnieuw worden getriggerd door playSound
+}
+
+
+/** Toggles the pause state and handles sounds. */
+function togglePause() {
+    let canPause = false;
+    const isAnyGameOverMessageShowing = isShowingPlayerGameOverMessage || (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage));
+
+    if (isInGameState && gameOverSequenceStartTime === 0 && !isAnyGameOverMessageShowing && !isShowingPortraitMessage) { // Kan niet pauzeren als portrait message getoond wordt
+        if (!isManualControl) {
+            canPause = true;
+        } else if (isTwoPlayerMode && selectedGameMode === 'coop') {
+            canPause = (player1Lives > 0 && ship1 && !isPlayer1ShipCaptured && !player1NeedsRespawnAfterCapture) ||
+                       (player2Lives > 0 && ship2 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture);
+        } else if (isTwoPlayerMode && selectedGameMode === 'normal' && isPlayerTwoAI && currentPlayer === 2) {
+             canPause = false;
+        } else {
+            canPause = playerLives > 0 && ship && !isShipCaptured;
+        }
+    }
+
+    if (!canPause) return;
+
+    isPaused = !isPaused;
+    if (isPaused) {
+        pauseAllSounds();
+        clearTimeout(mouseIdleTimerId);
+        mouseIdleTimerId = null;
+    } else {
+        resumeAllSounds();
+        clearTimeout(mouseIdleTimerId);
+        mouseIdleTimerId = setTimeout(hideCursor, 2000);
+         if (audioContext && audioContext.state === 'suspended') { // Zorg ervoor dat context hervat wordt na pauze, als die nog suspended was
+            audioContext.resume().then(() => { audioContextInitialized = true; console.log("AudioContext resumed explicitly after unpause.");});
+        }
+    }
+}
+
+
+// <<< HELPER FUNCTIE processSingleController (ongewijzigd) >>>
+function processSingleController(gamepad, previousButtonStates) { const currentButtonStates = gamepad.buttons.map(b => b.pressed); const result = { left: false, right: false, shoot: false, pause: false, back: false, newButtonStates: currentButtonStates.slice() }; const crossButton = currentButtonStates[PS5_BUTTON_CROSS]; const r1ButtonNow = currentButtonStates[PS5_BUTTON_R1]; const r1ButtonLast = previousButtonStates[PS5_BUTTON_R1] ?? false; const triangleButtonNow = currentButtonStates[PS5_BUTTON_TRIANGLE]; const triangleButtonLast = previousButtonStates[PS5_BUTTON_TRIANGLE] ?? false; const axisX = gamepad.axes[PS5_LEFT_STICK_X] ?? 0; const dpadLeft = currentButtonStates[PS5_DPAD_LEFT]; const dpadRight = currentButtonStates[PS5_DPAD_RIGHT]; const AXIS_THRESHOLD = AXIS_DEAD_ZONE_GAMEPLAY; if (axisX < -AXIS_THRESHOLD || dpadLeft) { result.left = true; } else if (axisX > AXIS_THRESHOLD || dpadRight) { result.right = true; } if (crossButton) { result.shoot = true; } if (r1ButtonNow && !r1ButtonLast) { result.pause = true; } if (triangleButtonNow && !triangleButtonLast) { result.back = true; } return result; }
+
+/**
+ * Functie om de *definitieve* game over sequence te starten
+ */
+function triggerFinalGameOverSequence() {
+    if (isInGameState && gameOverSequenceStartTime === 0) {
+        isPaused = false; isShowingDemoText = false; isShowingIntro = false; isWaveTransitioning = false; showCsHitsMessage = false; showExtraLifeMessage = false; showPerfectMessage = false; showCSClearMessage = false; showCsHitsForClearMessage = false; showCsScoreForClearMessage = false; showReadyMessage = false; showCsBonusScoreMessage = false; isShowingPlayerGameOverMessage = false; isEntrancePhaseActive = false; isCsCompletionDelayActive = false; csCompletionDelayStartTime = 0; csCompletionResultIsPerfect = false; csIntroSoundPlayed = false;
+        if (isManualControl) { saveHighScore(); }
+
+        const soundsToStopOnFinalGameOver = Object.keys(soundPaths).filter(id => id !== 'gameOverSound' && id !== 'resultsMusicSound');
+        soundsToStopOnFinalGameOver.forEach(soundId => stopSound(soundId));
+        isGridSoundPlaying = false;
+
+        const now = Date.now();
+        playSound('gameOverSound', false, 0.4);
+
+        if ((isTwoPlayerMode && selectedGameMode === 'normal' && player1Lives <= 0 && player2Lives <= 0) ||
+            (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' && player1Lives <= 0 && player2Lives <= 0) ) {
+            gameOverSequenceStartTime = now - GAME_OVER_DURATION;
+        } else {
+            gameOverSequenceStartTime = now;
+        }
+
+        bullets = []; enemyBullets = []; explosions = []; fallingShips = []; isDualShipActive = false;
+        player1IsDualShipActive = false; player2IsDualShipActive = false;
+        isShowingResultsScreen = false;
+        previousButtonStates = []; previousGameButtonStates = []; previousDemoButtonStates = []; previousGameButtonStatesP2 = [];
+    }
+}
+
+/** Triggert de game over sequence (roept nu helper aan) */
+function triggerGameOver() { triggerFinalGameOverSequence(); }
+
+// --- EINDE deel 3      van 3 dit codeblok ---
+// --- END OF FILE setup_utils.js ---
