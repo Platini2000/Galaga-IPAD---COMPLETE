@@ -1,5 +1,5 @@
 // --- START OF FILE setup_utils.js ---
-// --- DEEL 1      van 3 dit code blok    --- (Nieuwe AI Globale Variabelen Toegevoegd)
+// --- DEEL 1      van 3 dit code blok    ---
 
 const
     // Enemy Types (Needs to be defined BEFORE game_logic.js uses them)
@@ -36,9 +36,8 @@ const
     BASE_GRID_MAX_FIRING_ENEMIES = 7, MAX_GRID_MAX_FIRING_ENEMIES = 16,
     BASE_RETURN_SPEED_FACTOR = 1.5, MAX_RETURN_SPEED_FACTOR = 2.5,
     PLAYER_GAME_OVER_MESSAGE_DURATION_COOP = 3000,
-    AI_CAPTURE_BEAM_APPROACH_DELAY_MS = 2000, // Bestaande constante
-    COOP_AI_CAPTURE_DIVE_ANTICIPATION_DURATION_MS = 3000, // Bestaande constante
-    AI_GLOBAL_CAPTURE_DIVE_HOLD_DURATION_MS = 5000, // <<< NIEUWE CONSTANTE >>>
+    AI_CAPTURE_BEAM_APPROACH_DELAY_MS = 2000,
+    COOP_AI_CAPTURE_DIVE_ANTICIPATION_DURATION_MS = 3000,
     COOP_AI_SAVE_PARTNER_DELAY_MS = 10000
 ;
 
@@ -51,12 +50,13 @@ let isInGameState = false;
 let isShowingScoreScreen = false;
 let scoreScreenStartTime = 0;
 let highScore = 20000;
-window.highScoreHolderId = null;
+// let highScoreHolderId = null; // Oude declaratie
+window.highScoreHolderId = null; // << GEWIJZIGD: Expliciet aan window toevoegen
 let playerLives = 3;
 let score = 0;
 let level = 1;
 let isTwoPlayerMode = false;
-let selectedGameMode = 'normal';
+let selectedGameMode = 'normal'; // 'normal', 'coop'
 let currentPlayer = 1;
 let player1Lives = 3;
 let player2Lives = 3;
@@ -66,6 +66,7 @@ let player1CompletedLevel = -1;
 let player1MaxLevelReached = 1;
 let player2MaxLevelReached = 1;
 
+// Menu State Variabelen
 let isPlayerSelectMode = false;
 let isOnePlayerGameTypeSelectMode = false;
 let isOnePlayerNormalGameSubTypeSelectMode = false;
@@ -144,7 +145,7 @@ let player2IsDualShipActive = false;
 let isShowingCaptureMessage = false;
 let captureMessageStartTime = 0;
 let capturedBossIdWithMessage = null;
-enemies = []; // Moet hier gedefinieerd worden vanwege hoisting/volgorde
+let enemies = [];
 let normalWaveEntrancePaths = {}; let challengingStagePaths = {};
 let currentWaveDefinition = null; let isEntrancePhaseActive = false;
 let enemySpawnTimeouts = []; let totalEnemiesScheduledForWave = 0; let enemiesSpawnedThisWave = 0;
@@ -161,9 +162,9 @@ let leftPressed = false; let rightPressed = false; let shootPressed = false;
 let p2LeftPressed = false; p2RightPressed = false; p2ShootPressed = false;
 let keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false;
 let keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false;
-bullets = []; // Moet hier gedefinieerd worden
-enemyBullets = []; explosions = []; // Moet hier gedefinieerd worden
-hitSparks = [];
+let bullets = [];
+let enemyBullets = []; let explosions = [];
+let hitSparks = [];
 let playerLastShotTime = 0;
 let player1LastShotTime = 0;
 let player2LastShotTime = 0;
@@ -180,7 +181,7 @@ let player1EnemiesHit = 0;
 let player2EnemiesHit = 0;
 let isShowingResultsScreen = false;
 let gameOverSequenceStartTime = 0; let gameStartTime = 0;
-let visualOffsetX = -20; floatingScores = []; // Moet hier
+let visualOffsetX = -20; let floatingScores = [];
 let csCurrentChainHits = 0; csCurrentChainScore = 0; csLastHitTime = 0; csLastChainHitPosition = null;
 let normalWaveCurrentChainHits = 0; normalWaveCurrentChainScore = 0; normalWaveLastHitTime = 0; normalWaveLastHitPosition = null;
 let squadronCompletionStatus = {}; let squadronEntranceFiringStatus = {}; let isPaused = false;
@@ -215,28 +216,25 @@ let capturedShipRespawnX_NormalMode = 0;
 let coopPartner1CapturedTime = 0;
 let coopPartner2CapturedTime = 0;
 
-// <<< NIEUWE GLOBALE VARIABELEN VOOR AI CAPTURE HOLD >>>
-let aiGlobalCaptureDiveHoldActive = false;
-let aiGlobalCaptureDiveHoldEndTime = 0;
-// <<< EINDE NIEUWE GLOBALE VARIABELEN >>>
-
-
+// --- Touch Input Variabelen ---
 let touchStartX = 0, touchStartY = 0;
 let touchCurrentX = 0, touchCurrentY = 0;
 let touchStartTime = 0;
-let isTouchActiveGame = false;
-let isTouchActiveMenu = false;
-let touchedMenuButtonIndex = -1;
-let lastTapTime = 0;
+let isTouchActiveGame = false; // Voor in-game besturing
+let isTouchActiveMenu = false; // Voor menu interactie
+let touchedMenuButtonIndex = -1; // Welke menuknop initieel is aangeraakt
+let lastTapTime = 0; // Voor single fire debounce
 
+// --- Portrait Mode Variabelen ---
 let isShowingPortraitMessage = false;
 let gameWasAutoPausedForPortrait = false;
 
 
-const TOUCH_TAP_MAX_DURATION = 250;
-const TOUCH_TAP_MAX_MOVEMENT = 20;
-const TOUCH_SHIP_CONTROL_AREA_Y_FACTOR = 0.5;
+const TOUCH_TAP_MAX_DURATION = 250; // ms voor een tap
+const TOUCH_TAP_MAX_MOVEMENT = 20; // pixels toegestaan voor een tap
+const TOUCH_SHIP_CONTROL_AREA_Y_FACTOR = 0.5; // Onderste helft scherm voor schipbesturing
 
+// --- Afbeeldingen & Geluiden ---
 const shipImage = new Image(), beeImage = new Image(), butterflyImage = new Image(), bossGalagaImage = new Image(), bulletImage = new Image(), enemyBulletImage = new Image(), logoImage = new Image();
 shipImage.src = 'Afbeeldingen/spaceship.png'; beeImage.src = 'Afbeeldingen/bee.png'; bulletImage.src = 'Afbeeldingen/bullet.png'; bossGalagaImage.src = 'Afbeeldingen/bossGalaga.png'; butterflyImage.src = 'Afbeeldingen/butterfly.png'; logoImage.src = 'Afbeeldingen/Logo.png';
 enemyBulletImage.src = 'Afbeeldingen/bullet-enemy.png';
@@ -245,10 +243,11 @@ beeImage2.src = 'Afbeeldingen/bee-2.png'; butterflyImage2.src = 'Afbeeldingen/bu
 const level1Image = new Image(), level5Image = new Image(), level10Image = new Image(), level20Image = new Image(), level30Image = new Image(), level50Image = new Image();
 level1Image.src = 'Afbeeldingen/Level-1.png'; level5Image.src = 'Afbeeldingen/Level-5.png'; level10Image.src = 'Afbeeldingen/Level-10.png'; level20Image.src = 'Afbeeldingen/Level-20.png'; level30Image.src = 'Afbeeldingen/Level-30.png'; level50Image.src = 'Afbeeldingen/Level-50.png';
 
+// Web Audio API
 let audioContext;
 let soundBuffers = {};
-let soundSources = {};
-let soundGainNodes = {};
+let soundSources = {}; // To keep track of active sound sources for stopping
+let soundGainNodes = {}; // To control volume per sound
 let audioContextInitialized = false;
 
 const soundPaths = {
@@ -265,7 +264,7 @@ const soundPaths = {
     enemyShootSound: "Geluiden/Fire-enemy.mp3",
     butterflyDiveSound: "Geluiden/flying.mp3",
     startSound: "Geluiden/Start.mp3",
-    coinSound: "Geluiden/coin.mp3",
+    coinSound: "Geluiden/coin.mp3", // duplicate of dualShipSound, maybe consolidate
     beeHitSound: "Geluiden/Bees-hit.mp3",
     butterflyHitSound: "Geluiden/Butterfly-hit.mp3",
     bossHit1Sound: "Geluiden/Boss-hit1.mp3",
