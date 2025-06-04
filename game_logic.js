@@ -1523,7 +1523,7 @@ function switchPlayerTurn() {
 
 
 // --- START OF FILE game_logic.js ---
-// --- DEEL 5      van 8 dit code blok    --- (Focus: AI Capture Logic & CS AI No Dodge & Dual Ship Dodge & Last Life No Capture & 3-Second Attack Rule - CORRECTED FIRE RATE - EN **FIX: ALLE AI met dual ship / laatste leven NEGEERT vangstraal & RESPECTEERT capture-ready baas**)
+// --- DEEL 5      van 8 dit code blok    --- (Focus: AI Capture Logic & CS AI No Dodge & Dual Ship Dodge & Last Life No Capture & 3-Second Attack Rule - CORRECTED FIRE RATE - EN **FIX 2: ALLE AI met dual ship / laatste leven NEGEERT vangstraal & RESPECTEERT capture-ready baas**)
 
 function firePlayerBullet(shooterId = null, isTapEvent = false) {
     const now = Date.now();
@@ -2058,6 +2058,12 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
         const shouldAICompletelyIgnoreCaptureAttempt = (aiLivesForAI === 1 || isDualActiveForAI);
         let thisAICanBeCapturedThisTurn = aiLivesForAI > 1 && !isDualActiveForAI && !isShipCapturedForAI;
 
+        // Als AI de vangstraal moet negeren, reset dan de vlaggen die naar de straal zouden leiden
+        if (shouldAICompletelyIgnoreCaptureAttempt) {
+            aiIsCurrentlyTargetingCaptureBoss = false;
+            isMovingToCapture = false; // Voorkom dat de AI naar de straal beweegt
+        }
+
         if (thisAICanBeCapturedThisTurn && !shouldAICompletelyIgnoreCaptureAttempt && captureBeamActive && capturingBossObject && capturingBossObject.state === 'capturing' && !isShipCapturedForAI && !isWaitingForRespawn) {
         // <<< EINDE GEWIJZIGD >>>
             if (!isManualControl && !isPlayerTwoAI) {
@@ -2510,9 +2516,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     const shipCenterX = currentShip.x + effectiveShipWidth / 2;
     const shipTopY = currentShip.y;
     const livesOfThisAIShip = (shipIdentifier === 'p1') ? player1Lives : ((shipIdentifier === 'ai_p2' || shipIdentifier === 'p2') ? player2Lives : 0);
-    // <<< GEWIJZIGD: `shouldAICompletelyIgnoreCaptureAttempt` bepaalt of de AI de vang-mechaniek (straal & baas) negeert >>>
     const shouldAICompletelyIgnoreCaptureAttempt = (isShipDual || livesOfThisAIShip === 1);
-    // `canThisAIShipBeCaptured` is nu of de AI zich *kan* laten vangen ALS het de straal niet negeert.
     const canThisAIShipBeCaptured = livesOfThisAIShip > 1 && !isShipDual && !isThisShipCaptured;
 
 
@@ -2734,16 +2738,18 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                         targetEnemyForAI = null;
                     }
                 }
-            } else {
+            } else { // Baas is niet (meer) aan het vangen
                 if (aiPlayerActivelySeekingCaptureById === shipIdentifier) {
                     aiPlayerActivelySeekingCaptureById = null;
+                    isMovingToCaptureBeam = false; // Reset ook deze vlag
                 }
             }
         }
-    } else {
-        if (aiPlayerActivelySeekingCaptureById === shipIdentifier && !(canThisAIShipBeCaptured && !shouldAICompletelyIgnoreCaptureAttempt && captureBeamActive && capturingBossId && !isThisShipCaptured) ) {
+    } else { // Als niet aan de voorwaarden voldaan is (bv. AI moet straal negeren, of er is geen straal)
+        if (aiPlayerActivelySeekingCaptureById === shipIdentifier) { // Reset als dit schip het doelwit was
              aiPlayerActivelySeekingCaptureById = null;
         }
+        isMovingToCaptureBeam = false; // Zorg dat deze vlag altijd false is als niet actief naar straal bewogen wordt
     }
 
 
@@ -2804,7 +2810,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                 let doNotShootThisBossSpecifically = false;
 
                 if (localTargetEnemyForAI.type === ENEMY3_TYPE && !localTargetEnemyForAI.hasCapturedShip && !isFullGridWave) {
-                    // Als AI normaal gevangen kan worden EN het NIET de bedoeling is de vang-mechaniek te negeren
                     if (canThisAIShipBeCaptured && !shouldAICompletelyIgnoreCaptureAttempt && !captureAttemptMadeThisLevel &&
                         (localTargetEnemyForAI.state === 'in_grid' ||
                          localTargetEnemyForAI.state === 'preparing_capture' ||
@@ -2819,12 +2824,11 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                              doNotShootThisBossSpecifically = true;
                         }
                     }
-                    // Als AI de vang-mechaniek WEL moet negeren (dual of laatste leven)
                     else if (shouldAICompletelyIgnoreCaptureAttempt &&
                              (localTargetEnemyForAI.state === 'in_grid' || localTargetEnemyForAI.state === 'preparing_capture' || localTargetEnemyForAI.state === 'diving_to_capture_position' || (localTargetEnemyForAI.state === 'capturing' && localTargetEnemyForAI.id === capturingBossId) ) &&
                              !captureAttemptMadeThisLevel
                             ) {
-                        doNotShootThisBossSpecifically = true; // Niet schieten op een baas die klaar is om te vangen
+                        doNotShootThisBossSpecifically = true;
                     }
 
 
