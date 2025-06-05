@@ -1985,18 +1985,19 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                 if (aiIsCurrentlyTargetingCaptureBoss) aiIsCurrentlyTargetingCaptureBoss = false;
                 return;
             }
-            if (isShipCaptured || isShowingCaptureMessage) {
+            if (isShipCaptured || isShowingCaptureMessage) { // For 1P AI Demo, if ship is captured, or capture message is on, AI stops controlling THIS ship.
+                                                            // Respawned ship will be handled in a new call.
                 if (ship) ship.targetX = ship.x;
                 else if (activeShipForAI) activeShipForAI.targetX = activeShipForAI.x;
                 if (smoothedShipX !== undefined && ship) smoothedShipX = ship.x;
                 else if (smoothedShipX !== undefined && activeShipForAI) smoothedShipX = activeShipForAI.x;
-                aiIsCurrentlyTargetingCaptureBoss = false;
+                aiIsCurrentlyTargetingCaptureBoss = false; // Ensure this is reset
                 return;
             }
             activeShipForAI = ship;
             currentSmoothedShipXForAI = smoothedShipX;
             isDualActiveForAI = isDualShipActive;
-            isShipCapturedForAI = isShipCaptured;
+            isShipCapturedForAI = isShipCaptured; // This will be false if we passed the block above
             isInvincibleForAI = isInvincible;
             aiLivesForAI = playerLives;
         } else {
@@ -2030,7 +2031,13 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
         const shipTopY = activeShipForAI.y;
         const AI_CENTER_TARGET_X_VISUAL = canvasWidth / 2;
         const targetCenterShipX = AI_CENTER_TARGET_X_VISUAL - (effectiveShipWidth / 2);
-        const isShowingBlockingMessage = showReadyMessage || showCSClearMessage || showCsHitsMessage || showPerfectMessage || showCsBonusScoreMessage || showExtraLifeMessage || isCsCompletionDelayActive || isShowingCaptureMessage || isShowingIntro;
+        
+        // Define message groups for blocking AI actions
+        const standardBlockingMessages = showReadyMessage || showCSClearMessage || showCsHitsMessage ||
+                                         showPerfectMessage || showCsBonusScoreMessage || showExtraLifeMessage ||
+                                         isCsCompletionDelayActive || isShowingIntro;
+        const fullBlockingMessages = standardBlockingMessages || isShowingCaptureMessage;
+
 
         let desiredTargetX = currentSmoothedShipXForAI;
         let shouldTryShoot = false;
@@ -2043,7 +2050,7 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
         let aiNormalIsLettingShipBeCaptured = false;
 
 
-        if (aiNeedsStabilization && !isShowingBlockingMessage) {
+        if (aiNeedsStabilization && !fullBlockingMessages) { // Use fullBlockingMessages for stabilization check
             aiStabilizationEndTime = now + AI_STABILIZATION_DURATION;
             aiNeedsStabilization = false;
             currentSmoothedShipXForAI = activeShipForAI.x;
@@ -2053,38 +2060,30 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
         }
 
         const capturingBossObject = enemies.find(e => e.id === capturingBossId && e.type === ENEMY3_TYPE);
-        // <<< GEWIJZIGD: `mustActivelyEvadeCaptureBeam` wordt hier bepaald >>>
         const mustActivelyEvadeCaptureBeam = (aiLivesForAI === 1 || isDualActiveForAI);
-        let thisAICanBeCapturedThisTurn = aiLivesForAI > 1 && !isDualActiveForAI && !isShipCapturedForAI;
+        let thisAICanBeCapturedThisTurn = aiLivesForAI > 1 && !isDualActiveForAI && !isShipCapturedForAI; // isShipCapturedForAI is for the *current* ship
 
-        // <<< START GEWIJZIGD: Striktere override voor AI die vangstraal moet ontwijken >>>
         if (mustActivelyEvadeCaptureBeam && captureBeamActive && typeof capturingBossId === 'string') {
             const beamBoss = enemies.find(e => e.id === capturingBossId && e.type === ENEMY3_TYPE && e.state === 'capturing');
             if (beamBoss) {
                 const beamBossWidth = BOSS_WIDTH;
                 const beamCenterX = beamBoss.x + beamBossWidth / 2;
-                const beamDangerRadius = (SHIP_WIDTH * CAPTURE_BEAM_WIDTH_BOTTOM_FACTOR / 2) + (effectiveShipWidth / 2) + (SHIP_WIDTH * 0.5); // Ruimere buffer
+                const beamDangerRadius = (SHIP_WIDTH * CAPTURE_BEAM_WIDTH_BOTTOM_FACTOR / 2) + (effectiveShipWidth / 2) + (SHIP_WIDTH * 0.5);
                 const horizontalDistanceToBeamCenter = Math.abs(shipCenterX - beamCenterX);
 
                 if (horizontalDistanceToBeamCenter < beamDangerRadius && beamBoss.y < shipTopY + activeShipForAI.height) {
-                    isDodgingThreat = true; // Belangrijk: dit markeert nu de vangstraal als een dreiging
-                    aiIsCurrentlyTargetingCaptureBoss = false; // Zeker niet targeten
-                    isMovingToCapture = false; // Zeker niet bewegen om gevangen te worden
-                    targetEnemyForAI = null; // Geen vijand targeten tijdens deze kritieke ontwijking
-                    shouldTryShoot = false; // NIET schieten
-
-                    let dodgeDirection = (shipCenterX < beamCenterX) ? -1 : 1; // Standaard naar buiten ontwijken
-                    desiredTargetX = currentSmoothedShipXForAI + dodgeDirection * (effectiveShipWidth * 2.0); // Agressiever ontwijken
+                    isDodgingThreat = true;
+                    aiIsCurrentlyTargetingCaptureBoss = false;
+                    isMovingToCapture = false;
+                    targetEnemyForAI = null;
+                    shouldTryShoot = false;
+                    let dodgeDirection = (shipCenterX < beamCenterX) ? -1 : 1;
+                    desiredTargetX = currentSmoothedShipXForAI + dodgeDirection * (effectiveShipWidth * 2.0);
                     desiredTargetX = Math.max(AI_ANTI_CORNER_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER, desiredTargetX));
-                    // De rest van de `aiControl` functie zal `isDodgingThreat` respecteren.
                 }
             }
         }
-        // <<< EINDE GEWIJZIGD >>>
 
-
-        // Alleen als de AI NIET een vangstraal actief ontwijkt (omdat het dual/laatste leven is),
-        // overweeg dan om zich te laten vangen (als `thisAICanBeCapturedThisTurn` true is).
         if (!isDodgingThreat && thisAICanBeCapturedThisTurn && captureBeamActive && capturingBossObject && capturingBossObject.state === 'capturing' && !isShipCapturedForAI && !isWaitingForRespawn) {
             if (!isManualControl && !isPlayerTwoAI) {
                 aiIsCurrentlyTargetingCaptureBoss = true;
@@ -2111,8 +2110,9 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
             isMovingToCapture = false;
         }
 
-
-        if (!isMovingToCapture && !aiIsCurrentlyTargetingCaptureBoss && !isShowingBlockingMessage && !isDodgingThreat) {
+        // 3-Second Rule Target Identification:
+        // AI can identify this target even if isShowingCaptureMessage is true, as long as other standard messages are not blocking.
+        if (!isMovingToCapture && !aiIsCurrentlyTargetingCaptureBoss && !standardBlockingMessages && !isDodgingThreat) {
             const threeSecondRuleTarget = enemies.find(e =>
                 e.type === ENEMY3_TYPE && e.hasCapturedShip && e.captureMessageStartTime > 0 && (now - e.captureMessageStartTime > 3000)
             );
@@ -2120,22 +2120,20 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                 isTargetingThreeSecondRuleBoss = true;
                 targetEnemyForAI = threeSecondRuleTarget;
                 desiredTargetX = threeSecondRuleTarget.x + threeSecondRuleTarget.width / 2 - effectiveShipWidth / 2;
-                shouldTryShoot = true;
-                // isDodgingThreat blijft false, tenzij directe kogel dreigt
+                shouldTryShoot = true; // AI intends to shoot this target
 
+                // Check for immediate danger while targeting this specific boss
                 if (!isChallengingStage && !isInvincibleForAI) {
                     const veryCloseBulletLookahead = activeShipForAI.height * 0.5;
                     const veryCloseBulletBuffer = effectiveShipWidth * 0.3;
                     const immediateDangerZone = { x: activeShipForAI.x - veryCloseBulletBuffer, y: activeShipForAI.y - veryCloseBulletLookahead, width: effectiveShipWidth + veryCloseBulletBuffer * 2, height: veryCloseBulletLookahead + activeShipForAI.height };
                     for (const bullet of enemyBullets) {
                         if (bullet && checkCollision(immediateDangerZone, { x: bullet.x, y: bullet.y, width: bullet.width, height: bullet.height })) {
-                            isDodgingThreat = true;
-                            shouldTryShoot = false;
-                            isTargetingThreeSecondRuleBoss = false;
-                            targetEnemyForAI = null;
+                            isDodgingThreat = true; // Prioritize dodging this immediate threat
+                            // shouldTryShoot will be set to false by the general override later
                             const dodgeDir = (shipCenterX < bullet.x + bullet.width / 2) ? -1 : 1;
-                            dodgeTargetX = currentSmoothedShipXForAI + dodgeDir * effectiveShipWidth * 1.5;
-                            desiredTargetX = Math.max(AI_ANTI_CORNER_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER, dodgeTargetX));
+                            dodgeTargetX = currentSmoothedShipXForAI + dodgeDir * effectiveShipWidth * 1.5; // Store dodge target
+                            // desiredTargetX will be updated if isDodgingThreat is true later
                             break;
                         }
                     }
@@ -2144,10 +2142,10 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
         }
 
 
-        if (now < aiStabilizationEndTime && !isShowingBlockingMessage && !aiIsCurrentlyTargetingCaptureBoss && !isTargetingThreeSecondRuleBoss && !isDodgingThreat) {
+        if (now < aiStabilizationEndTime && !fullBlockingMessages && !aiIsCurrentlyTargetingCaptureBoss && !isTargetingThreeSecondRuleBoss && !isDodgingThreat) {
             desiredTargetX = targetCenterShipX;
-        } else if (!isShowingBlockingMessage && !aiIsCurrentlyTargetingCaptureBoss && !isTargetingThreeSecondRuleBoss && !isDodgingThreat) {
-            // Standaard kogel/vijand ontwijking (alleen als niet al een andere prioritaire ontwijking actief is)
+        } else if (!fullBlockingMessages && !aiIsCurrentlyTargetingCaptureBoss && !isTargetingThreeSecondRuleBoss && !isDodgingThreat) {
+            // Standaard kogel/vijand ontwijking (alleen als niet al een andere prioritaire ontwijking actief is, or targeting specific bosses)
             if (!isChallengingStage && !isInvincibleForAI) {
                 let threateningBullets = [];
                 const baseLookahead = isEntrancePhaseActive ? ENTRANCE_BULLET_DODGE_LOOKAHEAD * 1.1 : FINAL_DODGE_LOOKAHEAD * 1.2;
@@ -2191,10 +2189,10 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                             bestDodgeX = potentialDodgeX;
                         }
                     }
-                    dodgeTargetX = bestDodgeX; // dodgeTargetX wordt gebruikt als isDodgingThreat true is
+                    dodgeTargetX = bestDodgeX;
                 }
 
-                if (!isDodgingThreat) { // Alleen checken voor vijanden als niet al voor kogels ontweken wordt
+                if (!isDodgingThreat) {
                     const enemyLookahead = AI_COLLISION_LOOKAHEAD * (isDualActiveForAI ? 1.85 : 1.5);
                     const enemyBuffer = FINAL_DODGE_BUFFER_BASE * (isDualActiveForAI ? 1.85 : 1.5);
                     for (const currentEnemy of enemies) {
@@ -2213,13 +2211,13 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                     }
                 }
             }
-            // Hier wordt de desiredTargetX gezet als er ontweken moet worden
-            if (isDodgingThreat) {
+
+            if (isDodgingThreat) { // If any general threat caused dodging
                 desiredTargetX = Math.max(AI_ANTI_CORNER_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER, dodgeTargetX));
-                targetEnemyForAI = null;
-                shouldTryShoot = false;
+                targetEnemyForAI = null; // Overrides previous targetEnemyForAI if general dodge is needed
+                shouldTryShoot = false;  // Overrides previous shouldTryShoot
+                isTargetingThreeSecondRuleBoss = false; // If general dodging, not specifically targeting 3-sec boss anymore for this frame
             } else if (fallingShips.length > 0 && !isShipCapturedForAI && !isWaitingForRespawn && !isDualActiveForAI ) {
-                // ... (logica voor vallend schip pakken) ...
                 let closestFallingShip = null;
                 let minDist = Infinity;
                 for (const fs of fallingShips) {
@@ -2246,18 +2244,14 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                     shouldTryShoot = false;
                     targetEnemyForAI = null;
                 }
-            } else { // Geen dreiging, geen vallend schip, geen vangactie, geen 3-sec regel
-                if (!isMovingToCapture) { // En niet al bezig met naar straal bewegen
+            } else { // No threat, no falling ship, no vangactie, no 3-sec rule (or 3-sec rule didn't set target)
+                if (!isMovingToCapture) {
                     targetEnemyForAI = null;
                     let bestTargetScore = -Infinity;
 
                     for (const enemy of enemies) {
                         if (!enemy) continue;
-
-                        let blockShootingThisEnemyAsCaptureTarget = false;
-                        if (aiIsCurrentlyTargetingCaptureBoss && enemy.id === capturingBossId) {
-                             blockShootingThisEnemyAsCaptureTarget = true;
-                        }
+                        if (aiIsCurrentlyTargetingCaptureBoss && enemy.id === capturingBossId) continue;
 
                         let currentScore = 0;
                         const enemyCenterX = enemy.x + enemy.width / 2;
@@ -2272,7 +2266,6 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                         if (enemy.type === ENEMY3_TYPE && enemy.isDamaged) currentScore += 4000;
                         if (enemy.type === ENEMY3_TYPE && enemy.hasCapturedShip) currentScore += 5000;
 
-
                         if (currentScore > bestTargetScore) {
                             bestTargetScore = currentScore;
                             targetEnemyForAI = enemy;
@@ -2282,7 +2275,6 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                     if (targetEnemyForAI) {
                         const enemyMidX = targetEnemyForAI.x + targetEnemyForAI.width / 2;
                         desiredTargetX = enemyMidX - (effectiveShipWidth / 2);
-
                         const ALIGNMENT_MULTIPLIER = 1.8;
                         let alignmentThresholdForShooting;
 
@@ -2293,30 +2285,22 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                         } else {
                             alignmentThresholdForShooting = effectiveShipWidth * (FINAL_SHOOT_ALIGNMENT_THRESHOLD * ALIGNMENT_MULTIPLIER);
                         }
-
                         const horizontalDiffToAim = Math.abs(shipCenterX - enemyMidX);
-
                         let doNotShootThisTarget = false;
                         if (aiIsCurrentlyTargetingCaptureBoss && targetEnemyForAI.id === capturingBossId) {
                             doNotShootThisTarget = true;
-                        } else if (thisAICanBeCapturedThisTurn && !mustActivelyEvadeCaptureBeam && targetEnemyForAI.type === ENEMY3_TYPE && // Alleen als NIET actief ontwijken
+                        } else if (thisAICanBeCapturedThisTurn && !mustActivelyEvadeCaptureBeam && targetEnemyForAI.type === ENEMY3_TYPE &&
                                    !targetEnemyForAI.hasCapturedShip && !captureAttemptMadeThisLevel && !isFullGridWave &&
-                                   (targetEnemyForAI.state === 'in_grid' ||
-                                    targetEnemyForAI.state === 'preparing_capture' ||
+                                   (targetEnemyForAI.state === 'in_grid' || targetEnemyForAI.state === 'preparing_capture' ||
                                     targetEnemyForAI.state === 'diving_to_capture_position' ||
-                                    (targetEnemyForAI.state === 'capturing' && targetEnemyForAI.id === capturingBossId)
-                                   )
-                                  ) {
+                                    (targetEnemyForAI.state === 'capturing' && targetEnemyForAI.id === capturingBossId))) {
                             doNotShootThisTarget = true;
-                        } else if (mustActivelyEvadeCaptureBeam && targetEnemyForAI.type === ENEMY3_TYPE && // Als WEL actief ontwijken
+                        } else if (mustActivelyEvadeCaptureBeam && targetEnemyForAI.type === ENEMY3_TYPE &&
                                    !targetEnemyForAI.hasCapturedShip &&
                                    (targetEnemyForAI.state === 'in_grid' || targetEnemyForAI.state === 'preparing_capture' || targetEnemyForAI.state === 'diving_to_capture_position' || (targetEnemyForAI.state === 'capturing' && targetEnemyForAI.id === capturingBossId) ) &&
-                                   !captureAttemptMadeThisLevel && !isFullGridWave
-                                  ) {
+                                   !captureAttemptMadeThisLevel && !isFullGridWave) {
                             doNotShootThisTarget = true;
                         }
-
-
                         if (horizontalDiffToAim < alignmentThresholdForShooting && !doNotShootThisTarget) {
                             shouldTryShoot = true;
                         }
@@ -2326,15 +2310,22 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                     }
                 }
             }
-        } else if (aiIsCurrentlyTargetingCaptureBoss && isShowingBlockingMessage && !isDodgingThreat) {
-            shouldTryShoot = false;
+        } else if (aiIsCurrentlyTargetingCaptureBoss && fullBlockingMessages && !isDodgingThreat) {
+            shouldTryShoot = false; // If AI is trying to get captured AND a message is on, don't shoot
             targetEnemyForAI = null;
-        } else if (isTargetingThreeSecondRuleBoss && isShowingBlockingMessage && !isDodgingThreat) {
-            shouldTryShoot = false;
+        } else if (isTargetingThreeSecondRuleBoss && !isDodgingThreat) { // If targeting 3-sec boss, check standard messages
+             if(standardBlockingMessages) { // If standard messages are active, defer shooting
+                shouldTryShoot = false;
+             }
+             // If only isShowingCaptureMessage is active (and standardBlockingMessages is false),
+             // shouldTryShoot (which would be true from 3-sec rule logic) remains true.
         }
 
 
         if (activeShipForAI) {
+            if (isDodgingThreat) { // If isDodgingThreat was set (e.g. by immediate danger for 3-sec boss, or general dodge)
+                 desiredTargetX = Math.max(AI_ANTI_CORNER_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER, dodgeTargetX));
+            }
             currentSmoothedShipXForAI += (desiredTargetX - currentSmoothedShipXForAI) * AI_SMOOTHING_FACTOR_MOVE;
             activeShipForAI.targetX = currentSmoothedShipXForAI;
 
@@ -2345,24 +2336,45 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
             }
         }
 
-        // Override schieten als AI de vangpoging negeert of al bezig is met vangen/ontwijken.
+        // Final overrides for shooting based on AI's primary action
         if (aiIsCurrentlyTargetingCaptureBoss || mustActivelyEvadeCaptureBeam || isDodgingThreat) {
             shouldTryShoot = false;
         }
 
-        if (shouldTryShoot && !isMovingToCapture && !isShowingBlockingMessage) {
-            let canAIShootNow = false;
-            if (isAIPlayer2NormalMode) {
-                canAIShootNow = true;
+        // Final shooting decision
+        let finalCanShootLogic = false;
+        if (shouldTryShoot && !isMovingToCapture) {
+            if (standardBlockingMessages) {
+                finalCanShootLogic = false; // Standard messages block shooting
+            } else if (isShowingCaptureMessage) {
+                // Only isShowingCaptureMessage is potentially blocking now
+                if (isTargetingThreeSecondRuleBoss) {
+                    finalCanShootLogic = true; // 3-second rule allows shooting despite capture message
+                } else {
+                    finalCanShootLogic = false; // Other targets are blocked by capture message
+                }
             } else {
+                // No standard blocking messages, and no capture message
+                finalCanShootLogic = true;
+            }
+        }
+
+
+        if (finalCanShootLogic) {
+            let canAIShootNowCooldownCheck = false;
+            if (isAIPlayer2NormalMode) {
+                canAIShootNowCooldownCheck = true;
+            } else { // 1P AI Demo
                 if (now >= aiCanShootTime) {
-                    canAIShootNow = true;
+                    canAIShootNowCooldownCheck = true;
                 }
             }
 
-            if (canAIShootNow && !isShowingIntro) {
+            if (canAIShootNowCooldownCheck) {
+                // isShowingIntro is part of standardBlockingMessages, so if we are here, it's false
+                // or it's the 3-second rule special case.
                 if (firePlayerBullet(aiIdentifierForAI, false)) {
-                    if (!isAIPlayer2NormalMode) {
+                    if (!isAIPlayer2NormalMode) { // 1P AI Demo
                         aiCanShootTime = now + SHOOT_COOLDOWN;
                     }
                 }
@@ -2570,29 +2582,24 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     }
 
 
-    // <<< START GEWIJZIGD: Dual Ship / Last Life AI ontwijkt vangstraal actief >>>
     if (mustActivelyEvadeCaptureBeam && captureBeamActive && typeof capturingBossId === 'string') {
         const beamBoss = gameEnemies.find(e => e.id === capturingBossId && e.type === ENEMY3_TYPE && e.state === 'capturing');
         if (beamBoss) {
             const beamBossWidth = BOSS_WIDTH;
             const beamCenterX = beamBoss.x + beamBossWidth / 2;
-            // Vergrote detectieradius voor de straal als dreiging
             const beamDangerRadius = (SHIP_WIDTH * CAPTURE_BEAM_WIDTH_BOTTOM_FACTOR) + effectiveShipWidth;
             const horizontalDistanceToBeamCenter = Math.abs(shipCenterX - beamCenterX);
 
             if (horizontalDistanceToBeamCenter < beamDangerRadius && beamBoss.y < shipTopY + currentShip.height) {
-                isDodgingThreat = true; // Vangstraal is nu een prioritaire dreiging
+                isDodgingThreat = true;
                 targetEnemyForAI = null;
-                shouldTryShoot = false; // NIET schieten op de baas die de straal maakt
-                isMovingToCaptureBeam = false; // Zeker niet naar de straal bewegen
-
-                let dodgeDirection = (shipCenterX < beamCenterX) ? -1 : 1; // Standaard naar buiten ontwijken
-
-                // Als CO-OP AI en de partner *kan* gevangen worden, probeer ruimte te maken
+                shouldTryShoot = false;
+                isMovingToCaptureBeam = false;
+                let dodgeDirection = (shipCenterX < beamCenterX) ? -1 : 1;
                 if (isShipDual && (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'))) {
                     const partnerShipIdentifier = (shipIdentifier === 'p1') ? 'ai_p2' : 'p1';
                     const partnerShipObject = (partnerShipIdentifier === 'p1') ? ship1 : ship2;
-                    if (partnerShipObject) { // Check of partner schip bestaat
+                    if (partnerShipObject) {
                         const partnerLives = (partnerShipIdentifier === 'p1') ? player1Lives : player2Lives;
                         const partnerIsDual = (partnerShipIdentifier === 'p1') ? player1IsDualShipActive : player2IsDualShipActive;
                         const partnerIsCaptured = (partnerShipIdentifier === 'p1') ? isPlayer1ShipCaptured : isPlayer2ShipCaptured;
@@ -2607,14 +2614,11 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                         }
                     }
                 }
-                // Agressievere ontwijking
                 desiredTargetX = currentSmoothedX + dodgeDirection * (effectiveShipWidth * 2.2);
                 desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
-                // Belangrijk: isDodgingThreat is nu true, dus verdere logica hieronder die `!isDodgingThreat` checkt, wordt overgeslagen.
             }
         }
     }
-    // <<< EINDE GEWIJZIGD >>>
 
 
     const otherPlayerId = (shipIdentifier === 'p1') ? 'ai_p2' : 'p1';
@@ -2635,7 +2639,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
     isLastLifePartnerSave = (livesOfThisAIShip === 1) && bossHoldingPartner;
 
-    if (isLastLifePartnerSave && !isMovingToCaptureBeam && !isDodgingThreat) { // Niet als al een dreiging ontweken wordt
+    if (isLastLifePartnerSave && !isMovingToCaptureBeam && !isDodgingThreat) {
         targetEnemyForAI = bossHoldingPartner;
         const bossCenterX = bossHoldingPartner.x + bossHoldingPartner.width / 2;
         desiredTargetX = bossCenterX - effectiveShipWidth / 2;
@@ -2646,7 +2650,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         return { desiredTargetX, shouldTryShoot, targetEnemyForAI, isLastLifePartnerSave, isThreeSecondRuleTarget };
     }
 
-    if (!isLastLifePartnerSave && !isMovingToCaptureBeam && !bossHoldingPartner && !isDodgingThreat) { // Niet als al een dreiging ontweken wordt
+    if (!isLastLifePartnerSave && !isMovingToCaptureBeam && !bossHoldingPartner && !isDodgingThreat) {
         const threeSecondRuleTargetEnemy = gameEnemies.find(e =>
             e.type === ENEMY3_TYPE && e.hasCapturedShip && e.captureMessageStartTime > 0 && (currentTime - e.captureMessageStartTime > 3000)
         );
@@ -2664,7 +2668,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                 const immediateDangerZone = { x: currentShip.x - veryCloseBulletBuffer, y: currentShip.y - veryCloseBulletLookahead, width: effectiveShipWidth + veryCloseBulletBuffer * 2, height: veryCloseBulletLookahead + currentShip.height };
                 for (const bullet of gameEnemyBullets) {
                     if (bullet && checkCollision(immediateDangerZone, { x: bullet.x, y: bullet.y, width: bullet.width, height: bullet.height })) {
-                        isDodgingThreat = true; // Wordt een algemene ontwijking
+                        isDodgingThreat = true;
                         shouldTryShoot = false;
                         isThreeSecondRuleTarget = false;
                         targetEnemyForAI = null;
@@ -2955,15 +2959,11 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         }
     }
 
-    // Als AI actief een vangstraal ontwijkt (isDodgingThreat = true door de beam logic),
-    // of naar een straal beweegt (isMovingToCaptureBeam = true), niet schieten.
     if (isDodgingThreat || (isMovingToCaptureBeam && aiPlayerActivelySeekingCaptureById === shipIdentifier)) {
         shouldTryShoot = false;
         if (isDodgingThreat) targetEnemyForAI = null;
     }
 
-    // Als AI de vangpoging compleet moet negeren (omdat dual/laatste leven) EN het doelwit is de baas die de straal activeert, niet schieten.
-    // Dit is een extra check om te zorgen dat het niet op de baas schiet als het de straal als dreiging ziet.
     if (mustActivelyEvadeCaptureBeam && targetEnemyForAI && targetEnemyForAI.id === capturingBossId && captureBeamActive && !isThreeSecondRuleTarget) {
         shouldTryShoot = false;
     }
