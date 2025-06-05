@@ -1523,7 +1523,7 @@ function switchPlayerTurn() {
 
 
 // --- START OF FILE game_logic.js ---
-// --- DEEL 5      van 8 dit code blok    --- (Focus: Oplossen ReferenceError in aiControlCoop + behoud vorige logica)
+// --- DEEL 5      van 8 dit code blok    --- (Focus: Finale poging 1P AI Demo: dual ship vuren, niet vuren bij beam-move, correct respecteren capture dive)
 
 function firePlayerBullet(shooterId = null, isTapEvent = false) {
     const now = Date.now();
@@ -2093,10 +2093,8 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                     desiredTargetX = targetCenterShipX;
                     isMovingToCapture = false;
                 }
-                // Explicitly set shouldTryShoot to false when moving to capture for 1P AI Demo
-                if (isMovingToCapture) {
-                    shouldTryShoot = false;
-                }
+                // Explicitly set shouldTryShoot to false when 1P AI Demo is moving to capture or targeting capture boss
+                shouldTryShoot = false;
             }
         } else if (is1PAIDemoMode && aiIsCurrentlyTargetingCaptureBoss && (!captureBeamActive || !capturingBossObject || capturingBossObject.state !== 'capturing' || !thisAICanBeCapturedThisTurn || mustActivelyEvadeCaptureBeam)) {
             aiIsCurrentlyTargetingCaptureBoss = false;
@@ -2230,6 +2228,7 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                     targetEnemyForAI = null;
                 }
             } else {
+                // Alleen target selectie als 1P AI Demo niet bezig is zich te laten vangen
                 if (!isMovingToCapture || !is1PAIDemoMode) {
                     targetEnemyForAI = null;
                     let bestTargetScore = -Infinity;
@@ -2266,7 +2265,8 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                         desiredTargetX = enemyMidX - (effectiveShipWidth / 2);
 
                         let alignmentThresholdForShooting;
-                        const baseAlignmentFactor = isDualActiveForAI ? 1.35 : 1.0;
+                        // Verruim de alignment threshold iets meer als de AI een dual ship heeft, om vuren aan te moedigen.
+                        const baseAlignmentFactor = isDualActiveForAI ? 1.45 : 1.0;
 
                         if (isChallengingStage) {
                             alignmentThresholdForShooting = effectiveShipWidth * 2.5 * baseAlignmentFactor;
@@ -2317,7 +2317,6 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                             doNotShootThisTarget = true;
                         }
 
-
                         if (targetEnemyForAI.type === ENEMY3_TYPE && targetEnemyForAI.hasCapturedShip && !doNotShootThisTarget) {
                             shouldTryShoot = true;
                         } else if (horizontalDiffToAim < alignmentThresholdForShooting && !doNotShootThisTarget) {
@@ -2350,7 +2349,7 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
         // Finale overrides voor `shouldTryShoot`
         if (is1PAIDemoMode) {
             if (aiIsCurrentlyTargetingCaptureBoss) { shouldTryShoot = false; }
-            if (isMovingToCapture) { shouldTryShoot = false; } // Belangrijkste fix voor dit punt
+            if (isMovingToCapture) { shouldTryShoot = false; } // Essentieel!
         }
         if (mustActivelyEvadeCaptureBeam) { shouldTryShoot = false; }
         if (isDodgingThreat) { shouldTryShoot = false; }
@@ -2427,7 +2426,6 @@ function aiControlCoop() {
     if (p1CanAct && ship1 && !p1IsHuman) {
         if (smoothedShip1X === undefined) smoothedShip1X = ship1.x;
         const p1CompletelyBlocked = getShipBlockingState('p1');
-        // LET OP: De gedeconstrueerde variabelen hieronder krijgen een default van false om ReferenceError te voorkomen
         let { desiredTargetX: dt1, shouldTryShoot: sts1, targetEnemyForAI: te1, isLastLifePartnerSave: p1LastLifePartnerSave = false, isThreeSecondRuleTarget: p1ThreeSecRule = false } = calculateAIDesiredState(ship1, smoothedShip1X, player1IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer1Invincible, isPlayer1ShipCaptured, isPlayer1WaitingForRespawn, now, canvasWidth, p1CompletelyBlocked, 'p1');
         aiShip1TargetEnemy = te1;
         smoothedShip1X += (dt1 - smoothedShip1X) * AI_SMOOTHING_FACTOR_MOVE;
@@ -2449,7 +2447,6 @@ function aiControlCoop() {
     if (p2CanAct && ship2) {
         if (smoothedShip2X === undefined) smoothedShip2X = ship2.x;
         const p2CompletelyBlocked = getShipBlockingState('p2');
-        // LET OP: De gedeconstrueerde variabelen hieronder krijgen een default van false om ReferenceError te voorkomen
         let { desiredTargetX: dt2, shouldTryShoot: sts2, targetEnemyForAI: te2, isLastLifePartnerSave: p2LastLifePartnerSave = false, isThreeSecondRuleTarget: p2ThreeSecRule = false } = calculateAIDesiredState(ship2, smoothedShip2X, player2IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer2Invincible, isPlayer2ShipCaptured, isPlayer2WaitingForRespawn, now, canvasWidth, p2CompletelyBlocked, 'ai_p2');
         aiShip2TargetEnemy = te2;
         smoothedShip2X += (dt2 - smoothedShip2X) * AI_SMOOTHING_FACTOR_MOVE;
@@ -2848,11 +2845,9 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                 continue;
             }
 
-            // 1P AI Demo (shipIdentifier 'ai') mag niet targeten als het actief naar beam beweegt
             if (shipIdentifier === 'ai' && isMovingToCapture && enemy.id === capturingBossId) {
                 continue;
             }
-            // CO-OP AI mag niet targeten als het actief naar beam beweegt
             if (isMovingToCaptureBeam && enemy.id === capturingBossId && aiPlayerActivelySeekingCaptureById === shipIdentifier) {
                 continue;
             }
@@ -2981,9 +2976,9 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         }
     }
 
-    const isCurrently1PAIDemoForFinalOverride = (shipIdentifier === 'ai' && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'));
-    if (isCurrently1PAIDemoForFinalOverride) {
-        // Deze overrides gebeuren nu aan het einde van aiControl zelf.
+    const isCurrently1PAIDemoForFinalOverrideLogic = (shipIdentifier === 'ai' && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'));
+    if (isCurrently1PAIDemoForFinalOverrideLogic) {
+         // Deze overrides gebeuren nu direct in aiControl, na deze functie-aanroep.
     } else { // COOP AI
         if (isMovingToCaptureBeam && aiPlayerActivelySeekingCaptureById === shipIdentifier) { shouldTryShoot = false; }
     }
