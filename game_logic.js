@@ -2298,7 +2298,7 @@ function aiControlCoop() {
     let p1IsTheCapturer = isCoopAIDemoActive && aiPlayerActivelySeekingCaptureById === 'player1';
     let p2IsTheCapturer = isCoopAIDemoActive && (aiPlayerActivelySeekingCaptureById === 'player2' || aiPlayerActivelySeekingCaptureById === 'ai_p2');
     const aPartnerIsCapturingInDemo = p1IsTheCapturer || p2IsTheCapturer;
-    const bossBeingCapturedInDemo = aPartnerIsCapturingInDemo ? gameEnemies.find(e => e.id === capturingBossId && e.type === ENEMY3_TYPE && (e.state === 'preparing_capture' || e.state === 'diving_to_capture_position' || e.state === 'capturing')) : null;
+    const bossBeingCapturedInDemo = aPartnerIsCapturingInDemo ? enemies.find(e => e.id === capturingBossId && e.type === ENEMY3_TYPE && (e.state === 'preparing_capture' || e.state === 'diving_to_capture_position' || e.state === 'capturing')) : null; // <<< GEWIJZIGD: gameEnemies naar enemies
 
 
     if (p1CanAct && ship1) {
@@ -2318,10 +2318,10 @@ function aiControlCoop() {
              }
             targetCenterShipX1 = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvas.width - effectiveShipWidth1 - AI_EDGE_BUFFER, targetCenterShipX1));
              // Roep calculateAIDesiredState aan, maar geef aan dat het de capturende baas moet negeren
-            p1Result = calculateAIDesiredState(ship1, smoothedShip1X, player1IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer1Invincible, isPlayer1ShipCaptured, isPlayer1WaitingForRespawn, now, canvasWidth, p1CompletelyBlocked, 'p1', bossBeingCapturedInDemo?.id );
+            p1Result = calculateAIDesiredState(ship1, smoothedShip1X, player1IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer1Invincible, isPlayer1ShipCaptured, isPlayer1WaitingForRespawn, now, canvasWidth, p1CompletelyBlocked, 'p1', bossBeingCapturedInDemo?.id ); // <<< GEWIJZIGD
 
         } else {
-            p1Result = calculateAIDesiredState(ship1, smoothedShip1X, player1IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer1Invincible, isPlayer1ShipCaptured, isPlayer1WaitingForRespawn, now, canvasWidth, p1CompletelyBlocked, 'p1' );
+            p1Result = calculateAIDesiredState(ship1, smoothedShip1X, player1IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer1Invincible, isPlayer1ShipCaptured, isPlayer1WaitingForRespawn, now, canvasWidth, p1CompletelyBlocked, 'p1' ); // <<< GEWIJZIGD
         }
         aiShip1TargetEnemy = p1Result.targetEnemyForAI;
         smoothedShip1X += (p1Result.desiredTargetX - smoothedShip1X) * AI_SMOOTHING_FACTOR_MOVE;
@@ -2352,9 +2352,9 @@ function aiControlCoop() {
                 targetCenterShipX2 = Math.max(targetCenterShipX2, gameCanvas.width * 0.7 - effectiveShipWidth2/2);
             }
             targetCenterShipX2 = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvas.width - effectiveShipWidth2 - AI_EDGE_BUFFER, targetCenterShipX2));
-            p2Result = calculateAIDesiredState(ship2, smoothedShip2X, player2IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer2Invincible, isPlayer2ShipCaptured, isPlayer2WaitingForRespawn, now, canvasWidth, p2CompletelyBlocked, p2Identifier, bossBeingCapturedInDemo?.id);
+            p2Result = calculateAIDesiredState(ship2, smoothedShip2X, player2IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer2Invincible, isPlayer2ShipCaptured, isPlayer2WaitingForRespawn, now, canvasWidth, p2CompletelyBlocked, p2Identifier, bossBeingCapturedInDemo?.id); // <<< GEWIJZIGD
         } else {
-            p2Result = calculateAIDesiredState(ship2, smoothedShip2X, player2IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer2Invincible, isPlayer2ShipCaptured, isPlayer2WaitingForRespawn, now, canvasWidth, p2CompletelyBlocked, p2Identifier);
+            p2Result = calculateAIDesiredState(ship2, smoothedShip2X, player2IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer2Invincible, isPlayer2ShipCaptured, isPlayer2WaitingForRespawn, now, canvasWidth, p2CompletelyBlocked, p2Identifier); // <<< GEWIJZIGD
         }
         aiShip2TargetEnemy = p2Result.targetEnemyForAI;
         smoothedShip2X += (p2Result.desiredTargetX - smoothedShip2X) * AI_SMOOTHING_FACTOR_MOVE;
@@ -2638,8 +2638,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     }else{shouldTryShoot=false;}
     if(isCoopAIDemoActive&&aiPlayerActivelySeekingCaptureById&&aiPlayerActivelySeekingCaptureById!==shipIdentifier&&activeCapturingBoss&&targetEnemyForAI&&targetEnemyForAI.id===activeCapturingBoss.id){shouldTryShoot=false;}
 
-    // Correctie voor positionering als partner in COOP Demo bezig is met capture (wordt nu hierboven afgehandeld)
-    // De vorige logica hier is verwijderd, omdat de nieuwe "blijf weg" logica aan het begin van de functie dit al moet afhandelen.
 
     desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvas.width - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
     return { desiredTargetX, shouldTryShoot, targetEnemyForAI };
