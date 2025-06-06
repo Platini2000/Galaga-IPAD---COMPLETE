@@ -2105,7 +2105,7 @@ let aiIsCurrentlyTargetingCaptureBoss = false; // Vlag voor 1P AI Demo
                 desiredTargetX = Math.max(AI_ANTI_CORNER_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER, dodgeTargetX));
                 shouldTryShoot = false;
                 targetEnemyForAI = null;
-            } else { // AI kan/wil gevangen worden
+            } else { // AI kan/wil gevangen worden (geldt nu voor 1P Classic Demo EN AI P2 in Normal als >1 leven en geen dual)
                 aiIsCurrentlyTargetingCaptureBoss = true;
                 isMovingToCapture = true;
                 shouldTryShoot = false;
@@ -2670,21 +2670,14 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                 aiPlayerActivelySeekingCaptureById = shipIdentifier;
             }
             if (aiPlayerActivelySeekingCaptureById === shipIdentifier) {
-                // <<< GEWIJZIGD: COOP AI gaat direct naar beam als AI_CAPTURE_BEAM_APPROACH_DELAY_MS voorbij is >>>
-                // De conditie `currentTime - (currentActiveCapturingBoss.captureStartTime || 0) >= AI_CAPTURE_BEAM_APPROACH_DELAY_MS`
-                // blijft hier behouden voor COOP AI, zodat het niet *te* gretig is.
-                if (currentTime - (currentActiveCapturingBoss.captureStartTime || 0) >= AI_CAPTURE_BEAM_APPROACH_DELAY_MS) {
-                    isMovingToCaptureBeam = true; // Dit schip gaat nu actief naar de beam
-                    const beamCenterX = currentActiveCapturingBoss.x + (currentActiveCapturingBoss.width) / 2;
-                    desiredTargetX = beamCenterX - effectiveShipWidth / 2;
-                    shouldTryShoot = false;
-                    targetEnemyForAI = currentActiveCapturingBoss;
-                    return { desiredTargetX, shouldTryShoot, targetEnemyForAI, isLastLifePartnerSave, isThreeSecondRuleTarget, forceDodgeCaptureBeam };
-                } else {
-                    desiredTargetX = targetCenterShipX;
-                    shouldTryShoot = false;
-                    targetEnemyForAI = currentActiveCapturingBoss;
-                }
+                // <<< GEWIJZIGD: COOP AI gaat direct naar beam als het de actieve vanger is >>>
+                isMovingToCaptureBeam = true; // Dit schip gaat nu actief naar de beam
+                const beamCenterX = currentActiveCapturingBoss.x + (currentActiveCapturingBoss.width) / 2;
+                desiredTargetX = beamCenterX - effectiveShipWidth / 2;
+                shouldTryShoot = false;
+                targetEnemyForAI = currentActiveCapturingBoss; // Target de baas die de beam afvuurt
+                return { desiredTargetX, shouldTryShoot, targetEnemyForAI, isLastLifePartnerSave, isThreeSecondRuleTarget, forceDodgeCaptureBeam };
+                // <<< EINDE GEWIJZIGD >>>
             }
         }
     } else {
