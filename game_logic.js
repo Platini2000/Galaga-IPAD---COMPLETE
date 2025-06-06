@@ -2991,31 +2991,40 @@ function findAndDetachEnemy() {
  */
 function triggerImmediateCaptureDive() {
     try {
-        let canAttemptCapture = false;
-        let targetPlayerShipForDive = null;
+        let overallCanAttemptCapture = false;
+        let preferredTargetPlayerShip = null;
+        let forcedDiveSide = null; // null, 'left', or 'right'
 
         if (isTwoPlayerMode && selectedGameMode === 'coop') {
-            const p1CanBeTargeted = ship1 && player1Lives > 1 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !player1NeedsRespawnAfterCapture;
-            const p2CanBeTargeted = ship2 && player2Lives > 1 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !player2NeedsRespawnAfterCapture;
+            const p1_is_active = ship1 && player1Lives > 0 && !isPlayer1ShipCaptured && !isPlayer1WaitingForRespawn && !player1NeedsRespawnAfterCapture;
+            const p2_is_active = ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !isPlayer2WaitingForRespawn && !player2NeedsRespawnAfterCapture;
 
-            if ((p1CanBeTargeted || p2CanBeTargeted) && !captureAttemptMadeThisLevel) {
-                canAttemptCapture = true;
-                if (p1CanBeTargeted && p2CanBeTargeted) {
-                    targetPlayerShipForDive = Math.random() < 0.5 ? ship1 : ship2;
-                } else if (p1CanBeTargeted) {
-                    targetPlayerShipForDive = ship1;
-                } else if (p2CanBeTargeted) {
-                    targetPlayerShipForDive = ship2;
+            const p1_is_suitable_for_capture = p1_is_active && player1Lives > 1 && !player1IsDualShipActive;
+            const p2_is_suitable_for_capture = p2_is_active && player2Lives > 1 && !player2IsDualShipActive;
+
+            if (!captureAttemptMadeThisLevel) {
+                if (p1_is_suitable_for_capture && p2_is_suitable_for_capture) {
+                    overallCanAttemptCapture = true;
+                    preferredTargetPlayerShip = Math.random() < 0.5 ? ship1 : ship2;
+                } else if (p1_is_suitable_for_capture) {
+                    overallCanAttemptCapture = true;
+                    preferredTargetPlayerShip = ship1;
+                    if (p2_is_active) forcedDiveSide = 'left'; // Forceer duik naar P1 (links als P2 rechts is)
+                } else if (p2_is_suitable_for_capture) {
+                    overallCanAttemptCapture = true;
+                    preferredTargetPlayerShip = ship2;
+                    if (p1_is_active) forcedDiveSide = 'right'; // Forceer duik naar P2 (rechts als P1 links is)
                 }
+                // Als beide ongeschikt zijn, of een van de twee leeft niet, dan blijft overallCanAttemptCapture false.
             }
-        } else {
-            if (playerLives > 1 && ship && !isShipCaptured && !isWaitingForRespawn && !captureAttemptMadeThisLevel) {
-                canAttemptCapture = true;
-                targetPlayerShipForDive = ship;
+        } else { // 1P Classic, 1P vs AI Normal, 2P Normal (alternating)
+            if (playerLives > 1 && ship && !isShipCaptured && !isWaitingForRespawn && !isDualShipActive && !captureAttemptMadeThisLevel) {
+                overallCanAttemptCapture = true;
+                preferredTargetPlayerShip = ship;
             }
         }
 
-        if (isChallengingStage || !canAttemptCapture || !targetPlayerShipForDive) {
+        if (isChallengingStage || !overallCanAttemptCapture || !preferredTargetPlayerShip) {
             return;
         }
 
@@ -3032,8 +3041,18 @@ function triggerImmediateCaptureDive() {
             const attackGroupIds = new Set([chosenBoss.id]);
             resetJustReturnedFlags(attackGroupIds);
 
-            const diveTargetXPos = targetPlayerShipForDive.x + targetPlayerShipForDive.width / 2;
-            const diveSide = (diveTargetXPos < gameCanvas.width / 2) ? 'right' : 'left';
+            let diveTargetXPos = preferredTargetPlayerShip.x + preferredTargetPlayerShip.width / 2;
+            let diveSide;
+
+            if (forcedDiveSide) {
+                diveSide = forcedDiveSide;
+                 // Als we een kant forceren, zorg dat diveTargetXPos ook aan die kant is voor de berekening van targetX
+                if (forcedDiveSide === 'left') diveTargetXPos = gameCanvas.width * 0.25; // Simuleer target links
+                else diveTargetXPos = gameCanvas.width * 0.75; // Simuleer target rechts
+            } else {
+                diveSide = (diveTargetXPos < gameCanvas.width / 2) ? 'right' : 'left';
+            }
+
             const targetX = diveSide === 'left'
                 ? gameCanvas.width * CAPTURE_DIVE_SIDE_MARGIN_FACTOR
                 : gameCanvas.width * (1 - CAPTURE_DIVE_SIDE_MARGIN_FACTOR) - BOSS_WIDTH;
@@ -3046,20 +3065,17 @@ function triggerImmediateCaptureDive() {
             playSound('bossGalagaDiveSound', false, 0.2);
             const leaderId = chosenBoss.id;
 
-            // Bewaar een referentie naar de timeout ID zodat we deze kunnen clearen als de boss voortijdig verdwijnt.
             const prepareTimeoutId = setTimeout(() => {
                 const currentEnemy = enemies.find(e => e?.id === leaderId);
-                // <<< GEWIJZIGD: captureAttemptMadeThisLevel pas hier zetten EN ALLEEN als de boss nog bestaat en in de juiste state is >>>
                 if (currentEnemy && currentEnemy.state === 'preparing_capture') {
                     currentEnemy.state = 'diving_to_capture_position';
-                    captureAttemptMadeThisLevel = true; // Nu pas de vlag zetten
+                    captureAttemptMadeThisLevel = true;
                 }
-                // <<< EINDE GEWIJZIGD >>>
-                if(currentEnemy) currentEnemy.capturePrepareTimeout = null; // Reset de opgeslagen ID in de enemy
+                if(currentEnemy) currentEnemy.capturePrepareTimeout = null;
                 const timeoutIndex = enemySpawnTimeouts.indexOf(prepareTimeoutId);
                 if (timeoutIndex > -1) enemySpawnTimeouts.splice(timeoutIndex, 1);
             }, 300);
-            chosenBoss.capturePrepareTimeout = prepareTimeoutId; // Sla de ID op in de enemy
+            chosenBoss.capturePrepareTimeout = prepareTimeoutId;
             enemySpawnTimeouts.push(prepareTimeoutId);
         }
     } catch (e) {
@@ -3070,7 +3086,6 @@ function triggerImmediateCaptureDive() {
 
 /**
  * Resets justReturned flag for other grid enemies. (Nu met Set<string> of null)
- * <<< GEWIJZIGD: Parameter type aangepast in commentaar en logica >>>
  * @param {Set<string>|string|null} excludedIds - ID(s) to exclude. Set for multiple, string for single, null for none.
  */
 function resetJustReturnedFlags(excludedIds) {
