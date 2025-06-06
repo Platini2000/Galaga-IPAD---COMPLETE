@@ -2498,7 +2498,8 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         if (!isDodgingThreat) {
             const enemyLookahead = AI_COLLISION_LOOKAHEAD * (isShipDual ? 1.85 : 1.5);
             const enemyBuffer = FINAL_DODGE_BUFFER_BASE * (isShipDual ? 1.85 : 1.5);
-            for (const currentEnemy of gameEnemies) { // Oorspronkelijk: for(constCE of gameEnemies)
+            // --- BEGIN CORRECTED LOOP ---
+            for (const currentEnemy of gameEnemies) {
                 if (currentEnemy &&
                     (currentEnemy.state === 'attacking' || currentEnemy.state === 'diving_to_capture_position' || currentEnemy.state === 'following_entrance_path' || currentEnemy.state === 'following_bezier_path') &&
                     currentEnemy.y + currentEnemy.height > currentShip.y - enemyLookahead / 2 &&
@@ -2511,6 +2512,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                     }
                 }
             }
+            // --- EINDE CORRECTED LOOP ---
         }
     }
     if (isDodgingThreat) {
