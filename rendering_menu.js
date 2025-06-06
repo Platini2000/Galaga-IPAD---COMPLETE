@@ -344,7 +344,7 @@ function stopAutoDemoTimer() {
 
 
 // --- START OF FILE rendering_menu.js ---
-// --- DEEL 2      van 3 dit code blok    ---
+// --- DEEL 2 van 3 dit code blok    ---
 
 function showMenuState() {
     try {
@@ -473,7 +473,7 @@ function startCoopAIDemo() {
     selectedGameMode = 'coop';
     isManualControl = false;
     isShowingDemoText = true;
-    isCoopAIDemoActive = true; 
+    isCoopAIDemoActive = true;
     aiPlayerActivelySeekingCaptureById = null;
     wasLastGameAIDemo = true;
 
@@ -493,7 +493,7 @@ function startGame1P() {
     isPlayerTwoAI = false;
 
     isTwoPlayerMode = false;
-    selectedGameMode = 'normal'; 
+    selectedGameMode = 'normal';
     isCoopAIDemoActive = false;
     aiPlayerActivelySeekingCaptureById = null;
     selectedButtonIndex = 0;
@@ -504,15 +504,15 @@ function startGame1P() {
 function startGame2P() {
     if (isInGameState) return;
     isPlayerSelectMode = false;
-    isGameModeSelectMode = true; 
+    isGameModeSelectMode = true;
     isFiringModeSelectMode = false;
     isOnePlayerGameTypeSelectMode = false;
     isOnePlayerVsAIGameTypeSelectMode = false;
     selectedOnePlayerGameVariant = '';
     isPlayerTwoAI = false;
 
-    isTwoPlayerMode = true; 
-    selectedGameMode = 'normal'; 
+    isTwoPlayerMode = true;
+    selectedGameMode = 'normal';
     isCoopAIDemoActive = false;
     aiPlayerActivelySeekingCaptureById = null;
     selectedButtonIndex = 0;
@@ -543,20 +543,25 @@ function baseStartGame(setManualControl) {
         isShowingDemoText = !setManualControl;
         isPaused = false;
         previousButtonStates = []; previousGameButtonStates = []; previousDemoButtonStates = []; previousGameButtonStatesP2 = [];
-        p1JustFiredSingle = false; p2JustFiredSingle = false;
-        p1FireInputWasDown = false; p2FireInputWasDown = false;
+        // <<<< TOEGEVOEGD/GEWIJZIGD: Zorg dat ALLE relevante vuurvlaggen hier gereset worden >>>>
+        p1JustFiredSingle = false;
+        p2JustFiredSingle = false;
+        p1FireInputWasDown = false;
+        p2FireInputWasDown = false;
+        shootPressed = false; // Ook de gecombineerde vlag
+        p2ShootPressed = false; // Ook de gecombineerde vlag voor P2
 
         if (setManualControl) {
             wasLastGameAIDemo = false;
             if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
-                isCoopAIDemoActive = false; 
+                isCoopAIDemoActive = false;
             } else {
-                isCoopAIDemoActive = false; 
+                isCoopAIDemoActive = false;
             }
             aiPlayerActivelySeekingCaptureById = null;
-        } else { 
-            isPlayerTwoAI = false; 
-            selectedOnePlayerGameVariant = ''; 
+        } else {
+            isPlayerTwoAI = false;
+            selectedOnePlayerGameVariant = '';
         }
 
 
@@ -582,7 +587,7 @@ function baseStartGame(setManualControl) {
                 if (needsL1StartSound) playStartSoundForThisGame = true;
             } else if (selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL' || selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
                  if (needsL1StartSound) playStartSoundForThisGame = true;
-                 if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') { 
+                 if (selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
                     isShowingCoopPlayersReady = true; coopPlayersReadyStartTime = Date.now();
                  }
             } else if (isTwoPlayerMode && !isPlayerTwoAI && selectedGameMode === 'normal') {
@@ -591,9 +596,9 @@ function baseStartGame(setManualControl) {
                 if (needsL1StartSound && !coopStartSoundPlayedThisSession) playStartSoundForThisGame = true;
                 isShowingCoopPlayersReady = true; coopPlayersReadyStartTime = Date.now();
             }
-        } else { 
+        } else {
             if (needsL1StartSound) playStartSoundForThisGame = true;
-            if (isCoopAIDemoActive) { 
+            if (isCoopAIDemoActive) {
                  isShowingCoopPlayersReady = true; coopPlayersReadyStartTime = Date.now();
             }
         }
@@ -608,8 +613,9 @@ function baseStartGame(setManualControl) {
 
 
         gameStartTime = Date.now();
-        leftPressed = false; rightPressed = false; shootPressed = false;
-        p2LeftPressed = false; p2RightPressed = false; p2ShootPressed = false;
+        // Herhaal reset van keyboard state vlaggen voor de zekerheid
+        leftPressed = false; rightPressed = false; /* shootPressed al hierboven */
+        p2LeftPressed = false; p2RightPressed = false; /* p2ShootPressed al hierboven */
         keyboardP1LeftDown = false; keyboardP1RightDown = false; keyboardP1ShootDown = false;
         keyboardP2LeftDown = false; keyboardP2RightDown = false; keyboardP2ShootDown = false;
         selectedButtonIndex = -1;
@@ -636,7 +642,7 @@ function stopGameAndShowMenu() {
     if (isManualControl) {
         if (typeof window.saveHighScore === 'function') window.saveHighScore(); else saveHighScore();
     }
-    showMenuState(); 
+    showMenuState();
 }
 function exitGame() {
     isPaused = false;
@@ -650,7 +656,7 @@ function exitGame() {
     isOnePlayerVsAIGameTypeSelectMode = false;
     selectedOnePlayerGameVariant = '';
     isPlayerTwoAI = false;
-    showMenuState(); 
+    showMenuState();
     try {
         window.close();
         setTimeout(() => { if(!isInGameState) showMenuState(); }, 200);
@@ -733,7 +739,7 @@ function handleCanvasTouch(event, type, isTap = false) {
             clientX = event.changedTouches[0].clientX;
             clientY = event.changedTouches[0].clientY;
         } else {
-            return; 
+            return;
         }
     } else if (event.type.startsWith('mouse')) { // Muis event
         clientX = event.clientX;
@@ -757,7 +763,7 @@ function handleCanvasTouch(event, type, isTap = false) {
     if (isInGameState) {
         // Game-specifieke touch/muis logica in game_logic.js
     } else if (isShowingScoreScreen && !isTransitioningToDemoViaScoreScreen) {
-        if (type === 'end' && isTap) { 
+        if (type === 'end' && isTap) {
             if (typeof showMenuState === 'function') showMenuState();
         }
     } else if (!isShowingScoreScreen) { // Menu
@@ -772,24 +778,24 @@ function handleCanvasTouch(event, type, isTap = false) {
             currentHoverButton = 1;
         }
 
-        if (type === 'start') { 
-            isTouchActiveMenu = true; 
+        if (type === 'start') {
+            isTouchActiveMenu = true;
             touchedMenuButtonIndex = currentHoverButton;
             selectedButtonIndex = currentHoverButton;
-        } else if (type === 'move') { 
-            if (event.type === 'mousemove') { 
-                selectedButtonIndex = currentHoverButton; 
-            } else { 
+        } else if (type === 'move') {
+            if (event.type === 'mousemove') {
+                selectedButtonIndex = currentHoverButton;
+            } else {
                 if (touchedMenuButtonIndex !== -1 && currentHoverButton !== touchedMenuButtonIndex) {
                     selectedButtonIndex = -1;
-                } else if (touchedMenuButtonIndex !== -1) { 
+                } else if (touchedMenuButtonIndex !== -1) {
                     selectedButtonIndex = currentHoverButton;
                 }
             }
-        } else if (type === 'end' && event.type.startsWith('touch')) { 
-            isTouchActiveMenu = false; 
+        } else if (type === 'end' && event.type.startsWith('touch')) {
+            isTouchActiveMenu = false;
             if (isTap && currentHoverButton !== -1 && currentHoverButton === touchedMenuButtonIndex) {
-                selectedButtonIndex = currentHoverButton; 
+                selectedButtonIndex = currentHoverButton;
                 if (isPlayerSelectMode) {
                     if (selectedButtonIndex === 0) { startGame1P(); } else { startGame2P(); }
                 } else if (isOnePlayerGameTypeSelectMode) {
@@ -805,21 +811,19 @@ function handleCanvasTouch(event, type, isTap = false) {
                 } else if (isFiringModeSelectMode) {
                     if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; }
                     baseStartGame(true);
-                } else { 
+                } else {
                     if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0; }
                     else if (selectedButtonIndex === 1) { if (typeof exitGame === 'function') exitGame(); }
                 }
             } else if (isTap && currentHoverButton === -1 && touchedMenuButtonIndex === -1) {
-                // <<< GEWIJZIGD: Roep goBackInMenu aan bij tap naast knoppen >>>
                 goBackInMenu();
-                // <<< EINDE GEWIJZIGD >>>
             }
-            touchedMenuButtonIndex = -1; 
+            touchedMenuButtonIndex = -1;
         }
-        
-        if (type !== 'end' && currentHoverButton !== -1) { 
+
+        if (type !== 'end' && currentHoverButton !== -1) {
              stopAutoDemoTimer();
-        } else if (type === 'end' || (type === 'move' && currentHoverButton === -1)) { 
+        } else if (type === 'end' || (type === 'move' && currentHoverButton === -1)) {
              startAutoDemoTimer();
         }
     }
@@ -858,7 +862,7 @@ function handleCanvasClick(event) {
         }
 
         if (clickedButton !== -1) {
-            selectedButtonIndex = clickedButton; 
+            selectedButtonIndex = clickedButton;
 
             if (isPlayerSelectMode) {
                 if (selectedButtonIndex === 0) { startGame1P(); } else { startGame2P(); }
@@ -875,16 +879,14 @@ function handleCanvasClick(event) {
             } else if (isFiringModeSelectMode) {
                 if (selectedButtonIndex === 0) { selectedFiringMode = 'rapid'; } else { selectedFiringMode = 'single'; }
                 baseStartGame(true);
-            } else { 
+            } else {
                 if (selectedButtonIndex === 0) { isPlayerSelectMode = true; selectedButtonIndex = 0; }
                 else if (selectedButtonIndex === 1) { if (typeof exitGame === 'function') exitGame(); }
             }
-        } else { 
-            // <<< GEWIJZIGD: Roep goBackInMenu aan bij klik naast knoppen >>>
+        } else {
             goBackInMenu();
-            // <<< EINDE GEWIJZIGD >>>
         }
-        startAutoDemoTimer(); 
+        startAutoDemoTimer();
     }
 }
 
