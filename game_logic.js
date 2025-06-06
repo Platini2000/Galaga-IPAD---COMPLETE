@@ -4346,7 +4346,7 @@ function runSingleGameUpdate(timestamp) {
                         aiShip1CanShootTime = Date.now() + 1000;
                         aiShip2CanShootTime = Date.now() + 1200;
                     } else {
-                        aiCanShootTime = Date.now() + ((isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL') ? 1000 : 3000);
+                        aiCanShootTime = Date.now() + ((isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_NORMAL') ? 1000 : 1000);
                     }
                 } else {
                      if (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) { aiShip1CanShootTime = 0; aiShip2CanShootTime = 0;}
