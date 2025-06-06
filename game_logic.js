@@ -2533,7 +2533,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     let isThreeSecondRuleTarget = false;
     let forceDodgeCaptureBeam = false;
 
-    // Definieer isThisACoopAIMode aan het begin van de functie
     const isThisACoopAIMode = isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP');
 
 
@@ -2545,7 +2544,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     const canThisAIShipBeCapturedPhysically = livesOfThisAIShip > 1 && !isShipDual && !isThisShipCaptured;
 
     let thisAIShouldActivelyDodgeBeam = false;
-    if (isThisACoopAIMode) { // Gebruik de lokaal gedefinieerde vlag
+    if (isThisACoopAIMode) {
         if (livesOfThisAIShip <= 1 || isShipDual) {
             thisAIShouldActivelyDodgeBeam = true;
         }
@@ -2553,16 +2552,16 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
     const currentActiveCapturingBoss = gameEnemies.find(e => e.id === capturingBossId && e.type === ENEMY3_TYPE);
 
-    // --- HERZIENE LOGICA: Partner AI ontwijkt actieve capture beam van andere AI ---
-    if (isThisACoopAIMode && // Alleen in CO-OP AI modes
+    // --- BEGIN AANGEPASTE LOGICA: Partner AI ontwijkt actieve capture beam van andere AI ---
+    if (isThisACoopAIMode &&
         aiPlayerActivelySeekingCaptureById &&
-        aiPlayerActivelySeekingCaptureById !== shipIdentifier && // Als een *andere* AI bezig is met capture
+        aiPlayerActivelySeekingCaptureById !== shipIdentifier &&
         currentActiveCapturingBoss &&
-        currentActiveCapturingBoss.id === capturingBossId && // En het is DEZELFDE baas
-        (currentActiveCapturingBoss.state === 'capturing' || currentActiveCapturingBoss.state === 'diving_to_capture_position')) { // Tijdens de straal of de duik ernaartoe
+        currentActiveCapturingBoss.id === capturingBossId &&
+        (currentActiveCapturingBoss.state === 'capturing' || currentActiveCapturingBoss.state === 'diving_to_capture_position')) {
 
         isDodgingThreat = true;
-        forceDodgeCaptureBeam = true;
+        forceDodgeCaptureBeam = true; // Dit schip ontwijkt de beam van de partner.
 
         const beamCenterXPartner = currentActiveCapturingBoss.x + (currentActiveCapturingBoss.width / 2);
         const safetyDistance = effectiveShipWidth * 2.0 + BOSS_WIDTH;
@@ -2571,11 +2570,13 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         desiredTargetX = currentSmoothedX + dodgeDirFromPartnerBeam * safetyDistance;
         desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
 
-        shouldTryShoot = false;
-        targetEnemyForAI = null;
-        isMovingToCaptureBeam = false;
+        shouldTryShoot = false; // Absoluut niet schieten op de baas waarmee de partner bezig is.
+        targetEnemyForAI = null; // Geen specifiek doelwit als we de partner-capture ontwijken.
+        isMovingToCaptureBeam = false; // Dit schip probeert zelf niet te capturen.
+
         return { desiredTargetX, shouldTryShoot, targetEnemyForAI, isLastLifePartnerSave, isThreeSecondRuleTarget, forceDodgeCaptureBeam };
     }
+    // --- EINDE AANGEPASTE LOGICA ---
 
 
     if (thisAIShouldActivelyDodgeBeam && captureBeamActive && currentActiveCapturingBoss && currentActiveCapturingBoss.state === 'capturing' && !isThisShipCaptured) {
@@ -2836,8 +2837,10 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
             if (!allowTargetingCapturedPartnerBoss && bossHoldingPartner && enemy.id === bossHoldingPartner.id) continue;
             if (isMovingToCaptureBeam && enemy.id === capturingBossId && aiPlayerActivelySeekingCaptureById === shipIdentifier) continue;
 
+            // Als een *andere* AI bezig is met een capture van *deze* enemy, negeer als target.
             if (isThisACoopAIMode && aiPlayerActivelySeekingCaptureById && aiPlayerActivelySeekingCaptureById !== shipIdentifier &&
-                currentActiveCapturingBoss && enemy.id === currentActiveCapturingBoss.id) {
+                currentActiveCapturingBoss && enemy.id === currentActiveCapturingBoss.id &&
+                (currentActiveCapturingBoss.state === 'capturing' || currentActiveCapturingBoss.state === 'diving_to_capture_position')) {
                 continue;
             }
 
