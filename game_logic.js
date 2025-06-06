@@ -2470,6 +2470,51 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         return { desiredTargetX, shouldTryShoot: false, targetEnemyForAI: null };
     }
 
+    // --- BEGIN GEWIJZIGD DEEL: Agressievere "blijf weg" logica ---
+    if (isCoopAIDemoActive && aiPlayerActivelySeekingCaptureById && aiPlayerActivelySeekingCaptureById !== shipIdentifier) {
+        const capturingPartnerId = aiPlayerActivelySeekingCaptureById;
+        const partnerShip = (capturingPartnerId === 'player1') ? ship1 : ship2;
+        const bossBeingCapturedByPartner = gameEnemies.find(e => e.id === capturingBossId && e.type === ENEMY3_TYPE && (e.state === 'preparing_capture' || e.state === 'diving_to_capture_position' || e.state === 'capturing'));
+
+        if (partnerShip && bossBeingCapturedByPartner) {
+            // Partner is bezig met capture, deze AI (assistent) moet wegblijven en niet schieten.
+            shouldTryShoot = false;
+            targetEnemyForAI = null; // Niet op iets richten
+            isMovingToCaptureBeam = false; // Zeker niet zelf proberen te capturen
+            isTargetingPartnerRescue = false;
+            isTargetingThreeSecondRuleBoss = false;
+
+            const beamCenterXPartner = bossBeingCapturedByPartner.x + bossBeingCapturedByPartner.width / 2;
+            const SAFE_DISTANCE_FROM_BEAM_X = effectiveShipWidth * 2.5; // Grotere veilige afstand
+
+            if (shipIdentifier === 'p1') { // P1 is assistent, P2 is aan het capturen
+                if (beamCenterXPartner > gameCanvas.width * 0.5) { // Partner is rechts, P1 gaat ver links
+                    desiredTargetX = Math.max(AI_EDGE_BUFFER, gameCanvas.width * 0.15 - effectiveShipWidth / 2);
+                } else { // Partner is links, P1 gaat naar zijn eigen "lane" maar ver van het midden
+                    desiredTargetX = Math.max(AI_EDGE_BUFFER, gameCanvas.width * 0.35 - effectiveShipWidth / 2);
+                }
+                // Extra check om niet te dicht bij de partner te komen, ongeacht de beam positie
+                if (Math.abs(currentShip.x - partnerShip.x) < SAFE_DISTANCE_FROM_BEAM_X * 1.5) {
+                     desiredTargetX = currentShip.x + (currentShip.x < partnerShip.x ? -SAFE_DISTANCE_FROM_BEAM_X : SAFE_DISTANCE_FROM_BEAM_X);
+                }
+
+            } else { // P2 (of ai_p2) is assistent, P1 is aan het capturen
+                if (beamCenterXPartner < gameCanvas.width * 0.5) { // Partner is links, P2 gaat ver rechts
+                    desiredTargetX = Math.min(gameCanvas.width - effectiveShipWidth - AI_EDGE_BUFFER, gameCanvas.width * 0.85 - effectiveShipWidth / 2);
+                } else { // Partner is rechts, P2 gaat naar zijn eigen "lane" maar ver van het midden
+                    desiredTargetX = Math.min(gameCanvas.width - effectiveShipWidth - AI_EDGE_BUFFER, gameCanvas.width * 0.65 - effectiveShipWidth / 2);
+                }
+                 if (Math.abs(currentShip.x - partnerShip.x) < SAFE_DISTANCE_FROM_BEAM_X * 1.5) {
+                     desiredTargetX = currentShip.x + (currentShip.x < partnerShip.x ? -SAFE_DISTANCE_FROM_BEAM_X : SAFE_DISTANCE_FROM_BEAM_X);
+                }
+            }
+            desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvas.width - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
+            return { desiredTargetX, shouldTryShoot, targetEnemyForAI };
+        }
+    }
+    // --- EINDE GEWIJZIGD DEEL ---
+
+
     // PRIORITY 1: Overleven
     let dodgeTargetX = currentSmoothedX;
     if (!isChallengingStage && !isShipInvincible) {
@@ -2498,7 +2543,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         if (!isDodgingThreat) {
             const enemyLookahead = AI_COLLISION_LOOKAHEAD * (isShipDual ? 1.85 : 1.5);
             const enemyBuffer = FINAL_DODGE_BUFFER_BASE * (isShipDual ? 1.85 : 1.5);
-            // --- BEGIN CORRECTED LOOP ---
             for (const currentEnemy of gameEnemies) {
                 if (currentEnemy &&
                     (currentEnemy.state === 'attacking' || currentEnemy.state === 'diving_to_capture_position' || currentEnemy.state === 'following_entrance_path' || currentEnemy.state === 'following_bezier_path') &&
@@ -2512,7 +2556,6 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                     }
                 }
             }
-            // --- EINDE CORRECTED LOOP ---
         }
     }
     if (isDodgingThreat) {
@@ -2595,24 +2638,8 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     }else{shouldTryShoot=false;}
     if(isCoopAIDemoActive&&aiPlayerActivelySeekingCaptureById&&aiPlayerActivelySeekingCaptureById!==shipIdentifier&&activeCapturingBoss&&targetEnemyForAI&&targetEnemyForAI.id===activeCapturingBoss.id){shouldTryShoot=false;}
 
-    // Correctie voor positionering als partner in COOP Demo bezig is met capture
-    if (isCoopAIDemoActive && aiPlayerActivelySeekingCaptureById && aiPlayerActivelySeekingCaptureById !== shipIdentifier && activeCapturingBoss && (!targetEnemyForAI || targetEnemyForAI.id === activeCapturingBoss.id)) {
-        const beamCenterXPartner = activeCapturingBoss.x + activeCapturingBoss.width / 2;
-        if (shipIdentifier === 'p1') { // P1 is assistent
-            if (beamCenterXPartner > gameCanvas.width * 0.4) {
-                desiredTargetX = Math.min(targetCenterShipX, gameCanvas.width * 0.3 - effectiveShipWidth /2);
-            } else {
-                desiredTargetX = targetCenterShipX;
-            }
-        } else { // P2 is assistent
-            if (beamCenterXPartner < gameCanvas.width * 0.6) {
-                desiredTargetX = Math.max(targetCenterShipX, gameCanvas.width * 0.7 - effectiveShipWidth/2);
-            } else {
-                desiredTargetX = targetCenterShipX;
-            }
-        }
-    }
-
+    // Correctie voor positionering als partner in COOP Demo bezig is met capture (wordt nu hierboven afgehandeld)
+    // De vorige logica hier is verwijderd, omdat de nieuwe "blijf weg" logica aan het begin van de functie dit al moet afhandelen.
 
     desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvas.width - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
     return { desiredTargetX, shouldTryShoot, targetEnemyForAI };
