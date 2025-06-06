@@ -1712,7 +1712,7 @@ function renderGame() {
                     drawCanvasText(coopReadyText, midScreenX, midScreenY, INTRO_TEXT_FONT, INTRO_TEXT_COLOR_NORMAL, 'center', 'middle', true); messageDrawnThisCycle = true;
                  }
                  else if (isShowingCaptureMessage) {
-                    drawCanvasText("FIGHTER CAPTURED", midScreenX, midScreenY, INTRO_TEXT_FONT, "red", 'center', 'middle', true);
+                    drawCanvasText("FIGHTER CAPTURED!", midScreenX, midScreenY, INTRO_TEXT_FONT, "red", 'center', 'middle', true);
                     messageDrawnThisCycle = true;
                  }
                  else if (!isManualControl && isInGameState && isShowingDemoText) {
