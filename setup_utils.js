@@ -38,20 +38,7 @@ const
     PLAYER_GAME_OVER_MESSAGE_DURATION_COOP = 3000,
     AI_CAPTURE_BEAM_APPROACH_DELAY_MS = 2000,
     COOP_AI_CAPTURE_DIVE_ANTICIPATION_DURATION_MS = 3000,
-    COOP_AI_SAVE_PARTNER_DELAY_MS = 10000,
-
-    // <<< TOEGEVOEGD/GEWIJZIGD: Constanten voor AI Ontwijking >>>
-    AI_DODGE_COMMIT_DURATION = 100, // ms: hoe lang AI een ontwijkingsrichting aanhoudt
-    AI_DODGE_SIDE_CLEARANCE_FACTOR = 2.5, // Factor voor extra zijdelingse veiligheidsmarge
-    AI_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.022, // Zeer voorzichtige bewegingssnelheid tijdens ontwijken
-    AI_COOP_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.020, // Nog iets voorzichtiger voor COOP
-    AI_NORMAL_MOVEMENT_SMOOTHING_FACTOR = 0.05, // Standaard AI bewegingssnelheid (vervangt oude AI_SMOOTHING_FACTOR_MOVE)
-    AI_MIN_SAFE_DISTANCE_SCORE_FACTOR = 5, // Weging voor afstand tot dichtstbijzijnde dreiging bij scoren veilige plek
-    AI_STAY_PUT_THRESHOLD = SHIP_WIDTH * 0.20 // Drempel waaronder "blijf staan" aantrekkelijker wordt
-    // <<< EINDE TOEGEVOEGD/GEWIJZIGD >>>
-
-    // Bestaande constanten hieronder blijven behouden
-    // AI_SMOOTHING_FACTOR_MOVE = 0.05 // <<< VERWIJDERD: Dubbele declaratie, vervangen door AI_NORMAL_MOVEMENT_SMOOTHING_FACTOR >>>
+    COOP_AI_SAVE_PARTNER_DELAY_MS = 10000
 ;
 
 
@@ -63,7 +50,8 @@ let isInGameState = false;
 let isShowingScoreScreen = false;
 let scoreScreenStartTime = 0;
 let highScore = 20000;
-window.highScoreHolderId = null;
+// let highScoreHolderId = null; // Oude declaratie
+window.highScoreHolderId = null; // << GEWIJZIGD: Expliciet aan window toevoegen
 let playerLives = 3;
 let score = 0;
 let level = 1;
@@ -81,7 +69,7 @@ let player2MaxLevelReached = 1;
 // Menu State Variabelen
 let isPlayerSelectMode = false;
 let isOnePlayerGameTypeSelectMode = false;
-// let isOnePlayerNormalGameSubTypeSelectMode = false; // Verwijderd, niet meer in gebruik
+let isOnePlayerNormalGameSubTypeSelectMode = false;
 let isOnePlayerVsAIGameTypeSelectMode = false;
 let isGameModeSelectMode = false;
 let isFiringModeSelectMode = false;
