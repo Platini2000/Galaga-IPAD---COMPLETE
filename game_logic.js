@@ -1978,9 +1978,9 @@ function handlePlayerInput() {
 let aiIsCurrentlyTargetingCaptureBoss = false;
 let aiPreviousDodgeDirection = 0;
 let aiDodgeCommitEndTime = 0;
-const AI_DODGE_COMMIT_DURATION = 180; // Nog kortere commit tijd, voor snellere reactie na ontwijken
-const AI_DODGE_SIDE_CLEARANCE_FACTOR = 1.75; // Vergrote factor, meer zijruimte
-const AI_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.030; // Nog langzamere, voorzichtiger beweging tijdens ontwijken
+const AI_DODGE_COMMIT_DURATION = 150; // Kortere commit
+const AI_DODGE_SIDE_CLEARANCE_FACTOR = 2.0; // Meer zijruimte
+const AI_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.028; // Nog langzamer bewegen
 
 function aiControl() {
     try {
@@ -2044,137 +2044,97 @@ function aiControl() {
             aiPreviousDodgeDirection = 0;
         }
 
-        // <<< GEWIJZIGD: Nog verdere verfijning AI ontwijking (aiControl) >>>
+        // <<< GEWIJZIGD: Fundamentele herziening AI ontwijking (aiControl) >>>
         if (!isChallengingStage && !isInvincibleForAI && !isShowingBlockingMessage) {
-            let threateningBullets = [];
-            let threateningEnemies = []; // Lijst voor duikende vijanden
-            const AI_DODGE_LOOKAHEAD_Y_SINGLE = SHIP_HEIGHT * 7.0; // Verder kijken
-            const AI_DODGE_SIDE_BUFFER_SINGLE_BULLET = SHIP_WIDTH * 2.25; // Nog bredere zijbuffer voor kogels
-            const AI_DODGE_SIDE_BUFFER_SINGLE_ENEMY = effectiveShipWidth * 1.5; // Aparte buffer voor vijanden
-            const AI_DODGE_PREDICTION_TIME_MS_SINGLE = 400; // Langere projectietijd
+            const AI_DANGER_LOOKAHEAD_Y = SHIP_HEIGHT * 8; // Ver vooruitkijken
+            const AI_DANGER_SIDE_BUFFER = effectiveShipWidth * 1.5; // Ruime buffer naast het schip
+            const AI_BULLET_PROJECTION_MS = 450; // ms vooruit projecteren voor kogels
+            const AI_ENEMY_PROJECTION_MS = 250;  // ms vooruit projecteren voor vijanden
 
-            // Verzamel dreigende kogels
-            const dangerZoneForBullets = {
-                x: activeShipForAI.x - AI_DODGE_SIDE_BUFFER_SINGLE_BULLET,
-                y: activeShipForAI.y - AI_DODGE_LOOKAHEAD_Y_SINGLE,
-                width: effectiveShipWidth + AI_DODGE_SIDE_BUFFER_SINGLE_BULLET * 2,
-                height: AI_DODGE_LOOKAHEAD_Y_SINGLE + activeShipForAI.height
-            };
+            let allThreats = [];
+
+            // Verzamel en projecteer kogels
             for (const bullet of enemyBullets) {
-                if (bullet && bullet.y + bullet.height > activeShipForAI.y - activeShipForAI.height * 5 && bullet.y < canvasHeight + bullet.height * 3) {
-                    const bulletRect = { x: bullet.x, y: bullet.y, width: bullet.width, height: bullet.height };
-                    if (checkCollision(dangerZoneForBullets, bulletRect)) {
-                        threateningBullets.push(bullet);
-                    }
+                if (bullet.y < activeShipForAI.y + AI_DANGER_LOOKAHEAD_Y && bullet.y + bullet.height > activeShipForAI.y - SHIP_HEIGHT) { // Alleen kogels die relevant zijn in Y
+                    const framesToProject = AI_BULLET_PROJECTION_MS / 16.67;
+                    let projX = bullet.x + bullet.vx * framesToProject;
+                    let projY = bullet.y + bullet.vy * framesToProject;
+                    allThreats.push({
+                        x: projX - bullet.width * AI_DODGE_SIDE_CLEARANCE_FACTOR, // Vergrote hitbox
+                        y: projY - bullet.height * 0.5,
+                        width: bullet.width * (1 + 2 * AI_DODGE_SIDE_CLEARANCE_FACTOR),
+                        height: bullet.height * 2,
+                        type: 'bullet'
+                    });
                 }
             }
 
-            // Verzamel dreigende duikende vijanden
-            const enemyLookaheadDodge = AI_COLLISION_LOOKAHEAD * 2.0 * (isDualActiveForAI ? 1.85 : 1.5) * (isEntrancePhaseActive ? 1.25 : 1.0);
-            const enemyBufferDodge = FINAL_DODGE_BUFFER_BASE * 1.5 * (isDualActiveForAI ? 1.85 : 1.5) * (isEntrancePhaseActive ? 1.25 : 1.0);
-            const dangerZoneForEnemies = {
-                x: activeShipForAI.x - AI_DODGE_SIDE_BUFFER_SINGLE_ENEMY,
-                y: activeShipForAI.y - enemyLookaheadDodge,
-                width: effectiveShipWidth + AI_DODGE_SIDE_BUFFER_SINGLE_ENEMY * 2,
-                height: enemyLookaheadDodge + activeShipForAI.height
-            };
+            // Verzamel en projecteer duikende vijanden
             for (const enemy of enemies) {
                 if (enemy && (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position' || enemy.state === 'following_entrance_path' || enemy.state === 'following_bezier_path') &&
-                    enemy.y + enemy.height > activeShipForAI.y - enemyLookaheadDodge * 0.75 && enemy.y < activeShipForAI.y + activeShipForAI.height * 1.5) {
-                    const enemyRect = { x: enemy.x, y: enemy.y, width: enemy.width, height: enemy.height };
-                    if (checkCollision(dangerZoneForEnemies, enemyRect)) {
-                        threateningEnemies.push(enemy);
-                    }
+                    enemy.y < activeShipForAI.y + AI_DANGER_LOOKAHEAD_Y && enemy.y + enemy.height > activeShipForAI.y - SHIP_HEIGHT * 2) {
+                    const framesToProject = AI_ENEMY_PROJECTION_MS / 16.67;
+                    let projX = enemy.x + enemy.velocityX * framesToProject;
+                    let projY = enemy.y + enemy.velocityY * framesToProject;
+                     allThreats.push({
+                        x: projX - effectiveShipWidth * 0.2, // Vergrote hitbox
+                        y: projY - enemy.height * 0.2,
+                        width: enemy.width + effectiveShipWidth * 0.4,
+                        height: enemy.height + enemy.height * 0.4,
+                        type: 'enemy'
+                    });
                 }
             }
 
-            if (threateningBullets.length > 0 || threateningEnemies.length > 0) {
+            if (allThreats.length > 0) {
                 isDodgingThreat = true;
                 let bestDodgeX = currentSmoothedShipXForAI;
-                let maxDodgeScore = -Infinity;
-                let chosenDodgeDir = 0;
+                let minCollisionsInBest = Infinity;
 
                 const dodgeOptions = [-1, 1]; // Links, Rechts
-                if (aiPreviousDodgeDirection !== 0) { // Als er een vorige commit was
-                    dodgeOptions.unshift(aiPreviousDodgeDirection); // Evalueer die kant eerst
+                if (aiPreviousDodgeDirection !== 0) {
+                    dodgeOptions.unshift(aiPreviousDodgeDirection);
                     const otherDir = -aiPreviousDodgeDirection;
-                    if (!dodgeOptions.includes(otherDir)) dodgeOptions.push(otherDir); // Voeg andere kant toe indien nog niet aanwezig
+                    if (!dodgeOptions.includes(otherDir)) dodgeOptions.push(otherDir);
                 }
-                const uniqueDodgeOptions = [...new Set(dodgeOptions)];
-
+                const uniqueDodgeOptions = [...new Set(dodgeOptions), 0]; // Voeg "blijf staan" toe
 
                 for (const dodgeDir of uniqueDodgeOptions) {
-                    const dodgeAmountBase = effectiveShipWidth * 3.0; // Grote basis ontwijking
-                    let closestThreatSpeedFactor = 1.0;
-
-                    // Pas ontwijkingsafstand aan op basis van snelheid van dreiging IN die richting
-                    for (const b of threateningBullets) { if (dodgeDir * b.vx > 0) closestThreatSpeedFactor = Math.min(closestThreatSpeedFactor, Math.max(0.4, 1.0 - Math.abs(b.vx) / (SHIP_MOVE_SPEED * 0.6))); }
-                    for (const e of threateningEnemies) { if (dodgeDir * e.velocityX > 0) closestThreatSpeedFactor = Math.min(closestThreatSpeedFactor, Math.max(0.3, 1.0 - Math.abs(e.velocityX) / (SHIP_MOVE_SPEED * 0.7)));}
-
-                    const dodgeAmount = dodgeAmountBase * closestThreatSpeedFactor + Math.random() * effectiveShipWidth * 1.0;
+                    const dodgeAmount = (dodgeDir === 0) ? 0 : (effectiveShipWidth * 2.0 + Math.random() * effectiveShipWidth * 1.0);
                     let potentialDodgeX = currentSmoothedShipXForAI + dodgeDir * dodgeAmount;
-                    potentialDodgeX = Math.max(AI_ANTI_CORNER_BUFFER * 1.3, Math.min(canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER * 1.3, potentialDodgeX));
+                    potentialDodgeX = Math.max(AI_EDGE_BUFFER * 2, Math.min(canvasWidth - effectiveShipWidth - AI_EDGE_BUFFER * 2, potentialDodgeX));
 
-                    let predictedCollisions = 0;
-                    const travelSpeedForPredictionDodgeSingle = activeShipForAI.speed * AI_POSITION_MOVE_SPEED_FACTOR * 0.55; // Nog voorzichtiger
-                    const framesToReachDodge = Math.abs(potentialDodgeX - currentSmoothedShipXForAI) / travelSpeedForPredictionDodgeSingle || 1;
-                    const predictionTimeActual = Math.min(AI_DODGE_PREDICTION_TIME_MS_SINGLE / 16.67, framesToReachDodge * 1.6); // Projecteer nog verder
-
-                    const testDodgeShipRect = { x: potentialDodgeX, y: activeShipForAI.y, width: effectiveShipWidth, height: activeShipForAI.height };
-
-                    for (const bullet of threateningBullets) {
-                        let projBulletX = bullet.x + bullet.vx * predictionTimeActual;
-                        let projBulletY = bullet.y + bullet.vy * predictionTimeActual;
-                        const projBulletRect = { x: projBulletX - bullet.width/2, y: projBulletY, width: bullet.width, height: bullet.height };
-                        const expandedProjBulletRect = {
-                            x: projBulletRect.x - PLAYER_BULLET_WIDTH * AI_DODGE_SIDE_CLEARANCE_FACTOR * 1.8,
-                            y: projBulletRect.y - PLAYER_BULLET_HEIGHT * 1.2,
-                            width: projBulletRect.width + PLAYER_BULLET_WIDTH * 2 * AI_DODGE_SIDE_CLEARANCE_FACTOR * 1.8,
-                            height: projBulletRect.height + PLAYER_BULLET_HEIGHT * 2.4
-                        };
-                        if (checkCollision(testDodgeShipRect, expandedProjBulletRect)) predictedCollisions++;
-                    }
-                    for (const enemy of threateningEnemies) { // Check ook tegen geprojecteerde vijanden (simpele projectie)
-                        let projEnemyX = enemy.x + enemy.velocityX * predictionTimeActual * 0.5; // Vijanden bewegen complexer, dus kortere projectie
-                        let projEnemyY = enemy.y + enemy.velocityY * predictionTimeActual * 0.5;
-                        const projEnemyRect = { x: projEnemyX, y: projEnemyY, width: enemy.width, height: enemy.height };
-                         const expandedProjEnemyRect = {
-                            x: projEnemyRect.x - effectiveShipWidth * 0.4, y: projEnemyRect.y - activeShipForAI.height * 0.4,
-                            width: projEnemyRect.width + effectiveShipWidth * 0.8, height: projEnemyRect.height + activeShipForAI.height * 0.8
-                        };
-                        if (checkCollision(testDodgeShipRect, expandedProjEnemyRect)) predictedCollisions++;
+                    const shipAtPotentialDodge = { x: potentialDodgeX, y: activeShipForAI.y, width: effectiveShipWidth, height: activeShipForAI.height };
+                    let currentCollisions = 0;
+                    for (const threat of allThreats) {
+                        if (checkCollision(shipAtPotentialDodge, threat)) {
+                            currentCollisions++;
+                        }
                     }
 
-
-                    let dodgeScore = -predictedCollisions * 280; // Zeer hoge straf
-                    dodgeScore += Math.abs(potentialDodgeX - currentSmoothedShipXForAI) * 0.22; // Bonus voor grotere afstand
-
-                    if (dodgeDir === aiPreviousDodgeDirection && aiPreviousDodgeDirection !== 0) dodgeScore += 50; // Hogere bonus voor consistentie
-                    if (Math.abs(potentialDodgeX - currentSmoothedShipXForAI) < effectiveShipWidth * 1.4 && predictedCollisions > 0) dodgeScore -= 140;
-                    if (potentialDodgeX < AI_ANTI_CORNER_BUFFER * 1.15 || potentialDodgeX > canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER * 1.15) dodgeScore -= 180;
-
-
-                    if (dodgeScore > maxDodgeScore) {
-                        maxDodgeScore = dodgeScore;
+                    if (currentCollisions < minCollisionsInBest) {
+                        minCollisionsInBest = currentCollisions;
                         bestDodgeX = potentialDodgeX;
-                        chosenDodgeDir = dodgeDir;
+                        aiPreviousDodgeDirection = dodgeDir; // Update gekozen richting
+                    } else if (currentCollisions === minCollisionsInBest) {
+                        // Bij gelijk aantal botsingen, geef voorkeur aan grotere beweging (weg van huidige positie)
+                        // OF aan de gecommitteerde richting als die ook minimaal is
+                        if (dodgeDir === aiPreviousDodgeDirection || Math.abs(potentialDodgeX - currentSmoothedShipXForAI) > Math.abs(bestDodgeX - currentSmoothedShipXForAI)) {
+                            bestDodgeX = potentialDodgeX;
+                            // aiPreviousDodgeDirection wordt hier niet per se geupdate, alleen als de score beter is of gelijk met voorkeur.
+                        }
                     }
                 }
                 dodgeTargetX = bestDodgeX;
-                desiredTargetX = Math.max(AI_ANTI_CORNER_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER, dodgeTargetX));
+                desiredTargetX = dodgeTargetX; // Ga direct naar de veiligste gevonden plek
 
-                if (chosenDodgeDir !== 0 && chosenDodgeDir !== aiPreviousDodgeDirection) {
-                    aiPreviousDodgeDirection = chosenDodgeDir;
+                if (aiPreviousDodgeDirection !== 0 && minCollisionsInBest === 0) { // Alleen committen als het veilig is
                     aiDodgeCommitEndTime = now + AI_DODGE_COMMIT_DURATION;
-                } else if (chosenDodgeDir === 0 && threateningBullets.length === 0 && threateningEnemies.length === 0) {
-                     aiPreviousDodgeDirection = 0;
-                     aiDodgeCommitEndTime = 0;
+                } else { // Geen veilige plek gevonden of "blijf staan" is gekozen, reset commit
+                    aiPreviousDodgeDirection = 0;
+                    aiDodgeCommitEndTime = 0;
                 }
-            } else if (aiPreviousDodgeDirection !== 0) { // Geen nieuwe dreigingen, maar nog steeds gecommit
-                isDodgingThreat = true; // Blijf in "dodge mode"
-                dodgeTargetX = currentSmoothedShipXForAI + aiPreviousDodgeDirection * (effectiveShipWidth * 0.15); // Zeer kleine drift in commit richting
-                desiredTargetX = Math.max(AI_ANTI_CORNER_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER, dodgeTargetX));
-            } else { // Geen dreigingen en niet gecommit
+            } else { // Geen dreigingen
                  aiPreviousDodgeDirection = 0;
                  aiDodgeCommitEndTime = 0;
             }
@@ -2184,14 +2144,11 @@ function aiControl() {
         }
         // <<< EINDE GEWIJZIGD >>>
 
-
         if (isDodgingThreat) {
             targetEnemyForAI = null; shouldTryShoot_AI = false; isMovingToCapture = false;
             aiIsCurrentlyTargetingCaptureBoss = false; isTargetingThreeSecondRuleBoss = false; isMovingForOwnFallingShip = false;
         } else {
-            aiPreviousDodgeDirection = 0; // Reset als niet meer aan het ontwijken is.
-            aiDodgeCommitEndTime = 0;
-
+            // aiPreviousDodgeDirection en aiDodgeCommitEndTime worden hierboven al gereset als niet aan het ontwijken.
             if (fallingShips.length > 0 && !isShipCapturedForAI && !isWaitingForRespawn && !isDualActiveForAI ) {
                 let closestFallingShip = null; let minDist = Infinity;
                 for (const fs of fallingShips) {
@@ -2251,7 +2208,7 @@ let aiCoopP1_PreviousDodgeDirection = 0;
 let aiCoopP1_DodgeCommitEndTime = 0;
 let aiCoopP2_PreviousDodgeDirection = 0;
 let aiCoopP2_DodgeCommitEndTime = 0;
-const AI_COOP_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.032; // Iets andere smoothing voor COOP
+const AI_COOP_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.025; // Nog voorzichtiger voor COOP
 
 function aiControlCoop() {
     if ( !(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) || isPaused || !gameCanvas || !isInGameState || gameOverSequenceStartTime > 0 ) { if (ship1) ship1.targetX = ship1.x; if (ship2) ship2.targetX = ship2.x; return; }
@@ -2275,7 +2232,7 @@ function aiControlCoop() {
         ship1.targetX = smoothedShip1X;
 
 
-        if (p1Result.chosenDodgeDir !== undefined && p1Result.chosenDodgeDir !== 0 && p1Result.chosenDodgeDir !== aiCoopP1_PreviousDodgeDirection) {
+        if (p1Result.chosenDodgeDir !== undefined && p1Result.chosenDodgeDir !== 0 && p1Result.chosenDodgeDir !== aiCoopP1_PreviousDodgeDirection && p1Result.predictedCollisions === 0) {
             aiCoopP1_PreviousDodgeDirection = p1Result.chosenDodgeDir;
             aiCoopP1_DodgeCommitEndTime = now + AI_DODGE_COMMIT_DURATION;
         } else if (p1Result.chosenDodgeDir === 0 && p1Result.predictedCollisions === 0) {
@@ -2301,7 +2258,7 @@ function aiControlCoop() {
         smoothedShip2X += (p2Result.desiredTargetX - smoothedShip2X) * currentAiSmoothingFactorP2;
         ship2.targetX = smoothedShip2X;
 
-        if (p2Result.chosenDodgeDir !== undefined && p2Result.chosenDodgeDir !== 0 && p2Result.chosenDodgeDir !== aiCoopP2_PreviousDodgeDirection) {
+        if (p2Result.chosenDodgeDir !== undefined && p2Result.chosenDodgeDir !== 0 && p2Result.chosenDodgeDir !== aiCoopP2_PreviousDodgeDirection && p2Result.predictedCollisions === 0) {
             aiCoopP2_PreviousDodgeDirection = p2Result.chosenDodgeDir;
             aiCoopP2_DodgeCommitEndTime = now + AI_DODGE_COMMIT_DURATION;
         } else if (p2Result.chosenDodgeDir === 0 && p2Result.predictedCollisions === 0) {
@@ -2354,122 +2311,118 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         return { desiredTargetX, shouldTryShoot: false, targetEnemyForAI: null, chosenDodgeDir: 0, isDodging: false, predictedCollisions: 0 };
     }
 
-    // <<< GEWIJZIGD: Nog verdere verfijning AI ontwijking (calculateAIDesiredState) >>>
+    // <<< GEWIJZIGD: Fundamentele herziening AI ontwijking (calculateAIDesiredState) >>>
     let dodgeTargetX = currentSmoothedX;
     if (!isChallengingStage && !isShipInvincible) {
-        let threateningBullets = [];
-        let threateningEnemies = [];
-        const AI_DODGE_LOOKAHEAD_Y_COOP_CALC = SHIP_HEIGHT * 7.5; // Nog verder
-        const AI_DODGE_SIDE_BUFFER_COOP_BULLET = SHIP_WIDTH * 2.5; // Zeer ruim
-        const AI_DODGE_SIDE_BUFFER_COOP_ENEMY = effectiveShipWidth * 1.75;
-        const AI_DODGE_PREDICTION_TIME_MS_COOP_CALC = 420; // Nog langere projectie
+        const AI_DANGER_LOOKAHEAD_Y_COOP = SHIP_HEIGHT * 8.5; // Nog verder
+        const AI_DANGER_SIDE_BUFFER_COOP = effectiveShipWidth * 1.75; // Ruime buffer
+        const AI_BULLET_PROJECTION_MS_COOP = 500; // Langere projectie
+        const AI_ENEMY_PROJECTION_MS_COOP = 300;
+        const AI_THREAT_EXPANSION_BULLET = PLAYER_BULLET_WIDTH * 2.5; // Hoeveel breder de kogel-hitbox wordt gemaakt
+        const AI_THREAT_EXPANSION_ENEMY = effectiveShipWidth * 0.5;  // Hoeveel breder de vijand-hitbox wordt gemaakt
 
-        const dangerZoneForBulletsCoop = {
-            x: currentShip.x - AI_DODGE_SIDE_BUFFER_COOP_BULLET,
-            y: currentShip.y - AI_DODGE_LOOKAHEAD_Y_COOP_CALC,
-            width: effectiveShipWidth + AI_DODGE_SIDE_BUFFER_COOP_BULLET * 2,
-            height: AI_DODGE_LOOKAHEAD_Y_COOP_CALC + currentShip.height
-        };
+        let allThreats = [];
+
         for (const bullet of gameEnemyBullets) {
-            if (bullet && bullet.y + bullet.height > currentShip.y - currentShip.height * 5.5 && bullet.y < canvasHeight + bullet.height * 3.5) {
-                const bulletRect = { x: bullet.x, y: bullet.y, width: bullet.width, height: bullet.height };
-                if (checkCollision(dangerZoneForBulletsCoop, bulletRect)) {
-                    threateningBullets.push(bullet);
-                }
+            if (bullet.y < currentShip.y + AI_DANGER_LOOKAHEAD_Y_COOP && bullet.y + bullet.height > currentShip.y - SHIP_HEIGHT * 2) {
+                const framesToProject = AI_BULLET_PROJECTION_MS_COOP / 16.67;
+                let projX = bullet.x + bullet.vx * framesToProject;
+                let projY = bullet.y + bullet.vy * framesToProject;
+                allThreats.push({
+                    x: projX - bullet.width / 2 - AI_THREAT_EXPANSION_BULLET,
+                    y: projY - bullet.height / 2 - AI_THREAT_EXPANSION_BULLET / 2, // Maak het ook iets hoger/lager
+                    width: bullet.width + 2 * AI_THREAT_EXPANSION_BULLET,
+                    height: bullet.height + AI_THREAT_EXPANSION_BULLET,
+                    type: 'bullet',
+                    originalY: bullet.y // Bewaar originele Y voor urgentie
+                });
             }
         }
-        const enemyLookaheadDodgeCoop = AI_COLLISION_LOOKAHEAD * 2.2 * (isShipDual ? 1.85 : 1.5) * (isEntrancePhaseActive ? 1.25 : 1.0);
-        const dangerZoneForEnemiesCoop = {
-            x: currentShip.x - AI_DODGE_SIDE_BUFFER_COOP_ENEMY,
-            y: currentShip.y - enemyLookaheadDodgeCoop,
-            width: effectiveShipWidth + AI_DODGE_SIDE_BUFFER_COOP_ENEMY * 2,
-            height: enemyLookaheadDodgeCoop + currentShip.height
-        };
+
         for (const enemy of gameEnemies) {
-             if (enemy && (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position' || enemy.state === 'following_entrance_path' || enemy.state === 'following_bezier_path') &&
-                 enemy.y + enemy.height > currentShip.y - enemyLookaheadDodgeCoop * 0.85 && enemy.y < currentShip.y + currentShip.height * 1.8) {
-                const enemyRect = { x: enemy.x, y: enemy.y, width: enemy.width, height: enemy.height };
-                 if (checkCollision(dangerZoneForEnemiesCoop, enemyRect)) {
-                    threateningEnemies.push(enemy);
-                }
+            if (enemy && (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position' || enemy.state === 'following_entrance_path' || enemy.state === 'following_bezier_path') &&
+                enemy.y < currentShip.y + AI_DANGER_LOOKAHEAD_Y_COOP && enemy.y + enemy.height > currentShip.y - SHIP_HEIGHT * 3) {
+                const framesToProject = AI_ENEMY_PROJECTION_MS_COOP / 16.67;
+                let projX = enemy.x + enemy.velocityX * framesToProject;
+                let projY = enemy.y + enemy.velocityY * framesToProject;
+                 allThreats.push({
+                    x: projX - AI_THREAT_EXPANSION_ENEMY / 2,
+                    y: projY - AI_THREAT_EXPANSION_ENEMY / 2,
+                    width: enemy.width + AI_THREAT_EXPANSION_ENEMY,
+                    height: enemy.height + AI_THREAT_EXPANSION_ENEMY,
+                    type: 'enemy',
+                    originalY: enemy.y // Bewaar originele Y voor urgentie
+                });
             }
         }
 
-
-        if (threateningBullets.length > 0 || threateningEnemies.length > 0) {
+        if (allThreats.length > 0) {
             isDodgingThreatCurrentFrame = true;
             let bestDodgeX = currentSmoothedX;
-            let maxDodgeScore = -Infinity;
+            let minCollisionsInBest = Infinity;
+            let maxSafetyDistanceInBest = -1; // Prioriteer maximale afstand als botsingen gelijk zijn
 
             const dodgeOptions = [-1, 1];
             if (previousDodgeDirForThisAI !== 0) {
                 dodgeOptions.unshift(previousDodgeDirForThisAI);
-                 const otherDir = -previousDodgeDirForThisAI;
-                 if (!dodgeOptions.includes(otherDir)) dodgeOptions.push(otherDir);
+                const otherDir = -previousDodgeDirForThisAI;
+                if (!dodgeOptions.includes(otherDir)) dodgeOptions.push(otherDir);
             }
-            const uniqueDodgeOptions = [...new Set(dodgeOptions)];
+            const uniqueDodgeOptions = [...new Set(dodgeOptions), 0]; // Inclusief "blijf staan"
 
             for (const dodgeDir of uniqueDodgeOptions) {
-                const dodgeAmountBase = effectiveShipWidth * 3.2;
-                let closestThreatSpeedFactor = 1.0;
-                for (const b of threateningBullets) { if (dodgeDir * b.vx > 0.1) closestThreatSpeedFactor = Math.min(closestThreatSpeedFactor, Math.max(0.35, 1.0 - Math.abs(b.vx) / (SHIP_MOVE_SPEED * 0.7))); }
-                for (const e of threateningEnemies) { if (dodgeDir * e.velocityX > 0.1) closestThreatSpeedFactor = Math.min(closestThreatSpeedFactor, Math.max(0.25, 1.0 - Math.abs(e.velocityX) / (SHIP_MOVE_SPEED * 0.8)));}
+                const dodgeAmount = (dodgeDir === 0) ? 0 : (effectiveShipWidth * 2.5 + Math.random() * effectiveShipWidth * 1.2);
+                let potentialDodgeX = currentSmoothedX + dodgeDir * dodgeAmount;
+                potentialDodgeX = Math.max(AI_EDGE_BUFFER * 2.2, Math.min(gameCanvasWidth - effectiveShipWidth - AI_EDGE_BUFFER * 2.2, potentialDodgeX));
 
-                const dodgeAmountCoop = dodgeAmountBase * closestThreatSpeedFactor + Math.random() * effectiveShipWidth * 0.7;
-                let potentialDodgeX = currentSmoothedX + dodgeDir * dodgeAmountCoop;
-                potentialDodgeX = Math.max(AI_EDGE_BUFFER * 2.0, Math.min(gameCanvas.width - effectiveShipWidth - AI_EDGE_BUFFER * 2.0, potentialDodgeX));
+                const shipAtPotentialDodge = { x: potentialDodgeX, y: currentShip.y, width: effectiveShipWidth, height: currentShip.height };
+                let currentCollisions = 0;
+                let minDistanceToThreatThisOption = Infinity;
 
-                let currentPredictedCollisions = 0;
-                const travelSpeedForPredictionDodgeCoopCalc = currentShip.speed * AI_POSITION_MOVE_SPEED_FACTOR * 0.50; // Nog langzamer voor safety
-                const framesToReachDodge = Math.abs(potentialDodgeX - currentSmoothedX) / travelSpeedForPredictionDodgeCoopCalc || 1;
-                const predictionTimeActual = Math.min(AI_DODGE_PREDICTION_TIME_MS_COOP_CALC / 16.67, framesToReachDodge * 1.7);
-
-                const testDodgeShipRect = { x: potentialDodgeX, y: currentShip.y, width: effectiveShipWidth, height: currentShip.height };
-
-                for (const bullet of threateningBullets) {
-                    let projBulletX = bullet.x + bullet.vx * predictionTimeActual;
-                    let projBulletY = bullet.y + bullet.vy * predictionTimeActual;
-                    const projBulletRect = { x: projBulletX - bullet.width/2, y: projBulletY, width: bullet.width, height: bullet.height };
-                    const expandedProjBulletRect = {
-                        x: projBulletRect.x - PLAYER_BULLET_WIDTH * AI_DODGE_SIDE_CLEARANCE_FACTOR * 2.0,
-                        y: projBulletRect.y - PLAYER_BULLET_HEIGHT * 1.5,
-                        width: projBulletRect.width + PLAYER_BULLET_WIDTH * 2 * AI_DODGE_SIDE_CLEARANCE_FACTOR * 2.0,
-                        height: projBulletRect.height + PLAYER_BULLET_HEIGHT * 3.0
-                    };
-                    if (checkCollision(testDodgeShipRect, expandedProjBulletRect)) currentPredictedCollisions++;
-                }
-                for (const enemy of threateningEnemies) {
-                    let projEnemyX = enemy.x + enemy.velocityX * predictionTimeActual * 0.4;
-                    let projEnemyY = enemy.y + enemy.velocityY * predictionTimeActual * 0.4;
-                    const projEnemyRect = { x: projEnemyX, y: projEnemyY, width: enemy.width, height: enemy.height };
-                     const expandedProjEnemyRect = {
-                        x: projEnemyRect.x - effectiveShipWidth * 0.5, y: projEnemyRect.y - currentShip.height * 0.5,
-                        width: projEnemyRect.width + effectiveShipWidth, height: projEnemyRect.height + currentShip.height
-                    };
-                    if (checkCollision(testDodgeShipRect, expandedProjEnemyRect)) currentPredictedCollisions++;
+                for (const threat of allThreats) {
+                    if (checkCollision(shipAtPotentialDodge, threat)) {
+                        currentCollisions++;
+                    }
+                    // Bereken afstand tot de rand van de dreiging, zelfs als geen directe botsing
+                    const threatCenterX = threat.x + threat.width / 2;
+                    const shipAtDodgeCenterX = shipAtPotentialDodge.x + shipAtPotentialDodge.width / 2;
+                    const horizontalDistance = Math.abs(shipAtDodgeCenterX - threatCenterX) - (shipAtPotentialDodge.width / 2 + threat.width / 2);
+                    if (horizontalDistance < minDistanceToThreatThisOption) {
+                        minDistanceToThreatThisOption = horizontalDistance;
+                    }
                 }
 
-                let dodgeScore = -currentPredictedCollisions * 300;
-                dodgeScore += Math.abs(potentialDodgeX - currentSmoothedX) * 0.25;
-                if (dodgeDir === previousDodgeDirForThisAI && previousDodgeDirForThisAI !== 0) dodgeScore += 60;
-                if (Math.abs(potentialDodgeX - currentSmoothedX) < effectiveShipWidth * 1.5 && currentPredictedCollisions > 0) dodgeScore -= 150;
-                if (potentialDodgeX < AI_ANTI_CORNER_BUFFER * 1.3 || potentialDodgeX > gameCanvasWidth - effectiveShipWidth - AI_ANTI_CORNER_BUFFER * 1.3) dodgeScore -= 200;
-
-
-                if (dodgeScore > maxDodgeScore) {
-                    maxDodgeScore = dodgeScore;
+                // Score de ontwijkingsoptie
+                if (currentCollisions < minCollisionsInBest) {
+                    minCollisionsInBest = currentCollisions;
+                    maxSafetyDistanceInBest = minDistanceToThreatThisOption;
                     bestDodgeX = potentialDodgeX;
                     chosenDodgeDirThisFrame = dodgeDir;
-                    predictedCollisionsForReturn = currentPredictedCollisions;
+                } else if (currentCollisions === minCollisionsInBest) {
+                    if (minDistanceToThreatThisOption > maxSafetyDistanceInBest) {
+                        maxSafetyDistanceInBest = minDistanceToThreatThisOption;
+                        bestDodgeX = potentialDodgeX;
+                        chosenDodgeDirThisFrame = dodgeDir;
+                    }
                 }
             }
             dodgeTargetX = bestDodgeX;
+            predictedCollisionsForReturn = minCollisionsInBest;
+
+            // Alleen committen als de gekozen richting veilig is (0 botsingen)
+            if (chosenDodgeDirThisFrame !== 0 && minCollisionsInBest === 0) {
+                // Geen directe commit meer hier, laat aiControlCoop/aiControl beslissen
+            } else if (minCollisionsInBest > 0) { // Als zelfs "blijf staan" niet veilig is, reset commit
+                chosenDodgeDirThisFrame = 0; // Forceer evaluatie in volgende frame
+            }
+
+
         } else if (previousDodgeDirForThisAI !== 0) { // Geen nieuwe dreigingen, maar nog steeds gecommit
-            isDodgingThreatCurrentFrame = true;
-            dodgeTargetX = currentSmoothedX + previousDodgeDirForThisAI * (effectiveShipWidth * 0.1);
-            chosenDodgeDirThisFrame = previousDodgeDirForThisAI;
+            isDodgingThreatCurrentFrame = true; // Blijf in "dodge mode"
+            dodgeTargetX = currentSmoothedX + previousDodgeDirForThisAI * (effectiveShipWidth * 0.05); // Zeer kleine drift
+            chosenDodgeDirThisFrame = previousDodgeDirForThisAI; // Behoud commit richting
         } else {
-             chosenDodgeDirThisFrame = 0; // Zeker resetten als geen dreiging en niet gecommit
+             chosenDodgeDirThisFrame = 0;
         }
     } else {
          chosenDodgeDirThisFrame = 0;
