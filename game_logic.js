@@ -1978,10 +1978,10 @@ function handlePlayerInput() {
 let aiIsCurrentlyTargetingCaptureBoss = false;
 let aiPreviousDodgeDirection = 0;
 let aiDodgeCommitEndTime = 0;
-const AI_DODGE_COMMIT_DURATION = 120; // Nog korter
-const AI_DODGE_SIDE_CLEARANCE_FACTOR = 2.25; // Nog meer zijruimte
-const AI_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.025; // Zeer langzaam en voorzichtig
-const AI_NORMAL_MOVEMENT_SMOOTHING_FACTOR = AI_SMOOTHING_FACTOR_MOVE; // Behoud normale snelheid indien geen dreiging
+const AI_DODGE_COMMIT_DURATION = 120; 
+const AI_DODGE_SIDE_CLEARANCE_FACTOR = 2.25; 
+const AI_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.025; 
+const AI_NORMAL_MOVEMENT_SMOOTHING_FACTOR = AI_SMOOTHING_FACTOR_MOVE; 
 
 function aiControl() {
     try {
@@ -2050,7 +2050,7 @@ function aiControl() {
             const AI_BULLET_PROJECTION_MS = 500;
             const AI_ENEMY_PROJECTION_MS = 300;
             const AI_THREAT_SAFETY_MARGIN_X = effectiveShipWidth * 0.75;
-            const AI_THREAT_SAFETY_MARGIN_Y_BASE = SHIP_HEIGHT * 0.5; // Base Y margin
+            const AI_THREAT_SAFETY_MARGIN_Y_BASE = SHIP_HEIGHT * 0.5; 
 
             let allProjectedThreats = [];
 
@@ -2062,18 +2062,20 @@ function aiControl() {
 
                     let isFromAbove = false;
                     let currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE;
-                    const effectiveBulletSpeed = Math.sqrt(bullet.vx * bullet.vx + bullet.vy * bullet.vy) || BASE_ENEMY_BULLET_SPEED; // Fallback als snelheid 0 is
+                    const effectiveBulletSpeed = Math.sqrt(bullet.vx * bullet.vx + bullet.vy * bullet.vy) || BASE_ENEMY_BULLET_SPEED; 
 
+                    // <<< GEWIJZIGD: Aangescherpte 'isFromAbove' logica >>>
                     if (bullet.vy > effectiveBulletSpeed * 0.6 &&
-                        Math.abs((bullet.x + bullet.width / 2) - (activeShipForAI.x + effectiveShipWidth / 2)) < effectiveShipWidth * 0.85) {
+                        Math.abs((bullet.x + bullet.width / 2) - (activeShipForAI.x + effectiveShipWidth / 2)) < effectiveShipWidth * 0.75) { // Was 0.85
                         isFromAbove = true;
-                        currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE * 1.75; // Maak de Y-marge groter
+                        currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE * 2.0; // Was 1.75
                     }
+                    // <<< EINDE GEWIJZIGD >>>
 
                     allProjectedThreats.push({
-                        x: projX - bullet.width / 2 - AI_THREAT_SAFETY_MARGIN_X,
+                        x: projX - bullet.width / 2 - (AI_THREAT_SAFETY_MARGIN_X * (isFromAbove ? 1.2 : 1.0)), // <<< GEWIJZIGD: Bredere marge voor van boven >>>
                         y: projY - bullet.height / 2 - currentThreatSafetyMarginY,
-                        width: bullet.width + 2 * AI_THREAT_SAFETY_MARGIN_X,
+                        width: bullet.width + 2 * (AI_THREAT_SAFETY_MARGIN_X * (isFromAbove ? 1.2 : 1.0)), // <<< GEWIJZIGD >>>
                         height: bullet.height + 2 * currentThreatSafetyMarginY,
                         isCritical: true,
                         isFromAbove: isFromAbove
@@ -2092,7 +2094,7 @@ function aiControl() {
                         width: enemy.width + 2 * AI_THREAT_SAFETY_MARGIN_X * 0.75,
                         height: enemy.height + 2 * AI_THREAT_SAFETY_MARGIN_Y_BASE * 0.75,
                         isCritical: true,
-                        isFromAbove: false // Vijanden zijn meestal geen directe "van boven" kogel dreiging
+                        isFromAbove: false 
                     });
                 }
             }
@@ -2108,7 +2110,7 @@ function aiControl() {
                         collisionsAtCurrent++;
                         scoreAtCurrent -= 1000;
                         if (threat.isFromAbove) {
-                            scoreAtCurrent -= 5000;
+                            scoreAtCurrent -= 7500; // <<< GEWIJZIGD: Hogere penalty (was 5000) >>>
                         }
                     }
                 }
@@ -2127,7 +2129,7 @@ function aiControl() {
                                 currentCollisions++;
                                 currentScoreForOption -= 1000;
                                 if (threat.isFromAbove) {
-                                    currentScoreForOption -= 5000;
+                                    currentScoreForOption -= 7500; // <<< GEWIJZIGD: Hogere penalty (was 5000) >>>
                                 }
                             }
                         }
@@ -2225,7 +2227,7 @@ let aiCoopP1_PreviousDodgeDirection = 0;
 let aiCoopP1_DodgeCommitEndTime = 0;
 let aiCoopP2_PreviousDodgeDirection = 0;
 let aiCoopP2_DodgeCommitEndTime = 0;
-const AI_COOP_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.022; // Zeer voorzichtig voor COOP
+const AI_COOP_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.022; 
 
 function aiControlCoop() {
     if ( !(isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP')) || isPaused || !gameCanvas || !isInGameState || gameOverSequenceStartTime > 0 ) { if (ship1) ship1.targetX = ship1.x; if (ship2) ship2.targetX = ship2.x; return; }
@@ -2248,14 +2250,14 @@ function aiControlCoop() {
         smoothedShip1X += (p1Result.desiredTargetX - smoothedShip1X) * currentAiSmoothingFactorP1;
         ship1.targetX = smoothedShip1X;
 
-        if (p1Result.chosenDodgeDir !== undefined && p1Result.predictedCollisions === 0) { // Alleen committen als de gekozen (of geen) richting veilig is
+        if (p1Result.chosenDodgeDir !== undefined && p1Result.predictedCollisions === 0) { 
             if (p1Result.chosenDodgeDir !== 0 && p1Result.chosenDodgeDir !== aiCoopP1_PreviousDodgeDirection) {
                 aiCoopP1_PreviousDodgeDirection = p1Result.chosenDodgeDir;
                 aiCoopP1_DodgeCommitEndTime = now + AI_DODGE_COMMIT_DURATION;
-            } else if (p1Result.chosenDodgeDir === 0) { // Als "blijf staan" is gekozen en veilig
+            } else if (p1Result.chosenDodgeDir === 0) { 
                 aiCoopP1_PreviousDodgeDirection = 0;
             }
-        } else if (p1Result.predictedCollisions > 0) { // Als geen veilige optie, reset commit
+        } else if (p1Result.predictedCollisions > 0) { 
             aiCoopP1_PreviousDodgeDirection = 0;
         }
 
@@ -2403,7 +2405,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                 const otherDir = -previousDodgeDirForThisAI;
                 if (!dodgeOptions.includes(otherDir)) dodgeOptions.push(otherDir);
             }
-            const uniqueDodgeOptions = [...new Set(dodgeOptions), 0]; // 0 = blijf staan
+            const uniqueDodgeOptions = [...new Set(dodgeOptions), 0]; 
 
             for (const dodgeDir of uniqueDodgeOptions) {
                 const dodgeAmount = (dodgeDir === 0) ? 0 : (effectiveShipWidth * 1.8 + Math.random() * effectiveShipWidth * 0.8);
@@ -2418,7 +2420,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                     if (checkCollision(shipAtPotentialDodge, threat)) {
                         currentEffectiveCollisions++;
                         if (threat.isFromAbove) {
-                            currentEffectiveCollisions += 5; // Tel een "van boven" botsing als 6 normale botsingen
+                            currentEffectiveCollisions += 5; 
                         }
                     }
                     const threatCenterX = threat.x + threat.width / 2;
@@ -2559,7 +2561,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
     }
 
     if (shouldTryShoot_AI_Calc) {
-        if (isDodgingThreatCurrentFrame) shouldTryShoot_AI_Calc = false; // AI mag niet schieten als het aan het ontwijken is
+        if (isDodgingThreatCurrentFrame) shouldTryShoot_AI_Calc = false; 
 
         if(targetEnemyForAI){
             if(targetEnemyForAI.id===capturingBossId){const bossMidCap=(targetEnemyForAI.state==='preparing_capture'||targetEnemyForAI.state==='diving_to_capture_position'||targetEnemyForAI.state==='capturing');if(bossMidCap)shouldTryShoot_AI_Calc=false;}
