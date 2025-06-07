@@ -1978,9 +1978,9 @@ function handlePlayerInput() {
 let aiIsCurrentlyTargetingCaptureBoss = false;
 let aiPreviousDodgeDirection = 0;
 let aiDodgeCommitEndTime = 0;
-const AI_DODGE_COMMIT_DURATION = 120; 
+const AI_DODGE_COMMIT_DURATION = 140; // <<< GEWIJZIGD: Iets langer (was 120) >>>
 const AI_DODGE_SIDE_CLEARANCE_FACTOR = 2.25; 
-const AI_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.022; // <<< GEWIJZIGD: Iets directer (was 0.025) >>>
+const AI_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.018; // <<< GEWIJZIGD: Nog directer (was 0.022) >>>
 const AI_NORMAL_MOVEMENT_SMOOTHING_FACTOR = AI_SMOOTHING_FACTOR_MOVE; 
 
 function aiControl() {
@@ -2046,11 +2046,11 @@ function aiControl() {
         }
 
         if (!isChallengingStage && !isInvincibleForAI && !isShowingBlockingMessage) {
-            const AI_DANGER_LOOKAHEAD_Y = SHIP_HEIGHT * 9.5; 
-            const AI_BULLET_PROJECTION_MS = 550; 
-            const AI_ENEMY_PROJECTION_MS = 320; 
-            const AI_THREAT_SAFETY_MARGIN_X = effectiveShipWidth * 0.85; 
-            const AI_THREAT_SAFETY_MARGIN_Y_BASE = SHIP_HEIGHT * 0.6; 
+            const AI_DANGER_LOOKAHEAD_Y = SHIP_HEIGHT * 10.0; // <<< GEWIJZIGD: Nog verder (was 9.5) >>>
+            const AI_BULLET_PROJECTION_MS = 600; // <<< GEWIJZIGD: Nog verder (was 550) >>>
+            const AI_ENEMY_PROJECTION_MS = 330; // <<< GEWIJZIGD: Iets verder (was 320) >>>
+            const AI_THREAT_SAFETY_MARGIN_X = effectiveShipWidth * 0.90; // <<< GEWIJZIGD: Groter (was 0.85) >>>
+            const AI_THREAT_SAFETY_MARGIN_Y_BASE = SHIP_HEIGHT * 0.65; // <<< GEWIJZIGD: Groter (was 0.6) >>>
 
             let allProjectedThreats = [];
 
@@ -2064,16 +2064,16 @@ function aiControl() {
                     let currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE;
                     const effectiveBulletSpeed = Math.sqrt(bullet.vx * bullet.vx + bullet.vy * bullet.vy) || BASE_ENEMY_BULLET_SPEED; 
 
-                    if (bullet.vy > effectiveBulletSpeed * 0.55 && 
-                        Math.abs((bullet.x + bullet.width / 2) - (activeShipForAI.x + effectiveShipWidth / 2)) < effectiveShipWidth * 0.85) { 
+                    if (bullet.vy > effectiveBulletSpeed * 0.50 && // <<< GEWIJZIGD: Iets lagere drempel (was 0.55) >>>
+                        Math.abs((bullet.x + bullet.width / 2) - (activeShipForAI.x + effectiveShipWidth / 2)) < effectiveShipWidth * 0.90) { // <<< GEWIJZIGD: Iets breder (was 0.85) >>>
                         isFromAbove = true;
-                        currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE * 2.2; 
+                        currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE * 2.3; // <<< GEWIJZIGD: Iets groter (was 2.2) >>>
                     }
 
                     allProjectedThreats.push({
-                        x: projX - bullet.width / 2 - (AI_THREAT_SAFETY_MARGIN_X * (isFromAbove ? 1.25 : 1.05)), 
+                        x: projX - bullet.width / 2 - (AI_THREAT_SAFETY_MARGIN_X * (isFromAbove ? 1.30 : 1.10)), // <<< GEWIJZIGD: marges verhoogd (was 1.25 : 1.05) >>>
                         y: projY - bullet.height / 2 - currentThreatSafetyMarginY,
-                        width: bullet.width + 2 * (AI_THREAT_SAFETY_MARGIN_X * (isFromAbove ? 1.25 : 1.05)), 
+                        width: bullet.width + 2 * (AI_THREAT_SAFETY_MARGIN_X * (isFromAbove ? 1.30 : 1.10)), // <<< GEWIJZIGD >>>
                         height: bullet.height + 2 * currentThreatSafetyMarginY,
                         isCritical: true,
                         isFromAbove: isFromAbove
@@ -2082,15 +2082,15 @@ function aiControl() {
             }
             for (const enemy of enemies) {
                 if (enemy && (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') &&
-                    enemy.y < activeShipForAI.y + AI_DANGER_LOOKAHEAD_Y * 0.75 && enemy.y + enemy.height > activeShipForAI.y - SHIP_HEIGHT * 3) {
+                    enemy.y < activeShipForAI.y + AI_DANGER_LOOKAHEAD_Y * 0.80 && enemy.y + enemy.height > activeShipForAI.y - SHIP_HEIGHT * 3.2) { // <<< GEWIJZIGD: Iets vergroot >>>
                     const framesToProject = AI_ENEMY_PROJECTION_MS / 16.67;
                     let projX = enemy.x + enemy.velocityX * framesToProject;
                     let projY = enemy.y + enemy.velocityY * framesToProject;
                      allProjectedThreats.push({
-                        x: projX - AI_THREAT_SAFETY_MARGIN_X * 0.80, 
-                        y: projY - AI_THREAT_SAFETY_MARGIN_Y_BASE * 0.80, 
-                        width: enemy.width + 2 * AI_THREAT_SAFETY_MARGIN_X * 0.80, 
-                        height: enemy.height + 2 * AI_THREAT_SAFETY_MARGIN_Y_BASE * 0.80, 
+                        x: projX - AI_THREAT_SAFETY_MARGIN_X * 0.85, // <<< GEWIJZIGD: Iets vergroot (was 0.80) >>>
+                        y: projY - AI_THREAT_SAFETY_MARGIN_Y_BASE * 0.85, // <<< GEWIJZIGD: Iets vergroot (was 0.80) >>>
+                        width: enemy.width + 2 * AI_THREAT_SAFETY_MARGIN_X * 0.85, // <<< GEWIJZIGD >>>
+                        height: enemy.height + 2 * AI_THREAT_SAFETY_MARGIN_Y_BASE * 0.85, // <<< GEWIJZIGD >>>
                         isCritical: true,
                         isFromAbove: false 
                     });
@@ -2106,15 +2106,15 @@ function aiControl() {
                 for (const threat of allProjectedThreats) {
                     if (checkCollision(shipAtCurrentPos, threat)) {
                         collisionsAtCurrent++;
-                        scoreAtCurrent -= 1500; 
+                        scoreAtCurrent -= 2000; // <<< GEWIJZIGD: Hogere basis penalty (was 1500) >>>
                         if (threat.isFromAbove) {
-                            scoreAtCurrent -= 8000; 
+                            scoreAtCurrent -= 9000; // <<< GEWIJZIGD: Hogere penalty (was 8000) >>>
                         }
                     }
                 }
                 bestDodgeOption.score = scoreAtCurrent;
 
-                const dodgeStep = effectiveShipWidth * 1.2; // <<< GEWIJZIGD: Grotere stap (was 0.8) >>>
+                const dodgeStep = effectiveShipWidth * 1.5; // <<< GEWIJZIGD: Grotere stap (was 1.2) >>>
                 for (let i = 0; i < 5; i++) {
                     for (const dodgeDir of [-1, 1]) {
                         let potentialDodgeX = currentSmoothedShipXForAI + dodgeDir * dodgeStep * (i + 1);
@@ -2125,9 +2125,9 @@ function aiControl() {
                         for (const threat of allProjectedThreats) {
                             if (checkCollision(shipAtPotentialDodge, threat)) {
                                 currentCollisions++;
-                                currentScoreForOption -= 1500; 
+                                currentScoreForOption -= 2000; // <<< GEWIJZIGD: Hogere basis penalty (was 1500) >>>
                                 if (threat.isFromAbove) {
-                                    currentScoreForOption -= 8000; 
+                                    currentScoreForOption -= 9000; // <<< GEWIJZIGD: Hogere penalty (was 8000) >>>
                                 }
                             }
                         }
@@ -2144,7 +2144,7 @@ function aiControl() {
                 dodgeTargetX = bestDodgeOption.x;
                 desiredTargetX = dodgeTargetX;
 
-                if (bestDodgeOption.dir !== 0 && bestDodgeOption.score > -750) { 
+                if (bestDodgeOption.dir !== 0 && bestDodgeOption.score > -1000) { // <<< GEWIJZIGD: Nog soepeler (was -750) >>>
                     if (aiPreviousDodgeDirection !== bestDodgeOption.dir) {
                         aiPreviousDodgeDirection = bestDodgeOption.dir;
                         aiDodgeCommitEndTime = now + AI_DODGE_COMMIT_DURATION;
