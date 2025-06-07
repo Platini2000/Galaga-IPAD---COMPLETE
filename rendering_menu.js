@@ -1,5 +1,5 @@
 // --- START OF FILE rendering_menu.js ---
-// --- DEEL 1      van 4 dit code blok    ---
+// --- DEEL 1      van 3 dit code blok    ---
 
 // --- Menu/UI Constanten ---
 const MENU_LOGO_APPROX_HEIGHT = 85;
@@ -27,7 +27,7 @@ const DEMO_TEXT_BLINK_OFF_MS = 1000;
 const DEMO_TEXT_BLINK_CYCLE_MS = DEMO_TEXT_BLINK_ON_MS + DEMO_TEXT_BLINK_OFF_MS;
 const LOGO_SCALE_FACTOR = 0.45;
 const MENU_LOGO_EXTRA_Y_OFFSET = 0;
-const MENU_GENERAL_Y_OFFSET = 50;
+const MENU_GENERAL_Y_OFFSET = 75; // <<< GEWIJZIGD: Was 50, nu 75 (ongeveer 1 regel extra) >>>
 const INTRO_TEXT_FONT = "bold 18px 'Press Start 2P'";
 const INTRO_TEXT_COLOR_NORMAL = "rgba(0, 191, 255, 0.9)"; // Cyaan
 const INTRO_TEXT_COLOR_DARK_YELLOW = "yellow";
@@ -100,7 +100,7 @@ function getMenuButtonRect(buttonIndex) {
                              MENU_BUTTON_SUBTITLE_V_GAP + subtitleHeight;
 
     let groupStartY = (canvasHeight - totalContentHeight) / 2 - 70;
-    groupStartY += MENU_GENERAL_Y_OFFSET;
+    groupStartY += MENU_GENERAL_Y_OFFSET; // Hier wordt de algemene offset toegepast
 
     const firstButtonTopY = groupStartY + actualLogoHeight + MENU_LOGO_BOTTOM_TO_START_GAP;
     const buttonY = firstButtonTopY + buttonIndex * (MENU_BUTTON_HEIGHT + MENU_BUTTON_V_GAP);
@@ -207,10 +207,10 @@ function pollControllerForMenu() {
                      } else if (isOnePlayerVsAIGameTypeSelectMode) { // Nieuwe state: 1P -> GAME Vs AI -> Kies Normal/Coop
                         if (selectedButtonIndex === 0) { // "NORMAL GAME" (vs AI)
                             selectedOnePlayerGameVariant = '1P_VS_AI_NORMAL';
-                            selectedGameMode = 'normal'; // <<<< TOEGEVOEGD
+                            selectedGameMode = 'normal'; 
                         } else { // "CO-OP GAME" (vs AI)
                             selectedOnePlayerGameVariant = '1P_VS_AI_COOP';
-                            selectedGameMode = 'coop';   // <<<< TOEGEVOEGD
+                            selectedGameMode = 'coop';   
                         }
                         isOnePlayerVsAIGameTypeSelectMode = false;
                         isFiringModeSelectMode = true; isTwoPlayerMode = true; isPlayerTwoAI = true; selectedButtonIndex = 0;
@@ -335,7 +335,7 @@ function stopAutoDemoTimer() {
     }
 }
 
-// --- EINDE deel 1      van 4 dit codeblok ---
+// --- EINDE deel 1      van 3 dit codeblok ---
 // --- END OF rendering_menu.js ---
 
 
