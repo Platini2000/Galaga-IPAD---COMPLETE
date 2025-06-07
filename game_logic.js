@@ -1976,12 +1976,9 @@ function handlePlayerInput() {
 
 // --- AI control functies ---
 let aiIsCurrentlyTargetingCaptureBoss = false;
-let aiPreviousDodgeDirection = 0;
+let aiPreviousDodgeDirection = 0; // 0: none, -1: left, 1: right
 let aiDodgeCommitEndTime = 0;
-const AI_DODGE_COMMIT_DURATION_SINGLE = 120; // Was 100
-const AI_DODGE_SIDE_CLEARANCE_FACTOR_SINGLE = 2.75; // Was 2.5
-const AI_DODGE_MOVEMENT_SMOOTHING_FACTOR_SINGLE = 0.022; // Was 0.020
-const AI_NORMAL_MOVEMENT_SMOOTHING_FACTOR_SINGLE = AI_SMOOTHING_FACTOR_MOVE;
+const AI_DODGE_MOVEMENT_SMOOTHING_FACTOR_DODGING = 0.020; // Extra langzaam/voorzichtig bij actief ontwijken
 
 function aiControl() {
     try {
@@ -2045,135 +2042,121 @@ function aiControl() {
             aiPreviousDodgeDirection = 0;
         }
 
-        // <<< GEWIJZIGD: AI ontwijking (aiControl) - "Time to Impact" en "Safe Lane" >>>
+        // <<< GEWIJZIGD: AI ontwijking (aiControl) - "Safe Lane" evaluatie en rustiger gedrag >>>
         if (!isChallengingStage && !isInvincibleForAI && !isShowingBlockingMessage) {
-            const AI_DANGER_LOOKAHEAD_Y = SHIP_HEIGHT * 8; // Hoe ver vooruit te kijken in Y
-            const AI_BULLET_TTI_THRESHOLD_MS = 750; // Max TTI voor een kogel om als directe dreiging te worden beschouwd
-            const AI_ENEMY_TTI_THRESHOLD_MS = 550;  // Max TTI voor een vijand
-            const AI_THREAT_HITBOX_EXPANSION_X = effectiveShipWidth * 0.4; // Extra breedte voor dreiging hitbox
-            const AI_THREAT_HITBOX_EXPANSION_Y = SHIP_HEIGHT * 0.4;
-            const AI_MIN_SAFE_LANE_WIDTH = effectiveShipWidth * 1.5; // Minimale breedte van een veilige "lane"
-            const AI_MAX_DODGE_STEP = effectiveShipWidth * 1.75; // Maximale afstand om in 1 keer te ontwijken
+            const AI_MAX_BULLET_LOOKAHEAD_Y = SHIP_HEIGHT * 10; // Nog verder kijken voor kogels
+            const AI_MAX_ENEMY_LOOKAHEAD_Y = SHIP_HEIGHT * 5;   // Iets minder ver voor vijanden, ze zijn groter
+            const AI_THREAT_PROJECTION_MS = 400;                // Projectietijd voor alle dreigingen
+            const AI_SAFE_LANE_WIDTH_FACTOR = 1.75;             // Een veilige lane moet X keer scheepsbreedte zijn
+            const AI_DODGE_SIDE_PENALTY = 50;                   // Straf voor kiezen van een zij-lane
+            const AI_MAX_DODGE_DISTANCE_MODIFIER = 2.0;         // Factor voor max. ontwijkingsafstand
+            const AI_MIN_DODGE_THRESHOLD = effectiveShipWidth * 0.3; // Minimale beweging om als nuttig te worden beschouwd
 
-            let potentialThreats = []; // {x, y, width, height, timeToImpact, type}
+            let allThreatsProjected = []; // {x, y, width, height, originalY, type}
 
-            // Verzamel kogels
             for (const bullet of enemyBullets) {
-                if (bullet.vy > 0.05) { // Alleen kogels die significant naar beneden bewegen
-                    const timeToReachShipY = (activeShipForAI.y - (bullet.y + bullet.height)) / bullet.vy;
-                    if (timeToReachShipY >= 0 && timeToReachShipY * 16.67 < AI_BULLET_TTI_THRESHOLD_MS) {
-                        const impactX = bullet.x + bullet.vx * timeToReachShipY;
-                        potentialThreats.push({
-                            x: impactX - bullet.width / 2 - AI_THREAT_HITBOX_EXPANSION_X / 2,
-                            y: activeShipForAI.y - AI_THREAT_HITBOX_EXPANSION_Y / 2,
-                            width: bullet.width + AI_THREAT_HITBOX_EXPANSION_X,
-                            height: SHIP_HEIGHT + AI_THREAT_HITBOX_EXPANSION_Y, // Check op de Y-lijn van het schip
-                            timeToImpact: timeToReachShipY, type: 'bullet'
-                        });
-                    }
-                } else if (Math.abs(bullet.vx) > 0.1 && bullet.y < activeShipForAI.y + activeShipForAI.height && bullet.y + bullet.height > activeShipForAI.y) {
-                     // Horizontaal bewegende kogel op dezelfde hoogte (TTI is effectief 0 voor Y)
-                     potentialThreats.push({
-                        x: bullet.x - bullet.width / 2 - AI_THREAT_HITBOX_EXPANSION_X / 2,
-                        y: activeShipForAI.y - AI_THREAT_HITBOX_EXPANSION_Y / 2,
-                        width: bullet.width + AI_THREAT_HITBOX_EXPANSION_X,
-                        height: SHIP_HEIGHT + AI_THREAT_HITBOX_EXPANSION_Y,
-                        timeToImpact: 0.01, type: 'bullet_side' // Zeer kleine TTI om urgentie aan te geven
+                if (bullet.y + bullet.height > activeShipForAI.y - AI_MAX_BULLET_LOOKAHEAD_Y && bullet.y < activeShipForAI.y + SHIP_HEIGHT * 2) {
+                    const frames = AI_THREAT_PROJECTION_MS / 16.67;
+                    allThreatsProjected.push({
+                        x: bullet.x + bullet.vx * frames - (PLAYER_BULLET_WIDTH * AI_DODGE_SIDE_CLEARANCE_FACTOR) / 2,
+                        y: bullet.y + bullet.vy * frames - (PLAYER_BULLET_HEIGHT * 0.5),
+                        width: bullet.width + PLAYER_BULLET_WIDTH * AI_DODGE_SIDE_CLEARANCE_FACTOR,
+                        height: bullet.height + PLAYER_BULLET_HEIGHT,
+                        originalY: bullet.y, type: 'bullet'
                     });
                 }
             }
-            // Verzamel duikende vijanden
             for (const enemy of enemies) {
-                if (enemy && (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') && enemy.velocityY > 0.05) {
-                    const timeToReachShipY = (activeShipForAI.y - (enemy.y + enemy.height)) / enemy.velocityY;
-                    if (timeToReachShipY >= 0 && timeToReachShipY * 16.67 < AI_ENEMY_TTI_THRESHOLD_MS) {
-                        const impactX = enemy.x + enemy.velocityX * timeToReachShipY;
-                        potentialThreats.push({
-                            x: impactX - enemy.width / 2 - AI_THREAT_HITBOX_EXPANSION_X,
-                            y: activeShipForAI.y - AI_THREAT_HITBOX_EXPANSION_Y / 2,
-                            width: enemy.width + 2 * AI_THREAT_HITBOX_EXPANSION_X,
-                            height: SHIP_HEIGHT + AI_THREAT_HITBOX_EXPANSION_Y,
-                            timeToImpact: timeToReachShipY, type: 'enemy'
-                        });
-                    }
+                 if (enemy && (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') &&
+                    enemy.y + enemy.height > activeShipForAI.y - AI_MAX_ENEMY_LOOKAHEAD_Y && enemy.y < activeShipForAI.y + SHIP_HEIGHT) {
+                    const frames = AI_THREAT_PROJECTION_MS / 16.67; // Kortere projectie voor vijanden, ze zijn groter
+                    allThreatsProjected.push({
+                        x: enemy.x + enemy.velocityX * frames - (enemy.width * 0.2),
+                        y: enemy.y + enemy.velocityY * frames - (enemy.height * 0.2),
+                        width: enemy.width * 1.4,
+                        height: enemy.height * 1.4,
+                        originalY: enemy.y, type: 'enemy'
+                    });
                 }
             }
 
-            potentialThreats.sort((a, b) => a.timeToImpact - b.timeToImpact);
-
-            if (potentialThreats.length > 0) {
+            if (allThreatsProjected.length > 0) {
                 isDodgingThreat = true;
-                let bestDodgeX = currentSmoothedShipXForAI;
-                let bestDodgeScore = -Infinity; // Hoger is beter
-                let chosenDodgeDir = 0;
+                let bestLaneScore = -Infinity;
+                let targetLaneCenterX = shipCenterX; // Begin met huidige lane
 
-                const testPoints = [currentSmoothedShipXForAI]; // Start met huidige positie
-                for (let i = 1; i <= 3; i++) { // Evalueer punten links en rechts
-                    testPoints.push(currentSmoothedShipXForAI - i * (effectiveShipWidth * 0.5));
-                    testPoints.push(currentSmoothedShipXForAI + i * (effectiveShipWidth * 0.5));
+                // Definieer lanes: links, midden (huidig), rechts
+                const laneWidth = effectiveShipWidth * AI_SAFE_LANE_WIDTH_FACTOR;
+                const potentialLanes = [
+                    { center: shipCenterX, score: 0, dir: 0 }, // Huidige positie
+                    { center: Math.max(effectiveShipWidth / 2 + AI_EDGE_BUFFER, shipCenterX - effectiveShipWidth * 1.25), score: -AI_DODGE_SIDE_PENALTY, dir: -1 }, // Links
+                    { center: Math.min(canvasWidth - effectiveShipWidth / 2 - AI_EDGE_BUFFER, shipCenterX + effectiveShipWidth * 1.25), score: -AI_DODGE_SIDE_PENALTY, dir: 1 }  // Rechts
+                ];
+                if (aiPreviousDodgeDirection !== 0) {
+                    const committedLane = potentialLanes.find(l => l.dir === aiPreviousDodgeDirection);
+                    if (committedLane) committedLane.score += 20; // Bonus voor consistentie
                 }
 
-                for (let potentialX of testPoints) {
-                    potentialX = Math.max(AI_EDGE_BUFFER * 1.5, Math.min(canvasWidth - effectiveShipWidth - AI_EDGE_BUFFER * 1.5, potentialX));
-                    const shipRectAtPotentialX = { x: potentialX, y: activeShipForAI.y, width: effectiveShipWidth, height: activeShipForAI.height };
-                    let collisionCount = 0;
-                    let minTTIThisSpot = AI_BULLET_TTI_THRESHOLD_MS;
 
-                    for (const threat of potentialThreats) {
-                        if (checkCollision(shipRectAtPotentialX, threat)) {
-                            collisionCount++;
-                            minTTIThisSpot = Math.min(minTTIThisSpot, threat.timeToImpact);
+                for (const lane of potentialLanes) {
+                    const laneRect = { x: lane.center - laneWidth / 2, y: activeShipForAI.y - SHIP_HEIGHT*0.5, width: laneWidth, height: SHIP_HEIGHT*2 };
+                    let collisionsInLane = 0;
+                    let minDistanceInLane = canvasWidth;
+
+                    for (const threat of allThreatsProjected) {
+                        if (checkCollision(laneRect, threat)) {
+                            collisionsInLane++;
                         }
+                        const dist = Math.abs(lane.center - (threat.x + threat.width / 2)) - (laneWidth / 2 + threat.width / 2);
+                        if (dist < minDistanceInLane) minDistanceInLane = dist;
                     }
 
-                    let score = 0;
-                    if (collisionCount > 0) {
-                        score = -10000 * collisionCount - (AI_BULLET_TTI_THRESHOLD_MS - minTTIThisSpot * 16.67); // Zware straf, urgentie telt mee
+                    let currentLaneScore = lane.score;
+                    if (collisionsInLane > 0) {
+                        currentLaneScore -= collisionsInLane * 10000; // Zeer zware straf
                     } else {
-                        score = 1000; // Veilige plek
-                        // Bonus voor afstand tot dichtstbijzijnde dreiging (zelfs als niet botsend)
-                        let closestThreatDist = canvasWidth;
-                        for (const threat of potentialThreats) {
-                            const dist = Math.abs((potentialX + effectiveShipWidth/2) - (threat.x + threat.width/2)) - (effectiveShipWidth/2 + threat.width/2);
-                            if (dist < closestThreatDist) closestThreatDist = dist;
-                        }
-                        score += Math.max(0, closestThreatDist) * 0.5;
+                        currentLaneScore += Math.max(0, minDistanceInLane) * 10; // Bonus voor vrije ruimte
                     }
-                    // Straf voor te ver van midden, maar minder zwaar dan botsing
-                    score -= Math.abs(potentialX - targetCenterShipX) * 0.05;
-                    // Straf voor te grote beweging
-                    score -= Math.abs(potentialX - currentSmoothedShipXForAI) * 0.1;
+                    // Voorkeur voor kleinere beweging
+                    currentLaneScore -= Math.abs(lane.center - shipCenterX) * 0.5;
 
 
-                    if (score > bestDodgeScore) {
-                        bestDodgeScore = score;
-                        bestDodgeX = potentialX;
-                        chosenDodgeDir = (potentialX > currentSmoothedShipXForAI + SHIP_WIDTH*0.1) ? 1 : ((potentialX < currentSmoothedShipXForAI - SHIP_WIDTH*0.1) ? -1 : 0);
+                    if (currentLaneScore > bestLaneScore) {
+                        bestLaneScore = currentLaneScore;
+                        targetLaneCenterX = lane.center;
+                        aiPreviousDodgeDirection = lane.dir; // Onthoud de gekozen richting
                     }
                 }
-                dodgeTargetX = bestDodgeX;
-                desiredTargetX = dodgeTargetX;
+                desiredTargetX = targetLaneCenterX - effectiveShipWidth / 2;
+                desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
 
-                // Update commit logic
-                if (chosenDodgeDir !== 0 && bestDodgeScore > -1000) { // Alleen committen als het een redelijk veilige optie is
-                    if (aiPreviousDodgeDirection !== chosenDodgeDir || now > aiDodgeCommitEndTime) {
-                        aiPreviousDodgeDirection = chosenDodgeDir;
-                        aiDodgeCommitEndTime = now + AI_DODGE_COMMIT_DURATION;
-                    }
+                if (Math.abs(desiredTargetX - currentSmoothedShipXForAI) > AI_MAX_DODGE_DISTANCE_MODIFIER * effectiveShipWidth) {
+                    desiredTargetX = currentSmoothedShipXForAI + Math.sign(desiredTargetX - currentSmoothedShipXForAI) * AI_MAX_DODGE_DISTANCE_MODIFIER * effectiveShipWidth;
+                }
+                if (Math.abs(desiredTargetX - currentSmoothedShipXForAI) < AI_MIN_DODGE_THRESHOLD && bestLaneScore < -1000) { // Als de beste optie nog steeds gevaarlijk is en dichtbij
+                    // Probeer een grotere sprong als de kleine correctie gevaarlijk is
+                    const altDir = (aiPreviousDodgeDirection !== 0) ? -aiPreviousDodgeDirection : ((Math.random() < 0.5) ? -1 : 1);
+                    desiredTargetX = currentSmoothedShipXForAI + altDir * effectiveShipWidth * 2.0;
+                    desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
+                }
+
+
+                if (aiPreviousDodgeDirection !== 0 && bestLaneScore > -500) { // Alleen committen als het redelijk veilig is
+                    aiDodgeCommitEndTime = now + AI_DODGE_COMMIT_DURATION;
                 } else {
                     aiPreviousDodgeDirection = 0;
                     aiDodgeCommitEndTime = 0;
                 }
+
             } else {
                  aiPreviousDodgeDirection = 0;
                  aiDodgeCommitEndTime = 0;
             }
-        } else { // Challenging stage, invincible, etc.
+        } else {
             aiPreviousDodgeDirection = 0;
             aiDodgeCommitEndTime = 0;
         }
         // <<< EINDE GEWIJZIGD >>>
-
 
         if (isDodgingThreat) {
             targetEnemyForAI = null; shouldTryShoot_AI = false; isMovingToCapture = false;
@@ -2238,7 +2221,7 @@ let aiCoopP1_PreviousDodgeDirection = 0;
 let aiCoopP1_DodgeCommitEndTime = 0;
 let aiCoopP2_PreviousDodgeDirection = 0;
 let aiCoopP2_DodgeCommitEndTime = 0;
-const AI_COOP_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.020; // Nog voorzichtiger voor COOP
+const AI_COOP_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.018; // Nog voorzichtiger
 const AI_COOP_NORMAL_MOVEMENT_SMOOTHING_FACTOR = AI_SMOOTHING_FACTOR_MOVE;
 
 
@@ -2351,86 +2334,83 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         return { desiredTargetX, shouldTryShoot: false, targetEnemyForAI: null, chosenDodgeDir: 0, isDodging: false, predictedCollisions: 0 };
     }
 
-    // <<< GEWIJZIGD: Fundamenteel herziene AI ontwijking (calculateAIDesiredState) - Focus op TTI en veiligste lane >>>
+    // <<< GEWIJZIGD: AI ontwijking (calculateAIDesiredState) - TTI, Safe Lane, Rustiger >>>
     let dodgeTargetX = currentSmoothedX;
     if (!isChallengingStage && !isShipInvincible) {
-        const AI_DANGER_LOOKAHEAD_Y = SHIP_HEIGHT * 9.5; // Nog verder kijken
-        const AI_BULLET_TTI_THRESHOLD_MS = 800; // Max TTI voor een kogel om als directe dreiging te worden beschouwd
-        const AI_ENEMY_TTI_THRESHOLD_MS = 600;  // Max TTI voor een vijand
-        const AI_THREAT_HITBOX_EXPANSION_X_COOP = effectiveShipWidth * 0.55; // Aangepaste marge
-        const AI_THREAT_HITBOX_EXPANSION_Y_COOP = SHIP_HEIGHT * 0.45;
-        const AI_MIN_SAFE_LANE_WIDTH_COOP = effectiveShipWidth * 1.4;
-        const AI_MAX_DODGE_STEP_COOP = effectiveShipWidth * 1.6;
+        const AI_MAX_BULLET_LOOKAHEAD_Y_COOP = SHIP_HEIGHT * 10;
+        const AI_MAX_ENEMY_LOOKAHEAD_Y_COOP = SHIP_HEIGHT * 6;
+        const AI_THREAT_PROJECTION_MS_COOP = 480;
+        const AI_THREAT_HITBOX_EXPANSION_X_COOP_BULLET = effectiveShipWidth * 0.65;
+        const AI_THREAT_HITBOX_EXPANSION_Y_COOP_BULLET = SHIP_HEIGHT * 0.55;
+        const AI_THREAT_HITBOX_EXPANSION_X_COOP_ENEMY = effectiveShipWidth * 0.75;
+        const AI_THREAT_HITBOX_EXPANSION_Y_COOP_ENEMY = SHIP_HEIGHT * 0.75;
+        const AI_MIN_SAFE_LANE_WIDTH_COOP_CALC = effectiveShipWidth * 1.4;
+        const AI_MAX_DODGE_STEP_COOP_CALC = effectiveShipWidth * 1.5; // Beperk de maximale stap
 
-        let potentialThreatsInfo = [];
+        let potentialThreats = [];
 
         for (const bullet of gameEnemyBullets) {
-            if (bullet.vy > 0.05 || Math.abs(bullet.vx) > 0.05) {
+            if (bullet.vy > 0.02 || Math.abs(bullet.vx) > 0.02) {
                 let timeToReachShipY = Infinity;
-                if (bullet.vy > 0.05) {
+                if (bullet.vy > 0.02) {
                     timeToReachShipY = (currentShip.y - (bullet.y + bullet.height)) / bullet.vy;
                 } else if (bullet.y < currentShip.y + currentShip.height && bullet.y + bullet.height > currentShip.y) {
-                    timeToReachShipY = 0.01; // Zeer kleine TTI voor horizontale kogels op dezelfde hoogte
+                    timeToReachShipY = 0.01;
                 }
-
-                if (timeToReachShipY >= 0 && timeToReachShipY * 16.67 < AI_BULLET_TTI_THRESHOLD_MS) {
+                if (timeToReachShipY >= 0 && timeToReachShipY * 16.67 < AI_THREAT_PROJECTION_MS_COOP && timeToReachShipY * 16.67 < AI_MAX_BULLET_LOOKAHEAD_Y_COOP / (Math.abs(bullet.vy) || 1) * 16.67 ) {
                     const impactX = bullet.x + bullet.vx * timeToReachShipY;
-                    potentialThreatsInfo.push({
-                        x: impactX - bullet.width / 2 - AI_THREAT_HITBOX_EXPANSION_X_COOP / 2,
-                        y: currentShip.y - AI_THREAT_HITBOX_EXPANSION_Y_COOP / 2,
-                        width: bullet.width + AI_THREAT_HITBOX_EXPANSION_X_COOP,
-                        height: SHIP_HEIGHT + AI_THREAT_HITBOX_EXPANSION_Y_COOP,
-                        timeToImpact: timeToReachShipY, type: 'bullet'
+                    potentialThreats.push({
+                        x: impactX - bullet.width / 2 - AI_THREAT_HITBOX_EXPANSION_X_COOP_BULLET / 2,
+                        y: currentShip.y - AI_THREAT_HITBOX_EXPANSION_Y_COOP_BULLET / 2,
+                        width: bullet.width + AI_THREAT_HITBOX_EXPANSION_X_COOP_BULLET,
+                        height: SHIP_HEIGHT + AI_THREAT_HITBOX_EXPANSION_Y_COOP_BULLET,
+                        timeToImpact: timeToReachShipY * 16.67, type: 'bullet' // Store TTI in ms
                     });
                 }
             }
         }
         for (const enemy of gameEnemies) {
-            if (enemy && (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') && (enemy.velocityY > 0.05 || Math.abs(enemy.velocityX) > 0.05) ) {
+            if (enemy && (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') && (enemy.velocityY > 0.02 || Math.abs(enemy.velocityX) > 0.02)) {
                 let timeToReachShipY = Infinity;
-                 if (enemy.velocityY > 0.05) {
+                 if (enemy.velocityY > 0.02) {
                     timeToReachShipY = (currentShip.y - (enemy.y + enemy.height)) / enemy.velocityY;
                 } else if (enemy.y < currentShip.y + currentShip.height && enemy.y + enemy.height > currentShip.y) {
                     timeToReachShipY = 0.01;
                 }
-
-                if (timeToReachShipY >= 0 && timeToReachShipY * 16.67 < AI_ENEMY_TTI_THRESHOLD_MS) {
+                if (timeToReachShipY >= 0 && timeToReachShipY * 16.67 < AI_THREAT_PROJECTION_MS_COOP && timeToReachShipY * 16.67 < AI_MAX_ENEMY_LOOKAHEAD_Y_COOP / (Math.abs(enemy.velocityY) || 1) * 16.67) {
                     const impactX = enemy.x + enemy.velocityX * timeToReachShipY;
-                    potentialThreatsInfo.push({
-                        x: impactX - enemy.width / 2 - AI_THREAT_HITBOX_EXPANSION_X_COOP,
-                        y: currentShip.y - AI_THREAT_HITBOX_EXPANSION_Y_COOP / 2,
-                        width: enemy.width + 2 * AI_THREAT_HITBOX_EXPANSION_X_COOP,
-                        height: SHIP_HEIGHT + AI_THREAT_HITBOX_EXPANSION_Y_COOP,
-                        timeToImpact: timeToReachShipY, type: 'enemy'
+                    potentialThreats.push({
+                        x: impactX - enemy.width / 2 - AI_THREAT_HITBOX_EXPANSION_X_COOP_ENEMY / 2,
+                        y: currentShip.y - AI_THREAT_HITBOX_EXPANSION_Y_COOP_ENEMY / 2,
+                        width: enemy.width + AI_THREAT_HITBOX_EXPANSION_X_COOP_ENEMY,
+                        height: SHIP_HEIGHT + AI_THREAT_HITBOX_EXPANSION_Y_COOP_ENEMY,
+                        timeToImpact: timeToReachShipY * 16.67, type: 'enemy'
                     });
                 }
             }
         }
-        potentialThreatsInfo.sort((a,b) => a.timeToImpact - b.timeToImpact);
+        potentialThreats.sort((a,b) => a.timeToImpact - b.timeToImpact); // Belangrijkste eerst
 
-        if (potentialThreatsInfo.length > 0) {
+        if (potentialThreats.length > 0) {
             isDodgingThreatCurrentFrame = true;
             let bestDodgeX = currentSmoothedX;
             let bestDodgeScore = -Infinity;
             chosenDodgeDirThisFrame = 0;
 
-            const testPoints = [currentSmoothedX];
-            for (let i = 1; i <= 2; i++) { // Evalueer minder, maar meer gespreide punten
-                testPoints.push(currentSmoothedX - i * (effectiveShipWidth * 0.75));
-                testPoints.push(currentSmoothedX + i * (effectiveShipWidth * 0.75));
-            }
-            // Voeg uitersten toe als de huidige commit daar al heen ging
-            if (previousDodgeDirForThisAI === -1) testPoints.push(AI_EDGE_BUFFER * 1.8);
-            if (previousDodgeDirForThisAI === 1) testPoints.push(gameCanvasWidth - effectiveShipWidth - AI_EDGE_BUFFER * 1.8);
-
+            const testPoints = [currentSmoothedX]; // Altijd huidige positie testen
+            const maxOffset = Math.min(AI_MAX_DODGE_STEP_COOP_CALC, gameCanvasWidth / 3);
+            testPoints.push(currentSmoothedX - maxOffset / 2);
+            testPoints.push(currentSmoothedX + maxOffset / 2);
+            testPoints.push(currentSmoothedX - maxOffset);
+            testPoints.push(currentSmoothedX + maxOffset);
 
             for (let potentialX of testPoints) {
-                potentialX = Math.max(AI_EDGE_BUFFER * 1.8, Math.min(gameCanvasWidth - effectiveShipWidth - AI_EDGE_BUFFER * 1.8, potentialX));
+                potentialX = Math.max(AI_EDGE_BUFFER * 1.2, Math.min(gameCanvasWidth - effectiveShipWidth - AI_EDGE_BUFFER * 1.2, potentialX));
                 const shipRectAtPotentialX = { x: potentialX, y: currentShip.y, width: effectiveShipWidth, height: currentShip.height };
                 let collisionCount = 0;
-                let minTTIThisSpot = AI_BULLET_TTI_THRESHOLD_MS * 2; // Start hoog
+                let minTTIThisSpot = AI_THREAT_PROJECTION_MS_COOP * 2;
 
-                for (const threat of potentialThreatsInfo) {
+                for (const threat of potentialThreats) {
                     if (checkCollision(shipRectAtPotentialX, threat)) {
                         collisionCount++;
                         minTTIThisSpot = Math.min(minTTIThisSpot, threat.timeToImpact);
@@ -2439,27 +2419,23 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
                 let score = 0;
                 if (collisionCount > 0) {
-                    score = -20000 * collisionCount - (AI_BULLET_TTI_THRESHOLD_MS - minTTIThisSpot * 16.67) * 2;
+                    score = -50000 * collisionCount - (AI_THREAT_PROJECTION_MS_COOP - minTTIThisSpot) * 5;
                 } else {
-                    score = 5000; // Veilige plek
+                    score = 10000; // Veilige plek
                     let closestThreatDist = gameCanvasWidth;
-                    for (const threat of potentialThreatsInfo) {
+                    for (const threat of potentialThreats) {
                         const dist = Math.abs((potentialX + effectiveShipWidth/2) - (threat.x + threat.width/2)) - (effectiveShipWidth/2 + threat.width/2);
                         if (dist < closestThreatDist) closestThreatDist = dist;
                     }
-                    score += Math.max(0, closestThreatDist) * 1.0; // Iets hogere factor voor afstand
+                    score += Math.max(0, closestThreatDist) * 2.5; // Factor voor afstand
                 }
-                score -= Math.abs(potentialX - targetCenterShipX) * 0.1; // Straf voor ver van midden
-                score -= Math.abs(potentialX - currentSmoothedX) * 0.15; // Straf voor grote beweging
+                score -= Math.abs(potentialX - targetCenterShipX) * 0.15; // Straf voor ver van lane midden
+                score -= Math.abs(potentialX - currentSmoothedX) * 0.25; // Straf voor grote beweging
 
-                const potentialDodgeDir = (potentialX > currentSmoothedX + effectiveShipWidth * 0.1) ? 1 : ((potentialX < currentSmoothedX - effectiveShipWidth * 0.1) ? -1 : 0);
+                const potentialDodgeDir = (potentialX > currentSmoothedX + effectiveShipWidth * 0.05) ? 1 : ((potentialX < currentSmoothedX - effectiveShipWidth * 0.05) ? -1 : 0);
                 if (collisionCount === 0 && potentialDodgeDir === previousDodgeDirForThisAI && previousDodgeDirForThisAI !== 0) {
-                    score += 150; // Sterke bonus voor veilige consistentie
+                    score += 200; // Bonus voor consistente veilige ontwijking
                 }
-                 if (Math.abs(potentialX - currentSmoothedX) < effectiveShipWidth * 0.3 && collisionCount > 0) { // Blijf staan/minimale beweging is gevaarlijk
-                     score -= 10000;
-                 }
-
 
                 if (score > bestDodgeScore) {
                     bestDodgeScore = score;
@@ -2468,11 +2444,11 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                 }
             }
             dodgeTargetX = bestDodgeX;
-            predictedCollisionsForReturn = (bestDodgeScore < -1000) ? 1 : 0; // Als score heel laag is, neem aan dat er een botsing is
+            predictedCollisionsForReturn = (bestDodgeScore < -1000) ? 1:0;
 
         } else if (previousDodgeDirForThisAI !== 0 && currentTime < (shipIdentifier === 'p1' ? aiCoopP1_DodgeCommitEndTime : aiCoopP2_DodgeCommitEndTime)) {
             isDodgingThreatCurrentFrame = true;
-            dodgeTargetX = currentSmoothedX + previousDodgeDirForThisAI * (effectiveShipWidth * 0.03); // Zeer, zeer minimale drift
+            dodgeTargetX = currentSmoothedX + previousDodgeDirForThisAI * (effectiveShipWidth * 0.01); // Zeer minimale drift
             chosenDodgeDirThisFrame = previousDodgeDirForThisAI;
         } else {
              chosenDodgeDirThisFrame = 0;
