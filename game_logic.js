@@ -1980,7 +1980,7 @@ let aiPreviousDodgeDirection = 0;
 let aiDodgeCommitEndTime = 0;
 const AI_DODGE_COMMIT_DURATION = 120; 
 const AI_DODGE_SIDE_CLEARANCE_FACTOR = 2.25; 
-const AI_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.025; 
+const AI_DODGE_MOVEMENT_SMOOTHING_FACTOR = 0.022; // <<< GEWIJZIGD: Iets directer (was 0.025) >>>
 const AI_NORMAL_MOVEMENT_SMOOTHING_FACTOR = AI_SMOOTHING_FACTOR_MOVE; 
 
 function aiControl() {
@@ -2046,13 +2046,11 @@ function aiControl() {
         }
 
         if (!isChallengingStage && !isInvincibleForAI && !isShowingBlockingMessage) {
-            // <<< GEWIJZIGD: Constanten voor agressievere ontwijking >>>
-            const AI_DANGER_LOOKAHEAD_Y = SHIP_HEIGHT * 9.5; // Was 9
-            const AI_BULLET_PROJECTION_MS = 550; // Was 500
-            const AI_ENEMY_PROJECTION_MS = 320; // Was 300
-            const AI_THREAT_SAFETY_MARGIN_X = effectiveShipWidth * 0.85; // Was 0.75
-            const AI_THREAT_SAFETY_MARGIN_Y_BASE = SHIP_HEIGHT * 0.6; // Was 0.5
-            // <<< EINDE GEWIJZIGD >>>
+            const AI_DANGER_LOOKAHEAD_Y = SHIP_HEIGHT * 9.5; 
+            const AI_BULLET_PROJECTION_MS = 550; 
+            const AI_ENEMY_PROJECTION_MS = 320; 
+            const AI_THREAT_SAFETY_MARGIN_X = effectiveShipWidth * 0.85; 
+            const AI_THREAT_SAFETY_MARGIN_Y_BASE = SHIP_HEIGHT * 0.6; 
 
             let allProjectedThreats = [];
 
@@ -2066,18 +2064,16 @@ function aiControl() {
                     let currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE;
                     const effectiveBulletSpeed = Math.sqrt(bullet.vx * bullet.vx + bullet.vy * bullet.vy) || BASE_ENEMY_BULLET_SPEED; 
 
-                    // <<< GEWIJZIGD: 'isFromAbove' detectie iets breder en Y-marge groter >>>
-                    if (bullet.vy > effectiveBulletSpeed * 0.55 && // Was 0.6
-                        Math.abs((bullet.x + bullet.width / 2) - (activeShipForAI.x + effectiveShipWidth / 2)) < effectiveShipWidth * 0.85) { // Was 0.75
+                    if (bullet.vy > effectiveBulletSpeed * 0.55 && 
+                        Math.abs((bullet.x + bullet.width / 2) - (activeShipForAI.x + effectiveShipWidth / 2)) < effectiveShipWidth * 0.85) { 
                         isFromAbove = true;
-                        currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE * 2.2; // Was 2.0
+                        currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE * 2.2; 
                     }
-                    // <<< EINDE GEWIJZIGD >>>
 
                     allProjectedThreats.push({
-                        x: projX - bullet.width / 2 - (AI_THREAT_SAFETY_MARGIN_X * (isFromAbove ? 1.25 : 1.05)), // <<< GEWIJZIGD: marges verhoogd (was 1.2 : 1.0) >>>
+                        x: projX - bullet.width / 2 - (AI_THREAT_SAFETY_MARGIN_X * (isFromAbove ? 1.25 : 1.05)), 
                         y: projY - bullet.height / 2 - currentThreatSafetyMarginY,
-                        width: bullet.width + 2 * (AI_THREAT_SAFETY_MARGIN_X * (isFromAbove ? 1.25 : 1.05)), // <<< GEWIJZIGD >>>
+                        width: bullet.width + 2 * (AI_THREAT_SAFETY_MARGIN_X * (isFromAbove ? 1.25 : 1.05)), 
                         height: bullet.height + 2 * currentThreatSafetyMarginY,
                         isCritical: true,
                         isFromAbove: isFromAbove
@@ -2091,10 +2087,10 @@ function aiControl() {
                     let projX = enemy.x + enemy.velocityX * framesToProject;
                     let projY = enemy.y + enemy.velocityY * framesToProject;
                      allProjectedThreats.push({
-                        x: projX - AI_THREAT_SAFETY_MARGIN_X * 0.80, // <<< GEWIJZIGD: Iets vergroot (was 0.75) >>>
-                        y: projY - AI_THREAT_SAFETY_MARGIN_Y_BASE * 0.80, // <<< GEWIJZIGD: Iets vergroot (was 0.75) >>>
-                        width: enemy.width + 2 * AI_THREAT_SAFETY_MARGIN_X * 0.80, // <<< GEWIJZIGD >>>
-                        height: enemy.height + 2 * AI_THREAT_SAFETY_MARGIN_Y_BASE * 0.80, // <<< GEWIJZIGD >>>
+                        x: projX - AI_THREAT_SAFETY_MARGIN_X * 0.80, 
+                        y: projY - AI_THREAT_SAFETY_MARGIN_Y_BASE * 0.80, 
+                        width: enemy.width + 2 * AI_THREAT_SAFETY_MARGIN_X * 0.80, 
+                        height: enemy.height + 2 * AI_THREAT_SAFETY_MARGIN_Y_BASE * 0.80, 
                         isCritical: true,
                         isFromAbove: false 
                     });
@@ -2110,15 +2106,15 @@ function aiControl() {
                 for (const threat of allProjectedThreats) {
                     if (checkCollision(shipAtCurrentPos, threat)) {
                         collisionsAtCurrent++;
-                        scoreAtCurrent -= 1500; // <<< GEWIJZIGD: Hogere basis penalty (was 1000) >>>
+                        scoreAtCurrent -= 1500; 
                         if (threat.isFromAbove) {
-                            scoreAtCurrent -= 8000; // <<< GEWIJZIGD: Hogere penalty (was 7500) >>>
+                            scoreAtCurrent -= 8000; 
                         }
                     }
                 }
                 bestDodgeOption.score = scoreAtCurrent;
 
-                const dodgeStep = effectiveShipWidth * 0.8; // <<< GEWIJZIGD: Iets grotere stap (was 0.75) >>>
+                const dodgeStep = effectiveShipWidth * 1.2; // <<< GEWIJZIGD: Grotere stap (was 0.8) >>>
                 for (let i = 0; i < 5; i++) {
                     for (const dodgeDir of [-1, 1]) {
                         let potentialDodgeX = currentSmoothedShipXForAI + dodgeDir * dodgeStep * (i + 1);
@@ -2129,9 +2125,9 @@ function aiControl() {
                         for (const threat of allProjectedThreats) {
                             if (checkCollision(shipAtPotentialDodge, threat)) {
                                 currentCollisions++;
-                                currentScoreForOption -= 1500; // <<< GEWIJZIGD: Hogere basis penalty (was 1000) >>>
+                                currentScoreForOption -= 1500; 
                                 if (threat.isFromAbove) {
-                                    currentScoreForOption -= 8000; // <<< GEWIJZIGD: Hogere penalty (was 7500) >>>
+                                    currentScoreForOption -= 8000; 
                                 }
                             }
                         }
@@ -2148,7 +2144,7 @@ function aiControl() {
                 dodgeTargetX = bestDodgeOption.x;
                 desiredTargetX = dodgeTargetX;
 
-                if (bestDodgeOption.dir !== 0 && bestDodgeOption.score > -750) { // <<< GEWIJZIGD: Iets soepeler (was -500) >>>
+                if (bestDodgeOption.dir !== 0 && bestDodgeOption.score > -750) { 
                     if (aiPreviousDodgeDirection !== bestDodgeOption.dir) {
                         aiPreviousDodgeDirection = bestDodgeOption.dir;
                         aiDodgeCommitEndTime = now + AI_DODGE_COMMIT_DURATION;
