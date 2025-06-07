@@ -2035,10 +2035,10 @@ function aiControl() {
         const AI_CENTER_TARGET_X_VISUAL = canvasWidth / 2; const targetCenterShipX = AI_CENTER_TARGET_X_VISUAL - (effectiveShipWidth / 2);
         const isShowingBlockingMessage = showReadyMessage || showCSClearMessage || showCsHitsMessage || showPerfectMessage || showCsBonusScoreMessage || showExtraLifeMessage || isCsCompletionDelayActive || isShowingCaptureMessage || isShowingIntro;
         let desiredTargetX = currentSmoothedShipXForAI;
-        let shouldTryShoot_AI = false; // <<< Reset hier, wordt later bepaald
+        let shouldTryShoot_AI = false;
         let isDodgingThreat = false;
         let dodgeTargetX = currentSmoothedShipXForAI;
-        targetEnemyForAI = null; // <<< Reset hier
+        targetEnemyForAI = null;
         isMovingToCapture = false;
         aiIsCurrentlyTargetingCaptureBoss = false;
         isTargetingThreeSecondRuleBoss = false;
@@ -2055,7 +2055,7 @@ function aiControl() {
             aiPreviousDodgeDirection = 0;
         }
 
-        let criticalDirectHitProcessed = false; // Vlag om te zien of een directe "van boven" ontwijking is afgehandeld
+        let criticalDirectHitProcessed = false;
 
         if (!isChallengingStage && !isInvincibleForAI && !isShowingBlockingMessage) {
             const AI_DANGER_LOOKAHEAD_Y = SHIP_HEIGHT * 9;
@@ -2088,29 +2088,27 @@ function aiControl() {
                     };
                     allProjectedThreats.push(threat);
                     if (isFromAbove && checkCollision({ x: currentSmoothedShipXForAI, y: activeShipForAI.y, width: effectiveShipWidth, height: activeShipForAI.height }, threat)) {
-                        isDodgingThreat = true; // Markeer dat we ontwijken
+                        isDodgingThreat = true;
                         criticalDirectHitProcessed = true;
-                        const spaceLeft = threat.x - AI_EDGE_BUFFER; // Ruimte links van de dreiging
-                        const spaceRight = canvasWidth - (threat.x + threat.width) - AI_EDGE_BUFFER; // Ruimte rechts
-                        // Ontwijk naar de kant met de meeste ruimte, weg van de dreiging
+                        const spaceLeft = threat.x - AI_EDGE_BUFFER;
+                        const spaceRight = canvasWidth - (threat.x + threat.width) - AI_EDGE_BUFFER;
                         if (spaceLeft > spaceRight && spaceLeft > effectiveShipWidth * 0.3) {
                             dodgeTargetX = Math.max(AI_EDGE_BUFFER, threat.x - effectiveShipWidth - AI_THREAT_SAFETY_MARGIN_X * 0.5);
                         } else if (spaceRight > effectiveShipWidth * 0.3) {
                             dodgeTargetX = Math.min(canvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, threat.x + threat.width + AI_THREAT_SAFETY_MARGIN_X * 0.5);
-                        } else { // Weinig ruimte, probeer de beste van de twee
+                        } else {
                             dodgeTargetX = (spaceLeft > spaceRight) ? AI_EDGE_BUFFER : canvasWidth - effectiveShipWidth - AI_EDGE_BUFFER;
                         }
                         aiPreviousDodgeDirection = Math.sign(dodgeTargetX - currentSmoothedShipXForAI);
-                        aiDodgeCommitEndTime = now + AI_DODGE_COMMIT_DURATION * 1.75; // Langere commit voor directe dreiging
+                        aiDodgeCommitEndTime = now + AI_DODGE_COMMIT_DURATION * 1.75;
                         desiredTargetX = dodgeTargetX;
-                        break; // Stop met evalueren van andere kogels als een directe "van boven" hit is gevonden
+                        break;
                     }
                 }
             }
-             // Alleen vijanden evalueren als geen directe "van boven" kogel is afgehandeld
             if (!criticalDirectHitProcessed) {
                 for (const enemy of enemies) {
-                    if (enemy && (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') &&
+                     if (enemy && (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') &&
                         enemy.y < activeShipForAI.y + AI_DANGER_LOOKAHEAD_Y * 0.75 && enemy.y + enemy.height > activeShipForAI.y - SHIP_HEIGHT * 3) {
                         const framesToProject = AI_ENEMY_PROJECTION_MS / 16.67;
                         let projX = enemy.x + enemy.velocityX * framesToProject;
@@ -2127,11 +2125,9 @@ function aiControl() {
                 }
             }
 
-
             if (!criticalDirectHitProcessed && allProjectedThreats.length > 0) {
                 isDodgingThreat = true;
                 let bestDodgeOption = { x: currentSmoothedShipXForAI, score: -Infinity, dir: 0 };
-                // ... (bestDodgeOption evaluatie logica blijft hier, maar wordt alleen uitgevoerd als geen criticalDirectHitProcessed)
                 const shipAtCurrentPos = { x: currentSmoothedShipXForAI, y: activeShipForAI.y, width: effectiveShipWidth, height: activeShipForAI.height };
                 let scoreAtCurrent = 0;
                 for (const threat of allProjectedThreats) {
@@ -2182,64 +2178,77 @@ function aiControl() {
                     aiPreviousDodgeDirection = 0;
                     aiDodgeCommitEndTime = 0;
                 }
-            } else if (!criticalDirectHitProcessed) { // Geen dreigingen gevonden door de algemene check
+            } else if (!criticalDirectHitProcessed) {
                  aiPreviousDodgeDirection = 0;
                  aiDodgeCommitEndTime = 0;
             }
-        } else { // Challenging stage of onkwetsbaar
+        } else {
             aiPreviousDodgeDirection = 0;
             aiDodgeCommitEndTime = 0;
         }
 
-        // Doelwitselectie en vuurlogica alleen als NIET primair aan het ontwijken van een kritieke "van boven" dreiging
-        if (!criticalDirectHitProcessed) {
-            if (isDodgingThreat) { // Als de algemene dreigingsevaluatie zegt te ontwijken
-                targetEnemyForAI = null; shouldTryShoot_AI = false; isMovingToCapture = false;
-                aiIsCurrentlyTargetingCaptureBoss = false; isTargetingThreeSecondRuleBoss = false; isMovingForOwnFallingShip = false;
-            } else { // Niet aan het ontwijken, evalueer doelwitten
-                if (fallingShips.length > 0 && !isShipCapturedForAI && !isWaitingForRespawn && !isDualActiveForAI ) { /* ... */ }
-                if (!isMovingForOwnFallingShip) { /* ... */ }
-                if (!isMovingForOwnFallingShip && !isMovingToCapture && !aiIsCurrentlyTargetingCaptureBoss) { /* ... */
-                    if (threeSecondRuleTarget) { /* ... */ }
-                    else {
-                        targetEnemyForAI = null; let bestTargetScore = -Infinity;
-                        for (const enemy of enemies) { /* ... */ }
-                        if (targetEnemyForAI) {
-                            const enemyMidX = targetEnemyForAI.x + targetEnemyForAI.width / 2; desiredTargetX = enemyMidX - (effectiveShipWidth / 2);
-                            const ALIGNMENT_MULTIPLIER = 1.5;
-                            let alignmentThresholdForShooting = isChallengingStage ? effectiveShipWidth * 2.5 : (targetEnemyForAI.state === 'in_grid' || targetEnemyForAI.state === 'preparing_capture' ? effectiveShipWidth * (GRID_SHOOT_ALIGNMENT_FACTOR * ALIGNMENT_MULTIPLIER) : effectiveShipWidth * (FINAL_SHOOT_ALIGNMENT_THRESHOLD * ALIGNMENT_MULTIPLIER));
-                            if (Math.abs(shipCenterX - enemyMidX) < alignmentThresholdForShooting) shouldTryShoot_AI = true;
-                        } else { desiredTargetX = targetCenterShipX; shouldTryShoot_AI = false; }
-                    }
-                }
-                // Anti-corner logic when not dodging
-                if (!isDodgingThreat) {
-                    const comfortMinX = canvasWidth * COMFORT_ZONE_MARGIN;
-                    const comfortMaxX = canvasWidth * (1 - COMFORT_ZONE_MARGIN) - effectiveShipWidth;
-                    if (desiredTargetX < comfortMinX) {
-                        desiredTargetX += (comfortMinX - desiredTargetX) * CORNER_AVOIDANCE_PULL_FACTOR;
-                    } else if (desiredTargetX > comfortMaxX) {
-                        desiredTargetX -= (desiredTargetX - comfortMaxX) * CORNER_AVOIDANCE_PULL_FACTOR;
-                    }
+        // Doelwitselectie en vuurlogica alleen als NIET aan het ontwijken
+        if (!isDodgingThreat) {
+            if (fallingShips.length > 0 && !isShipCapturedForAI && !isWaitingForRespawn && !isDualActiveForAI ) { /* ... */ }
+            if (!isMovingForOwnFallingShip) { /* ... */ }
+            if (!isMovingForOwnFallingShip && !isMovingToCapture && !aiIsCurrentlyTargetingCaptureBoss) { /* ... */
+                if (threeSecondRuleTarget) { /* ... */ }
+                else {
+                    targetEnemyForAI = null; let bestTargetScore = -Infinity;
+                    for (const enemy of enemies) { /* ... */ }
+                    if (targetEnemyForAI) {
+                        const enemyMidX = targetEnemyForAI.x + targetEnemyForAI.width / 2; desiredTargetX = enemyMidX - (effectiveShipWidth / 2);
+                        // Vuurconditie wordt hieronder expliciet geëvalueerd
+                    } else { desiredTargetX = targetCenterShipX; }
                 }
             }
-        } else { // Wel een criticalDirectHitProcessed, dus niet schieten
-             shouldTryShoot_AI = false;
-             targetEnemyForAI = null;
+            // Anti-corner logic when not dodging
+            const comfortMinX = canvasWidth * COMFORT_ZONE_MARGIN;
+            const comfortMaxX = canvasWidth * (1 - COMFORT_ZONE_MARGIN) - effectiveShipWidth;
+            if (desiredTargetX < comfortMinX) {
+                desiredTargetX += (comfortMinX - desiredTargetX) * CORNER_AVOIDANCE_PULL_FACTOR;
+            } else if (desiredTargetX > comfortMaxX) {
+                desiredTargetX -= (desiredTargetX - comfortMaxX) * CORNER_AVOIDANCE_PULL_FACTOR;
+            }
         }
 
+        // Bepaal of de AI moet schieten, alleen als niet aan het ontwijken
+        if (!isDodgingThreat && !isMovingToCapture && !isMovingForOwnFallingShip && !isShowingBlockingMessage && targetEnemyForAI) {
+            shouldTryShoot_AI = true; // Begin met aanname dat we willen schieten
 
-        if (shouldTryShoot_AI) {
-            if (isDodgingThreat || isMovingToCapture || isMovingForOwnFallingShip || isShowingBlockingMessage) { shouldTryShoot_AI = false;
-            } else if (targetEnemyForAI) {
-                if (targetEnemyForAI.type === ENEMY3_TYPE && !targetEnemyForAI.hasCapturedShip) {
-                    const isProblematicStateForBaldBoss = isEntrancePhaseActive || ['in_grid', 'preparing_capture', 'diving_to_capture_position', 'capturing'].includes(targetEnemyForAI.state);
-                    if (isProblematicStateForBaldBoss && !targetEnemyForAI.isDamaged && targetEnemyForAI.state !== 'attacking') {
-                         shouldTryShoot_AI = false;
-                    }
+            const ALIGNMENT_MULTIPLIER = 1.2; // <<< VERLAAGD
+            const enemyMidX = targetEnemyForAI.x + targetEnemyForAI.width / 2;
+            let alignmentThresholdForShooting = isChallengingStage ? effectiveShipWidth * 2.5 : (targetEnemyForAI.state === 'in_grid' || targetEnemyForAI.state === 'preparing_capture' ? effectiveShipWidth * (GRID_SHOOT_ALIGNMENT_FACTOR * ALIGNMENT_MULTIPLIER) : effectiveShipWidth * (FINAL_SHOOT_ALIGNMENT_THRESHOLD * ALIGNMENT_MULTIPLIER));
+            if (Math.abs(shipCenterX - enemyMidX) >= alignmentThresholdForShooting) {
+                shouldTryShoot_AI = false; // Niet goed genoeg uitgelijnd
+            }
+
+            if (targetEnemyForAI.type === ENEMY3_TYPE && !targetEnemyForAI.hasCapturedShip) {
+                const isProblematicStateForBaldBoss = ['preparing_capture', 'diving_to_capture_position', 'capturing'].includes(targetEnemyForAI.state);
+                const isSimplyInGridOrEntrance = isEntrancePhaseActive || targetEnemyForAI.state === 'in_grid';
+
+                if (isProblematicStateForBaldBoss) { // Als bezig met capture, nooit schieten
+                    shouldTryShoot_AI = false;
+                } else if (isSimplyInGridOrEntrance && !targetEnemyForAI.isDamaged) { // In grid/entrance en niet beschadigd? Niet schieten.
+                    shouldTryShoot_AI = false;
                 }
-            } else { shouldTryShoot_AI = false; }
+                // Anders (kale baas is beschadigd in grid/entrance, OF kale baas is aan het aanvallen): wel schieten.
+            }
+
+            // Check edge shooting
+            const AI_EDGE_SHOOT_BUFFER_FACTOR_LOCAL = 1.4; // <<< VERLAAGD
+            const isNearEdge = currentSmoothedShipXForAI < AI_EDGE_BUFFER * AI_EDGE_SHOOT_BUFFER_FACTOR_LOCAL ||
+                               currentSmoothedShipXForAI > canvasWidth - effectiveShipWidth - AI_EDGE_BUFFER * AI_EDGE_SHOOT_BUFFER_FACTOR_LOCAL;
+            if (isNearEdge) {
+                const targetCenterXForEdgeCheck = targetEnemyForAI.x + targetEnemyForAI.width / 2;
+                if (Math.abs(targetCenterXForEdgeCheck - shipCenterX) > effectiveShipWidth * AI_EDGE_SHOOT_TARGET_THRESHOLD_FACTOR) {
+                    shouldTryShoot_AI = false; // Doelwit is te ver weg om te schieten vanaf de rand
+                }
+            }
+        } else {
+            shouldTryShoot_AI = false; // Niet schieten als aan het ontwijken, capturen, etc.
         }
+
 
         let currentAiSmoothingFactor = isDodgingThreat ? AI_DODGE_MOVEMENT_SMOOTHING_FACTOR : AI_NORMAL_MOVEMENT_SMOOTHING_FACTOR;
 
@@ -2249,20 +2258,8 @@ function aiControl() {
             if (isAIPlayer2NormalMode || (!isManualControl && !isPlayerTwoAI)) smoothedShipX = currentSmoothedShipXForAI;
         }
 
-        if (shouldTryShoot_AI && !isShowingIntro && !isDodgingThreat) {
-            const AI_EDGE_SHOOT_BUFFER_FACTOR_LOCAL = 1.7;
-            const isNearEdge = currentSmoothedShipXForAI < AI_EDGE_BUFFER * AI_EDGE_SHOOT_BUFFER_FACTOR_LOCAL ||
-                               currentSmoothedShipXForAI > canvasWidth - effectiveShipWidth - AI_EDGE_BUFFER * AI_EDGE_SHOOT_BUFFER_FACTOR_LOCAL;
-            let canShootNearEdge = true;
-            if (isNearEdge && targetEnemyForAI) {
-                const targetCenterX = targetEnemyForAI.x + targetEnemyForAI.width / 2;
-                if (Math.abs(targetCenterX - shipCenterX) > effectiveShipWidth * AI_EDGE_SHOOT_TARGET_THRESHOLD_FACTOR) {
-                    canShootNearEdge = false;
-                }
-            }
-            if (canShootNearEdge) {
-                if (firePlayerBullet(aiIdentifierForAI, false)) { /* Handled */ }
-            }
+        if (shouldTryShoot_AI && !isShowingIntro) { // isDodgingThreat is al gecheckt in de bepaling van shouldTryShoot_AI
+            if (firePlayerBullet(aiIdentifierForAI, false)) { /* Handled */ }
         }
     } catch (e) { console.error("Error in aiControl:", e, e.stack); if (ship) ship.targetX = ship.x; aiNeedsStabilization = true; smoothedShipX = ship ? ship.x : (gameCanvas ? gameCanvas.width / 2 : 0); if (aiIsCurrentlyTargetingCaptureBoss) aiIsCurrentlyTargetingCaptureBoss = false; }
  }
