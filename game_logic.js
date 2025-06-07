@@ -1528,26 +1528,17 @@ function switchPlayerTurn() {
 function firePlayerBullet(shooterId = null, isTapEvent = false) {
     const now = Date.now();
 
-    // <<< GEWIJZIGD: Strakkere initiële vuurblokkade voor P1 in COOP L1 intro >>>
-    // Deze check komt VOOR de baseChecks om de logica te vereenvoudigen.
     const inCoopLevel1IntroStrict = isTwoPlayerMode && selectedGameMode === 'coop' && level === 1 &&
                                    coopPlayersReadyStartTime > 0 && now < coopPlayersReadyStartTime + 8000;
 
     if (inCoopLevel1IntroStrict) {
         if (shooterId === 'player1' && !isTapEvent) {
-            // Blokkeer alle non-tap schoten van P1 tijdens de "Players Ready" en vroege "Stage 1" intro
-            // om "sticky button" input van het menu te voorkomen.
-            // Dit geldt voor zowel single als rapid fire mode voor keyboard/gamepad.
-            // Een bewuste tap (isTapEvent = true) mag wel doorgaan (wordt later afgehandeld).
             return false;
         }
-        // <<< TOEGEVOEGD: AI P2 in 1P_VS_AI_COOP mag ook niet vuren tijdens deze specifieke introductie. >>>
         if (shooterId === 'ai_p2' && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
             return false;
         }
-        // <<< EINDE TOEGEVOEGD >>>
     }
-    // <<< EINDE GEWIJZIGD >>>
 
 
     let canShootLogic = false;
@@ -1567,8 +1558,8 @@ function firePlayerBullet(shooterId = null, isTapEvent = false) {
                        !showCsHitsMessage && !showPerfectMessage && !showCsBonusScoreMessage && !showCSClearMessage &&
                        !(isTwoPlayerMode && selectedGameMode === 'coop' &&
                          ((shooterId === 'player1' && isPlayer1ShowingGameOverMessage) ||
-                          (shooterId === 'player2' && isPlayer2ShowingGameOverMessage) || // <<< TOEGEVOEGD: Check voor 'player2' game over
-                          (shooterId === 'ai_p2' && isPlayer2ShowingGameOverMessage) ));  // <<< TOEGEVOEGD: Check voor 'ai_p2' game over
+                          (shooterId === 'player2' && isPlayer2ShowingGameOverMessage) ||
+                          (shooterId === 'ai_p2' && isPlayer2ShowingGameOverMessage) ));
 
     if (!baseChecks) return false;
 
@@ -1594,39 +1585,54 @@ function firePlayerBullet(shooterId = null, isTapEvent = false) {
                 useSingleShotFlag = selectedFiringMode === 'single'; getSingleShotFlag = () => p1JustFiredSingle; setSingleShotFlag = (val) => { p1JustFiredSingle = val; };
                 canShootLogic = true;
             }
-        } else if ((shooterId === 'player2' || shooterId === 'ai_p2') && ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture) { // <<< GEWIJZIGD: Ook 'ai_p2' hier
+        } else if ((shooterId === 'player2' || shooterId === 'ai_p2') && ship2 && player2Lives > 0 && !isPlayer2ShipCaptured && !player2NeedsRespawnAfterCapture) {
              if (!isShowingCaptureMessage || (isShowingCaptureMessage && !isPlayer2ShipCaptured)) {
-                shootingShipObject = ship2; isDual = player2IsDualShipActive; playerSpecificLastShotTime = player2LastShotTime;
-                setPlayerSpecificLastShotTime = (time) => { player2LastShotTime = time; }; incrementPlayerShotsFired = (count) => { player2ShotsFired += count; };
+                shootingShipObject = ship2; isDual = player2IsDualShipActive;
+                // <<< GEWIJZIGD: Zorg dat player2LastShotTime en aiShip2LastShotTime gesynchroniseerd blijven voor AI P2 >>>
+                if (shooterId === 'ai_p2' && isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
+                    playerSpecificLastShotTime = aiShip2LastShotTime; // Gebruik de specifieke AI last shot time
+                    setPlayerSpecificLastShotTime = (time) => { aiShip2LastShotTime = time; player2LastShotTime = time; }; // Update beide
+                } else {
+                    playerSpecificLastShotTime = player2LastShotTime;
+                    setPlayerSpecificLastShotTime = (time) => { player2LastShotTime = time; };
+                }
+                // <<< EINDE GEWIJZIGD >>>
+                incrementPlayerShotsFired = (count) => { player2ShotsFired += count; };
                 if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') {
-                    useSingleShotFlag = false; // AI gebruikt geen single shot flag
-                } else { // Human P2
+                    useSingleShotFlag = false;
+                } else {
                     useSingleShotFlag = selectedFiringMode === 'single'; getSingleShotFlag = () => p2JustFiredSingle; setSingleShotFlag = (val) => { p2JustFiredSingle = val; };
                 }
                 canShootLogic = true;
             }
         }
-    } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL (Alternating)
+    } else {
         if (ship && playerLives > 0 && !isShipCaptured) {
             shootingShipObject = ship; isDual = isDualShipActive;
-            if (isTwoPlayerMode && selectedGameMode === 'normal') { // Alternating
+            if (isTwoPlayerMode && selectedGameMode === 'normal') {
                 if (currentPlayer === 1) {
                     playerSpecificLastShotTime = player1LastShotTime; setPlayerSpecificLastShotTime = (time) => { player1LastShotTime = time; };
                     incrementPlayerShotsFired = (count) => { player1ShotsFired += count; }; useSingleShotFlag = selectedFiringMode === 'single';
                     getSingleShotFlag = () => p1JustFiredSingle; setSingleShotFlag = (val) => { p1JustFiredSingle = val; };
                     if (!currentShooterPlayerId) currentShooterPlayerId = 'player1';
                 } else { // currentPlayer === 2
-                    playerSpecificLastShotTime = player2LastShotTime; setPlayerSpecificLastShotTime = (time) => { player2LastShotTime = time; };
+                    if (isPlayerTwoAI) {
+                        playerSpecificLastShotTime = aiLastShotTime; // Gebruik AI last shot time voor P2 AI in Normal mode
+                        setPlayerSpecificLastShotTime = (time) => { aiLastShotTime = time; player2LastShotTime = time; };
+                    } else {
+                        playerSpecificLastShotTime = player2LastShotTime;
+                        setPlayerSpecificLastShotTime = (time) => { player2LastShotTime = time; };
+                    }
                     incrementPlayerShotsFired = (count) => { player2ShotsFired += count; };
-                    if (isPlayerTwoAI) { // AI P2 in Alternating
-                        useSingleShotFlag = false; // AI gebruikt geen single shot flag
+                    if (isPlayerTwoAI) {
+                        useSingleShotFlag = false;
                         if (!currentShooterPlayerId) currentShooterPlayerId = 'ai_p2';
-                    } else { // Human P2 in Alternating
+                    } else {
                         useSingleShotFlag = selectedFiringMode === 'single';
-                        if (connectedGamepadIndexP2 === null && connectedGamepadIndex !== null) { // P2 gebruikt P1 controller
+                        if (connectedGamepadIndexP2 === null && connectedGamepadIndex !== null) {
                             getSingleShotFlag = () => p1JustFiredSingle;
                             setSingleShotFlag = (val) => { p1JustFiredSingle = val; };
-                        } else { // P2 gebruikt P2 controller of keyboard
+                        } else {
                             getSingleShotFlag = () => p2JustFiredSingle;
                             setSingleShotFlag = (val) => { p2JustFiredSingle = val; };
                         }
@@ -1648,7 +1654,7 @@ function firePlayerBullet(shooterId = null, isTapEvent = false) {
     if (shooterId === null && !isManualControl && ship && playerLives > 0 && !isShipCaptured && !isShowingCaptureMessage && !isCoopAIDemoActive && !(isPlayerTwoAI && selectedGameMode === 'coop')) {
         shootingShipObject = ship; isDual = isDualShipActive; playerSpecificLastShotTime = aiLastShotTime;
         setPlayerSpecificLastShotTime = (time) => { aiLastShotTime = time; }; incrementPlayerShotsFired = (count) => { player1ShotsFired += count; };
-        useSingleShotFlag = false; // AI gebruikt geen single shot flag
+        useSingleShotFlag = false;
         canShootLogic = true; currentShooterPlayerId = 'ai';
     }
 
@@ -1656,28 +1662,27 @@ function firePlayerBullet(shooterId = null, isTapEvent = false) {
     if (!canShootLogic || !shootingShipObject) return false;
 
     // Firing mode and cooldown checks
-    if (useSingleShotFlag) { // Single shot mode (meestal door menselijke speler)
-        if (isTapEvent) { // Voor touch taps (afgehandeld in handleTouchEndGlobal)
+    if (useSingleShotFlag) {
+        if (isTapEvent) {
             if (now - playerSpecificLastShotTime < SHOOT_COOLDOWN) return false;
-        } else { // Voor keyboard/gamepad
+        } else {
             let fireButtonIsCurrentlyPressed = false;
             if (currentShooterPlayerId === 'player1' || (!isTwoPlayerMode && currentShooterPlayerId === 'player1')) {
                 fireButtonIsCurrentlyPressed = keyboardP1ShootDown || (connectedGamepadIndex !== null && navigator.getGamepads()?.[connectedGamepadIndex]?.buttons[PS5_BUTTON_CROSS]?.pressed);
             } else if (currentShooterPlayerId === 'player2' && !isPlayerTwoAI) {
                 if (connectedGamepadIndexP2 !== null) {
                     fireButtonIsCurrentlyPressed = keyboardP2ShootDown || (connectedGamepadIndexP2 !== null && navigator.getGamepads()?.[connectedGamepadIndexP2]?.buttons[PS5_BUTTON_CROSS]?.pressed);
-                } else if (connectedGamepadIndex !== null) { // P2 gebruikt P1 controller
+                } else if (connectedGamepadIndex !== null) {
                     fireButtonIsCurrentlyPressed = keyboardP2ShootDown || (connectedGamepadIndex !== null && navigator.getGamepads()?.[connectedGamepadIndex]?.buttons[PS5_BUTTON_CROSS]?.pressed);
-                } else { // P2 gebruikt keyboard
+                } else {
                     fireButtonIsCurrentlyPressed = keyboardP2ShootDown;
                 }
             }
 
-            if (getSingleShotFlag()) { // Check of de "just fired single" vlag nog actief is
-                if (fireButtonIsCurrentlyPressed) return false; // Knop nog steeds ingedrukt, niet opnieuw vuren
-                else setSingleShotFlag(false); // Knop losgelaten, reset vlag
+            if (getSingleShotFlag()) {
+                if (fireButtonIsCurrentlyPressed) return false;
+                else setSingleShotFlag(false);
             }
-            // Cooldown check, zelfs na het resetten van de vlag
             if (now - playerSpecificLastShotTime < SHOOT_COOLDOWN) return false;
         }
     } else { // Rapid fire mode (of AI)
@@ -1702,11 +1707,11 @@ function firePlayerBullet(shooterId = null, isTapEvent = false) {
             bulletsCreated = 1;
         }
 
-        if (useSingleShotFlag && !isTapEvent) setSingleShotFlag(true); // Zet de vlag na succesvol vuren in single mode
+        if (useSingleShotFlag && !isTapEvent) setSingleShotFlag(true);
 
         playSound('playerShootSound', false, 0.4);
         incrementPlayerShotsFired(bulletsCreated);
-        setPlayerSpecificLastShotTime(now);
+        setPlayerSpecificLastShotTime(now); // Dit update nu de juiste lastShotTime voor AI P2 COOP
         return true;
     } catch(e) {
         console.error("Error creating player bullet(s):", e);
@@ -1725,8 +1730,6 @@ function handlePlayerInput() {
          let localShootPressed = false;
          let localP2ShootPressed = false;
 
-         // De inCoopLevel1IntroStrict check in firePlayerBullet is nu de primaire afhandeling hiervoor.
-
          if (isCoopAIDemoActive ||
             (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2 && !isManualControl) ||
             (!isManualControl && !isPlayerTwoAI && !isCoopAIDemoActive)
@@ -1734,7 +1737,7 @@ function handlePlayerInput() {
              if (isCoopAIDemoActive || (!isManualControl && !isPlayerTwoAI && !isCoopAIDemoActive)) {
                 leftPressed = false; rightPressed = false;
              }
-             shootPressed = false; p2ShootPressed = false; // Zorg dat globale vlaggen ook gereset zijn
+             shootPressed = false; p2ShootPressed = false;
              return;
          }
 
@@ -1742,7 +1745,7 @@ function handlePlayerInput() {
                                    gameOverSequenceStartTime > 0 || isShowingPlayerGameOverMessage ||
                                    (isTwoPlayerMode && selectedGameMode === 'coop' && (isPlayer1ShowingGameOverMessage || isPlayer2ShowingGameOverMessage)) ||
                                    isShowingCaptureMessage ||
-                                   showCsBonusScoreMessage || showPerfectMessage || showCsHitsMessage || showCSClearMessage || // CS bonus berichten
+                                   showCsBonusScoreMessage || showPerfectMessage || showCsHitsMessage || showCSClearMessage ||
                                    isCsCompletionDelayActive;
 
          const inCoopLevel1IntroStrictForMovement = isTwoPlayerMode && selectedGameMode === 'coop' && level === 1 &&
@@ -1927,7 +1930,7 @@ function handlePlayerInput() {
                         if (isShowingCaptureMessage && isPlayer2ShipCaptured) localP2ShootPressed = false;
                     }
                 }
-            } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL (Alternating)
+            } else {
                 const activePlayerCanShoot = ship && playerLives > 0 && !isShipCaptured && !isShowingPlayerGameOverMessage && !isShowingIntro;
                 if (activePlayerCanShoot) {
                     let currentActivePlayerFireInputDown = false;
@@ -1939,13 +1942,11 @@ function handlePlayerInput() {
                     if ((isTouchActiveGame && selectedFiringMode === 'rapid') || currentActivePlayerFireInputDown) {
                         localShootPressed = true;
                     }
-                    // <<< TOEGEVOEGD: Blokkeer "sticky button" shoot voor P1 in 1P Classic/Normal L1 intro, tenzij het een bewuste tap is. >>>
                     if ((gameJustStarted || (isShowingIntro && level === 1)) && (!isTwoPlayerMode || (isTwoPlayerMode && selectedGameMode === 'normal' && currentPlayer === 1)) ) {
                          if (! (keyboardP1ShootDown || ctrlP1ShootIsRaw) && !(isTouchActiveGame && selectedFiringMode === 'single')) {
                             localShootPressed = false;
                         }
                     }
-                    // <<< EINDE TOEGEVOEGD >>>
                     if (isShowingCaptureMessage && isShipCaptured) localShootPressed = false;
                 }
             }
@@ -1958,9 +1959,9 @@ function handlePlayerInput() {
             if (isTwoPlayerMode && selectedGameMode === 'coop') {
                 if (shootPressed) { firePlayerBullet('player1', (isTouchActiveGame && selectedFiringMode === 'single')); }
                 if (!isPlayerTwoAI && p2ShootPressed) { firePlayerBullet('player2', false); }
-            } else { // 1P Classic, 1P_VS_AI_NORMAL, 2P_NORMAL (Alternating)
+            } else {
                 if (shootPressed) {
-                    if (!(isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2)) { // Alleen als P1 (mens) aan de beurt is in 1P vs AI Normal
+                    if (!(isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2)) {
                         firePlayerBullet(currentPlayer === 1 || !isTwoPlayerMode ? 'player1' : 'player2', (isTouchActiveGame && selectedFiringMode === 'single'));
                     }
                 }
@@ -1978,7 +1979,6 @@ function handlePlayerInput() {
 
 
 // --- AI control functies ---
-// ... (aiControl, aiControlCoop, calculateAIDesiredState blijven ongewijzigd) ...
 let aiIsCurrentlyTargetingCaptureBoss = false;
 
 function aiControl() {
@@ -2137,18 +2137,24 @@ function aiControlCoop() {
     }
     if (p2CanAct && ship2 && (isCoopAIDemoActive || (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP'))) { // AI P2 in COOP AI Demo OF 1P vs AI COOP
         if (smoothedShip2X === undefined) smoothedShip2X = ship2.x;
-        const p2CompletelyBlocked = getShipBlockingState('p2'); const p2Identifier = (isCoopAIDemoActive) ? 'player2' : 'ai_p2'; let p2Result;
+        const p2CompletelyBlocked = getShipBlockingState('p2');
+        const p2Identifier = (isCoopAIDemoActive) ? 'player2' : 'ai_p2';
+        let p2Result;
         let ignoreBossIdForP2 = null;
         if (isCoopAIDemoActive) { if (isPlayer1ShipCaptured && capturedBossIdWithMessage) ignoreBossIdForP2 = capturedBossIdWithMessage; else if (aiPlayerActivelySeekingCaptureById === 'player1') ignoreBossIdForP2 = capturingBossId; }
         p2Result = calculateAIDesiredState(ship2, smoothedShip2X, player2IsDualShipActive, enemies, enemyBullets, fallingShips, isPlayer2Invincible, isPlayer2ShipCaptured, isPlayer2WaitingForRespawn, now, canvasWidth, p2CompletelyBlocked, p2Identifier, ignoreBossIdForP2);
         aiShip2TargetEnemy = p2Result.targetEnemyForAI; smoothedShip2X += (p2Result.desiredTargetX - smoothedShip2X) * AI_SMOOTHING_FACTOR_MOVE; ship2.targetX = smoothedShip2X;
-        if (p2Result.shouldTryShoot && !(isShowingCaptureMessage && isPlayer2ShipCaptured)) { fireCoopAIBullet(ship2, player2IsDualShipActive, p2Identifier); }
+
+        // console.log(`[AI P2 COOP] ID: ${p2Identifier}, Blocked: ${p2CompletelyBlocked}, ShouldShoot: ${p2Result.shouldTryShoot}, Target: ${p2Result.targetEnemyForAI?.id}`);
+        if (p2Result.shouldTryShoot && !(isShowingCaptureMessage && isPlayer2ShipCaptured)) {
+            // console.log(`[AI P2 COOP] Firing for ${p2Identifier}`);
+            fireCoopAIBullet(ship2, player2IsDualShipActive, p2Identifier);
+        }
     }
 }
 
 function fireCoopAIBullet(shootingShip, isDual, shooterPlayerId) {
     if (!shootingShip) return false;
-    // <<< GEWIJZIGD: AI in COOP modes (Demo & 1P vs AI) gebruikt altijd firePlayerBullet zonder isTapEvent. >>>
     return firePlayerBullet(shooterPlayerId, false);
 }
 
@@ -2313,17 +2319,18 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         }
         if(targetEnemyForAI){
             desiredTargetX=(targetEnemyForAI.x+targetEnemyForAI.width/2)-effectiveShipWidth/2;
-            // <<< GEWIJZIGD: AI P2 vuurdrempel in 1P vs AI CO-OP, nu meer vergevingsgezind >>>
-            const COOP_AI_SHOOT_ALIGNMENT_THRESHOLD_FACTOR = (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') ? 1.5 : 0.9; // Was 2.0, nu terug naar 1.5 (of 0.9 voor demo)
+            const COOP_AI_SHOOT_ALIGNMENT_THRESHOLD_FACTOR = (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP') ? 1.2 : 0.9; // Was 1.5, nu nog iets vergevingsgezinder voor AI P2 COOP.
             if(Math.abs(shipCenterX-(targetEnemyForAI.x+targetEnemyForAI.width/2)) < effectiveShipWidth * COOP_AI_SHOOT_ALIGNMENT_THRESHOLD_FACTOR) {
                  shouldTryShoot_AI_Calc = !(isCoopAIDemoActive && coopAICaptureDiveAnticipationActive && currentTime < coopAICaptureDiveAnticipationEndTime);
             }
-            // <<< EINDE GEWIJZIGD >>>
+            // console.log(`[AI P2 COOP Eval] Target: ${targetEnemyForAI.id}, Align Check: ${Math.abs(shipCenterX-(targetEnemyForAI.x+targetEnemyForAI.width/2))} < ${effectiveShipWidth * COOP_AI_SHOOT_ALIGNMENT_THRESHOLD_FACTOR} -> ${shouldTryShoot_AI_Calc}`);
         } else {desiredTargetX=targetCenterShipX;shouldTryShoot_AI_Calc=false;}
     }
 
+    // <<< GEWIJZIGD: Verfijnde vuurcondities, specifiek voor AI P2 in 1P_VS_AI_COOP >>>
     if (shouldTryShoot_AI_Calc) {
         if(targetEnemyForAI){
+            // Condities die vuur PREVENTEREN
             if(targetEnemyForAI.id===capturingBossId){const bossMidCap=(targetEnemyForAI.state==='preparing_capture'||targetEnemyForAI.state==='diving_to_capture_position'||targetEnemyForAI.state==='capturing');if(bossMidCap)shouldTryShoot_AI_Calc=false;}
             if(targetEnemyForAI.type===ENEMY3_TYPE&&!targetEnemyForAI.hasCapturedShip){const probStateBald=['in_grid','preparing_capture','diving_to_capture_position','capturing'].includes(targetEnemyForAI.state)||isEntrancePhaseActive;if(probStateBald&&!(isMovingToCaptureBeam&&targetEnemyForAI.id===capturingBossId&&aiPlayerActivelySeekingCaptureById===shipIdentifier))shouldTryShoot_AI_Calc=false;}
             if(isShipDual&&isThisACoopAIMode&&targetEnemyForAI.type===ENEMY3_TYPE&&!targetEnemyForAI.hasCapturedShip){const ptnrId=(shipIdentifier==='p1')?(isCoopAIDemoActive?'player2':'ai_p2'):'p1';let pNeedsDual=false;if(ptnrId==='p1'){pNeedsDual=(ship1&&player1Lives>0&&!isPlayer1ShipCaptured&&!player1IsDualShipActive);}else{pNeedsDual=(ship2&&player2Lives>0&&!isPlayer2ShipCaptured&&!player2IsDualShipActive);}if(pNeedsDual)shouldTryShoot_AI_Calc=false;}
@@ -2331,7 +2338,19 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
             if (isCoopAIDemoActive && ignoreBossId_passed && targetEnemyForAI.id === ignoreBossId_passed) { shouldTryShoot_AI_Calc = false; }
         }else{shouldTryShoot_AI_Calc=false;}
         if(isCoopAIDemoActive&&aiPlayerActivelySeekingCaptureById&&aiPlayerActivelySeekingCaptureById!==shipIdentifier&&activeCapturingBoss&&targetEnemyForAI&&targetEnemyForAI.id===activeCapturingBoss.id){shouldTryShoot_AI_Calc=false;}
+
+        // Specifieke vuurblokkade voor AI P2 in 1P_VS_AI_COOP tijdens de introductie
+        // Dit voorkomt dat AI P2 meteen vuurt wanneer de "STAGE 1" melding nog zichtbaar is,
+        // zelfs als `isCurrentShipCompletelyBlocked` false is (omdat P1 mogelijk al kan bewegen).
+        if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP' && shipIdentifier === 'ai_p2') {
+            const introStrictForP2AI = isShowingIntro && level === 1 && coopPlayersReadyStartTime > 0 && currentTime < coopPlayersReadyStartTime + 8000;
+            if (introStrictForP2AI || isShowingIntro) { // Verbreding: AI P2 vuurt niet zolang *enige* intro bezig is.
+                shouldTryShoot_AI_Calc = false;
+                // console.log(`[AI P2 COOP Shoot Decision] Blocked by intro. Strict: ${introStrictForP2AI}, General Intro: ${isShowingIntro}`);
+            }
+        }
     }
+    // <<< EINDE GEWIJZIGD >>>
 
     desiredTargetX = Math.max(AI_EDGE_BUFFER, Math.min(gameCanvas.width - effectiveShipWidth - AI_EDGE_BUFFER, desiredTargetX));
     return { desiredTargetX, shouldTryShoot: shouldTryShoot_AI_Calc, targetEnemyForAI };
