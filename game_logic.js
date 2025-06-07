@@ -2050,20 +2050,19 @@ function aiControl() {
 
         // <<< START GEWIJZIGDE ONTWIJKINGSLOGICA voor aiControl >>>
         if (!isChallengingStage && !isInvincibleForAI && !isShowingBlockingMessage) {
-            // <<< GEWIJZIGD: Aangepaste parameters voor 1P AI Demo en 1P vs AI Normal >>>
             const isSinglePlayerAIDemoOrNormalAI = (!isManualControl && !isPlayerTwoAI) || (isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2);
 
-            const AI_DANGER_LOOKAHEAD_Y = SHIP_HEIGHT * (isSinglePlayerAIDemoOrNormalAI ? 10.5 : 9); // Kijk verder vooruit
-            const AI_BULLET_PROJECTION_MS = isSinglePlayerAIDemoOrNormalAI ? 650 : 500; // Projecteer kogels verder
+            const AI_DANGER_LOOKAHEAD_Y = SHIP_HEIGHT * (isSinglePlayerAIDemoOrNormalAI ? 10.5 : 9);
+            const AI_BULLET_PROJECTION_MS = isSinglePlayerAIDemoOrNormalAI ? 650 : 500;
             const AI_ENEMY_PROJECTION_MS = isSinglePlayerAIDemoOrNormalAI ? 375 : 300;
-            const AI_THREAT_SAFETY_MARGIN_X = effectiveShipWidth * (isSinglePlayerAIDemoOrNormalAI ? 0.95 : 0.75); // Grotere X marge
-            const AI_THREAT_SAFETY_MARGIN_Y_BASE = SHIP_HEIGHT * (isSinglePlayerAIDemoOrNormalAI ? 0.70 : 0.5); // Grotere Y marge
+            const AI_THREAT_SAFETY_MARGIN_X = effectiveShipWidth * (isSinglePlayerAIDemoOrNormalAI ? 0.95 : 0.75);
+            const AI_THREAT_SAFETY_MARGIN_Y_BASE = SHIP_HEIGHT * (isSinglePlayerAIDemoOrNormalAI ? 0.70 : 0.5);
 
             let allProjectedThreats = [];
 
             for (const bullet of enemyBullets) {
-                if (bullet.y < activeShipForAI.y + AI_DANGER_LOOKAHEAD_Y && bullet.y + bullet.height > activeShipForAI.y - SHIP_HEIGHT * 3) { // Ruimere Y check boven
-                    const framesToProject = AI_BULLET_PROJECTION_MS / 16.67; // Ongeveer 60fps
+                if (bullet.y < activeShipForAI.y + AI_DANGER_LOOKAHEAD_Y && bullet.y + bullet.height > activeShipForAI.y - SHIP_HEIGHT * 3) {
+                    const framesToProject = AI_BULLET_PROJECTION_MS / 16.67;
                     let projX = bullet.x + bullet.vx * framesToProject;
                     let projY = bullet.y + bullet.vy * framesToProject;
 
@@ -2071,11 +2070,18 @@ function aiControl() {
                     let currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE;
                     const effectiveBulletSpeed = Math.sqrt(bullet.vx * bullet.vx + bullet.vy * bullet.vy) || BASE_ENEMY_BULLET_SPEED;
 
-                    if (bullet.vy > effectiveBulletSpeed * 0.50 && // 50% neerwaarts
-                        Math.abs((bullet.x + bullet.width / 2) - (activeShipForAI.x + effectiveShipWidth / 2)) < effectiveShipWidth * (isSinglePlayerAIDemoOrNormalAI ? 1.75 : 0.85)) { // Bredere detectie X
+                    // <<< HIER START DE AANPASSING VOOR KOGELS VAN BOVEN >>>
+                    if (isSinglePlayerAIDemoOrNormalAI && bullet.vy > effectiveBulletSpeed * 0.30 && // Was 0.50. Nu gevoeliger voor schuinere kogels.
+                        Math.abs((bullet.x + bullet.width / 2) - (activeShipForAI.x + effectiveShipWidth / 2)) < effectiveShipWidth * 2.25) { // Was 1.75. Bredere x-detectie.
                         isFromAbove = true;
-                        currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE * (isSinglePlayerAIDemoOrNormalAI ? 2.5 : 1.75); // Significant grotere Y marge
+                        currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE * 3.0; // Was 2.5. Grotere Y marge.
+                    } else if (bullet.vy > effectiveBulletSpeed * 0.50 && // Behoud oude logica voor niet-singleplayer AI
+                               !isSinglePlayerAIDemoOrNormalAI &&
+                               Math.abs((bullet.x + bullet.width / 2) - (activeShipForAI.x + effectiveShipWidth / 2)) < effectiveShipWidth * 0.85) {
+                        isFromAbove = true;
+                        currentThreatSafetyMarginY = AI_THREAT_SAFETY_MARGIN_Y_BASE * 1.75;
                     }
+                    // <<< EINDE AANPASSING VOOR KOGELS VAN BOVEN >>>
 
                     allProjectedThreats.push({
                         x: projX - bullet.width / 2 - AI_THREAT_SAFETY_MARGIN_X,
@@ -2089,7 +2095,7 @@ function aiControl() {
             }
             for (const enemy of enemies) {
                 if (enemy && (enemy.state === 'attacking' || enemy.state === 'diving_to_capture_position') &&
-                    enemy.y < activeShipForAI.y + AI_DANGER_LOOKAHEAD_Y * 0.80 && enemy.y + enemy.height > activeShipForAI.y - SHIP_HEIGHT * 3.5) { // Ruimere Y check
+                    enemy.y < activeShipForAI.y + AI_DANGER_LOOKAHEAD_Y * 0.80 && enemy.y + enemy.height > activeShipForAI.y - SHIP_HEIGHT * 3.5) {
                     const framesToProject = AI_ENEMY_PROJECTION_MS / 16.67;
                     let projX = enemy.x + enemy.velocityX * framesToProject;
                     let projY = enemy.y + enemy.velocityY * framesToProject;
@@ -2099,7 +2105,7 @@ function aiControl() {
                         width: enemy.width + 2 * AI_THREAT_SAFETY_MARGIN_X * 0.80,
                         height: enemy.height + 2 * AI_THREAT_SAFETY_MARGIN_Y_BASE * 0.80,
                         isCritical: true,
-                        isFromAbove: false
+                        isFromAbove: false // Vijanden zelf zijn zelden "van boven" op dezelfde manier als kogels
                     });
                 }
             }
@@ -2113,19 +2119,21 @@ function aiControl() {
                 for (const threat of allProjectedThreats) {
                     if (checkCollision(shipAtCurrentPos, threat)) {
                         collisionsAtCurrent++;
-                        scoreAtCurrent -= 1000; // Basis straf
+                        scoreAtCurrent -= 1000;
                         if (threat.isFromAbove) {
-                            scoreAtCurrent -= (isSinglePlayerAIDemoOrNormalAI ? 10000 : 5000); // Zeer zware straf
+                            // <<< HIER START DE AANPASSING VOOR STRAFSCORE >>>
+                            scoreAtCurrent -= (isSinglePlayerAIDemoOrNormalAI ? 15000 : 5000); // Was 10000. Zwaardere straf.
+                            // <<< EINDE AANPASSING VOOR STRAFSCORE >>>
                         }
                     }
                 }
                 bestDodgeOption.score = scoreAtCurrent;
 
-                const dodgeStep = effectiveShipWidth * (isSinglePlayerAIDemoOrNormalAI ? 0.60 : 0.75); // Iets kleinere, fijnere stapjes
-                for (let i = 0; i < (isSinglePlayerAIDemoOrNormalAI ? 7 : 5); i++) { // Meer opties checken
+                const dodgeStep = effectiveShipWidth * (isSinglePlayerAIDemoOrNormalAI ? 0.60 : 0.75);
+                for (let i = 0; i < (isSinglePlayerAIDemoOrNormalAI ? 7 : 5); i++) {
                     for (const dodgeDir of [-1, 1]) {
                         let potentialDodgeX = currentSmoothedShipXForAI + dodgeDir * dodgeStep * (i + 1);
-                        potentialDodgeX = Math.max(AI_EDGE_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, potentialDodgeX)); // Gebruik kleinere AI_EDGE_BUFFER
+                        potentialDodgeX = Math.max(AI_EDGE_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, potentialDodgeX));
 
                         const shipAtPotentialDodge = { x: potentialDodgeX, y: activeShipForAI.y, width: effectiveShipWidth, height: activeShipForAI.height };
                         let currentCollisions = 0;
@@ -2135,11 +2143,13 @@ function aiControl() {
                                 currentCollisions++;
                                 currentScoreForOption -= 1000;
                                 if (threat.isFromAbove) {
-                                    currentScoreForOption -= (isSinglePlayerAIDemoOrNormalAI ? 10000 : 5000);
+                                    // <<< HIER START DE AANPASSING VOOR STRAFSCORE >>>
+                                    currentScoreForOption -= (isSinglePlayerAIDemoOrNormalAI ? 15000 : 5000); // Was 10000. Zwaardere straf.
+                                    // <<< EINDE AANPASSING VOOR STRAFSCORE >>>
                                 }
                             }
                         }
-                        currentScoreForOption -= Math.abs(potentialDodgeX - (canvasWidth / 2 - effectiveShipWidth / 2)) * (isSinglePlayerAIDemoOrNormalAI ? 0.03 : 0.1); // Minder zwaar straffen voor afstand tot midden
+                        currentScoreForOption -= Math.abs(potentialDodgeX - (canvasWidth / 2 - effectiveShipWidth / 2)) * (isSinglePlayerAIDemoOrNormalAI ? 0.03 : 0.1);
                         currentScoreForOption -= i * (isSinglePlayerAIDemoOrNormalAI ? 2 : 5);
 
                         if (currentCollisions === 0 && dodgeDir === aiPreviousDodgeDirection && aiPreviousDodgeDirection !== 0) {
@@ -2153,7 +2163,7 @@ function aiControl() {
                 dodgeTargetX = bestDodgeOption.x;
                 desiredTargetX = dodgeTargetX;
 
-                if (bestDodgeOption.dir !== 0 && bestDodgeOption.score > scoreAtCurrent + (isSinglePlayerAIDemoOrNormalAI ? 150 : 100)) { // Commit drempel
+                if (bestDodgeOption.dir !== 0 && bestDodgeOption.score > scoreAtCurrent + (isSinglePlayerAIDemoOrNormalAI ? 150 : 100)) {
                     if (aiPreviousDodgeDirection !== bestDodgeOption.dir) {
                         aiPreviousDodgeDirection = bestDodgeOption.dir;
                         aiDodgeCommitEndTime = now + AI_DODGE_COMMIT_DURATION;
