@@ -2204,7 +2204,6 @@ function aiControl() {
             // De isDodgingThreat vlag is dan false.
         }
 
-        // <<< START GEWIJZIGDE LOGICA: Doelwit selectie en schietbeslissing (Solo AI) >>>
         if (isDodgingThreat) {
             isMovingToCapture = false;
             aiIsCurrentlyTargetingCaptureBoss = false;
@@ -2232,8 +2231,7 @@ function aiControl() {
                 targetEnemyForAI = generalTargetWhileDodging;
             }
             shouldTryShoot_AI = (targetEnemyForAI !== null);
-        } else { // Niet aan het ontwijken (isDodgingThreat is false)
-            // Hier komt de normale doelwitselectie logica
+        } else {
             if (fallingShips.length > 0 && !isShipCapturedForAI && !isWaitingForRespawn && !isDualActiveForAI ) {
                 let closestFallingShip = null; let minDist = Infinity;
                 for (const fs of fallingShips) {
@@ -2292,9 +2290,7 @@ function aiControl() {
                 }
             }
         }
-        // <<< EINDE GEWIJZIGDE LOGICA: Doelwit selectie en schietbeslissing (Solo AI) >>>
 
-        // <<< GEWIJZIGD: Plaats de toewijzing van currentAiSmoothingFactor HIER, VOOR gebruik >>>
         let currentAiSmoothingFactor = isDodgingThreat ? AI_DODGE_MOVEMENT_SMOOTHING_FACTOR : AI_NORMAL_MOVEMENT_SMOOTHING_FACTOR;
 
         if (activeShipForAI) {
@@ -2303,7 +2299,6 @@ function aiControl() {
             if (isAIPlayer2NormalMode || (!isManualControl && !isPlayerTwoAI)) smoothedShipX = currentSmoothedShipXForAI;
         }
 
-        // Finale schietbeslissing, na alle bewegings- en doelwitlogica
         if (shouldTryShoot_AI && !isShowingIntro) {
             let canActuallyShootTarget = true;
 
@@ -2316,14 +2311,19 @@ function aiControl() {
                     const isProblematicStateForBaldBoss = isEntrancePhaseActive || ['in_grid', 'preparing_capture', 'diving_to_capture_position', 'capturing'].includes(targetEnemyForAI.state);
                     const isThisAIsCaptureTarget = (targetEnemyForAI.id === capturingBossId && aiIsCurrentlyTargetingCaptureBoss);
 
-                    // <<< GEWIJZIGD: Specifieke check voor solo AI >>>
-                    if (isProblematicStateForBaldBoss && !isTargetingThreeSecondRuleBoss && !isThisAIsCaptureTarget) {
-                        // Voor solo AI (normale demo, 1P vs AI): niet schieten op een kale baas die
-                        // in de grid zit of een capture dive voorbereidt, tenzij het een 3-seconden regel target is.
-                        canActuallyShootTarget = false;
+                    // <<< GEWIJZIGD: Striktere controle voor solo AI >>>
+                    if (isProblematicStateForBaldBoss && !isThisAIsCaptureTarget) {
+                        // Voor solo AI: niet schieten op een kale baas die in de grid zit of een capture dive voorbereidt,
+                        // zelfs als er een 3-seconden regel target is. De 3-seconden regel target krijgt prioriteit
+                        // in de *doelwitselectie*, niet in het overrulen van deze specifieke vuurrestrictie.
+                        // De enige uitzondering is als de AI *deze specifieke* baas probeert te laten vangen (isThisAIsCaptureTarget).
+                        // Of als het specifiek de 3-secondenregel baas is (isTargetingThreeSecondRuleBoss).
+                        if (!isTargetingThreeSecondRuleBoss) { // Alleen niet schieten als het NIET de 3-sec-regel baas is
+                             canActuallyShootTarget = false;
+                        }
                     }
                 }
-            } else { // Geen doelwit
+            } else {
                 canActuallyShootTarget = false;
             }
 
