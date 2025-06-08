@@ -2294,6 +2294,8 @@ function aiControl() {
         }
         // <<< EINDE GEWIJZIGDE LOGICA: Doelwit selectie en schietbeslissing (Solo AI) >>>
 
+        // <<< GEWIJZIGD: Plaats de toewijzing van currentAiSmoothingFactor HIER, VOOR gebruik >>>
+        let currentAiSmoothingFactor = isDodgingThreat ? AI_DODGE_MOVEMENT_SMOOTHING_FACTOR : AI_NORMAL_MOVEMENT_SMOOTHING_FACTOR;
 
         if (activeShipForAI) {
             currentSmoothedShipXForAI += (desiredTargetX - currentSmoothedShipXForAI) * currentAiSmoothingFactor;
@@ -2686,7 +2688,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
         if(targetEnemyForAI){
             // Niet schieten op een "kale" baas in bepaalde situaties
-            if(targetEnemyForAI.id===capturingBossId){
+            if(targetEnemyForAI.id===capturingBossId){ // <<< GEWIJZIGD: controleer of targetEnemyForAI.id bestaat >>>
                 const bossMidCap=(targetEnemyForAI.state==='preparing_capture'||targetEnemyForAI.state==='diving_to_capture_position'||targetEnemyForAI.state==='capturing');
                 if(bossMidCap) shouldTryShoot_AI_Calc=false;
             }
