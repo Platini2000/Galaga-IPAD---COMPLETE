@@ -2315,7 +2315,11 @@ function aiControl() {
                 if (targetEnemyForAI.type === ENEMY3_TYPE && !targetEnemyForAI.hasCapturedShip) {
                     const isProblematicStateForBaldBoss = isEntrancePhaseActive || ['in_grid', 'preparing_capture', 'diving_to_capture_position', 'capturing'].includes(targetEnemyForAI.state);
                     const isThisAIsCaptureTarget = (targetEnemyForAI.id === capturingBossId && aiIsCurrentlyTargetingCaptureBoss);
+
+                    // <<< GEWIJZIGD: Specifieke check voor solo AI >>>
                     if (isProblematicStateForBaldBoss && !isTargetingThreeSecondRuleBoss && !isThisAIsCaptureTarget) {
+                        // Voor solo AI (normale demo, 1P vs AI): niet schieten op een kale baas die
+                        // in de grid zit of een capture dive voorbereidt, tenzij het een 3-seconden regel target is.
                         canActuallyShootTarget = false;
                     }
                 }
@@ -2688,22 +2692,18 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
         if(targetEnemyForAI){
             // Niet schieten op een "kale" baas in bepaalde situaties
-            if(targetEnemyForAI.id===capturingBossId){ // <<< GEWIJZIGD: controleer of targetEnemyForAI.id bestaat >>>
+            if(targetEnemyForAI.id===capturingBossId){
                 const bossMidCap=(targetEnemyForAI.state==='preparing_capture'||targetEnemyForAI.state==='diving_to_capture_position'||targetEnemyForAI.state==='capturing');
                 if(bossMidCap) shouldTryShoot_AI_Calc=false;
             }
             if(targetEnemyForAI.type===ENEMY3_TYPE&&!targetEnemyForAI.hasCapturedShip){
                 const probStateBald=['in_grid','preparing_capture','diving_to_capture_position','capturing'].includes(targetEnemyForAI.state)||isEntrancePhaseActive;
-                // Toestaan te schieten als de AI specifiek deze baas als doelwit heeft voor de 3-seconden regel,
-                // tenzij de baas al in een capture-gerelateerde state is voor *deze* AI.
                 const isThisAIsCaptureTarget = (activeCapturingBoss && targetEnemyForAI.id === activeCapturingBoss.id && aiPlayerActivelySeekingCaptureById === shipIdentifier);
-
 
                 if(probStateBald && !isTargetingThreeSecondRuleBoss && !isTargetingPartnerRescue && !isThisAIsCaptureTarget) {
                     shouldTryShoot_AI_Calc=false;
                 }
             }
-            // Als dit schip dual is, en de partner heeft nog geen dual, niet schieten op kale bossen
             if(isShipDual&&isThisACoopAIMode&&targetEnemyForAI.type===ENEMY3_TYPE&&!targetEnemyForAI.hasCapturedShip){
                 const ptnrId=(shipIdentifier==='p1')?(isCoopAIDemoActive?'player2':'ai_p2'):'p1';
                 let pNeedsDual=false;
@@ -2711,22 +2711,19 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                 else{pNeedsDual=(ship2&&player2Lives>0&&!isPlayer2ShipCaptured&&!player2IsDualShipActive);}
                 if(pNeedsDual)shouldTryShoot_AI_Calc=false;
             }
-            // Als AI weinig levens heeft, niet schieten op een boss met schip (tenzij het partner's schip is of 3sec regel)
             if(targetEnemyForAI.type===ENEMY3_TYPE&&targetEnemyForAI.hasCapturedShip&&livesOfThisAIShip<=1){
                 const isPtnrBoss=(isThisACoopAIMode&&targetEnemyForAI.id===capturedBossIdWithMessage&&partnerIsCaptured);
                 if(!isPtnrBoss&&!isTargetingThreeSecondRuleBoss&&!isTargetingPartnerRescue)shouldTryShoot_AI_Calc=false;
             }
             if (isCoopAIDemoActive && ignoreBossId_passed && targetEnemyForAI.id === ignoreBossId_passed) { shouldTryShoot_AI_Calc = false; }
-        }else{ // Geen doelwit
+        }else{
             shouldTryShoot_AI_Calc=false;
         }
-        // Als partner bezig is met capture, en dit is de assisterende AI, niet schieten op die specifieke boss
         if(isCoopAIDemoActive&&aiPlayerActivelySeekingCaptureById&&aiPlayerActivelySeekingCaptureById!==shipIdentifier&&activeCapturingBoss&&targetEnemyForAI&&targetEnemyForAI.id===activeCapturingBoss.id){shouldTryShoot_AI_Calc=false;}
 
-        // Specifieke vuurstop voor AI P2 in 1PvsAICoop tijdens de intro
         if (isPlayerTwoAI && selectedOnePlayerGameVariant === '1P_VS_AI_COOP' && shipIdentifier === 'ai_p2') {
             const introStrictForP2AI = isShowingIntro && level === 1 && coopPlayersReadyStartTime > 0 && currentTime < coopPlayersReadyStartTime + 8000;
-            if (introStrictForP2AI || isShowingIntro) { // Ook niet schieten tijdens "STAGE X"
+            if (introStrictForP2AI || isShowingIntro) {
                 shouldTryShoot_AI_Calc = false;
             }
         }
