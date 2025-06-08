@@ -2056,32 +2056,69 @@ function aiControl() {
 
             let bestCsTarget = null;
             let bestCsTargetScore = -Infinity;
+            const CS_PREDICTION_LOOKAHEAD_FRAMES = 30; // Hoeveel frames vooruit te kijken (kan aangepast worden)
 
             for (const enemy of enemies) {
-                if (!enemy || enemy.y < -enemy.height || enemy.y > canvasHeight + enemy.height || enemy.x < -enemy.width || enemy.x > canvasWidth + enemy.width) {
-                    continue; // Sla vijanden over die ver buiten beeld zijn
+                if (!enemy || enemy.y < -enemy.height * 2 || enemy.y > canvasHeight + enemy.height * 2 || enemy.x < -enemy.width * 2 || enemy.x > canvasWidth + enemy.width * 2) {
+                    continue; 
                 }
 
-                const enemyCenterX = enemy.x + enemy.width / 2;
-                const enemyCenterY = enemy.y + enemy.height / 2;
+                let predictedEnemyX = enemy.x + enemy.width / 2;
+                let predictedEnemyY = enemy.y + enemy.height / 2;
 
-                // Geschatte tijd tot de kogel de Y-positie van de vijand bereikt
-                const timeToEnemyY = Math.max(0, (activeShipForAI.y - enemyCenterY) / PLAYER_BULLET_SPEED);
+                // Probeer de vijandpositie te voorspellen op basis van het pad
+                // Dit is een vereenvoudigde voorspelling; voor perfectie is complexere pad-analyse nodig.
+                if (enemy.state === 'following_bezier_path' && challengingStagePaths[enemy.entrancePathId]) {
+                    const pathSegments = challengingStagePaths[enemy.entrancePathId];
+                    let tempPathT = enemy.pathT;
+                    let tempSegmentIndex = enemy.pathSegmentIndex;
+                    
+                    // Simuleer een paar stappen vooruit op het pad
+                    for (let step = 0; step < CS_PREDICTION_LOOKAHEAD_FRAMES; step++) {
+                        if (tempSegmentIndex >= pathSegments.length) break;
+                        const segmentCS = pathSegments[tempSegmentIndex];
+                        if (!segmentCS || !segmentCS.p0 || !segmentCS.p1 || !segmentCS.p2 || !segmentCS.p3) break;
 
-                // Voorspelde X-positie van de vijand wanneer de kogel daar aankomt
-                // Gebruik een simpele lineaire voorspelling gebaseerd op huidige velocityX
-                // In CS is velocityX meestal representatief voor de korte termijn beweging langs het pad.
-                const predictedEnemyX = enemyCenterX + (enemy.velocityX || 0) * timeToEnemyY;
+                        tempPathT += (CS_ENTRANCE_PATH_SPEED * (enemy.pathSpeedMultiplier || 1.0));
+                        if (tempPathT >= 1.0) {
+                            tempPathT = 0;
+                            tempSegmentIndex++;
+                            if (tempSegmentIndex >= pathSegments.length) break;
+                            const nextSegmentCS = pathSegments[tempSegmentIndex];
+                            if (nextSegmentCS?.p0) {
+                                predictedEnemyX = nextSegmentCS.p0.x + enemy.width / 2;
+                                predictedEnemyY = nextSegmentCS.p0.y + enemy.height / 2;
+                            } else break;
+                        } else {
+                            try {
+                                predictedEnemyX = calculateBezierPoint(tempPathT, segmentCS.p0.x, segmentCS.p1.x, segmentCS.p2.x, segmentCS.p3.x) + enemy.width / 2;
+                                predictedEnemyY = calculateBezierPoint(tempPathT, segmentCS.p0.y, segmentCS.p1.y, segmentCS.p2.y, segmentCS.p3.y) + enemy.height / 2;
+                            } catch (e) { break; /* Fout bij berekenen, gebruik laatste bekende positie */ }
+                        }
+                    }
+                } else { // Fallback naar huidige positie + simpele velocity als geen padinfo
+                     predictedEnemyX += (enemy.velocityX || 0) * (CS_PREDICTION_LOOKAHEAD_FRAMES * (16.67/1000)); // 16.67ms per frame
+                     predictedEnemyY += (enemy.velocityY || 0) * (CS_PREDICTION_LOOKAHEAD_FRAMES * (16.67/1000));
+                }
 
-                // Doel X voor het schip om te richten op de voorspelde X van de vijand
-                let targetShipXForShot = predictedEnemyX - effectiveShipWidth / 2;
+
+                // Tijd die de kogel nodig heeft om de (voorspelde) Y-positie van de vijand te bereiken
+                const timeToEnemyY = Math.max(0.01, (activeShipForAI.y - predictedEnemyY) / PLAYER_BULLET_SPEED); // Vermijd deling door nul
+                
+                // Finale voorspelde X van de vijand, rekening houdend met de reistijd van de kogel
+                const finalPredictedEnemyX = predictedEnemyX + (enemy.velocityX || 0) * timeToEnemyY;
+
+                let targetShipXForShot = finalPredictedEnemyX - effectiveShipWidth / 2;
                 targetShipXForShot = Math.max(AI_EDGE_BUFFER, Math.min(canvasWidth - effectiveShipWidth - AI_EDGE_BUFFER, targetShipXForShot));
+                
+                let currentScore = (canvasHeight - predictedEnemyY) * 3; // Hogere weging voor nabijheid Y
+                currentScore -= Math.abs(shipCenterX - finalPredictedEnemyX); // Kleinere penalty voor X-afstand
 
-                // Scoring: geef prioriteit aan vijanden die lager zijn (dichterbij een 'hit zone')
-                // en vijanden die dichter bij de voorspelde vuurlijn van het schip zijn.
-                // Een kleine penalty voor horizontale afstand om onnodig heen en weer bewegen te verminderen.
-                let currentScore = (canvasHeight - enemyCenterY) * 2; // Lager is beter
-                currentScore -= Math.abs(shipCenterX - predictedEnemyX) * 0.5; // Dichter bij voorspelde X is beter
+                // Bonus voor vijanden die direct in de vuurlijn komen te liggen
+                if (Math.abs(shipCenterX - finalPredictedEnemyX) < PLAYER_BULLET_WIDTH * 2) {
+                    currentScore += 1000;
+                }
+
 
                 if (currentScore > bestCsTargetScore) {
                     bestCsTargetScore = currentScore;
@@ -2092,29 +2129,23 @@ function aiControl() {
 
             targetEnemyForAI = bestCsTarget;
             if (targetEnemyForAI) {
-                // In CS, als er een doelwit is, probeer altijd te schieten (geen complexe uitlijning nodig zoals in grid)
                 shouldTryShoot_AI = true;
             } else {
-                // Als er geen vijanden zijn (of allemaal buiten bereik), centreer het schip.
-                desiredTargetX = targetCenterShipX;
+                desiredTargetX = targetCenterShipX; // Centreer als er geen doelwitten zijn
                 shouldTryShoot_AI = false;
             }
-            // Geen ontwijkingslogica voor CS
-             aiPreviousDodgeDirection = 0;
-             aiDodgeCommitEndTime = 0;
+            aiPreviousDodgeDirection = 0;
+            aiDodgeCommitEndTime = 0;
 
-        } else if (!isInvincibleForAI && !isShowingBlockingMessage) { // <<< BEGIN ORIGINELE LOGICA VOOR NIET-CS >>>
+        } else if (!isInvincibleForAI && !isShowingBlockingMessage) { 
             const currentLevelFactor = Math.min(1, level / 10);
-
             const AI_DANGER_LOOKAHEAD_Y_LVL = SHIP_HEIGHT * (8.5 + 3.5 * currentLevelFactor);
             const AI_BULLET_PROJECTION_MS_LVL = 500 + 300 * currentLevelFactor;
             const AI_ENEMY_PROJECTION_MS_LVL = 300 + 150 * currentLevelFactor;
             const AI_THREAT_SAFETY_MARGIN_X_LVL = effectiveShipWidth * (0.9 + 0.5 * currentLevelFactor);
             const AI_THREAT_SAFETY_MARGIN_Y_BASE_LVL = SHIP_HEIGHT * (0.7 + 0.4 * currentLevelFactor);
             const AI_DODGE_STEP_LVL = effectiveShipWidth * (1.8 + 0.8 * currentLevelFactor);
-
             let allProjectedThreats = [];
-
             for (const bullet of enemyBullets) {
                 if (bullet.y < activeShipForAI.y + AI_DANGER_LOOKAHEAD_Y_LVL && bullet.y + bullet.height > activeShipForAI.y - SHIP_HEIGHT * 2.0) {
                     const timeToImpactY = (activeShipForAI.y - bullet.y) / (bullet.vy || 0.01);
@@ -2142,7 +2173,6 @@ function aiControl() {
                 }
             }
             allProjectedThreats.sort((a,b) => (b.isFromAbove ? 1 : -1) - (a.isFromAbove ? 1 : -1) || (b.originalVy || 0) - (a.originalVy || 0));
-
             if (allProjectedThreats.length > 0) {
                 isDodgingThreat = true;
                 let bestDodgeOption = { x: currentSmoothedShipXForAI, score: -Infinity, dir: 0, minDistance: Infinity, collisions: Infinity };
@@ -2175,9 +2205,9 @@ function aiControl() {
                 else if (bestDodgeOption.collisions > 0) { aiPreviousDodgeDirection = bestDodgeOption.dir; aiDodgeCommitEndTime = now + AI_DODGE_COMMIT_DURATION / 2; }
                 else { aiPreviousDodgeDirection = 0; aiDodgeCommitEndTime = 0; }
             } else { aiPreviousDodgeDirection = 0; aiDodgeCommitEndTime = 0; }
-        } else { aiPreviousDodgeDirection = 0; aiDodgeCommitEndTime = 0; } // Einde isInvincible/isShowingBlockingMessage check
+        } else { aiPreviousDodgeDirection = 0; aiDodgeCommitEndTime = 0; }
 
-        if (isDodgingThreat && !isChallengingStage) { // Alleen toepassen als niet CS
+        if (isDodgingThreat && !isChallengingStage) {
             isMovingToCapture = false; aiIsCurrentlyTargetingCaptureBoss = false; isTargetingThreeSecondRuleBoss = false; isMovingForOwnFallingShip = false; targetEnemyForAI = null;
             const isNearEdge = desiredTargetX < AI_EDGE_BUFFER * 2.5 || desiredTargetX > canvasWidth - effectiveShipWidth - AI_EDGE_BUFFER * 2.5;
             if (Math.abs(desiredTargetX - currentSmoothedShipXForAI) > effectiveShipWidth * 0.10 && !isNearEdge) {
@@ -2194,7 +2224,7 @@ function aiControl() {
                 targetEnemyForAI = generalTargetWhileDodging;
             }
             shouldTryShoot_AI = (targetEnemyForAI !== null);
-        } else if (!isChallengingStage) { // Alleen toepassen als niet CS
+        } else if (!isChallengingStage) {
             if (fallingShips.length > 0 && !isShipCapturedForAI && !isWaitingForRespawn && !isDualActiveForAI ) {
                 let closestFallingShip = null; let minDist = Infinity;
                 for (const fs of fallingShips) {
@@ -2232,15 +2262,14 @@ function aiControl() {
                     else { desiredTargetX = targetCenterShipX; shouldTryShoot_AI = false; }
                 }
             }
-        } // Einde !isChallengingStage blok
+        }
 
         let currentAiSmoothingFactor;
         if (isChallengingStage) {
-            currentAiSmoothingFactor = CS_SHOOTING_MOVE_FRACTION; // Snellere, directere beweging in CS
+            currentAiSmoothingFactor = CS_SHOOTING_MOVE_FRACTION; 
         } else {
             currentAiSmoothingFactor = isDodgingThreat ? AI_DODGE_MOVEMENT_SMOOTHING_FACTOR : AI_NORMAL_MOVEMENT_SMOOTHING_FACTOR;
         }
-
 
         if (activeShipForAI) {
             currentSmoothedShipXForAI += (desiredTargetX - currentSmoothedShipXForAI) * currentAiSmoothingFactor;
@@ -2251,7 +2280,7 @@ function aiControl() {
         if (shouldTryShoot_AI && !isShowingIntro) {
             let canActuallyShootTarget = true;
 
-            if (!isChallengingStage) { // Alleen deze checks als NIET CS
+            if (!isChallengingStage) { 
                 if (isMovingToCapture || isMovingForOwnFallingShip) {
                     canActuallyShootTarget = false;
                 }
@@ -2263,12 +2292,13 @@ function aiControl() {
                             canActuallyShootTarget = false;
                         }
                     }
+                    // <<< GEWIJZIGD: Striktere 3-secondenregel >>>
                     if (targetEnemyForAI.type === ENEMY3_TYPE &&
                         targetEnemyForAI.captureDiveInitiationTime && targetEnemyForAI.captureDiveInitiationTime > 0 &&
                         (now - targetEnemyForAI.captureDiveInitiationTime < AI_CAPTURE_DIVE_SHOOT_STOP_DURATION_MS)) {
-                        canActuallyShootTarget = false;
+                        canActuallyShootTarget = false; // STRIKT: Niet vuren als deze conditie geldt
                     }
-                } else {
+                } else { // Als er geen targetEnemyForAI is (buiten CS), niet schieten.
                     canActuallyShootTarget = false;
                 }
             } // Einde !isChallengingStage fire checks
@@ -2631,25 +2661,37 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
 
     // Finale veiligheidschecks voor schieten, ongeacht hoe shouldTryShoot_AI_Calc eerder werd gezet
     if (shouldTryShoot_AI_Calc) {
-        // Niet schieten als bezig met eigen capture of oppakken van eigen schip
-        if (isMovingToCaptureBeam || isMovingForOwnFallingShip) {
+        // Niet schieten als bezig met eigen capture of oppakken van eigen schip (buiten CS)
+        if (!isChallengingStage && (isMovingToCaptureBeam || isMovingForOwnFallingShip)) {
             shouldTryShoot_AI_Calc = false;
         }
 
         if(targetEnemyForAI){
-            // Niet schieten op een "kale" baas in bepaalde situaties
-            if(targetEnemyForAI.id===capturingBossId){
-                const bossMidCap=(targetEnemyForAI.state==='preparing_capture'||targetEnemyForAI.state==='diving_to_capture_position'||targetEnemyForAI.state==='capturing');
-                if(bossMidCap) shouldTryShoot_AI_Calc=false;
-            }
-            if(targetEnemyForAI.type===ENEMY3_TYPE&&!targetEnemyForAI.hasCapturedShip){
-                const probStateBald=['in_grid','preparing_capture','diving_to_capture_position','capturing'].includes(targetEnemyForAI.state)||isEntrancePhaseActive;
-                const isThisAIsCaptureTarget = (activeCapturingBoss && targetEnemyForAI.id === activeCapturingBoss.id && aiPlayerActivelySeekingCaptureById === shipIdentifier);
+            // Niet schieten op een "kale" baas in bepaalde situaties (buiten CS)
+            if (!isChallengingStage) {
+                if(targetEnemyForAI.id===capturingBossId){
+                    const bossMidCap=(targetEnemyForAI.state==='preparing_capture'||targetEnemyForAI.state==='diving_to_capture_position'||targetEnemyForAI.state==='capturing');
+                    if(bossMidCap) shouldTryShoot_AI_Calc=false;
+                }
+                if(targetEnemyForAI.type===ENEMY3_TYPE&&!targetEnemyForAI.hasCapturedShip){
+                    const probStateBald=['in_grid','preparing_capture','diving_to_capture_position','capturing'].includes(targetEnemyForAI.state)||isEntrancePhaseActive;
+                    const isThisAIsCaptureTarget = (activeCapturingBoss && targetEnemyForAI.id === activeCapturingBoss.id && aiPlayerActivelySeekingCaptureById === shipIdentifier);
 
-                if(probStateBald && !isTargetingThreeSecondRuleBoss && !isTargetingPartnerRescue && !isThisAIsCaptureTarget) {
-                    shouldTryShoot_AI_Calc=false;
+                    if(probStateBald && !isTargetingThreeSecondRuleBoss && !isTargetingPartnerRescue && !isThisAIsCaptureTarget) {
+                        shouldTryShoot_AI_Calc=false;
+                    }
+                }
+                 // Strikte 3-secondenregel voor niet-COOP AI
+                if ((isPlayerTwoAI && selectedGameMode === 'normal' && currentPlayer === 2) || (!isManualControl && !isPlayerTwoAI && !isCoopAIDemoActive)) {
+                    if (targetEnemyForAI.type === ENEMY3_TYPE &&
+                        targetEnemyForAI.captureDiveInitiationTime && targetEnemyForAI.captureDiveInitiationTime > 0 &&
+                        (currentTime - targetEnemyForAI.captureDiveInitiationTime < AI_CAPTURE_DIVE_SHOOT_STOP_DURATION_MS)) {
+                        shouldTryShoot_AI_Calc = false; // Niet vuren
+                    }
                 }
             }
+
+
             if(isShipDual&&isThisACoopAIMode&&targetEnemyForAI.type===ENEMY3_TYPE&&!targetEnemyForAI.hasCapturedShip){
                 const ptnrId=(shipIdentifier==='p1')?(isCoopAIDemoActive?'player2':'ai_p2'):'p1';
                 let pNeedsDual=false;
