@@ -1975,7 +1975,7 @@ function handlePlayerInput() {
 
 
 // --- AI control functies ---
-// let aiIsCurrentlyTargetingCaptureBoss = false; // <<< VERWIJDERD: Gebruik globale variabele
+// aiIsCurrentlyTargetingCaptureBoss is al globaal gedefinieerd
 let aiPreviousDodgeDirection = 0;
 let aiDodgeCommitEndTime = 0;
 const AI_DODGE_COMMIT_DURATION = 160;
@@ -2435,6 +2435,9 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
         return { desiredTargetX, shouldTryShoot: false, targetEnemyForAI: null, chosenDodgeDir: 0, isDodging: false, predictedCollisions: 0 };
     }
 
+    // <<< VERPLAATST: Declaratie van activeCapturingBoss naar hierboven >>>
+    const activeCapturingBoss = gameEnemies.find(e => e.id === capturingBossId && e.type === ENEMY3_TYPE);
+
     let dodgeTargetX = currentSmoothedX;
     if (!isChallengingStage && !isShipInvincible) {
         const AI_DANGER_LOOKAHEAD_Y_COOP = SHIP_HEIGHT * 9.0;
@@ -2597,7 +2600,7 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
             }
         }
         if (!isMovingForOwnFallingShip) {
-            const activeCapturingBoss = gameEnemies.find(e => e.id === capturingBossId && e.type === ENEMY3_TYPE);
+            // const activeCapturingBoss is al hierboven gedefinieerd
             const beamActiveForThisShip = captureBeamActive && activeCapturingBoss && activeCapturingBoss.state === 'capturing' && !isThisShipCaptured;
             if (canThisAIShipBeCapturedPhysically && beamActiveForThisShip) {
                 let proceedWithCapture = false;
@@ -2680,7 +2683,8 @@ function calculateAIDesiredState(currentShip, currentSmoothedX, isShipDual, game
                 const probStateBald=['in_grid','preparing_capture','diving_to_capture_position','capturing'].includes(targetEnemyForAI.state)||isEntrancePhaseActive;
                 // Toestaan te schieten als de AI specifiek deze baas als doelwit heeft voor de 3-seconden regel,
                 // tenzij de baas al in een capture-gerelateerde state is voor *deze* AI.
-                const isThisAIsCaptureTarget = (targetEnemyForAI.id === capturingBossId && aiPlayerActivelySeekingCaptureById === shipIdentifier);
+                const isThisAIsCaptureTarget = (activeCapturingBoss && targetEnemyForAI.id === activeCapturingBoss.id && aiPlayerActivelySeekingCaptureById === shipIdentifier); // <<< GEWIJZIGD: gebruik activeCapturingBoss >>>
+
 
                 if(probStateBald && !isTargetingThreeSecondRuleBoss && !isTargetingPartnerRescue && !isThisAIsCaptureTarget) {
                     shouldTryShoot_AI_Calc=false;
